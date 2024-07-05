@@ -9,18 +9,25 @@ export const meta: MetaFunction = () => {
 };
 
 export default function Index() {
-  return (<><div className="block">
-    <h2>Block 1</h2>
-    <p></p>
-    <button className="button"></button>
-  </div><div className="block">
-      <h2>Block 2</h2>
-      <p></p>
-      <button className="button"></button>
-    </div><div className="block">
-      <h2>Block 3</h2>
-      <p></p>
-      <button className="button"></button>
-    </div></>
+  return (<>
+      <h1>Welcome</h1>
+      <div className="container">
+        <div className="block">
+            <h2>Create an Encounter</h2>
+            <p></p>
+            <button className="button"></button>
+        </div>
+        <div className="block">
+            <h2>Create an NPC</h2>
+            <p></p>
+            <button className="button"></button>
+        </div>
+        <div className="block">
+            <h2>Create an Opponent</h2>
+            <p></p>
+            <button className="button"></button>
+        </div>
+    </div>
+    </>
   );
 }

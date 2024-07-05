@@ -22,11 +22,9 @@ export function Layout({ children }: { children: React.ReactNode }) {
           <NavLink to={``}>Home</NavLink>
           <NavLink to= {`/campaigns`}>Campaigns</NavLink>
         </div>
-        <div className="container">
           {children}
           <ScrollRestoration />
           <Scripts />
-        </div>
       </body>
     </html>
   );

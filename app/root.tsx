@@ -9,6 +9,10 @@ import {
 import "~/styles.css";
 
 export function Layout({ children }: { children: React.ReactNode }) {
+  const handleRollDice = () => {
+    const value = Math.floor(Math.random()*6) + 1;
+    alert(`You rolled a ${value}!`);
+    };  
   return (
     <html lang="en">
       <head>
@@ -21,6 +25,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <div className="topnav">
           <NavLink to={``}>Home</NavLink>
           <NavLink to= {`/campaigns`}>Campaigns</NavLink>
+          <NavLink to= {`/characters`}>Characters</NavLink>
         </div>
           {children}
           <ScrollRestoration />
@@ -29,6 +34,8 @@ export function Layout({ children }: { children: React.ReactNode }) {
     </html>
   );
 }
+
+
 
 export default function App() {
   return <Outlet />;

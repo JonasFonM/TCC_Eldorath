@@ -30,15 +30,15 @@ export function Layout({ children }: { children: React.ReactNode }) {
           {children}
           <ScrollRestoration />
           <Scripts />
-
+          
           <footer className="fixed-footer">
-            <button id ="d4" type="button" onClick={() => diceRoll(4)}>D4</button>
-            <button id ="d6" type="button" onClick={() => diceRoll(6)}>D6</button>
-            <button id ="d8" type="button" onClick={() => diceRoll(8)}>D8</button>
-            <button id ="d10" type="button" onClick={() => diceRoll(10)}>D10</button>
-            <button id ="d12" type="button" onClick={() => diceRoll(12)}>D12</button>
-            <button id ="d20" type="button" onClick={() => diceRoll(20)}>D20</button>
-            <button id ="d100" type="button" onClick={() => diceRoll(100)}>D100</button>
+            <button id ="d4" className="dice" type="button" onClick={() => diceRoll(4)}>D4</button> 
+            <button id ="d6" className="dice" type="button" onClick={() => diceRoll(6)}>D6</button>
+            <button id ="d8" className="dice" type="button" onClick={() => diceRoll(8)}>D8</button>
+            <button id ="d10" className="dice" type="button" onClick={() => diceRoll(10)}>D10</button>
+            <button id ="d12" className="dice" type="button" onClick={() => diceRoll(12)}>D12</button>
+            <button id ="d20" className="dice" type="button" onClick={() => diceRoll(20)}>D20</button>
+            <button id ="d100" className="dice" type="button" onClick={() => diceRoll(100)}>D100</button>
           </footer>
       </body>
     </html>

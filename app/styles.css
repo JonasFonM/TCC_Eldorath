@@ -67,25 +67,61 @@
     cursor: pointer;
   }
 
-  .fixed-footer {
+  .log {
     position: fixed;
-    left: 0;
-    bottom: 0;
-    width: 100%;
+    width: 17%;
+    height: 60%;
+    overflow: auto;
     background-color: #333;
     color: white;
     text-align: center;
-    padding: 10px 0;
-    z-index: 1000;
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
+    border: 1px solid #333;
+    border-radius: 5px;
+    bottom: 5%;
+    left: 2%;
+    display: block;
+  }
+
+  .log ul{
+    list-style-type: none;
+    display: block;
+    margin: 0;
+    padding: 0;
+    border: 1px solid #555;
+
+  }
+
+  li {
+    text-align: center;
+    border-bottom: 1px solid #555;
   }
   
-  .fixed-footer button {
-    float: left;
+  li:last-child {
+    border-bottom: none;
+  }
+
+
+   .dice-box {
+    position: fixed;
+    width: 17%;
+    height: 60%;
+    overflow: auto;
+    background-color: #333;
+    color: white;
+    right: 2%;
+    bottom: 5%;
     display: block;
-    width: 15%;
+    justify-content: space-around;
+    align-items: center;
+    border: 1px solid #333;
+    border-radius: 5px;
+  }
+  
+  .dice-box button {
+    display: inline-block;
+    text-align: center;
+    width: 100%;
+    min-height: 14.28%;
     background-color: #555;
     border: none;
     color: white;
@@ -93,7 +129,7 @@
     font-size: 1rem;
     }
   
-  .fixed-footer button:hover {
+  .dice-box button:hover {
     background-color: #777;
   }
 

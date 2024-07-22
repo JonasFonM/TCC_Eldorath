@@ -2,9 +2,11 @@ import { useState } from 'react'
 import { FormField } from '~/components/form-field'
 
 export default function Login() {
+  const [action, setAction] = useState('login')
   const [formData, setFormData] = useState({
     email: '',
     password: '',
+    username: '',
   })
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>, field: string) => {
@@ -12,34 +14,60 @@ export default function Login() {
   }
 
   return (
-      <div>
-        <h2>Log in</h2>
 
-        <form method="POST" className="rounded-2xl bg-gray-200 p-6 w-96">
-         <div className='block'> <FormField
-            htmlFor="email"
-            label="Email"
-            value={formData.email}
-            onChange={e => handleInputChange(e, 'email')}
-          />
-          </div>
-          <div className='block'><FormField
-            htmlFor="password"
-            type="password"
-            label="Password"
-            value={formData.password}
-            onChange={e => handleInputChange(e, 'password')}
-          />
-          </div>
-          
-          <div className="block">
-            <input
-              type="submit"
-              className="rounded-xl mt-2 bg-yellow-300 px-3 py-2 text-blue-600 font-semibold transition duration-300 ease-in-out hover:bg-yellow-400 hover:-translate-y-1"
-              value="Sign In"
-            />
-          </div>
-        </form>
+    <div>
+      <div className="h-full justify-center items-center flex flex-col gap-y-4">
+        <button
+          onClick={() => setAction(action == 'login' ? 'register' : 'login')}
+          className="absolute top-8 right-8 rounded-xl bg-yellow-300 font-semibold text-blue-600 px-3 py-2 transition duration-300 ease-in-out hover:bg-yellow-400 hover:-translate-y-1"
+        >
+          {action === 'login' ? 'Sign Up' : 'Sign In'}
+        </button>
+        {/* ... */}
       </div>
+      <h2 className="font-semibold text-slate-300">
+        {action === 'login' ? 'Log In' : 'Sign Up'}
+      </h2>
+      <form method="POST">
+        <div className='block'> <FormField
+          htmlFor="email"
+          label="Email"
+          value={formData.email}
+          onChange={e => handleInputChange(e, 'email')}
+        />
+        </div>
+        <div className='block'><FormField
+          htmlFor="password"
+          type="password"
+          label="Password"
+          value={formData.password}
+          onChange={e => handleInputChange(e, 'password')}
+        />
+        </div>
+
+        {action === 'register' && (
+          <>
+            <div className='block'>
+              <FormField
+                htmlFor="username"
+                label="Username"
+                onChange={e => handleInputChange(e, 'username')}
+                value={formData.username}
+              />
+            </div>
+
+
+          </>
+        )}
+
+        <div className="block">
+          <button type="submit" name="_action" value={action} className="rounded-xl mt-2 bg-yellow-300 px-3 py-2 text-blue-600 font-semibold transition duration-300 ease-in-out hover:bg-yellow-400 hover:-translate-y-1">
+            {
+              action === 'login' ? "Sign In" : "Sign Up"
+            }
+          </button>
+        </div>
+      </form>
+    </div>
   )
 }

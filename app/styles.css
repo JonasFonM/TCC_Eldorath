@@ -11,6 +11,19 @@
     text-align: center;
   }
   
+  .block a{
+    display: block;
+    color: #ffffff;
+    text-align: center;
+    padding: 14px 20px;
+    text-decoration: none;
+    font-size: 17px;
+  }
+
+  a:hover:not(active) {
+    color: darkcyan;
+  }
+
   .header {
       background: #01080E;
       padding: 20px;
@@ -35,6 +48,7 @@
     font-size: 17px;
     }
   
+    
   .topnav a:hover:not(active) {
       color: darkcyan;
     }

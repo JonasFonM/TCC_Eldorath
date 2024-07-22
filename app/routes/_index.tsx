@@ -1,4 +1,5 @@
 import type { MetaFunction } from "@remix-run/node";
+import { NavLink } from "@remix-run/react";
 
 export const meta: MetaFunction = () => {
   return [
@@ -10,9 +11,10 @@ export const meta: MetaFunction = () => {
 export default function Index() {
   return (<>
       <h1>Welcome</h1>
-      <div className="container">
-        
-    </div>
+        <div className="block">
+          <NavLink to={`login`}>Login</NavLink>
+        </div>
+
     </>
   );
 }

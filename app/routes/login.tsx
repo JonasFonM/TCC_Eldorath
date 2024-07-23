@@ -1,5 +1,48 @@
 import { useState } from 'react'
 import { FormField } from '~/components/form-field'
+import { ActionFunction, json } from '@remix-run/node'
+import { validateEmail, validateName, validatePassword } from '~/utils/validators.server'
+import { login, register } from '~/utils/auth.server'
+
+export const action: ActionFunction = async ({ request }) => {
+  const form = await request.formData()
+  const action = form.get('_action')
+  const email = form.get('email')
+  let username = form.get('username')
+  const password = form.get('password')
+
+  if (typeof action !== 'string' || typeof email !== 'string' || typeof password !== 'string') {
+    return json({ error: `Invalid Form Data`, form: action }, { status: 400 })
+  }
+
+  if (action === 'register' && (typeof username !== 'string')) {
+    return json({ error: `Invalid Form Data`, form: action }, { status: 400 })
+  }
+  const errors = {
+    email: validateEmail(email),
+    password: validatePassword(password),
+    ...(action === 'register'
+      ? {
+          username: validateName((username as string) || ''),
+        }
+      : {}),
+  }
+
+  if (Object.values(errors).some(Boolean))
+    return json({ errors, fields: { email, password, username }, form: action }, { status: 400 })
+
+  switch (action) {
+    case 'login': {
+        return await login({ email, password })
+    }
+    case 'register': {
+        username = username as string
+        return await register({ email, password, username })
+    }
+    default:
+        return json({ error: `Invalid Form Data` }, { status: 400 });
+  }
+}
 
 export default function Login() {
   const [action, setAction] = useState('login')

@@ -21,7 +21,7 @@ const storage = createCookieSessionStorage({
   },
 })
 
-export async function createUserSession(userId: string, redirectTo: string) {
+export async function createUserSession(userId: number, redirectTo: string) {
   const session = await storage.getSession()
   session.set('userId', userId)
   return redirect(redirectTo, {
@@ -47,7 +47,7 @@ export async function register(user: RegisterForm) {
       { status: 400 },
     )
   }
-  return createUserSession(`${newUser.id}`, '/');
+  return createUserSession(newUser.id, '/');
 
 }
 
@@ -57,13 +57,13 @@ export async function login({ email, password }: LoginForm) {
   })
   if (!user || !(await bcrypt.compare(password, user.password)))
     return json({ error: `Incorrect login` }, { status: 400 })
-  return createUserSession(user.id.toString(), "/");
+  return createUserSession(user.id, "/");
 }
 
 export async function requireUserId(request: Request, redirectTo: string = new URL(request.url).pathname) {
   const session = await getUserSession(request)
   const userId = session.get('userId')
-  if (!userId || typeof userId !== 'string') {
+  if (!userId || typeof userId !== 'number') {
     const searchParams = new URLSearchParams([['redirectTo', redirectTo]])
     throw redirect(`/login?${searchParams}`)
   }
@@ -75,10 +75,15 @@ function getUserSession(request: Request) {
 }
 
 async function getUserId(request: Request) {
-  const session = await getUserSession(request)
-  const userId = session.get('userId')
-  if (!userId || typeof userId !== 'string') return null
-  return userId
+  try {
+    const session = await getUserSession(request);
+    const userId = session.get('userId');
+    if (!userId || typeof userId !== 'number') return null;
+    return userId;
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
 }
 
 export async function getUser(request: Request) {

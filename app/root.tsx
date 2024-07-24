@@ -7,7 +7,17 @@ import {
   ScrollRestoration,
 } from "@remix-run/react";
 import { useState, useEffect, useRef } from 'react';
+import type { MetaFunction } from "@remix-run/node";
 import "~/styles.css";
+
+
+export const meta: MetaFunction = () => {
+  return [
+    { title: "AEternida" },
+    { name: "description", content: "Welcome to AEternida!" },
+  ];
+};
+
 
 export function DiceRoll(die: number) {
   const value = Math.floor(Math.random() * die) + 1;
@@ -40,9 +50,10 @@ export function Layout({ children }: { children: React.ReactNode }) {
       </head>
       <body>
         <div className="topnav">
-          <NavLink to={``}>Home</NavLink>
+          <NavLink to={`/home`}>Home</NavLink>
           <NavLink to={`/campaigns`}>Campaigns</NavLink>
           <NavLink to={`/characters`}>Characters</NavLink>
+          <NavLink to={`/logout`} reloadDocument>Logout</NavLink>
         </div>
         {children}
         <ScrollRestoration />

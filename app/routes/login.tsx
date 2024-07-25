@@ -1,4 +1,6 @@
-import { useState } from 'react'
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { useState, useEffect, useRef } from 'react'
+import { useActionData } from '@remix-run/react'
 import { FormField } from '~/components/form-field'
 import { ActionFunction, json } from '@remix-run/node'
 import { validateEmail, validateName, validatePassword } from '~/utils/validators.server'
@@ -44,17 +46,64 @@ export const action: ActionFunction = async ({ request }) => {
   }
 }
 
+
+
 export default function Login() {
   const [action, setAction] = useState('login')
-  const [formData, setFormData] = useState({
-    email: '',
-    password: '',
-    username: '',
-  })
+  
+  const actionData = useActionData<any>()
 
+  const firstLoad = useRef(true)
+
+  const [errors, setErrors] = useState(actionData?.errors || {})
+  
+  const [formError, setFormError] = useState(actionData?.error || '')
+    
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>, field: string) => {
     setFormData(form => ({ ...form, [field]: event.target.value }))
   }
+  
+
+const [formData, setFormData] = useState({
+    email: actionData?.fields?.email || '',
+    password: actionData?.fields?.password || '',
+    username: actionData?.fields?.username || '',
+  })
+
+  useEffect(() => {
+    if (!firstLoad.current) {
+      const newState = {
+        email: '',
+        password: '',
+        username: '',
+      }
+      setErrors(newState)
+      setFormError('')
+      setFormData(newState)
+    }
+  }, [action])
+
+  useEffect(() => {
+    if (!firstLoad.current) {
+      setFormError('')
+    }
+  }, [formData])
+
+  useEffect(() => { firstLoad.current = false }, [])
+
+  const handleSubmit = async (event: React.FormEvent) => {
+
+    if (!formData.email || !formData.password || (action === 'register' && !formData.username)) {
+      event.preventDefault();
+      setErrors({
+        email: !formData.email ? 'Email is required' : undefined,
+        password: !formData.password ? 'Password is required' : undefined,
+        username: action === 'register' && !formData.username ? 'Username is required' : undefined,
+      });
+      setFormError('Please fill in all required fields.');
+      return;
+    }
+  };
 
   return (
 
@@ -71,12 +120,14 @@ export default function Login() {
       <h2 className="font-semibold text-slate-300">
         {action === 'login' ? 'Log In' : 'Sign Up'}
       </h2>
-      <form method="POST">
+      <form method="POST" onSubmit={handleSubmit}>
+        <div>{formError}</div>
         <div className='block'> <FormField
           htmlFor="email"
           label="Email"
           value={formData.email}
           onChange={e => handleInputChange(e, 'email')}
+          error={errors?.email}
         />
         </div>
         <div className='block'><FormField
@@ -85,7 +136,8 @@ export default function Login() {
           label="Password"
           value={formData.password}
           onChange={e => handleInputChange(e, 'password')}
-        />
+          error={errors?.password}
+          />
         </div>
 
         {action === 'register' && (
@@ -96,7 +148,8 @@ export default function Login() {
                 label="Username"
                 onChange={e => handleInputChange(e, 'username')}
                 value={formData.username}
-              />
+                error={errors?.username}
+                />
             </div>
 
 

@@ -7,24 +7,41 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-//model post {
-//  id        Int      @id @default(autoincrement())
-//  title     String   @db.VarChar(255)
-//  createdAt DateTime @default(now()) @db.Timestamp(0)
-//  content   String?  @db.Text
-//  published Boolean  @default(false)
-//  authorId  Int
-//  user      user     @relation(fields: [authorId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "post_ibfk_1")
+model character {
+  id        Int      @id @default(autoincrement())
+  title     String   @db.VarChar(255)
+  createdAt DateTime @default(now()) @db.Timestamp(0)
+  name   String  @db.Text
+  level Int
+  tier Int
+  agility Int
+  body Int
+  mind Int
+  initiative Int
+  perception Int
+  public Boolean  @default(false)
+  authorId  Int
+  user      user     @relation(fields: [authorId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "character_ibfk_1")
 
-//  @@index([authorId], map: "authorId")
-//}
+  skills character_skill[] @relation
 
-//model profile {
-//  id     Int     @id @default(autoincrement())
-//  username    String? @db.Text
-//  userId Int     @unique(map: "userId")
-//  user   user    @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "profile_ibfk_1")
-//}
+  @@index([authorId], map: "authorId")
+}
+
+model skill {
+  id     Int     @id @default(autoincrement())
+  name    String? @db.Text
+  description    String? @db.Text
+  characters   character_skill[] @relation()
+}
+
+model character_skill {
+  id Int @id @default(autoincrement())
+  characterId Int     @unique(map: "characterId")
+  character character @relation(fields: [characterId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "cs_ibfk_1")
+  skillId Int @unique(map: "skillId")
+  skill skill @relation(fields: [skillId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "cs_ibfk_2")
+}
 
 model user {
   id      Int      @id @default(autoincrement())
@@ -33,4 +50,5 @@ model user {
   email     String   @unique
   username  String
   password  String
+  characters character[] @relation()
 }

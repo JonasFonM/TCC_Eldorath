@@ -13,3 +13,14 @@ export const createUser = async (user: RegisterForm) => {
   })
   return { id: newUser.id, email: user.email }
 }
+
+export const getOtherUsers = async (userId: number) => {
+  return prisma.user.findMany({
+    where: {
+      id: { not: userId },
+    },
+    orderBy: {
+      username: 'asc'
+    },
+  })
+}

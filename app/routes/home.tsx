@@ -1,11 +1,22 @@
-import { LoaderFunction } from '@remix-run/node'
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { LoaderFunction, json } from '@remix-run/node'
 import { requireUserId } from '~/utils/auth.server'
+import { UserPanel } from '~/components/user-panel'
+import { getOtherUsers } from '~/utils/user.server'
+import { useLoaderData } from '@remix-run/react'
+
 
 export const loader: LoaderFunction = async ({ request }) => {
-  await requireUserId(request)
-  return null
+  const userId = await requireUserId(request)
+    const users = await getOtherUsers(userId)
+    return json({ users })
 }
 
 export default function Home() {
-  return <h1>Home Page</h1>
+  const { users } = useLoaderData<any>()
+  return (
+    <div className="h-full flex">
+        <UserPanel users ={users}/>
+      </div>
+  )
 }

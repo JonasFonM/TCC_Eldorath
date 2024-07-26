@@ -1,46 +1,157 @@
-import { useState } from "react";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { ActionFunction, json, LoaderFunction } from "@remix-run/node"
+import { useActionData } from "@remix-run/react"
+import { useEffect, useRef, useState } from "react"
+import { getUserIdFromSession, requireUserId } from '~/utils/auth.server'
+import { submitCharacter } from "~/utils/character.server"
+
+export const loader: LoaderFunction = async ({ request }) => {
+  await requireUserId(request)
+  const userId = await getUserIdFromSession(request)
+  return (userId)
+}
+
+export const action: ActionFunction = async ({ request }) => {
+  const form = await request.formData();
+  const name = form.get('name') as string;
+  const level = parseInt(form.get('level') as string, 10);
+  const tier = parseInt(form.get('tier') as string, 10);
+  const agility = parseInt(form.get('agility') as string, 10);
+  const body = parseInt(form.get('body') as string, 10);
+  const mind = parseInt(form.get('mind') as string, 10);
+  const authorId = await getUserIdFromSession(request);
+  
+  if (!authorId) {
+    return json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  if (!name || isNaN(level) || isNaN(tier) || isNaN(agility) || isNaN(body) || isNaN(mind)) {
+    return json({ error: "All fields are required and must be valid numbers" }, { status: 400 });
+  }
+
+  try {
+    const character = await submitCharacter({ name, level, tier, agility, body, mind, authorId });
+    return json({ character }, { status: 201 });
+  } catch (error) {
+    console.error(error);
+    return json({ error: "Failed to create character" }, { status: 500 });
+  }
+
+}
 
 export default function NewCharacterRoute() {
- 
-  const [name, setName] = useState("")
-  const [agi, setAgi] = useState(0)
-  /*const [bdy, setBdy] = useState(0)
-  const [mnd, setMnd] = useState(0)*/
+  const actionData = useActionData<ActionFunction>();
+  const firstLoad = useRef(true);
+  const [formData, setFormData] = useState({
+    name: '',
+    level: '',
+    tier: '',
+    agility: '',
+    body: '',
+    mind: ''
+  });
+  const [errors, setErrors] = useState({
+    name: '',
+    level: '',
+    tier: '',
+    agility: '',
+    body: '',
+    mind: ''
+  });
+  const [formError, setFormError] = useState('');
 
+  useEffect(() => {
+    if (!firstLoad.current && actionData) {
+      setErrors(actionData.errors || {
+        name: '',
+        level: '',
+        tier: '',
+        agility: '',
+        body: '',
+        mind: ''
+      });
+      setFormError(actionData.error || '');
+    }
+  }, [actionData]);
 
+  useEffect(() => {
+    if (!firstLoad.current) {
+      setFormError('');
+    }
+  }, [formData]);
+
+  useEffect(() => {
+    firstLoad.current = false;
+  }, []);
+
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = event.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = async (event: React.FormEvent) => {
+    if (!formData.name || !formData.level || !formData.tier || !formData.agility || !formData.body || !formData.mind) {
+      event.preventDefault();
+      setErrors({
+        name: !formData.name ? 'Name is required' : '',
+        level: !formData.level ? 'Level is required' : '',
+        tier: !formData.tier ? 'Tier is required' : '',
+        agility: !formData.agility ? 'Agility is required' : '',
+        body: !formData.body ? 'Body is required' : '',
+        mind: !formData.mind ? 'Mind is required' : '',
+      });
+      setFormError('Please fill in all required fields.');
+      return;
+    }
+
+  };
 
   return (
-        <>
-      <h2>{name}</h2>
-        <div className="container">
-          <form method="get">
-            <div className="block">
-              <label>
-                Name: <input value={name} onChange={e => {setName(e.target.value)}} />
-              </label>
-            </div>
-            <div className="block">
-              <label>
-                AGILITY: {agi}
-              </label>
-              <button className="agiUp" onClick={() => setAgi(agi+1)}>+</button>
-            </div>
-            <div className="block">
-              <label>
-                BODY: <input type="number" defaultValue={0}  name="bdy" />
-              </label>
-            </div>
-            <div className="block">
-              <label>
-                MIND: <input type="number" defaultValue={0} name="mnd" />
-              </label>
-            </div>
-            <div className="block">
-              <button type="submit" className="button">
-                Add
-              </button>
-            </div>
-          </form>
-        </div>
-         </>);
+    <form method="post" onSubmit={handleSubmit}>
+      <div>
+        <label>
+          Name:
+          <input type="text" name="name" value={formData.name} onChange={handleChange} />
+        </label>
+        {errors.name && <p>{errors.name}</p>}
+      </div>
+      <div>
+        <label>
+          Level:
+          <input type="number" name="level" value={formData.level} onChange={handleChange} />
+        </label>
+        {errors.level && <p>{errors.level}</p>}
+      </div>
+      <div>
+        <label>
+          Tier:
+          <input type="number" name="tier" value={formData.tier} onChange={handleChange} />
+        </label>
+        {errors.tier && <p>{errors.tier}</p>}
+      </div>
+      <div>
+        <label>
+          Agility:
+          <input type="number" name="agility" value={formData.agility} onChange={handleChange} />
+        </label>
+        {errors.agility && <p>{errors.agility}</p>}
+      </div>
+      <div>
+        <label>
+          Body:
+          <input type="number" name="body" value={formData.body} onChange={handleChange} />
+        </label>
+        {errors.body && <p>{errors.body}</p>}
+      </div>
+      <div>
+        <label>
+          Mind:
+          <input type="number" name="mind" value={formData.mind} onChange={handleChange} />
+        </label>
+        {errors.mind && <p>{errors.mind}</p>}
+      </div>
+      {formError && <p>{formError}</p>}
+      <button type="submit">Submit</button>
+    </form>
+  );
 }

@@ -25,8 +25,8 @@ export const action: ActionFunction = async ({ request }) => {
     password: validatePassword(password),
     ...(action === 'register'
       ? {
-          username: validateName((username as string) || ''),
-        }
+        username: validateName((username as string) || ''),
+      }
       : {}),
   }
 
@@ -35,14 +35,14 @@ export const action: ActionFunction = async ({ request }) => {
 
   switch (action) {
     case 'login': {
-        return await login({ email, password })
+      return await login({ email, password })
     }
     case 'register': {
-        username = username as string
-        return await register({ email, password, username })
+      username = username as string
+      return await register({ email, password, username })
     }
     default:
-        return json({ error: `Invalid Form Data` }, { status: 400 });
+      return json({ error: `Invalid Form Data` }, { status: 400 });
   }
 }
 
@@ -50,21 +50,21 @@ export const action: ActionFunction = async ({ request }) => {
 
 export default function Login() {
   const [action, setAction] = useState('login')
-  
-  const actionData = useActionData<any>()
+
+  const actionData = useActionData<ActionFunction>()
 
   const firstLoad = useRef(true)
 
   const [errors, setErrors] = useState(actionData?.errors || {})
-  
+
   const [formError, setFormError] = useState(actionData?.error || '')
-    
+
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>, field: string) => {
     setFormData(form => ({ ...form, [field]: event.target.value }))
   }
-  
 
-const [formData, setFormData] = useState({
+
+  const [formData, setFormData] = useState({
     email: actionData?.fields?.email || '',
     password: actionData?.fields?.password || '',
     username: actionData?.fields?.username || '',
@@ -108,11 +108,9 @@ const [formData, setFormData] = useState({
   return (
 
     <div>
-      <div className="h-full justify-center items-center flex flex-col gap-y-4">
+      <div>
         <button
-          onClick={() => setAction(action == 'login' ? 'register' : 'login')}
-          className="absolute top-8 right-8 rounded-xl bg-yellow-300 font-semibold text-blue-600 px-3 py-2 transition duration-300 ease-in-out hover:bg-yellow-400 hover:-translate-y-1"
-        >
+          onClick={() => setAction(action == 'login' ? 'register' : 'login')}>
           {action === 'login' ? 'Sign Up' : 'Sign In'}
         </button>
         {/* ... */}
@@ -137,7 +135,7 @@ const [formData, setFormData] = useState({
           value={formData.password}
           onChange={e => handleInputChange(e, 'password')}
           error={errors?.password}
-          />
+        />
         </div>
 
         {action === 'register' && (
@@ -149,7 +147,7 @@ const [formData, setFormData] = useState({
                 onChange={e => handleInputChange(e, 'username')}
                 value={formData.username}
                 error={errors?.username}
-                />
+              />
             </div>
 
 

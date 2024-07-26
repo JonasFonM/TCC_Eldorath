@@ -1,4 +1,4 @@
-import { NavLink } from "@remix-run/react";
+import { NavLink, Outlet } from "@remix-run/react";
 import { LoaderFunction } from '@remix-run/node'
 import { requireUserId } from '~/utils/auth.server'
 
@@ -12,6 +12,7 @@ export default function CharactersIndexRoute() {
             <div className="block">
                 <h2>New</h2>
                 <p></p>
+                <Outlet />
                 <NavLink to={`new`}><button className="button"></button></NavLink>
 
             </div>

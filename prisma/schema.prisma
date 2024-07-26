@@ -9,7 +9,6 @@ datasource db {
 
 model character {
   id        Int      @id @default(autoincrement())
-  title     String   @db.VarChar(255)
   createdAt DateTime @default(now()) @db.Timestamp(0)
   name   String  @db.Text
   level Int
@@ -17,8 +16,6 @@ model character {
   agility Int
   body Int
   mind Int
-  initiative Int
-  perception Int
   public Boolean  @default(false)
   authorId  Int
   user      user     @relation(fields: [authorId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "character_ibfk_1")

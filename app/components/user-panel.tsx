@@ -10,7 +10,7 @@ export function UserPanel({ users }: { users: user[] }) {
         </div>
         <div className="flex-1 overflow-y-scroll py-4 flex flex-col gap-y-10">
         {users.map(user => (
-       <UserCircle key={user.id} user={user} className="h-24 w-24 mx-auto flex-shrink-0" />
+       <UserCircle key={user.id} user={user}/>
     ))}        </div>
         <div className="text-center p-6 bg-gray-300">
           <button

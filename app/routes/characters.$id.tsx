@@ -20,11 +20,19 @@ export default function CharacterRoute() {
   return (
     <div>
       <h2> {character.name}</h2>
+      
+      <div className="container">
+        <div className="block">Level:{character.level}</div>
+        <div className="block">Tier:{character.tier}</div>
+      </div>
+
       <div className="container">
         <div className="block">Agility:{character.agility}</div>
         <div className="block">Body:{character.body}</div>
         <div className="block">Mind:{character.mind}</div>
       </div>
+   
+
     </div>
   );
 }

@@ -1,17 +1,18 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { user } from '@prisma/client'
+import { skill } from '@prisma/client'
 
 interface props {
-user: user
+skill: skill
+
 }
 
-export function UserCircle({ user }: props) {
+export function SkillCircle({ skill}: props) {
   return (
     <div>
       <h2>
-        {user.username.charAt(0).toUpperCase()}
+        {skill.name}
       </h2>
     </div>
   )

@@ -6,11 +6,11 @@ export function CharacterPanel({ characters }: { characters: character[] }) {
     return (
         <div>
             <div>
-                <h2>Character List</h2>
+                <h1>Character List</h1>
             </div>
             <div>
                 {characters.map(character => (
-                    <CharacterCircle key={character.id} character={character} className="block" />
+                    <CharacterCircle key={character.id} character={character} />
                 ))}
             </div>
         </div>

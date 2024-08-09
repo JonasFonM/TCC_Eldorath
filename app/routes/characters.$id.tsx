@@ -2,21 +2,33 @@
 import { json, LoaderFunction, } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import { prisma } from "~/utils/prisma.server";
-import { character } from '@prisma/client'
+import { character, skill } from '@prisma/client'
+import { SkillCircle } from "~/components/skill-circle";
 
 export const loader: LoaderFunction = async ({ params }) => {
-  const characterId = params.id;
+  const characterId = Number(params.id);
   const character = await prisma.character.findUnique({
-    where: {
-      id: Number(characterId),
-    },
+      where: { id: characterId },
+      include: { skills: true },
   });
 
-  return json(character);
+  if (!character) {
+      return json({ skills: [] });
+  }
+
+  const skills = await prisma.skill.findMany({
+      where: {
+          id: { in: character.skills.map(skill => skill.skillId) },
+      },
+  });
+
+  return json({ skills, character });
 };
 
 export default function CharacterRoute() {
   const character = useLoaderData<character>()
+  const { skills } = useLoaderData<{ skills: skill[] }>();
+
   return (
     <div>
       <h2> {character.name}</h2>
@@ -30,9 +42,13 @@ export default function CharacterRoute() {
         <div className="block">Agility:{character.agility}</div>
         <div className="block">Body:{character.body}</div>
         <div className="block">Mind:{character.mind}</div>
+        
       </div>
-   
-
+      <div className="block">
+            {skills.map(skill => (
+                <SkillCircle key={skill.id} skill={skill} />
+            ))}
+        </div>     
     </div>
   );
 }

@@ -5,15 +5,17 @@ import { skill } from '@prisma/client'
 
 interface props {
 skill: skill
-
 }
 
-export function SkillCircle({ skill}: props) {
+export function SkillCircle({skill}: props) {
   return (
     <div>
-      <h2>
+      <h3>
         {skill.name}
-      </h2>
+      </h3>
+      <p>
+        {skill.description}
+      </p>
     </div>
   )
 }

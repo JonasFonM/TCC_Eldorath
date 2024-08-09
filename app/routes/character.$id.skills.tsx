@@ -1,5 +1,6 @@
 import { character_skill, character, skill } from "@prisma/client";
 import { json, LoaderFunction } from "@remix-run/node";
+import { useLoaderData } from "@remix-run/react";
 import { SkillCircle } from "~/components/skill-circle";
 import { prisma } from "~/utils/prisma.server";
 
@@ -15,49 +16,30 @@ export const loader: LoaderFunction = async ({ params }) => {
     return json(character);
 };
 
-export async function CharacterSkills({ skills, skill }: { skill: skill, skills: skill[] }) {
-    const char_skills = await prisma.character_skill.findMany({
+export async function CharacterSkills() {
+    const character = useLoaderData<character>()
+    
+    const char_skill = await prisma.character.findUnique({
+        relationLoadStrategy: 'join',
         where:{
-            skillId: skill.id
+            id: character.id
+        },
+        include: {
+          skills: true,
+        },            
+      })
+    
+    const searchId = char_skill?.skills.map(skill => skill.skillId)
+    
+    const skills = await prisma.skill.findMany({
+        where:{
+            id: Number(searchId)
         }
     })
-    
-    return (
-        <div>
-            <div>
-                <h2>Skills</h2>
-            </div>
-            <div>
-                {skills.map(skill => (
-                    <SkillCircle key={skill.id} skill={skill} />
-                ))}
-            </div>
-        </div>
-    )
 
+    return json(skills)
 }
 
-
-/*
- const char_skills = await prisma.character_skill.findMany({
-        where: {
-            skillId: skill.id,
-            characterId: character.id
-        },
-        select: {
-            skillId: true,
-        },
-    })
-
-    const skills = await prisma.skill.findMany({
-        where: {
-            id: Number(char_skills)
-        },
-        select: {
-            name: true
-        },
-
-    })
-
-    return json(skills);
-*/
+export function ListCharacterSkills({ skills }: { skills: skill[] }) {
+    
+}

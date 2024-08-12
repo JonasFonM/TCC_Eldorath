@@ -9,10 +9,10 @@ user: user
 
 export function UserCircle({ user }: props) {
   return (
-    <div>
-      <h2>
+    <div className='user'>
+      <p>
         {user.username.charAt(0).toUpperCase()}
-      </h2>
+      </p>
     </div>
   )
 }

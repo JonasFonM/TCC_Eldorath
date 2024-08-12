@@ -9,6 +9,7 @@ import {
 import { useState, useEffect, useRef } from 'react';
 import type { MetaFunction } from "@remix-run/node";
 import "~/styles.css";
+import { DiceRoll } from "./components/dice-roll";
 
 
 export const meta: MetaFunction = () => {
@@ -19,10 +20,6 @@ export const meta: MetaFunction = () => {
 };
 
 
-export function DiceRoll(die: number) {
-  const value = Math.floor(Math.random() * die) + 1;
-  return (value);
-}
 
 export function Layout({ children }: { children: React.ReactNode }) {
   const [logs, setLogs] = useState<string[]>([]);
@@ -59,6 +56,16 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <ScrollRestoration />
         <Scripts />
 
+        <div className="log" id="log">
+          <h2>Log</h2>
+          <ul>
+            {logs.map((log, index) => (
+              <li key={index}>{log}</li>
+            ))}
+          </ul>
+          <div ref={logEndRef} />
+        </div>
+
         <div className="dice-box">
           <button id="d4" className="dice" type="button" onClick={() => rollDice(4)}>D4</button>
           <button id="d6" className="dice" type="button" onClick={() => rollDice(6)}>D6</button>
@@ -76,16 +83,8 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 
-/*
-<div className="log" id="log">
-          <h2>Log</h2>
-          <ul>
-            {logs.map((log, index) => (
-              <li key={index}>{log}</li>
-            ))}
-          </ul>
-          <div ref={logEndRef} />
-        </div>
+/* The Wastelands
+
         */ 
 
 

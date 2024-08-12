@@ -81,6 +81,35 @@
     cursor: pointer;
   }
 
+  .user_panel{
+    position: fixed;
+    text-align: left;
+    overflow: auto;
+    bottom: 2%;
+    background-color: #333;
+    border: 1px solid #333;
+    border-radius: 5px;
+    height: 15%;
+    width: 50%;
+    left: 25%;
+  }
+
+  .user{
+    background-color: #1f1f1f;
+    height: fit-content;
+    border: 1px solid #333;
+    border-radius: 5px;
+    margin: 10px;
+    padding: 20px;
+    display: flex;
+    float: left;
+    box-sizing: border-box;
+    flex: 1 1 calc(33.333% - 20px); /* Three columns layout */
+    align-items: center;
+    flex-direction: row;
+
+  }
+
   .log {
     position: fixed;
     width: 17%;
@@ -92,7 +121,7 @@
     border: 1px solid #333;
     border-radius: 5px;
     bottom: 5%;
-    left: 2%;
+    left: 3%;
     display: block;
   }
 

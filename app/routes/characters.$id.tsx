@@ -26,11 +26,11 @@ export const loader: LoaderFunction = async ({ params }) => {
 };
 
 export default function CharacterRoute() {
-  const character = useLoaderData<character>()
+  const { character } = useLoaderData<{character: character}>()
   const { skills } = useLoaderData<{ skills: skill[] }>();
 
   return (
-    <div>
+    <main>
       <h2> {character.name}</h2>
       
       <div className="container">
@@ -49,6 +49,6 @@ export default function CharacterRoute() {
                 <SkillCircle key={skill.id} skill={skill} />
             ))}
         </div>     
-    </div>
+    </main>
   );
 }

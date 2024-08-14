@@ -22,15 +22,52 @@ model character {
   user      user     @relation(fields: [authorId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "character_ibfk_1")
 
   skills character_skill[] @relation
+  lineages character_lineage[] @relation
+
+  stats charStats? @relation
 
   @@index([authorId], map: "authorId")
+}
+
+model charStats {
+  id Int @id @default(autoincrement())
+  createdAt DateTime @default(now()) @db.Timestamp(0)
+  vitality Int
+  vigor Int
+  power Int
+  speed Int
+  defense Int
+  iniciative Int
+  size Int
+  baseWeight Int
+  carryCap Int
+  liftCap Int
+  characterId Int     @unique(map: "characterId")
+  character character @relation(fields: [characterId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "c_ibfk_1")
+}
+
+model lineage {
+  id     Int     @id @default(autoincrement())
+  name    String? @db.Text
+  pure Boolean @default(false)
+  description String @db.Text
+  characters   character_lineage[] @relation
+  skills lineage_skill[] @relation
+}
+
+model character_lineage{
+  characterId Int     @unique(map: "characterId")
+  character character @relation(fields: [characterId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "cl_ibfk_1")
+  lineageId Int @unique(map: "lineageId")
+  lineage lineage @relation(fields: [lineageId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "cl_ibfk_2")
 }
 
 model skill {
   id     Int     @id @default(autoincrement())
   name    String? @db.Text
   description    String? @db.Text
-  characters   character_skill[] @relation()
+  characters   character_skill[] @relation
+  lineages lineage_skill[] @relation
 }
 
 model character_skill {
@@ -39,6 +76,15 @@ model character_skill {
   character character @relation(fields: [characterId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "cs_ibfk_1")
   skillId Int @unique(map: "skillId")
   skill skill @relation(fields: [skillId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "cs_ibfk_2")
+}
+
+model lineage_skill {
+  id Int @id @default(autoincrement())
+  lineageId Int     @unique(map: "lineageId")
+  lineage lineage @relation(fields: [lineageId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "ls_ibfk_1")
+  skillId Int @unique(map: "skillId")
+  skill skill @relation(fields: [skillId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "ls_ibfk_2")
+
 }
 
 model user {

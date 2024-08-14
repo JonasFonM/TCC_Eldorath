@@ -18,3 +18,14 @@ export type RegisterForm = {
     mind: number
     authorId: number
   }
+
+  /* vitality: number
+    vigor: number
+    power: number
+    speed: number
+    defense: number
+    iniciative: number
+    size: number
+    baseWeight: number
+    carryCap: number
+    liftCap: number*/

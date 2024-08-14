@@ -3,30 +3,11 @@ import { ActionFunction, json, LoaderFunction } from "@remix-run/node"
 import { useActionData } from "@remix-run/react"
 import { useEffect, useRef, useState } from "react"
 import { getUserIdFromSession, requireUserId } from '~/utils/auth.server'
-import { submitCharacter } from "~/utils/character.server"
+import { submitCharacter, tierByLevel } from "~/utils/character.server"
 
 export const loader: LoaderFunction = async ({ request }) => {
   const userId = await requireUserId(request)
   return (userId)
-}
-
-export function tierByLevel(level: any) {
-  if (level < 5) {
-    return '1';
-  } else {
-    if (level < 11) {
-      return '2';
-    } else {
-      if (level < 17) {
-        return '3';
-      } else{
-        if (level >= 17) {
-          return '4';
-        }
-      }
-    }
-  }
-  
 }
 
 export const action: ActionFunction = async ({ request }) => {
@@ -163,36 +144,3 @@ export default function NewCharacterRoute() {
     </form>
   );
 }
-/* Tier
-NewCharacterRoute()
-<div>
-        <label>
-          Tier:
-          <input type="number" name="tier" value={formData.tier} onChange={handleChange} />
-        </label>
-        {errors.tier && <p>{errors.tier}</p>}
-      </div>
-      
-  const [formData, setFormData] = useState({
-    tier: '',
-
-
-  const [errors, setErrors] = useState({
-
-    tier: '',
-
-  const [formError, setFormError] = useState('');
-      useEffect
-        tier: '',
-
-
-
-
-
-  const handleSubmit = async (event: React.FormEvent) => {
-  if (  || !formData.tier  ) 
-        tier: !formData.tier ? 'Tier is required' : '',
-
-
-
-      */

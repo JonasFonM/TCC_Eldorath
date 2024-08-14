@@ -8,15 +8,20 @@ import { useLoaderData } from '@remix-run/react'
 
 export const loader: LoaderFunction = async ({ request }) => {
   const userId = await requireUserId(request)
-    const users = await getOtherUsers(userId)
-    return json({ users })
+  const users = await getOtherUsers(userId)
+  return json({ users })
 }
 
 export default function Home() {
   const { users } = useLoaderData<any>()
   return (
-    <div className="h-full flex">
-        <UserPanel users ={users}/>
-      </div>
+    <>
+      <h1>Welcome</h1>
+      <main>
+        <div className="container">
+          <UserPanel users={users} />
+        </div>
+      </main>
+    </>
   )
 }

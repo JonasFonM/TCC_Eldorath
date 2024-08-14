@@ -26,6 +26,7 @@ export async function submitCharacter(character: CharacterForm) {
 
   const newcharacter = await createCharacter(character)
   if (!newcharacter) {
+    
     return json(
       {
         error: `Something went wrong trying to create a new character.`,

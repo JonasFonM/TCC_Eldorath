@@ -123,7 +123,12 @@
     bottom: 5%;
     left: 3%;
     display: block;
+    transition: background-color 0.3s ease;
   }
+
+  .log:hover {
+    background-color: #4d4c4c;
+}
 
   .log ul{
     list-style-type: none;

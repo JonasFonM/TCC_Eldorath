@@ -6,10 +6,10 @@ import {
   Scripts,
   ScrollRestoration,
 } from "@remix-run/react";
-import { useState, useEffect, useRef } from 'react';
+//import { useState, useEffect, useRef } from 'react';
 import type { MetaFunction } from "@remix-run/node";
 import "~/styles.css";
-import { DiceRoll } from "./components/dice-roll";
+//import { DiceRoll } from "./components/dice-roll";
 
 
 export const meta: MetaFunction = () => {
@@ -22,7 +22,7 @@ export const meta: MetaFunction = () => {
 
 
 export function Layout({ children }: { children: React.ReactNode }) {
-  const [logs, setLogs] = useState<string[]>([]);
+  /*const [logs, setLogs] = useState<string[]>([]);
   const logEndRef = useRef<HTMLDivElement | null>(null);
 
   const rollDice = (die: number) => {
@@ -36,7 +36,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
     }
   }, [logs]);
 
-
+  */
   return (
     <html lang="en">
       <head>
@@ -56,7 +56,17 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <ScrollRestoration />
         <Scripts />
 
-        <div className="log" id="log">
+        
+      </body>
+
+
+    </html>
+  );
+}
+
+
+/* The Wastelands
+<div className="log" id="log">
           <h2>Log</h2>
           <ul>
             {logs.map((log, index) => (
@@ -75,16 +85,6 @@ export function Layout({ children }: { children: React.ReactNode }) {
           <button id="d20" className="dice" type="button" onClick={() => rollDice(20)}>D20</button>
           <button id="d100" className="dice" type="button" onClick={() => rollDice(100)}>D100</button>
         </div>
-      </body>
-
-
-    </html>
-  );
-}
-
-
-/* The Wastelands
-
         */ 
 
 

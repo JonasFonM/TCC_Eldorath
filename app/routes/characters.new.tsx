@@ -6,16 +6,34 @@ import { getUserIdFromSession, requireUserId } from '~/utils/auth.server'
 import { submitCharacter } from "~/utils/character.server"
 
 export const loader: LoaderFunction = async ({ request }) => {
-  await requireUserId(request)
-  const userId = await getUserIdFromSession(request)
+  const userId = await requireUserId(request)
   return (userId)
+}
+
+export function tierByLevel(level: any) {
+  if (level < 5) {
+    return '1';
+  } else {
+    if (level < 11) {
+      return '2';
+    } else {
+      if (level < 17) {
+        return '3';
+      } else{
+        if (level >= 17) {
+          return '4';
+        }
+      }
+    }
+  }
+  
 }
 
 export const action: ActionFunction = async ({ request }) => {
   const form = await request.formData();
   const name = form.get('name') as string;
   const level = parseInt(form.get('level') as string, 10);
-  const tier = parseInt(form.get('tier') as string, 10);
+  const tier = parseInt(tierByLevel(form.get('level')) as string, 10);
   const agility = parseInt(form.get('agility') as string, 10);
   const body = parseInt(form.get('body') as string, 10);
   const mind = parseInt(form.get('mind') as string, 10);
@@ -45,7 +63,6 @@ export default function NewCharacterRoute() {
   const [formData, setFormData] = useState({
     name: '',
     level: '',
-    tier: '',
     agility: '',
     body: '',
     mind: ''
@@ -53,7 +70,6 @@ export default function NewCharacterRoute() {
   const [errors, setErrors] = useState({
     name: '',
     level: '',
-    tier: '',
     agility: '',
     body: '',
     mind: ''
@@ -65,7 +81,6 @@ export default function NewCharacterRoute() {
       setErrors(actionData.errors || {
         name: '',
         level: '',
-        tier: '',
         agility: '',
         body: '',
         mind: ''
@@ -90,12 +105,11 @@ export default function NewCharacterRoute() {
   };
 
   const handleSubmit = async (event: React.FormEvent) => {
-    if (!formData.name || !formData.level || !formData.tier || !formData.agility || !formData.body || !formData.mind) {
+    if (!formData.name || !formData.level  || !formData.agility || !formData.body || !formData.mind) {
       event.preventDefault();
       setErrors({
         name: !formData.name ? 'Name is required' : '',
         level: !formData.level ? 'Level is required' : '',
-        tier: !formData.tier ? 'Tier is required' : '',
         agility: !formData.agility ? 'Agility is required' : '',
         body: !formData.body ? 'Body is required' : '',
         mind: !formData.mind ? 'Mind is required' : '',
@@ -122,13 +136,7 @@ export default function NewCharacterRoute() {
         </label>
         {errors.level && <p>{errors.level}</p>}
       </div>
-      <div>
-        <label>
-          Tier:
-          <input type="number" name="tier" value={formData.tier} onChange={handleChange} />
-        </label>
-        {errors.tier && <p>{errors.tier}</p>}
-      </div>
+      
       <div>
         <label>
           Agility:
@@ -155,3 +163,36 @@ export default function NewCharacterRoute() {
     </form>
   );
 }
+/* Tier
+NewCharacterRoute()
+<div>
+        <label>
+          Tier:
+          <input type="number" name="tier" value={formData.tier} onChange={handleChange} />
+        </label>
+        {errors.tier && <p>{errors.tier}</p>}
+      </div>
+      
+  const [formData, setFormData] = useState({
+    tier: '',
+
+
+  const [errors, setErrors] = useState({
+
+    tier: '',
+
+  const [formError, setFormError] = useState('');
+      useEffect
+        tier: '',
+
+
+
+
+
+  const handleSubmit = async (event: React.FormEvent) => {
+  if (  || !formData.tier  ) 
+        tier: !formData.tier ? 'Tier is required' : '',
+
+
+
+      */

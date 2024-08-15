@@ -74,14 +74,8 @@ function getUserSession(request: Request) {
   return storage.getSession(request.headers.get('Cookie'))
 }
 
-export async function getUserIdFromSession(request: Request): Promise<number | null> {
-  const session = await storage.getSession(request.headers.get('Cookie'))
-  const userId = session.get('userId')
-  if (!userId || typeof userId !== 'number') return null
-  return userId
-}
 
-async function getUserId(request: Request) {
+export async function getUserId(request: Request) {
   try {
     const session = await getUserSession(request);
     const userId = session.get('userId');

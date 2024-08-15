@@ -1,13 +1,17 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { skill } from "@prisma/client"
 import { ActionFunction, json, LoaderFunction } from "@remix-run/node"
-import { useActionData } from "@remix-run/react"
+import { useActionData, useLoaderData } from "@remix-run/react"
 import { useEffect, useRef, useState } from "react"
-import { getUserIdFromSession, requireUserId } from '~/utils/auth.server'
+import { SkillCircle } from "~/components/skill-circle"
+import { getUserId, requireUserId } from '~/utils/auth.server'
 import { submitCharacter, tierByLevel } from "~/utils/character.server"
+import { prisma } from "~/utils/prisma.server"
 
 export const loader: LoaderFunction = async ({ request }) => {
   const userId = await requireUserId(request)
-  return (userId)
+  const skills = await prisma.skill.findMany()
+  return ({userId, skills})
 }
 
 export const action: ActionFunction = async ({ request }) => {
@@ -18,7 +22,7 @@ export const action: ActionFunction = async ({ request }) => {
   const agility = parseInt(form.get('agility') as string, 10);
   const body = parseInt(form.get('body') as string, 10);
   const mind = parseInt(form.get('mind') as string, 10);
-  const authorId = await getUserIdFromSession(request);
+  const authorId = await getUserId(request);
   
   if (!authorId) {
     return json({ error: "Unauthorized" }, { status: 401 });
@@ -41,6 +45,7 @@ export const action: ActionFunction = async ({ request }) => {
 
 export default function NewCharacterRoute() {
   const actionData = useActionData<ActionFunction>();
+  const skills = useLoaderData<skill[]>();
   const firstLoad = useRef(true);
   const [formData, setFormData] = useState({
     name: '',
@@ -140,6 +145,11 @@ export default function NewCharacterRoute() {
         </label>
         {errors.mind && <p>{errors.mind}</p>}
       </div>
+      <div className="block">
+            {skills.map(skill => (
+                <SkillCircle key={skill.id} skill={skill} />
+            ))}
+      </div>     
       {formError && <p>{formError}</p>}
       <button type="submit">Submit</button>
     </form>

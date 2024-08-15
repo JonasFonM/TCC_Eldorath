@@ -2,7 +2,7 @@
 import type { CharacterForm } from './types.server'
 import { prisma } from './prisma.server'
 import { json } from '@remix-run/node'
-import { character } from '@prisma/client'
+import { character, skill } from '@prisma/client'
 
 export const createCharacter = async (character: CharacterForm) => {
 
@@ -27,7 +27,6 @@ export async function submitCharacter(character: CharacterForm) {
   }
 
   const newcharacter = await createCharacter(character)
-  const newcharacterstat = await createCharacterStats(newcharacter)
   if (!newcharacter) {
     
     return json(
@@ -68,32 +67,34 @@ export function tierByLevel(level: any) {
     }
   }
 }
-export const createCharacterStats = async (character: any) => {
+export const createStats = async (char: { skills: skill[], character: character }) => {
+  const { body, tier, level, mind, agility, id } = char.character;
+
+  const vitality = body + tier + 1;
+  const vigor = body + level + mind;
+  const power = mind;
+  const speed = agility;
+  const defense = agility;
+  const initiative = agility;
+  const baseWeight = (5 * body) + 10;
+  const carryCap = 5 + 10 + (5 * body);
+  const liftCap = 10 + 10 + (10 * body);
 
   const newcharacterstat = await prisma.charStats.create({
     data: {
-      vitality: (character.body + character.tier + 1),
-      vigor: (character.body + character.level + character.mind),
-      power: character.mind,
-      speed: character.agility,
-      defense: character.agility,
-      iniciative: character.agility,
+      vitality,
+      vigor,
+      power,
+      speed,
+      defense,
+      initiative,
       size: 1,
-      baseWeight: (5 * character.body) + 10,
-      carryCap: 5 + 10 + (5 * character.body),
-      liftCap: 10 + 10 + (10 * character.body),
-      characterId: character.id
-      },
-  })
-  return { id: newcharacterstat.id, vitality: (character.body + character.tier + 1),
-    vigor: (character.body + character.level + character.mind),
-    power: character.mind,
-    speed: character.agility,
-    defense: character.agility,
-    iniciative: character.agility,
-    size: 1,
-    baseWeight: (5 * character.body) + 10,
-    carryCap: 5 + 10 + (5 * character.body),
-    liftCap: 10 + 10 + (10 * character.body),
-    characterId: character.id }
-}
+      baseWeight,
+      carryCap,
+      liftCap,
+      characterId: id,
+    },
+  });
+
+  return newcharacterstat;
+};

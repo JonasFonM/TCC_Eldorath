@@ -30,6 +30,7 @@ export const action: ActionFunction = async ({ request }) => {
 
   try {
     const character = await submitCharacter({ name, level, tier, agility, body, mind, authorId });
+
     return json({ character }, { status: 201 });
   } catch (error) {
     console.error(error);

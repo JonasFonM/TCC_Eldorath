@@ -37,7 +37,7 @@ model charStats {
   power Int
   speed Int
   defense Int
-  iniciative Int
+  initiative Int
   size Int
   baseWeight Int
   carryCap Int

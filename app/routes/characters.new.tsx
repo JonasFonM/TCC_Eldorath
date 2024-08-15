@@ -46,6 +46,7 @@ export const action: ActionFunction = async ({ request }) => {
 export default function NewCharacterRoute() {
   const actionData = useActionData<ActionFunction>();
   const { skills } = useLoaderData<{skills: skill[]}>();
+  const [selectedSkills, setSelectedSkills] = useState<number[]>([]);
   const firstLoad = useRef(true);
   const [formData, setFormData] = useState({
     name: '',
@@ -89,6 +90,16 @@ export default function NewCharacterRoute() {
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSkillClick = (skillId: number) => {
+    setSelectedSkills(prevSkills => {
+      if (prevSkills.includes(skillId)) {
+        return prevSkills.filter(id => id !== skillId);
+      } else {
+        return [...prevSkills, skillId];
+      }
+    });
   };
 
   const handleSubmit = async (event: React.FormEvent) => {
@@ -145,11 +156,11 @@ export default function NewCharacterRoute() {
         </label>
         {errors.mind && <p>{errors.mind}</p>}
       </div>
-      <div className="block">
+      <button type="button" className="block">
             {skills.map(skill => (
                 <SkillCircle key={skill.id} skill={skill} />
             ))}
-      </div>     
+      </button>     
       {formError && <p>{formError}</p>}
       <button type="submit">Submit</button>
     </form>

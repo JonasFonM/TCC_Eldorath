@@ -98,3 +98,18 @@ export const createStats = async (char: { skills: skill[], character: character 
 
   return newcharacterstat;
 };
+
+export const createCharSkills = async (skillList: number[], characterId: any) => {
+  const createPromises = skillList.map(skillId =>
+    prisma.character_skill.create({
+      data: { skillId, characterId }
+    })
+  );
+  const newcharacterskills = await Promise.all(createPromises);
+  return newcharacterskills;
+};
+
+export function addSkill(skillList: number[], skillId: number) {
+  skillList.push(skillId)
+  return(skillList)
+}

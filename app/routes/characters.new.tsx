@@ -11,7 +11,7 @@ import { prisma } from "~/utils/prisma.server"
 export const loader: LoaderFunction = async ({ request }) => {
   const userId = await requireUserId(request)
   const skills = await prisma.skill.findMany()
-  return ({userId, skills})
+  return json({userId, skills})
 }
 
 export const action: ActionFunction = async ({ request }) => {
@@ -45,7 +45,7 @@ export const action: ActionFunction = async ({ request }) => {
 
 export default function NewCharacterRoute() {
   const actionData = useActionData<ActionFunction>();
-  const skills = useLoaderData<skill[]>();
+  const { skills } = useLoaderData<{skills: skill[]}>();
   const firstLoad = useRef(true);
   const [formData, setFormData] = useState({
     name: '',

@@ -4,7 +4,7 @@ import { ActionFunction, json, LoaderFunction } from "@remix-run/node"
 import { useActionData, useLoaderData } from "@remix-run/react"
 import { useEffect, useRef, useState } from "react"
 import { SkillCircle } from "~/components/skill-circle"
-import { getUserId, requireUserId } from '~/utils/auth.server'
+import { getUserIdFromSession, requireUserId } from '~/utils/auth.server'
 import { submitCharacter, tierByLevel } from "~/utils/character.server"
 import { prisma } from "~/utils/prisma.server"
 
@@ -22,7 +22,7 @@ export const action: ActionFunction = async ({ request }) => {
   const agility = parseInt(form.get('agility') as string, 10);
   const body = parseInt(form.get('body') as string, 10);
   const mind = parseInt(form.get('mind') as string, 10);
-  const authorId = await getUserId(request);
+  const authorId = await getUserIdFromSession(request);
   
   if (!authorId) {
     return json({ error: "Unauthorized" }, { status: 401 });

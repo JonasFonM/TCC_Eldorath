@@ -18,9 +18,7 @@ export const loader: LoaderFunction = async ({ params }) => {
   if (!character) {
       return json({ skills: [] });
   }
-
   
-
   const skills = await prisma.skill.findMany({
       where: {
           id: { in: character.skills.map(skill => skill.skillId) },
@@ -42,7 +40,6 @@ export default function CharacterRoute() {
   const { character } = useLoaderData<{character: character}>()
   const { skills } = useLoaderData<{ skills: skill[] }>();
   const { stats } = useLoaderData<{stats: charStats}>()
-
 
   return (
     <main>
@@ -72,9 +69,12 @@ export default function CharacterRoute() {
       </div>
       <div className="block">
             {skills.map(skill => (
-                <SkillCircle key={skill.id} skill={skill} />
+                <SkillCircle key={skill.id} skill={skill} isSelected={true}
+                onClick={()=> null} />
             ))}
-        </div>     
+        </div> 
+          
     </main>
   );
+  
 }

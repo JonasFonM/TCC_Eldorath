@@ -20,7 +20,7 @@ export default function CharactersIndexRoute() {
             <div className="block">
                 <h2>New</h2>
                 <p></p>
-                <NavLink to={`new`}><button className="button"></button></NavLink>
+                <NavLink to={`new/basic`}><button className="button"></button></NavLink>
 
             </div>
             <div className="block">

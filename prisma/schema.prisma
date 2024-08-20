@@ -71,11 +71,14 @@ model skill {
 }
 
 model character_skill {
-  id Int @id @default(autoincrement())
-  characterId Int     @unique(map: "characterId")
-  character character @relation(fields: [characterId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "cs_ibfk_1")
-  skillId Int @unique(map: "skillId")
-  skill skill @relation(fields: [skillId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "cs_ibfk_2")
+  id          Int  @id @default(autoincrement())
+  characterId Int
+  skillId     Int
+
+  character   character @relation(fields: [characterId], references: [id])
+  skill       skill     @relation(fields: [skillId], references: [id])
+
+  @@unique([characterId, skillId])
 }
 
 model lineage_skill {

@@ -5,7 +5,6 @@ import { json } from '@remix-run/node'
 import { character, skill } from '@prisma/client'
 
 export const createCharacter = async (character: CharacterForm) => {
-
   const newcharacter = await prisma.character.create({
     data: {
       name: character.name,
@@ -21,11 +20,6 @@ export const createCharacter = async (character: CharacterForm) => {
 }
 
 export async function submitCharacter(character: CharacterForm) {
-  const exists = await prisma.character.count({ where: { name: character.name } })
-  if (exists) {
-    return json({ error: `Character already exists with that name` }, { status: 400 })
-  }
-
   const newcharacter = await createCharacter(character)
   if (!newcharacter) {
     
@@ -37,7 +31,7 @@ export async function submitCharacter(character: CharacterForm) {
       { status: 400 },
     )
   }
-
+  return (String(newcharacter.id))
 }
 
 export const getCharactersFromUser = async (userId: number) => {
@@ -99,17 +93,27 @@ export const createStats = async (char: { skills: skill[], character: character 
   return newcharacterstat;
 };
 
-export const createCharSkills = async (skillList: number[], characterId: any) => {
-  const createPromises = skillList.map(skillId =>
-    prisma.character_skill.create({
-      data: { skillId, characterId }
-    })
-  );
-  const newcharacterskills = await Promise.all(createPromises);
-  return newcharacterskills;
-};
+export const submitCharSkills = async (skillList: number[], characterId: number) => {
+  const existingSkills = await prisma.character_skill.findMany({
+    where: {
+      skillId: { in: skillList },
+      characterId: characterId,
+    },
+  });
 
-export function addSkill(skillList: number[], skillId: number) {
-  skillList.push(skillId)
-  return(skillList)
-}
+  const existingSkillIds = existingSkills.map(cs => cs.skillId);
+  
+  const newSkills = skillList.filter(skillId => !existingSkillIds.includes(skillId));
+
+  if (newSkills.length > 0) {
+    await prisma.character_skill.createMany({
+      data: newSkills.map(skillId => ({
+        skillId: skillId,
+        characterId: characterId,
+      })),
+      skipDuplicates: true, 
+    });
+  }
+
+  return;
+};

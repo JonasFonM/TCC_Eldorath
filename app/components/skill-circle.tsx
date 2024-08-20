@@ -11,7 +11,7 @@ interface Props {
 
 export function SkillCircle({ skill, isSelected, onClick }: Props) {
   return (
-    <div onClick={onClick} style={{ border: isSelected ? '2px solid green' : '1px solid gray', padding: '10px', borderRadius: '50%' }}>
+    <div onClick={onClick} style={{ border: isSelected ? '2px solid green' : '1px solid gray', padding: '5%', borderRadius: '2%' }}>
       <h3>{skill.name}</h3>
       <p>{skill.description}</p>
     </div>

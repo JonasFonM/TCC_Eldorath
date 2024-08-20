@@ -67,13 +67,12 @@ export default function CharacterRoute() {
         <div className="block">Lifting Capacity:{stats.liftCap}</div>
 
       </div>
-      <div className="block">
-            {skills.map(skill => (
-                <SkillCircle key={skill.id} skill={skill} isSelected={true}
+      <div className="col-6">
+            {skills.map(skill => (        
+                <SkillCircle key={skill.id} skill={skill} isSelected={false}
                 onClick={()=> null} />
-            ))}
-        </div> 
-          
+                ))}
+      </div>
     </main>
   );
   

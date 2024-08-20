@@ -7,7 +7,7 @@ import { submitCharacter, tierByLevel } from "~/utils/character.server"
 
 export const loader: LoaderFunction = async ({ request }) => {
   const userId = await requireUserId(request)
-  return json({userId})
+  return json({ userId })
 }
 
 export const action: ActionFunction = async ({ request }) => {
@@ -20,7 +20,7 @@ export const action: ActionFunction = async ({ request }) => {
   const mind = parseInt(form.get('mind') as string, 10);
   const authorId = await getUserIdFromSession(request);
 
-  
+
   if (!authorId) {
     return json({ error: "Unauthorized" }, { status: 401 });
   }
@@ -45,14 +45,15 @@ export const action: ActionFunction = async ({ request }) => {
 
 export default function NewCharacterRoute() {
   const actionData = useActionData<ActionFunction>();
-  
+  const [limit, setLimit] = useState(5);
+
   const firstLoad = useRef(true);
   const [formData, setFormData] = useState({
     name: '',
-    level: '',
-    agility: '',
-    body: '',
-    mind: ''
+    level: 1,
+    agility: 0,
+    body: 0,
+    mind: 0
   });
   const [errors, setErrors] = useState({
     name: '',
@@ -91,10 +92,26 @@ export default function NewCharacterRoute() {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  
+  const adjustAttribute = (attribute: 'agility' | 'body' | 'mind', adjustment: number) => {
+    setFormData((prev) => {
+      const newValue = prev[attribute] + adjustment;
+      if (newValue >= 0 && limit - adjustment >= 0) {
+        setLimit(limit - adjustment);
+        return { ...prev, [attribute]: newValue };
+      }
+      return prev;
+    });
+  };
 
   const handleSubmit = async (event: React.FormEvent) => {
-    if (!formData.name || !formData.level  || !formData.agility || !formData.body || !formData.mind) {
+    
+    if (limit > 0) {
+      event.preventDefault();
+      setFormError(`Please allocate all available points. ${limit} points left.`);
+      return;
+    }
+    
+    if (!formData.name || !formData.level || !formData.agility || !formData.body || !formData.mind) {
       event.preventDefault();
       setErrors({
         name: !formData.name ? 'Name is required' : '',
@@ -111,46 +128,52 @@ export default function NewCharacterRoute() {
 
   return (<>
     <form method="post" onSubmit={handleSubmit}>
-      <div>
+      <div className="block">
         <label>
           Name:
           <input type="text" name="name" value={formData.name} onChange={handleChange} />
         </label>
         {errors.name && <p>{errors.name}</p>}
       </div>
-      <div>
+      <div className="block">
         <label>
           Level:
           <input type="number" name="level" value={formData.level} onChange={handleChange} />
         </label>
         {errors.level && <p>{errors.level}</p>}
       </div>
-      
-      <div>
+
+      <div className="block">
         <label>
-          Agility:
-          <input type="number" name="agility" value={formData.agility} onChange={handleChange} />
+          Agility: {formData.agility}
+          <input hidden type="number" name="agility" value={formData.agility} onChange={handleChange} />
+          <button className="col-6" type="button" onClick={() => adjustAttribute('agility', -1)}>-</button>
+          <button className="col-6" type="button" onClick={() => adjustAttribute('agility', 1)}>+</button>
         </label>
         {errors.agility && <p>{errors.agility}</p>}
       </div>
-      <div>
+      <div className="block">
         <label>
-          Body:
-          <input type="number" name="body" value={formData.body} onChange={handleChange} />
+          Body: {formData.body}
+          <input hidden type="number" name="body" value={formData.body} onChange={handleChange} />
+          <button className="col-6" type="button" onClick={() => adjustAttribute('body', -1)}>-</button>
+          <button className="col-6" type="button" onClick={() => adjustAttribute('body', 1)}>+</button>
         </label>
         {errors.body && <p>{errors.body}</p>}
       </div>
-      <div>
+      <div className="block">
         <label>
-          Mind:
-          <input type="number" name="mind" value={formData.mind} onChange={handleChange} />
+          Mind: {formData.mind}
+          <input hidden type="number" name="mind" value={formData.mind} onChange={handleChange} />
+          <button className="col-6" type="button" onClick={() => adjustAttribute('mind', -1)}>-</button>
+          <button className="col-6" type="button" onClick={() => adjustAttribute('mind', 1)}>+</button>
         </label>
         {errors.mind && <p>{errors.mind}</p>}
       </div>
-         
+      <p>Points remaining: {limit}</p>
       {formError && <p>{formError}</p>}
       <button type="submit">Submit</button>
     </form>
-    </>
+  </>
   );
 }

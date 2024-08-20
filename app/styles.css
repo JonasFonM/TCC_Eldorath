@@ -104,7 +104,7 @@
     display: flex;
     float: left;
     box-sizing: border-box;
-    flex: 1 1 calc(33.333% - 20px); /* Three columns layout */
+    flex: 1 1 calc(33.333% - 20px); 
     align-items: center;
     flex-direction: row;
 
@@ -223,7 +223,6 @@
     background-color: #575757;
 }
 
-/* Interactive Elements */
 .button {
     background-color: #333;
     border: none;
@@ -261,15 +260,14 @@
 .col-11 {width: 91.66%;}
 .col-12 {width: 100%;}
 
-/* Responsive Styles */
 @media screen and (max-width: 900px) {
     .block {
-        flex: 1 1 calc(50% - 20px); /* Two columns layout */
+        flex: 1 1 calc(50% - 20px); 
     }
 }
 
 @media screen and (max-width: 600px) {
     .block {
-        flex: 1 1 100%; /* One column layout */
+        flex: 1 1 100%; 
     }
 }  

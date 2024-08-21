@@ -2,21 +2,22 @@
 import { json, LoaderFunction, } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import { prisma } from "~/utils/prisma.server";
-import { character, charStats, skill } from '@prisma/client'
+import { character, charStats, lineage, skill } from '@prisma/client'
 import { SkillCircle } from "~/components/skill-circle";
 import { createStats } from "~/utils/character.server";
+import { LineageCircle } from "~/components/lineage-circle";
 
 export const loader: LoaderFunction = async ({ params }) => {
   const characterId = Number(params.id);
  
   const character = await prisma.character.findUnique({
       where: { id: characterId },
-      include: { skills: true },
+      include: { skills: true, lineages: true },
     });
 
 
   if (!character) {
-      return json({ skills: [] });
+      return json({ skills: [], lineages: [] });
   }
   
   const skills = await prisma.skill.findMany({
@@ -24,6 +25,12 @@ export const loader: LoaderFunction = async ({ params }) => {
           id: { in: character.skills.map(skill => skill.skillId) },
       },
   });
+  
+  const lineages = await prisma.skill.findMany({
+    where: {
+        id: { in: character.lineages.map(lineage => lineage.lineageId) },
+    },
+});
   
   let stats = await prisma.charStats.findUnique({
     where: {characterId: characterId}
@@ -33,12 +40,13 @@ export const loader: LoaderFunction = async ({ params }) => {
     stats = await createStats({skills, character})
   }
 
-  return json({ skills, character, characterId, stats });
+  return json({ skills, character, characterId, stats, lineages });
 };
 
 export default function CharacterRoute() {
   const { character } = useLoaderData<{character: character}>()
   const { skills } = useLoaderData<{ skills: skill[] }>();
+  const { lineages } = useLoaderData<{ lineages: lineage[] }>();
   const { stats } = useLoaderData<{stats: charStats}>()
 
   return (
@@ -70,6 +78,12 @@ export default function CharacterRoute() {
       <div className="col-6">
             {skills.map(skill => (        
                 <SkillCircle key={skill.id} skill={skill} isSelected={false}
+                onClick={()=> null} />
+                ))}
+      </div>
+      <div className="col-6">
+            {lineages.map(lineage => (        
+                <LineageCircle key={lineage.id} lineage={lineage} isSelected={false}
                 onClick={()=> null} />
                 ))}
       </div>

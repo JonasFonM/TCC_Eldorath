@@ -9,40 +9,39 @@ import { prisma } from "~/utils/prisma.server";
 
 
 export const loader: LoaderFunction = async ({ request }) => {
-    const userId = await requireUserId(request)
-    const skills = await prisma.skill.findMany()
-    return json({ userId, skills });
+  const userId = await requireUserId(request)
+  const skills = await prisma.skill.findMany()
+  return json({ userId, skills });
 }
 
 export const action: ActionFunction = async ({ request, params }) => {
-    const form = await request.formData();
-    const selectedSkills = form.getAll('skills') as string[];
-    const selectedSkillIds = selectedSkills.map(id => parseInt(id))
-    const characterId = params.id
+  const form = await request.formData();
+  const selectedSkills = form.getAll('skills') as string[];
+  const selectedSkillIds = selectedSkills.map(id => parseInt(id))
+  const characterId = params.id
 
-    await submitCharSkills(selectedSkillIds, Number(characterId))
+  await submitCharSkills(selectedSkillIds, Number(characterId))
 
-    return redirect(`/characters/${characterId}/`); 
+  return redirect(`/characters/new/${characterId}/`)
 }
 
-
 export default function SkillSelectionRoute() {
-    const { skills } = useLoaderData<{ skills: skill[] }>();
-    const [selectedSkills, setSelectedSkills] = useState<number[]>([]);
+  const { skills } = useLoaderData<{ skills: skill[] }>();
+  const [selectedSkills, setSelectedSkills] = useState<number[]>([]);
 
-    const handleSkillClick = (skillId: number) => {
-        setSelectedSkills(prevSkills => {
-            if (prevSkills.includes(skillId)) {
-                return prevSkills.filter(id => id !== skillId);
-            } else {
-                return [...prevSkills, skillId];
-            }
-        });
-    };
+  const handleSkillClick = (skillId: number) => {
+    setSelectedSkills(prevSkills => {
+      if (prevSkills.includes(skillId)) {
+        return prevSkills.filter(id => id !== skillId);
+      } else {
+        return [...prevSkills, skillId];
+      }
+    });
+  };
 
 
-    return (
-        <form method="post">
+  return (
+    <form method="post">
       <div className="skills-grid">
         {skills.map(skill => (
           <SkillCircle

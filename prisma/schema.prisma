@@ -1,6 +1,7 @@
 generator client {
   provider = "prisma-client-js"
   previewFeatures = ["relationJoins"]
+  output   = "./prisma/client"
 }
 
 datasource db {
@@ -49,17 +50,21 @@ model charStats {
 model lineage {
   id     Int     @id @default(autoincrement())
   name    String? @db.Text
-  pure Boolean @default(false)
   description String @db.Text
   characters   character_lineage[] @relation
   skills lineage_skill[] @relation
 }
 
 model character_lineage{
-  characterId Int     @unique(map: "characterId")
+  id     Int     @id @default(autoincrement())
+  characterId Int
+  lineageId Int 
+  pure Boolean @default(false)
+
   character character @relation(fields: [characterId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "cl_ibfk_1")
-  lineageId Int @unique(map: "lineageId")
   lineage lineage @relation(fields: [lineageId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "cl_ibfk_2")
+  
+  @@unique([characterId, lineageId])
 }
 
 model skill {
@@ -83,10 +88,13 @@ model character_skill {
 
 model lineage_skill {
   id Int @id @default(autoincrement())
-  lineageId Int     @unique(map: "lineageId")
+  lineageId Int 
+  skillId Int     
+  
   lineage lineage @relation(fields: [lineageId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "ls_ibfk_1")
-  skillId Int @unique(map: "skillId")
   skill skill @relation(fields: [skillId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "ls_ibfk_2")
+  
+  @@unique([lineageId, skillId])
 
 }
 
@@ -99,3 +107,5 @@ model user {
   password  String
   characters character[] @relation()
 }
+
+

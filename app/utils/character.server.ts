@@ -4,6 +4,7 @@ import { prisma } from './prisma.server'
 import { json } from '@remix-run/node'
 import { character, skill } from '@prisma/client'
 
+//BASIC
 export const createCharacter = async (character: CharacterForm) => {
   const newcharacter = await prisma.character.create({
     data: {
@@ -44,23 +45,7 @@ export const getCharactersFromUser = async (userId: number) => {
   })
 }
 
-export function tierByLevel(level: any) {
-  if (level < 5) {
-    return '1';
-  } else {
-    if (level < 11) {
-      return '2';
-    } else {
-      if (level < 17) {
-        return '3';
-      } else{
-        if (level >= 17) {
-          return '4';
-        }
-      }
-    }
-  }
-}
+//STATS
 export const createStats = async (char: { skills: skill[], character: character }) => {
   const { body, tier, level, mind, agility, id } = char.character;
 
@@ -93,6 +78,25 @@ export const createStats = async (char: { skills: skill[], character: character 
   return newcharacterstat;
 };
 
+export function tierByLevel(level: any) {
+  if (level < 5) {
+    return '1';
+  } else {
+    if (level < 11) {
+      return '2';
+    } else {
+      if (level < 17) {
+        return '3';
+      } else{
+        if (level >= 17) {
+          return '4';
+        }
+      }
+    }
+  }
+}
+
+//SKILLS
 export const submitCharSkills = async (skillList: number[], characterId: number) => {
   const existingSkills = await prisma.character_skill.findMany({
     where: {
@@ -110,6 +114,33 @@ export const submitCharSkills = async (skillList: number[], characterId: number)
       data: newSkills.map(skillId => ({
         skillId: skillId,
         characterId: characterId,
+      })),
+      skipDuplicates: true, 
+    });
+  }
+
+  return;
+};
+
+//LINEAGES
+export const submitCharLineages = async (lineageList: number[], characterId: number, pure: boolean) => {
+  const existingLineages = await prisma.character_lineage.findMany({
+    where: {
+      lineageId: { in: lineageList },
+      characterId: characterId,
+    },
+  });
+
+  const existingSkillIds = existingLineages.map(cs => cs.lineageId);
+  
+  const newLineages = lineageList.filter(lineageId => !existingSkillIds.includes(lineageId));
+
+  if (newLineages.length > 0) {
+    await prisma.character_lineage.createMany({
+      data: newLineages.map(lineageId => ({
+        lineageId: lineageId,
+        characterId: characterId,
+        pure: pure
       })),
       skipDuplicates: true, 
     });

@@ -13,7 +13,7 @@ export default function NewCharacterRoute() {
     const { characterId } = useLoaderData<{characterId: string}>()
     return (
         <div>
-            <h1>Create your Origin</h1>
+            <h2>Create your Origin</h2>
             <main>
                 <div className="topnav">
                     <NavLink to={`/characters/new/${characterId}/skills`}>Skills</NavLink>

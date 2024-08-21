@@ -26,7 +26,7 @@ export const loader: LoaderFunction = async ({ params }) => {
       },
   });
   
-  const lineages = await prisma.skill.findMany({
+  const lineages = await prisma.lineage.findMany({
     where: {
         id: { in: character.lineages.map(lineage => lineage.lineageId) },
     },

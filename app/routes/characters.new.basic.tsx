@@ -135,13 +135,11 @@ export default function NewCharacterRoute() {
         </label>
         {errors.name && <p>{errors.name}</p>}
       </div>
-      <div className="block">
-        <label>
+        <label hidden>
           Level:
-          <input type="number" name="level" value={formData.level} onChange={handleChange} />
+          <input hidden type="number" name="level" value={formData.level} onChange={handleChange} />
         </label>
         {errors.level && <p>{errors.level}</p>}
-      </div>
 
       <div className="block">
         <label>

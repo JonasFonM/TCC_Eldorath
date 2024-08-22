@@ -37,54 +37,47 @@ export default function LineageSelection() {
     const { lineages } = useLoaderData<{ lineages: lineage[] }>();
     const [selectedLineages, setSelectedLineages] = useState<number[]>([]);
     const [error, setError] = useState<string | null>(null);
+    const [isPure, setPure] = useState<boolean>(true);
+
 
     const handleLineageClick = (lineageId: number) => {
-        if (selectedLineages.includes(lineageId)) {
-            setSelectedLineages(selectedLineages.filter(id => id !== lineageId));
-        } else {
+        setSelectedLineages((prevSelectedLineages) => {
+            const newSelectedLineages = prevSelectedLineages.includes(lineageId)
+                ? prevSelectedLineages.filter(id => id !== lineageId)
+                : [...prevSelectedLineages, lineageId];
+
+            setPure(newSelectedLineages.length === 1); 
             if (selectedLineages.length >= 2) {
                 setError("You can select up to 2 lineages only.");
             } else {
                 setSelectedLineages([...selectedLineages, lineageId]);
                 setError(null);
             }
-        }
-    };
-   /* const handleSubmit = async (event: React.FormEvent) => {
-        if (selectedLineages.length === 0) {
-            event.preventDefault();
-            setError("You must select at least one lineage.");
-            return;
-        }
-
-        const isPure = selectedLineages.length === 1;
-
-        const form = new FormData();
-        selectedLineages.forEach(lineageId => {
-            form.append('lineages', lineageId.toString());
+            return newSelectedLineages;
         });
-        form.append('pure', isPure.toString());
-        return;
-
     };
-*/
+
+
     return (
-            <form method="post">
-                <div className="lineages-grid">
-                    {lineages.map(lineage => (
-                        <LineageCircle
-                            key={lineage.id}
-                            lineage={lineage}
-                            isSelected={selectedLineages.includes(lineage.id)}
-                            onClick={() => handleLineageClick(lineage.id)}
-                        />
-                    ))}
-                </div>
-                {selectedLineages.map(lineageId => (
-                    <input type="hidden" key={lineageId} name="lineages" value={lineageId} />
+        <form method="post">
+            <div className="lineages-grid">
+                {lineages.map(lineage => (
+                    <LineageCircle
+                        key={lineage.id}
+                        lineage={lineage}
+                        isSelected={selectedLineages.includes(lineage.id)}
+                        onClick={() => handleLineageClick(lineage.id)}
+                    />
                 ))}
-              {error && <p>{error}</p>}
-                <button type="submit" className="submit-button">Submit Lineages</button>
-            </form>
+            </div>
+            {selectedLineages.map(lineageId => (
+                <input type="hidden" key={lineageId} name="lineages" value={lineageId} />
+            ))}
+
+            <input type="hidden" key='pure' name="pure" value={isPure ? 'true' : 'false'} />
+            
+            {error && <p>{error}</p>}
+            <button type="submit" className="submit-button">Submit Lineages</button>
+        </form>
     );
 }

@@ -1613,6 +1613,7 @@ export namespace Prisma {
   export type CharacterAvgAggregateOutputType = {
     id: number | null
     level: number | null
+    experience: number | null
     tier: number | null
     agility: number | null
     body: number | null
@@ -1623,6 +1624,7 @@ export namespace Prisma {
   export type CharacterSumAggregateOutputType = {
     id: number | null
     level: number | null
+    experience: number | null
     tier: number | null
     agility: number | null
     body: number | null
@@ -1635,6 +1637,7 @@ export namespace Prisma {
     createdAt: Date | null
     name: string | null
     level: number | null
+    experience: number | null
     tier: number | null
     agility: number | null
     body: number | null
@@ -1648,6 +1651,7 @@ export namespace Prisma {
     createdAt: Date | null
     name: string | null
     level: number | null
+    experience: number | null
     tier: number | null
     agility: number | null
     body: number | null
@@ -1661,6 +1665,7 @@ export namespace Prisma {
     createdAt: number
     name: number
     level: number
+    experience: number
     tier: number
     agility: number
     body: number
@@ -1674,6 +1679,7 @@ export namespace Prisma {
   export type CharacterAvgAggregateInputType = {
     id?: true
     level?: true
+    experience?: true
     tier?: true
     agility?: true
     body?: true
@@ -1684,6 +1690,7 @@ export namespace Prisma {
   export type CharacterSumAggregateInputType = {
     id?: true
     level?: true
+    experience?: true
     tier?: true
     agility?: true
     body?: true
@@ -1696,6 +1703,7 @@ export namespace Prisma {
     createdAt?: true
     name?: true
     level?: true
+    experience?: true
     tier?: true
     agility?: true
     body?: true
@@ -1709,6 +1717,7 @@ export namespace Prisma {
     createdAt?: true
     name?: true
     level?: true
+    experience?: true
     tier?: true
     agility?: true
     body?: true
@@ -1722,6 +1731,7 @@ export namespace Prisma {
     createdAt?: true
     name?: true
     level?: true
+    experience?: true
     tier?: true
     agility?: true
     body?: true
@@ -1822,6 +1832,7 @@ export namespace Prisma {
     createdAt: Date
     name: string
     level: number
+    experience: number
     tier: number
     agility: number
     body: number
@@ -1854,6 +1865,7 @@ export namespace Prisma {
     createdAt?: boolean
     name?: boolean
     level?: boolean
+    experience?: boolean
     tier?: boolean
     agility?: boolean
     body?: boolean
@@ -1873,6 +1885,7 @@ export namespace Prisma {
     createdAt?: boolean
     name?: boolean
     level?: boolean
+    experience?: boolean
     tier?: boolean
     agility?: boolean
     body?: boolean
@@ -1902,6 +1915,7 @@ export namespace Prisma {
       createdAt: Date
       name: string
       level: number
+      experience: number
       tier: number
       agility: number
       body: number
@@ -2285,6 +2299,7 @@ export namespace Prisma {
     readonly createdAt: FieldRef<"character", 'DateTime'>
     readonly name: FieldRef<"character", 'String'>
     readonly level: FieldRef<"character", 'Int'>
+    readonly experience: FieldRef<"character", 'Int'>
     readonly tier: FieldRef<"character", 'Int'>
     readonly agility: FieldRef<"character", 'Int'>
     readonly body: FieldRef<"character", 'Int'>
@@ -9346,6 +9361,7 @@ export namespace Prisma {
     createdAt: 'createdAt',
     name: 'name',
     level: 'level',
+    experience: 'experience',
     tier: 'tier',
     agility: 'agility',
     body: 'body',
@@ -9510,6 +9526,7 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"character"> | Date | string
     name?: StringFilter<"character"> | string
     level?: IntFilter<"character"> | number
+    experience?: IntFilter<"character"> | number
     tier?: IntFilter<"character"> | number
     agility?: IntFilter<"character"> | number
     body?: IntFilter<"character"> | number
@@ -9527,6 +9544,7 @@ export namespace Prisma {
     createdAt?: SortOrder
     name?: SortOrder
     level?: SortOrder
+    experience?: SortOrder
     tier?: SortOrder
     agility?: SortOrder
     body?: SortOrder
@@ -9547,6 +9565,7 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"character"> | Date | string
     name?: StringFilter<"character"> | string
     level?: IntFilter<"character"> | number
+    experience?: IntFilter<"character"> | number
     tier?: IntFilter<"character"> | number
     agility?: IntFilter<"character"> | number
     body?: IntFilter<"character"> | number
@@ -9564,6 +9583,7 @@ export namespace Prisma {
     createdAt?: SortOrder
     name?: SortOrder
     level?: SortOrder
+    experience?: SortOrder
     tier?: SortOrder
     agility?: SortOrder
     body?: SortOrder
@@ -9585,6 +9605,7 @@ export namespace Prisma {
     createdAt?: DateTimeWithAggregatesFilter<"character"> | Date | string
     name?: StringWithAggregatesFilter<"character"> | string
     level?: IntWithAggregatesFilter<"character"> | number
+    experience?: IntWithAggregatesFilter<"character"> | number
     tier?: IntWithAggregatesFilter<"character"> | number
     agility?: IntWithAggregatesFilter<"character"> | number
     body?: IntWithAggregatesFilter<"character"> | number
@@ -10019,6 +10040,7 @@ export namespace Prisma {
     createdAt?: Date | string
     name: string
     level: number
+    experience?: number
     tier: number
     agility: number
     body: number
@@ -10035,6 +10057,7 @@ export namespace Prisma {
     createdAt?: Date | string
     name: string
     level: number
+    experience?: number
     tier: number
     agility: number
     body: number
@@ -10050,6 +10073,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     name?: StringFieldUpdateOperationsInput | string
     level?: IntFieldUpdateOperationsInput | number
+    experience?: IntFieldUpdateOperationsInput | number
     tier?: IntFieldUpdateOperationsInput | number
     agility?: IntFieldUpdateOperationsInput | number
     body?: IntFieldUpdateOperationsInput | number
@@ -10066,6 +10090,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     name?: StringFieldUpdateOperationsInput | string
     level?: IntFieldUpdateOperationsInput | number
+    experience?: IntFieldUpdateOperationsInput | number
     tier?: IntFieldUpdateOperationsInput | number
     agility?: IntFieldUpdateOperationsInput | number
     body?: IntFieldUpdateOperationsInput | number
@@ -10082,6 +10107,7 @@ export namespace Prisma {
     createdAt?: Date | string
     name: string
     level: number
+    experience?: number
     tier: number
     agility: number
     body: number
@@ -10094,6 +10120,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     name?: StringFieldUpdateOperationsInput | string
     level?: IntFieldUpdateOperationsInput | number
+    experience?: IntFieldUpdateOperationsInput | number
     tier?: IntFieldUpdateOperationsInput | number
     agility?: IntFieldUpdateOperationsInput | number
     body?: IntFieldUpdateOperationsInput | number
@@ -10106,6 +10133,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     name?: StringFieldUpdateOperationsInput | string
     level?: IntFieldUpdateOperationsInput | number
+    experience?: IntFieldUpdateOperationsInput | number
     tier?: IntFieldUpdateOperationsInput | number
     agility?: IntFieldUpdateOperationsInput | number
     body?: IntFieldUpdateOperationsInput | number
@@ -10582,6 +10610,7 @@ export namespace Prisma {
     createdAt?: SortOrder
     name?: SortOrder
     level?: SortOrder
+    experience?: SortOrder
     tier?: SortOrder
     agility?: SortOrder
     body?: SortOrder
@@ -10593,6 +10622,7 @@ export namespace Prisma {
   export type characterAvgOrderByAggregateInput = {
     id?: SortOrder
     level?: SortOrder
+    experience?: SortOrder
     tier?: SortOrder
     agility?: SortOrder
     body?: SortOrder
@@ -10605,6 +10635,7 @@ export namespace Prisma {
     createdAt?: SortOrder
     name?: SortOrder
     level?: SortOrder
+    experience?: SortOrder
     tier?: SortOrder
     agility?: SortOrder
     body?: SortOrder
@@ -10618,6 +10649,7 @@ export namespace Prisma {
     createdAt?: SortOrder
     name?: SortOrder
     level?: SortOrder
+    experience?: SortOrder
     tier?: SortOrder
     agility?: SortOrder
     body?: SortOrder
@@ -10629,6 +10661,7 @@ export namespace Prisma {
   export type characterSumOrderByAggregateInput = {
     id?: SortOrder
     level?: SortOrder
+    experience?: SortOrder
     tier?: SortOrder
     agility?: SortOrder
     body?: SortOrder
@@ -11868,6 +11901,7 @@ export namespace Prisma {
     createdAt?: Date | string
     name: string
     level: number
+    experience?: number
     tier: number
     agility: number
     body: number
@@ -11883,6 +11917,7 @@ export namespace Prisma {
     createdAt?: Date | string
     name: string
     level: number
+    experience?: number
     tier: number
     agility: number
     body: number
@@ -11913,6 +11948,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     name?: StringFieldUpdateOperationsInput | string
     level?: IntFieldUpdateOperationsInput | number
+    experience?: IntFieldUpdateOperationsInput | number
     tier?: IntFieldUpdateOperationsInput | number
     agility?: IntFieldUpdateOperationsInput | number
     body?: IntFieldUpdateOperationsInput | number
@@ -11928,6 +11964,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     name?: StringFieldUpdateOperationsInput | string
     level?: IntFieldUpdateOperationsInput | number
+    experience?: IntFieldUpdateOperationsInput | number
     tier?: IntFieldUpdateOperationsInput | number
     agility?: IntFieldUpdateOperationsInput | number
     body?: IntFieldUpdateOperationsInput | number
@@ -12026,6 +12063,7 @@ export namespace Prisma {
     createdAt?: Date | string
     name: string
     level: number
+    experience?: number
     tier: number
     agility: number
     body: number
@@ -12041,6 +12079,7 @@ export namespace Prisma {
     createdAt?: Date | string
     name: string
     level: number
+    experience?: number
     tier: number
     agility: number
     body: number
@@ -12089,6 +12128,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     name?: StringFieldUpdateOperationsInput | string
     level?: IntFieldUpdateOperationsInput | number
+    experience?: IntFieldUpdateOperationsInput | number
     tier?: IntFieldUpdateOperationsInput | number
     agility?: IntFieldUpdateOperationsInput | number
     body?: IntFieldUpdateOperationsInput | number
@@ -12104,6 +12144,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     name?: StringFieldUpdateOperationsInput | string
     level?: IntFieldUpdateOperationsInput | number
+    experience?: IntFieldUpdateOperationsInput | number
     tier?: IntFieldUpdateOperationsInput | number
     agility?: IntFieldUpdateOperationsInput | number
     body?: IntFieldUpdateOperationsInput | number
@@ -12214,6 +12255,7 @@ export namespace Prisma {
     createdAt?: Date | string
     name: string
     level: number
+    experience?: number
     tier: number
     agility: number
     body: number
@@ -12229,6 +12271,7 @@ export namespace Prisma {
     createdAt?: Date | string
     name: string
     level: number
+    experience?: number
     tier: number
     agility: number
     body: number
@@ -12277,6 +12320,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     name?: StringFieldUpdateOperationsInput | string
     level?: IntFieldUpdateOperationsInput | number
+    experience?: IntFieldUpdateOperationsInput | number
     tier?: IntFieldUpdateOperationsInput | number
     agility?: IntFieldUpdateOperationsInput | number
     body?: IntFieldUpdateOperationsInput | number
@@ -12292,6 +12336,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     name?: StringFieldUpdateOperationsInput | string
     level?: IntFieldUpdateOperationsInput | number
+    experience?: IntFieldUpdateOperationsInput | number
     tier?: IntFieldUpdateOperationsInput | number
     agility?: IntFieldUpdateOperationsInput | number
     body?: IntFieldUpdateOperationsInput | number
@@ -12414,6 +12459,7 @@ export namespace Prisma {
     createdAt?: Date | string
     name: string
     level: number
+    experience?: number
     tier: number
     agility: number
     body: number
@@ -12429,6 +12475,7 @@ export namespace Prisma {
     createdAt?: Date | string
     name: string
     level: number
+    experience?: number
     tier: number
     agility: number
     body: number
@@ -12473,6 +12520,7 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"character"> | Date | string
     name?: StringFilter<"character"> | string
     level?: IntFilter<"character"> | number
+    experience?: IntFilter<"character"> | number
     tier?: IntFilter<"character"> | number
     agility?: IntFilter<"character"> | number
     body?: IntFilter<"character"> | number
@@ -12616,6 +12664,7 @@ export namespace Prisma {
     createdAt?: Date | string
     name: string
     level: number
+    experience?: number
     tier: number
     agility: number
     body: number
@@ -12627,6 +12676,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     name?: StringFieldUpdateOperationsInput | string
     level?: IntFieldUpdateOperationsInput | number
+    experience?: IntFieldUpdateOperationsInput | number
     tier?: IntFieldUpdateOperationsInput | number
     agility?: IntFieldUpdateOperationsInput | number
     body?: IntFieldUpdateOperationsInput | number
@@ -12642,6 +12692,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     name?: StringFieldUpdateOperationsInput | string
     level?: IntFieldUpdateOperationsInput | number
+    experience?: IntFieldUpdateOperationsInput | number
     tier?: IntFieldUpdateOperationsInput | number
     agility?: IntFieldUpdateOperationsInput | number
     body?: IntFieldUpdateOperationsInput | number
@@ -12657,6 +12708,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     name?: StringFieldUpdateOperationsInput | string
     level?: IntFieldUpdateOperationsInput | number
+    experience?: IntFieldUpdateOperationsInput | number
     tier?: IntFieldUpdateOperationsInput | number
     agility?: IntFieldUpdateOperationsInput | number
     body?: IntFieldUpdateOperationsInput | number

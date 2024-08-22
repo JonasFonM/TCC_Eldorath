@@ -124,6 +124,7 @@ exports.Prisma.CharacterScalarFieldEnum = {
   createdAt: 'createdAt',
   name: 'name',
   level: 'level',
+  experience: 'experience',
   tier: 'tier',
   agility: 'agility',
   body: 'body',

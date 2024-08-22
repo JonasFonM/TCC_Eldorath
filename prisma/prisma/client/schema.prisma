@@ -10,17 +10,18 @@ datasource db {
 }
 
 model character {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now()) @db.Timestamp(0)
-  name      String   @db.Text
-  level     Int
-  tier      Int
-  agility   Int
-  body      Int
-  mind      Int
-  public    Boolean  @default(false)
-  authorId  Int
-  user      user     @relation(fields: [authorId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "character_ibfk_1")
+  id         Int      @id @default(autoincrement())
+  createdAt  DateTime @default(now()) @db.Timestamp(0)
+  name       String   @db.Text
+  level      Int
+  experience Int      @default(0)
+  tier       Int
+  agility    Int
+  body       Int
+  mind       Int
+  public     Boolean  @default(false)
+  authorId   Int
+  user       user     @relation(fields: [authorId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "character_ibfk_1")
 
   skills   character_skill[]   @relation
   lineages character_lineage[] @relation

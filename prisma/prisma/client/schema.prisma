@@ -1,0 +1,109 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["relationJoins"]
+  output          = "./prisma/client"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model character {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now()) @db.Timestamp(0)
+  name      String   @db.Text
+  level     Int
+  tier      Int
+  agility   Int
+  body      Int
+  mind      Int
+  public    Boolean  @default(false)
+  authorId  Int
+  user      user     @relation(fields: [authorId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "character_ibfk_1")
+
+  skills   character_skill[]   @relation
+  lineages character_lineage[] @relation
+
+  stats charStats? @relation
+
+  @@index([authorId], map: "authorId")
+}
+
+model charStats {
+  id          Int       @id @default(autoincrement())
+  createdAt   DateTime  @default(now()) @db.Timestamp(0)
+  vitality    Int
+  vigor       Int
+  power       Int
+  speed       Int
+  defense     Int
+  initiative  Int
+  size        Int
+  baseWeight  Int
+  carryCap    Int
+  liftCap     Int
+  characterId Int       @unique(map: "characterId")
+  character   character @relation(fields: [characterId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "c_ibfk_1")
+}
+
+model lineage {
+  id          Int                 @id @default(autoincrement())
+  name        String?             @db.Text
+  description String              @db.Text
+  characters  character_lineage[] @relation
+  skills      lineage_skill[]     @relation
+}
+
+model character_lineage {
+  id          Int     @id @default(autoincrement())
+  characterId Int
+  lineageId   Int
+  pure        Boolean @default(false)
+
+  character character @relation(fields: [characterId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "cl_ibfk_1")
+  lineage   lineage   @relation(fields: [lineageId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "cl_ibfk_2")
+
+  @@unique([characterId, lineageId])
+}
+
+model skill {
+  id          Int               @id @default(autoincrement())
+  name        String?           @db.Text
+  description String?           @db.Text
+  characters  character_skill[] @relation
+  lineages    lineage_skill[]   @relation
+}
+
+model character_skill {
+  id          Int @id @default(autoincrement())
+  characterId Int
+  skillId     Int
+
+  character character @relation(fields: [characterId], references: [id])
+  skill     skill     @relation(fields: [skillId], references: [id])
+
+  @@unique([characterId, skillId])
+}
+
+model lineage_skill {
+  id        Int     @id @default(autoincrement())
+  lineageId Int
+  skillId   Int
+  pureSkill Boolean
+
+  lineage lineage @relation(fields: [lineageId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "ls_ibfk_1")
+  skill   skill   @relation(fields: [skillId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "ls_ibfk_2")
+
+  @@unique([lineageId, skillId])
+}
+
+model user {
+  id         Int         @id @default(autoincrement())
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+  email      String      @unique
+  username   String
+  password   String
+  characters character[] @relation()
+}

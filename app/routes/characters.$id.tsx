@@ -78,7 +78,9 @@ export default function CharacterRoute() {
       <div className="col-6">
             {skills.map(skill => (        
                 <SkillCircle key={skill.id} skill={skill} isSelected={false}
-                onClick={()=> null} />
+                onClick={()=> null} 
+                isPureLineage={false} 
+                />
                 ))}
       </div>
       <div className="col-6">

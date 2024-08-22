@@ -90,7 +90,8 @@ model lineage_skill {
   id Int @id @default(autoincrement())
   lineageId Int 
   skillId Int     
-  
+  pureSkill Boolean
+
   lineage lineage @relation(fields: [lineageId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "ls_ibfk_1")
   skill skill @relation(fields: [skillId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "ls_ibfk_2")
   

@@ -7,12 +7,13 @@ interface Props {
   skill: skill;
   isSelected: boolean;
   onClick: () => void;
+  isPureLineage: boolean
 }
 
-export function SkillCircle({ skill, isSelected, onClick }: Props) {
+export function SkillCircle({ skill, isSelected, onClick, isPureLineage }: Props) {
   return (
-    <div onClick={onClick} style={{ border: isSelected ? '2px solid green' : '1px solid gray', padding: '5%', borderRadius: '2%' }}>
-      <h3>{skill.name}</h3>
+    <div onClick={onClick} style={{ border: isSelected ? '2px solid green' : '1px solid gray', padding: '5%', borderRadius: '2%', backgroundColor: isSelected ? 'rgb(209, 153, 12)' : 'gray' } }>
+      <h3 style={{backgroundColor: isPureLineage ? 'gold' : 'none', color: isPureLineage ? 'black' : 'white'}}>{skill.name}</h3>
       <p>{skill.description}</p>
     </div>
   );

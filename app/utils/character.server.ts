@@ -148,3 +148,32 @@ export const submitCharLineages = async (lineageList: number[], characterId: num
 
   return;
 };
+
+//PATHS
+
+
+export const submitCharPaths = async (pathList: number[], characterId: number, pure: boolean) => {
+  const existingPaths = await prisma.character_path.findMany({
+    where: {
+      pathId: { in: pathList },
+      characterId: characterId,
+    },
+  });
+
+  const existingSkillIds = existingPaths.map(cs => cs.pathId);
+  
+  const newPaths = pathList.filter(pathId => !existingSkillIds.includes(pathId));
+
+  if (newPaths.length > 0) {
+    await prisma.character_path.createMany({
+      data: newPaths.map(pathId => ({
+        pathId: pathId,
+        characterId: characterId,
+        pure: pure
+      })),
+      skipDuplicates: true, 
+    });
+  }
+
+  return;
+};

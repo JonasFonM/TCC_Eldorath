@@ -1,7 +1,6 @@
 generator client {
   provider = "prisma-client-js"
   previewFeatures = ["relationJoins"]
-  output   = "./prisma/client"
 }
 
 datasource db {
@@ -25,6 +24,8 @@ model character {
 
   skills character_skill[] @relation
   lineages character_lineage[] @relation
+  trainings character_training[] @relation
+  paths character_path[] @relation
 
   stats charStats? @relation
 
@@ -68,12 +69,48 @@ model character_lineage{
   @@unique([characterId, lineageId])
 }
 
+model path {
+  id Int @id @default(autoincrement())
+  name String @db.Text
+  description String @db.Text
+  pathTier Int
+  vitality Int
+  power Int
+
+  characters   character_path[] @relation
+  skills path_skill[] @relation
+
+}
+
+model character_path {
+  id Int @id @default(autoincrement())
+  characterId Int 
+  pathId Int
+    
+  character character @relation(fields: [characterId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "pc_ibfk_1")
+  path path @relation(fields: [pathId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "pc_ibfk_2")
+
+  @@unique([characterId, pathId])
+}
+
+model path_skill {
+  id          Int  @id @default(autoincrement())
+  pathId Int
+  skillId     Int
+
+  path   path @relation(fields: [pathId], references: [id])
+  skill skill     @relation(fields: [skillId], references: [id])
+
+  @@unique([pathId, skillId])
+}
+
 model skill {
   id     Int     @id @default(autoincrement())
   name    String? @db.Text
   description    String? @db.Text
   characters   character_skill[] @relation
   lineages lineage_skill[] @relation
+  paths path_skill[] @relation
 }
 
 model character_skill {
@@ -100,6 +137,25 @@ model lineage_skill {
 
 }
 
+model training {
+  id Int @id @default(autoincrement())
+  name String @db.Text
+  description String @db.Text
+  characters character_training[] @relation
+}
+
+model character_training {
+  id Int @id @default(autoincrement())
+  characterId Int
+  trainingId Int
+  trainingTier Int
+
+  character character @relation(fields: [characterId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "ct_ibfk_1")
+  training training @relation(fields: [trainingId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "ct_ibfk_2")
+
+  @@unique([characterId, trainingId])
+}
+
 model user {
   id      Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
@@ -109,5 +165,3 @@ model user {
   password  String
   characters character[] @relation()
 }
-
-

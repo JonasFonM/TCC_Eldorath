@@ -60,17 +60,29 @@ type LSrelations = (lineage_skill & { skill: skill })[];
 export default function SkillSelectionRoute() {
   const { general_skills, nonPureLineageSkills, pureLineageSkills, isPure } = useLoaderData<{ general_skills: skill[], pureLineageSkills: LSrelations, nonPureLineageSkills: LSrelations, isPure: boolean }>();
   const [selectedSkills, setSelectedSkills] = useState<number[]>([]);
-
+  const [error, setError] = useState<string | null>(null);
+  const maxSelectable = 2;
+   
+  const isMaxSelected = selectedSkills.length >= maxSelectable;
 
   const handleSkillClick = (skillId: number) => {
-    setSelectedSkills(prevSkills => {
-      if (prevSkills.includes(skillId)) {
-        return prevSkills.filter(id => id !== skillId);
-      } else {
-        return [...prevSkills, skillId];
-      }
+    setSelectedSkills((prevSkills) => {
+        const isSelected = prevSkills.includes(skillId);
+
+        const newSelectedLineages = isSelected
+            ? prevSkills.filter(id => id !== skillId)
+            : [...prevSkills, skillId];
+
+        if (newSelectedLineages.length > 2) {
+            setError("You can select up to 2 skills only.");
+            return prevSkills; 
+        } else {
+            setError(null);
+        }
+
+        return newSelectedLineages;
     });
-  };
+};
 
   return (
     <form method="post">
@@ -110,7 +122,7 @@ export default function SkillSelectionRoute() {
             key={skill.id}
             skill={skill}
             isSelected={selectedSkills.includes(skill.id)}
-            onClick={() => handleSkillClick(skill.id)}
+            onClick={() => !isMaxSelected || selectedSkills.includes(skill.id) ? handleSkillClick(skill.id) : null}
             isPureLineage={false}
           />
         ))}
@@ -118,6 +130,9 @@ export default function SkillSelectionRoute() {
       {selectedSkills.map(skillId => (
         <input type="hidden" key={skillId} name="skills" value={skillId} />
       ))}
+      
+      {error && <p>{error}</p>}
+
       <button type="submit" className="submit-button">Submit Skills</button>
     </form>
   );

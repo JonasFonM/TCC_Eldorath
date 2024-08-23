@@ -87,6 +87,7 @@ export default function LineageSelection() {
             <input type="hidden" key='pure' name="pure" value={isPure ? 'true' : 'false'} />
             
             {error && <p>{error}</p>}
+            
             <button type="submit" className="submit-button">Submit Lineages</button>
         </form>
     );

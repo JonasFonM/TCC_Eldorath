@@ -19,7 +19,7 @@ export const action: ActionFunction = async ({ request, params }) => {
     const selectedLineageIds = selectedLineages.map(id => parseInt(id))
     const pure = form.get('pure') === 'true';
     const characterId = params.id
-
+ 
     if (!selectedLineages || selectedLineages.length === 0) {
         return json({ error: "You must select at least one lineage." }, { status: 400 });
     }
@@ -38,21 +38,31 @@ export default function LineageSelection() {
     const [selectedLineages, setSelectedLineages] = useState<number[]>([]);
     const [error, setError] = useState<string | null>(null);
     const [isPure, setPure] = useState<boolean>(true);
-
+    const maxSelectable = 2;
+   
+    const isMaxSelected = selectedLineages.length >= maxSelectable;
 
     const handleLineageClick = (lineageId: number) => {
         setSelectedLineages((prevSelectedLineages) => {
-            const newSelectedLineages = prevSelectedLineages.includes(lineageId)
+            // Determine if the lineage is already selected
+            const isSelected = prevSelectedLineages.includes(lineageId);
+    
+            // Filter out the lineage if it's already selected, otherwise add it
+            const newSelectedLineages = isSelected
                 ? prevSelectedLineages.filter(id => id !== lineageId)
                 : [...prevSelectedLineages, lineageId];
-
-            setPure(newSelectedLineages.length === 1); 
-            if (selectedLineages.length >= 2) {
+    
+            // Update the 'pure' state based on the number of selected lineages
+            setPure(newSelectedLineages.length === 1);
+    
+            // Handle error state based on the number of selected lineages
+            if (newSelectedLineages.length > 2) {
                 setError("You can select up to 2 lineages only.");
+                return prevSelectedLineages; // Prevent the addition if limit is exceeded
             } else {
-                setSelectedLineages([...selectedLineages, lineageId]);
                 setError(null);
             }
+    
             return newSelectedLineages;
         });
     };
@@ -66,7 +76,7 @@ export default function LineageSelection() {
                         key={lineage.id}
                         lineage={lineage}
                         isSelected={selectedLineages.includes(lineage.id)}
-                        onClick={() => handleLineageClick(lineage.id)}
+                        onClick={() => !isMaxSelected || selectedLineages.includes(lineage.id) ? handleLineageClick(lineage.id) : null}
                     />
                 ))}
             </div>

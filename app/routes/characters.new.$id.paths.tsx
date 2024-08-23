@@ -7,9 +7,19 @@ import { requireUserId } from "~/utils/auth.server";
 import { submitCharPaths } from "~/utils/character.server";
 import { prisma } from "~/utils/prisma.server";
 
-export const loader: LoaderFunction = async ({ request }) => {
+export const loader: LoaderFunction = async ({ request, params }) => {
     const userId = await requireUserId(request)
-    const paths = await prisma.path.findMany()
+    const characterId = Number(params.id);
+
+    const character = await prisma.character.findUnique({
+      where: { id: characterId },
+    });
+
+    const paths = await prisma.path.findMany({
+        where: { pathTier: character?.tier }}
+    )
+
+
     return json({ userId, paths });
 }
 
@@ -50,7 +60,7 @@ export default function PathSelection() {
                 ? prevPaths.filter(id => id !== pathId)
                 : [...prevPaths, pathId];
     
-            if (newSelectedLineages.length > 2) {
+            if (newSelectedLineages.length > 1) {
                 setError("You can select 1 only path.");
                 return prevPaths; 
             } else {
@@ -69,7 +79,7 @@ export default function PathSelection() {
                         key={path.id}
                         path={path}
                         isSelected={selectedPaths.includes(path.id)}
-                        onClick={() => !isMaxSelected ? handlePathClick(path.id) : null}
+                        onClick={() => !isMaxSelected || selectedPaths.includes(path.id) ? handlePathClick(path.id) : null}
                     />
                 ))}
             </div>
@@ -78,7 +88,7 @@ export default function PathSelection() {
             ))}
 
             {error && <p>{error}</p>}
-            
+
             <button type="submit" className="submit-button">Submit Paths</button>
         </form>
     );

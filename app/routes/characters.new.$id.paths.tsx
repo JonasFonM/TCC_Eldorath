@@ -56,18 +56,18 @@ export default function PathSelection() {
         setSelectedPaths((prevPaths) => {
             const isSelected = prevPaths.includes(pathId);
     
-            const newSelectedLineages = isSelected
+            const newSelectedPaths = isSelected
                 ? prevPaths.filter(id => id !== pathId)
                 : [...prevPaths, pathId];
     
-            if (newSelectedLineages.length > 1) {
+            if (newSelectedPaths.length > 1) {
                 setError("You can select 1 only path.");
                 return prevPaths; 
             } else {
                 setError(null);
             }
     
-            return newSelectedLineages;
+            return newSelectedPaths;
         });
     };
 

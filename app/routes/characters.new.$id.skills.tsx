@@ -68,18 +68,18 @@ export default function SkillSelectionRoute() {
     setSelectedSkills((prevSkills) => {
         const isSelected = prevSkills.includes(skillId);
 
-        const newSelectedLineages = isSelected
+        const newSelectedSkills = isSelected
             ? prevSkills.filter(id => id !== skillId)
             : [...prevSkills, skillId];
 
-        if (newSelectedLineages.length > 2) {
+        if (newSelectedSkills.length > 2) {
             setError("You can select up to 2 skills only.");
             return prevSkills; 
         } else {
             setError(null);
         }
 
-        return newSelectedLineages;
+        return newSelectedSkills;
     });
 };
 

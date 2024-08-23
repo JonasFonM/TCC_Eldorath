@@ -18,6 +18,7 @@ export default function NewCharacterRoute() {
                 <div className="topnav">
                     <NavLink to={`/characters/new/${characterId}/skills`}>Skills</NavLink>
                     <NavLink to={`/characters/new/${characterId}/lineages`}>Lineages</NavLink>
+                    <NavLink to={`/characters/new/${characterId}/paths`}>Paths</NavLink>
                 </div>
                 <Outlet />
             </main>

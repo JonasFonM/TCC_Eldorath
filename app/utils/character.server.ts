@@ -2,7 +2,7 @@
 import type { CharacterForm } from './types.server'
 import { prisma } from './prisma.server'
 import { json } from '@remix-run/node'
-import { character, skill } from '@prisma/client'
+import { character, path, skill } from '@prisma/client'
 
 //BASIC
 export const createCharacter = async (character: CharacterForm) => {
@@ -46,12 +46,16 @@ export const getCharactersFromUser = async (userId: number) => {
 }
 
 //STATS
-export const createStats = async (char: { skills: skill[], character: character }) => {
+export const createStats = async (char: { skills: skill[], character: character, paths: path[] }) => {
   const { body, tier, level, mind, agility, id } = char.character;
+  let pathsVit = 0
+  char.paths.forEach(path => { pathsVit += path.vitality });
+  let pathsPow = 0
+  char.paths.forEach(path => { pathsPow += path.power });
 
-  const vitality = body + tier + 1;
+  const vitality = body + tier + 1 + pathsVit;
   const vigor = body + level + mind;
-  const power = mind;
+  const power = mind + pathsPow;
   const speed = agility;
   const defense = agility;
   const initiative = agility;
@@ -59,8 +63,8 @@ export const createStats = async (char: { skills: skill[], character: character 
   const carryCap = 5 + 10 + (5 * body);
   const liftCap = 10 + 10 + (10 * body);
 
-  const newcharacterstat = await prisma.charStats.create({
-    data: {
+  const newcharacterstat = await prisma.charStats.upsert({
+    create: {
       vitality,
       vigor,
       power,
@@ -73,6 +77,20 @@ export const createStats = async (char: { skills: skill[], character: character 
       liftCap,
       characterId: id,
     },
+    update: {
+      vitality,
+      vigor,
+      power,
+      speed,
+      defense,
+      initiative,
+      size: 1,
+      baseWeight,
+      carryCap,
+      liftCap,    },
+    where: {
+      characterId: char.character.id
+    }
   });
 
   return newcharacterstat;
@@ -152,7 +170,7 @@ export const submitCharLineages = async (lineageList: number[], characterId: num
 //PATHS
 
 
-export const submitCharPaths = async (pathList: number[], characterId: number, pure: boolean) => {
+export const submitCharPaths = async (pathList: number[], characterId: number) => {
   const existingPaths = await prisma.character_path.findMany({
     where: {
       pathId: { in: pathList },
@@ -169,7 +187,6 @@ export const submitCharPaths = async (pathList: number[], characterId: number, p
       data: newPaths.map(pathId => ({
         pathId: pathId,
         characterId: characterId,
-        pure: pure
       })),
       skipDuplicates: true, 
     });

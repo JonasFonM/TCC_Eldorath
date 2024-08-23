@@ -1,3 +1,5 @@
+import { lineage_skill, skill } from "@prisma/client"
+
 export type RegisterForm = {
     email: string
     password: string
@@ -18,6 +20,8 @@ export type RegisterForm = {
     mind: number
     authorId: number
   }
+
+  export type LSrelations = (lineage_skill & { skill: skill })[];
 
   /* vitality: number
     vigor: number

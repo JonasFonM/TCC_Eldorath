@@ -1,4 +1,4 @@
-import { lineage_skill, skill } from "@prisma/client";
+import { skill } from "@prisma/client";
 import { ActionFunction, json, LoaderFunction, redirect } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import { useState } from "react";
@@ -6,6 +6,7 @@ import { SkillCircle } from "~/components/skill-circle";
 import { requireUserId } from "~/utils/auth.server";
 import { submitCharSkills } from "~/utils/character.server";
 import { prisma } from "~/utils/prisma.server";
+import { LSrelations } from "~/utils/types.server";
 
 
 export const loader: LoaderFunction = async ({ request, params }) => {
@@ -54,8 +55,6 @@ export const action: ActionFunction = async ({ request, params }) => {
 
   return redirect(`/characters/new/${characterId}/`)
 }
-
-type LSrelations = (lineage_skill & { skill: skill })[];
 
 export default function SkillSelectionRoute() {
   const { general_skills, nonPureLineageSkills, pureLineageSkills, isPure } = useLoaderData<{ general_skills: skill[], pureLineageSkills: LSrelations, nonPureLineageSkills: LSrelations, isPure: boolean }>();

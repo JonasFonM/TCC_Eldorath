@@ -1,4 +1,4 @@
-import { lineage_skill, path_training, skill, training } from "@prisma/client"
+import { character_training, lineage_skill, path_training, skill, training } from "@prisma/client"
 
 export type RegisterForm = {
     email: string
@@ -25,6 +25,7 @@ export type RegisterForm = {
 
   export type PTrelations = (path_training & { training: training })[];
 
+  export type trainingWithTier = (character_training & { training: training})[];
 
   /* vitality: number
     vigor: number

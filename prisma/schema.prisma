@@ -150,7 +150,6 @@ model path_training{
   id Int @id @default(autoincrement())
   pathId Int 
   trainingId Int     
-  trainingTier Int
 
   path path @relation(fields: [pathId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "pt_ibfk_1")
   training training @relation(fields: [trainingId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "pt_ibfk_2")
@@ -162,7 +161,6 @@ model character_training {
   id Int @id @default(autoincrement())
   characterId Int
   trainingId Int
-  trainingTier Int
 
   character character @relation(fields: [characterId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "ct_ibfk_1")
   training training @relation(fields: [trainingId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "ct_ibfk_2")

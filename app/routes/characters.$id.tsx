@@ -2,18 +2,19 @@
 import { json, LoaderFunction, } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import { prisma } from "~/utils/prisma.server";
-import { character, charStats, lineage, path, skill } from '@prisma/client'
 import { SkillCircle } from "~/components/skill-circle";
 import { createStats } from "~/utils/character.server";
 import { LineageCircle } from "~/components/lineage-circle";
-import { LSrelations } from "~/utils/types.server";
+import { LSrelations, trainingWithTier } from "~/utils/types.server";
+import { TrainingCircle } from "~/components/training-circle";
+import { character, charStats, lineage, path, skill } from "@prisma/client";
 
 export const loader: LoaderFunction = async ({ params }) => {
   const characterId = Number(params.id);
 
   const character = await prisma.character.findUnique({
     where: { id: characterId },
-    include: { skills: true, lineages: true, paths: true },
+    include: { skills: true, lineages: true, paths: true, trainings: true },
   });
 
   const character_lineages = await prisma.character_lineage.findMany({
@@ -68,6 +69,14 @@ export const loader: LoaderFunction = async ({ params }) => {
     }
   });
 
+ 
+  const trainingsWithTier = await prisma.character_training.findMany({
+    where: {
+      id: {in: character.trainings.map(training => training.id)},
+    },
+    include: { training: true }
+  });
+
   let stats = await prisma.charStats.findUnique({
     where: { characterId: characterId }
   });
@@ -76,12 +85,12 @@ export const loader: LoaderFunction = async ({ params }) => {
     stats = await createStats({ skills, character, paths })
   }
 
-  return json({ general_skills, pureLineageSkills, nonPureLineageSkills, character, characterId, stats, lineages, isPure, paths });
+  return json({ general_skills, trainingsWithTier, pureLineageSkills, nonPureLineageSkills, character, characterId, stats, lineages, isPure, paths });
 };
 
 export default function CharacterRoute() {
   const { character } = useLoaderData<{ character: character }>()
-  const { general_skills, pureLineageSkills, nonPureLineageSkills } = useLoaderData<{ general_skills: skill[], pureLineageSkills: LSrelations, nonPureLineageSkills: LSrelations }>();
+  const { general_skills, pureLineageSkills, nonPureLineageSkills, trainingsWithTier } = useLoaderData<{ general_skills: skill[], pureLineageSkills: LSrelations, nonPureLineageSkills: LSrelations, trainingsWithTier: trainingWithTier }>();
   const { lineages, isPure } = useLoaderData<{ lineages: lineage[], isPure: boolean }>();
   const { paths } = useLoaderData<{ paths: path[] }>();
 
@@ -157,6 +166,17 @@ export default function CharacterRoute() {
             />
           ))}
         </div>
+
+        <div className="trainings-grid">
+        {trainingsWithTier.map(tt => (
+          <TrainingCircle
+            key={tt.training.id}
+            training={tt.training}
+            isSelected={false}
+            onClick={() => null}
+          />
+        ))}
+      </div>
       </div>
     </main>
   );

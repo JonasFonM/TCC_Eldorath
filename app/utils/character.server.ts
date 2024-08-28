@@ -169,7 +169,6 @@ export const submitCharLineages = async (lineageList: number[], characterId: num
 
 //PATHS
 
-
 export const submitCharPaths = async (pathList: number[], characterId: number) => {
   const existingPaths = await prisma.character_path.findMany({
     where: {
@@ -187,6 +186,33 @@ export const submitCharPaths = async (pathList: number[], characterId: number) =
       data: newPaths.map(pathId => ({
         pathId: pathId,
         characterId: characterId,
+      })),
+      skipDuplicates: true, 
+    });
+  }
+
+  return;
+};
+
+//TRAININGS
+
+export const submitCharTrainings = async (trainingList: number[], characterId: number) => {
+  const existingTrainings = await prisma.character_training.findMany({
+    where: {
+      trainingId: { in: trainingList },
+      characterId: characterId,
+    },
+  });
+
+  const existingTrainingIds = existingTrainings.map(ct => ct.trainingId);
+  
+  const newTrainings = trainingList.filter(trainingId => !existingTrainingIds.includes(trainingId));
+
+  if (newTrainings.length > 0) {
+    await prisma.character_training.createMany({
+      data: newTrainings.map(trainingId => ({
+        characterId: characterId,
+        trainingId: trainingId,
       })),
       skipDuplicates: true, 
     });

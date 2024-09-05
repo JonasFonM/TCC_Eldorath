@@ -32,11 +32,6 @@ export const loader: LoaderFunction = async ({ params }) => {
   const skills = await prisma.skill.findMany({
     where: {
       id: { in: character.skills.map(skill => skill.skillId) },
-    },
-  });
-
-  const general_skills = await prisma.skill.findMany({
-    where: {
       lineages: { none: {} },
     },
   });
@@ -85,12 +80,12 @@ export const loader: LoaderFunction = async ({ params }) => {
     stats = await createStats({ skills, character, paths })
   }
 
-  return json({ general_skills, trainingsWithTier, pureLineageSkills, nonPureLineageSkills, character, characterId, stats, lineages, isPure, paths });
+  return json({ skills, trainingsWithTier, pureLineageSkills, nonPureLineageSkills, character, characterId, stats, lineages, isPure, paths });
 };
 
 export default function CharacterRoute() {
   const { character } = useLoaderData<{ character: character }>()
-  const { general_skills, pureLineageSkills, nonPureLineageSkills, trainingsWithTier } = useLoaderData<{ general_skills: skill[], pureLineageSkills: LSrelations, nonPureLineageSkills: LSrelations, trainingsWithTier: trainingWithTier }>();
+  const { skills, pureLineageSkills, nonPureLineageSkills, trainingsWithTier } = useLoaderData<{ skills: skill[], pureLineageSkills: LSrelations, nonPureLineageSkills: LSrelations, trainingsWithTier: trainingWithTier }>();
   const { lineages, isPure } = useLoaderData<{ lineages: lineage[], isPure: boolean }>();
   const { paths } = useLoaderData<{ paths: path[] }>();
 
@@ -126,7 +121,7 @@ export default function CharacterRoute() {
       </div>
       <div className="col-6">
         <div className="skills-grid">
-          {general_skills.map(skill => (
+          {skills.map(skill => (
             <SkillCircle
               key={skill.id}
               skill={skill}

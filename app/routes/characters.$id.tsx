@@ -95,10 +95,10 @@ export default function CharacterRoute() {
     <>
       <main>
         <div className="topnav">
-          <NavLink to={`/characters/${characterId}/skills`}>Skills</NavLink>
-          <NavLink to={`/characters/${characterId}/lineages`}>Lineages</NavLink>
-          <NavLink to={`/characters/${characterId}/paths`}>Paths</NavLink>
-          <NavLink to={`/characters/${characterId}/trainings`}>Trainings</NavLink>
+          <NavLink to={`/characters/new/${characterId}/skills`}>Skills</NavLink>
+          <NavLink to={`/characters/new/${characterId}/lineages`}>Lineages</NavLink>
+          <NavLink to={`/characters/new/${characterId}/paths`}>Paths</NavLink>
+          <NavLink to={`/characters/new/${characterId}/trainings`}>Trainings</NavLink>
         </div>
 
         <h2> {character.name}</h2>

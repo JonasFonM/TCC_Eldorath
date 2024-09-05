@@ -34,7 +34,7 @@ export const action: ActionFunction = async ({ request, params }) => {
     }
     try {
         await submitCharPaths(selectedPathIds, Number(characterId))
-        return redirect(`/characters/new/${characterId}/`)
+        return redirect(`/characters/${characterId}/`)
     } catch (error) {
         console.error(error);
         return json({ error: "Failed to save paths." }, { status: 500 });

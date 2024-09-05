@@ -96,7 +96,7 @@ export const action: ActionFunction = async ({ request, params }) => {
 
   await submitCharSkills(selectedSkillIds, Number(characterId))
 
-  return redirect(`/characters/new/${characterId}/`)
+  return redirect(`/characters/${characterId}/`)
 }
 
 export default function SkillSelectionRoute() {

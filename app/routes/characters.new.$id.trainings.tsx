@@ -42,7 +42,7 @@ export const action: ActionFunction = async ({ request, params }) => {
 
   await submitCharTrainings(selectedTrainingIds, Number(characterId))
 
-  return redirect(`/characters/new/${characterId}/`)
+  return redirect(`/characters/${characterId}/`)
 }
 
 export default function TrainingSelectionRoute() {

@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { json, LoaderFunction, } from "@remix-run/node";
-import { useLoaderData } from "@remix-run/react";
+import { NavLink, useLoaderData } from "@remix-run/react";
 import { prisma } from "~/utils/prisma.server";
 import { SkillCircle } from "~/components/skill-circle";
 import { createStats } from "~/utils/character.server";
@@ -64,10 +64,10 @@ export const loader: LoaderFunction = async ({ params }) => {
     }
   });
 
- 
+
   const trainingsWithTier = await prisma.character_training.findMany({
     where: {
-      id: {in: character.trainings.map(training => training.id)},
+      id: { in: character.trainings.map(training => training.id) },
     },
     include: { training: true }
   });
@@ -84,7 +84,7 @@ export const loader: LoaderFunction = async ({ params }) => {
 };
 
 export default function CharacterRoute() {
-  const { character } = useLoaderData<{ character: character }>()
+  const { character, characterId } = useLoaderData<{ character: character, characterId: string }>()
   const { skills, pureLineageSkills, nonPureLineageSkills, trainingsWithTier } = useLoaderData<{ skills: skill[], pureLineageSkills: LSrelations, nonPureLineageSkills: LSrelations, trainingsWithTier: trainingWithTier }>();
   const { lineages, isPure } = useLoaderData<{ lineages: lineage[], isPure: boolean }>();
   const { paths } = useLoaderData<{ paths: path[] }>();
@@ -92,88 +92,97 @@ export default function CharacterRoute() {
   const { stats } = useLoaderData<{ stats: charStats }>()
 
   return (
-    <main>
-      <h2> {character.name}</h2>
-      <div className="col-12">
-        <h2>{paths.map(path => path.name)}</h2>
-      </div>
-      <div className="container">
-        <div className="block">Level:{character.level}</div>
-        <div className="block">Tier:{character.tier}</div>
-      </div>
-
-      <div className="container">
-        <div className="block">Agility:{character.agility}</div>
-        <div className="block">Body:{character.body}</div>
-        <div className="block">Mind:{character.mind}</div>
-      </div>
-      <div className="container">
-        <div className="block">Vitality:{stats.vitality}</div>
-        <div className="block">Vigor:{stats.vigor}</div>
-        <div className="block">Power:{stats.power}</div>
-        <div className="block">Speed:{stats.speed}</div>
-        <div className="block">Defense:{stats.defense}</div>
-        <div className="block">Initiative:{stats.initiative}</div>
-        <div className="block">Weight:{stats.baseWeight}</div>
-        <div className="block">Carry Capacity:{stats.carryCap}</div>
-        <div className="block">Lifting Capacity:{stats.liftCap}</div>
-
-      </div>
-      <div className="col-6">
-        <div className="skills-grid">
-          {skills.map(skill => (
-            <SkillCircle
-              key={skill.id}
-              skill={skill}
-              isSelected={false}
-              onClick={() => null}
-              isPureLineage={false}
-            />
-          ))}
-        </div>
-      </div>
-
-      <div className="col-6">
-        {lineages.map(lineage => (
-          <LineageCircle key={lineage.id} lineage={lineage} isSelected={false}
-            onClick={() => null} />
-        ))}
-        {isPure ? <div className="pure-lineage-skills">
-          {pureLineageSkills.map(ls => (
-            <SkillCircle
-              key={ls.skill.id}
-              skill={ls.skill}
-              isSelected={false}
-              onClick={() => null}
-              isPureLineage={true}
-            />
-          ))}
-        </div> : null}
-
-        <div className="nonpure-lineage-skills">
-          {nonPureLineageSkills.map(ls => (
-            <SkillCircle
-              key={ls.skill.id}
-              skill={ls.skill}
-              isSelected={false}
-              onClick={() => null}
-              isPureLineage={false}
-            />
-          ))}
+    <>
+      <main>
+        <div className="topnav">
+          <NavLink to={`/characters/${characterId}/skills`}>Skills</NavLink>
+          <NavLink to={`/characters/${characterId}/lineages`}>Lineages</NavLink>
+          <NavLink to={`/characters/${characterId}/paths`}>Paths</NavLink>
+          <NavLink to={`/characters/${characterId}/trainings`}>Trainings</NavLink>
         </div>
 
-        <div className="trainings-grid">
-        {trainingsWithTier.map(tt => (
-          <TrainingCircle
-            key={tt.training.id}
-            training={tt.training}
-            isSelected={false}
-            onClick={() => null}
-          />
-        ))}
-      </div>
-      </div>
-    </main>
+        <h2> {character.name}</h2>
+        <div className="col-12">
+          <h2>{paths.map(path => path.name)}</h2>
+        </div>
+        <div className="container">
+          <div className="block">Level:{character.level}</div>
+          <div className="block">Tier:{character.tier}</div>
+        </div>
+
+        <div className="container">
+          <div className="block">Agility:{character.agility}</div>
+          <div className="block">Body:{character.body}</div>
+          <div className="block">Mind:{character.mind}</div>
+        </div>
+        <div className="container">
+          <div className="block">Vitality:{stats.vitality}</div>
+          <div className="block">Vigor:{stats.vigor}</div>
+          <div className="block">Power:{stats.power}</div>
+          <div className="block">Speed:{stats.speed}</div>
+          <div className="block">Defense:{stats.defense}</div>
+          <div className="block">Initiative:{stats.initiative}</div>
+          <div className="block">Weight:{stats.baseWeight}</div>
+          <div className="block">Carry Capacity:{stats.carryCap}</div>
+          <div className="block">Lifting Capacity:{stats.liftCap}</div>
+
+        </div>
+        <div className="col-6">
+          <div className="skills-grid">
+            {skills.map(skill => (
+              <SkillCircle
+                key={skill.id}
+                skill={skill}
+                isSelected={false}
+                onClick={() => null}
+                isPureLineage={false}
+              />
+            ))}
+          </div>
+        </div>
+
+        <div className="col-6">
+          {lineages.map(lineage => (
+            <LineageCircle key={lineage.id} lineage={lineage} isSelected={false}
+              onClick={() => null} />
+          ))}
+          {isPure ? <div className="pure-lineage-skills">
+            {pureLineageSkills.map(ls => (
+              <SkillCircle
+                key={ls.skill.id}
+                skill={ls.skill}
+                isSelected={false}
+                onClick={() => null}
+                isPureLineage={true}
+              />
+            ))}
+          </div> : null}
+
+          <div className="nonpure-lineage-skills">
+            {nonPureLineageSkills.map(ls => (
+              <SkillCircle
+                key={ls.skill.id}
+                skill={ls.skill}
+                isSelected={false}
+                onClick={() => null}
+                isPureLineage={false}
+              />
+            ))}
+          </div>
+
+          <div className="trainings-grid">
+            {trainingsWithTier.map(tt => (
+              <TrainingCircle
+                key={tt.training.id}
+                training={tt.training}
+                isSelected={false}
+                onClick={() => null}
+              />
+            ))}
+          </div>
+        </div>
+      </main>
+    </>
   );
 
 }

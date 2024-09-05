@@ -48,6 +48,10 @@ export const getCharactersFromUser = async (userId: number) => {
 //STATS
 export const createStats = async (char: { skills: skill[], character: character, paths: path[] }) => {
   const { body, tier, level, mind, agility, id } = char.character;
+  const skillTrueSizes = char.skills.map(skill => skill.increaseTrueSize);
+  const skillTrueSize = skillTrueSizes.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
+  const skillRelativeSizes = char.skills.map(skill => skill.increaseRelativeSize);
+  const skillRelativeSize = skillRelativeSizes.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
   let pathsVit = 0
   char.paths.forEach(path => { pathsVit += path.vitality });
   let pathsPow = 0
@@ -59,6 +63,8 @@ export const createStats = async (char: { skills: skill[], character: character,
   const speed = agility;
   const defense = agility;
   const initiative = agility;
+  const trueSize = 1 + skillTrueSize;
+  const relativeSize = 1 + skillRelativeSize;
   const baseWeight = (5 * body) + 10;
   const carryCap = 5 + 10 + (5 * body);
   const liftCap = 10 + 10 + (10 * body);
@@ -71,7 +77,8 @@ export const createStats = async (char: { skills: skill[], character: character,
       speed,
       defense,
       initiative,
-      size: 1,
+      trueSize,
+      relativeSize,
       baseWeight,
       carryCap,
       liftCap,
@@ -84,7 +91,8 @@ export const createStats = async (char: { skills: skill[], character: character,
       speed,
       defense,
       initiative,
-      size: 1,
+      trueSize,
+      relativeSize,
       baseWeight,
       carryCap,
       liftCap,    },

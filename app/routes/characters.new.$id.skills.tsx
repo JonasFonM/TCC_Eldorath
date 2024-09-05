@@ -17,10 +17,53 @@ export const loader: LoaderFunction = async ({ request, params }) => {
     include: { lineage: true }
   });
 
+  const character = await prisma.character.findUnique({
+    where: { id: characterId },
+    include:{ skills: true}
+  });
+
+  const maxSelectable = character?.level;
+
+  const stats = await prisma.charStats.findUnique({
+    where: { characterId: characterId }
+  });
+
   const general_skills = await prisma.skill.findMany({
     where: {
       lineages: { none: {} },
+      agi: {
+        lte: character?.agility
+      },
+      bdy: {
+        lte: character?.body
+      },
+      mnd: {
+        lte: character?.mind
+      },
+      lvl: {
+        lte: character?.level
+      },
+      OR: [{
+        trSiz: {
+          lte: stats?.trueSize,
+        },
+        rlSiz: {
+          lte: stats?.relativeSize,
+        },
+      },
+      { trSiz: { lte: 0 } },
+      { rlSiz: { lte: 0 } },
+      ],
+      AND: [{
+        OR:[{
+        successorId: { in: character?.skills.map(skill => skill.skillId)},
+        },
+        {successorId: null},
+      ]
+      }]
+
     },
+
   });
 
   const isPure = character_lineages.length === 1;
@@ -41,7 +84,7 @@ export const loader: LoaderFunction = async ({ request, params }) => {
     include: { skill: true },
   });
 
-  return json({ userId, general_skills, pureLineageSkills, nonPureLineageSkills, isPure });
+  return json({ userId, maxSelectable, general_skills, pureLineageSkills, nonPureLineageSkills, isPure });
 }
 
 
@@ -57,31 +100,22 @@ export const action: ActionFunction = async ({ request, params }) => {
 }
 
 export default function SkillSelectionRoute() {
-  const { general_skills, nonPureLineageSkills, pureLineageSkills, isPure } = useLoaderData<{ general_skills: skill[], pureLineageSkills: LSrelations, nonPureLineageSkills: LSrelations, isPure: boolean }>();
+  const { maxSelectable, general_skills, nonPureLineageSkills, pureLineageSkills, isPure } = useLoaderData<{ maxSelectable: number, general_skills: skill[], pureLineageSkills: LSrelations, nonPureLineageSkills: LSrelations, isPure: boolean }>();
   const [selectedSkills, setSelectedSkills] = useState<number[]>([]);
-  const [error, setError] = useState<string | null>(null);
-  const maxSelectable = 2;
-   
+
   const isMaxSelected = selectedSkills.length >= maxSelectable;
 
   const handleSkillClick = (skillId: number) => {
     setSelectedSkills((prevSkills) => {
-        const isSelected = prevSkills.includes(skillId);
+      const isSelected = prevSkills.includes(skillId);
 
-        const newSelectedSkills = isSelected
-            ? prevSkills.filter(id => id !== skillId)
-            : [...prevSkills, skillId];
+      const newSelectedSkills = isSelected
+        ? prevSkills.filter(id => id !== skillId)
+        : [...prevSkills, skillId];
 
-        if (newSelectedSkills.length > 2) {
-            setError("You can select up to 2 skills only.");
-            return prevSkills; 
-        } else {
-            setError(null);
-        }
-
-        return newSelectedSkills;
+      return newSelectedSkills;
     });
-};
+  };
 
   return (
     <form method="post">
@@ -121,7 +155,7 @@ export default function SkillSelectionRoute() {
             key={skill.id}
             skill={skill}
             isSelected={selectedSkills.includes(skill.id)}
-            onClick={() => !isMaxSelected || selectedSkills.includes(skill.id) ? handleSkillClick(skill.id) : null}
+            onClick={() => !isMaxSelected || selectedSkills.includes(skill.id) ? handleSkillClick(skill.id) : alert((`You can select up to ${maxSelectable} skills only.`))}
             isPureLineage={false}
           />
         ))}
@@ -129,9 +163,6 @@ export default function SkillSelectionRoute() {
       {selectedSkills.map(skillId => (
         <input type="hidden" key={skillId} name="skills" value={skillId} />
       ))}
-      
-      {error && <p>{error}</p>}
-
       <button type="submit" className="submit-button">Submit Skills</button>
     </form>
   );

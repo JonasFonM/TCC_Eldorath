@@ -41,7 +41,8 @@ model charStats {
   speed Int
   defense Int
   initiative Int
-  size Int
+  trueSize Int @default(1)
+  relativeSize Int @default(1)
   baseWeight Int
   carryCap Int
   liftCap Int
@@ -109,15 +110,42 @@ model skill {
   id     Int     @id @default(autoincrement())
   name    String? @db.Text
   description    String? @db.Text
+  agi Int @default(0)
+  bdy Int @default(0)
+  mnd Int @default(0)
+  lvl Int @default(0)
+  trSiz Int @default(0)
+  rlSiz Int @default(0)
+  increaseTrueSize Int @default(0)
+  increaseRelativeSize Int @default(0)
+  successorId Int?    @unique
+  successor   skill?   @relation("PreRequisite", fields: [successorId], references: [id])
+  prerequisite skill?   @relation("PreRequisite")
+  type          skillType @default(CHARACTERISTIC)
+  techniqueSubtype techniqueSubtype?
   characters   character_skill[] @relation
   lineages lineage_skill[] @relation
-  paths path_skill[] @relation
+  paths path_skill[] @relation  
 }
+
+enum skillType {
+  CHARACTERISTIC
+  MAGIC
+  TECHNIQUE
+}
+
+enum techniqueSubtype {
+  MANEUVER
+  OATH
+  TRICK
+}
+
 
 model character_skill {
   id          Int  @id @default(autoincrement())
   characterId Int
   skillId     Int
+  level       Int  @default(1)
 
   character   character @relation(fields: [characterId], references: [id])
   skill       skill     @relation(fields: [skillId], references: [id])

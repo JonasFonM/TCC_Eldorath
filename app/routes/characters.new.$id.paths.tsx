@@ -12,11 +12,12 @@ export const loader: LoaderFunction = async ({ request, params }) => {
     const characterId = Number(params.id);
 
     const character = await prisma.character.findUnique({
-      where: { id: characterId },
+        where: { id: characterId },
     });
 
     const paths = await prisma.path.findMany({
-        where: { pathTier: character?.tier }}
+        where: { pathTier: character?.tier }
+    }
     )
 
 
@@ -34,6 +35,9 @@ export const action: ActionFunction = async ({ request, params }) => {
     }
     try {
         await submitCharPaths(selectedPathIds, Number(characterId))
+        await prisma.charStats.delete({
+            where: { characterId: Number(characterId) }
+        })
         return redirect(`/characters/${characterId}/`)
     } catch (error) {
         console.error(error);
@@ -48,25 +52,25 @@ export default function PathSelection() {
     const [error, setError] = useState<string | null>(null);
     const maxSelectable = 1;
 
-    
+
     const isMaxSelected = selectedPaths.length >= maxSelectable;
 
 
     const handlePathClick = (pathId: number) => {
         setSelectedPaths((prevPaths) => {
             const isSelected = prevPaths.includes(pathId);
-    
+
             const newSelectedPaths = isSelected
                 ? prevPaths.filter(id => id !== pathId)
                 : [...prevPaths, pathId];
-    
+
             if (newSelectedPaths.length > 1) {
                 setError("You can select 1 only path.");
-                return prevPaths; 
+                return prevPaths;
             } else {
                 setError(null);
             }
-    
+
             return newSelectedPaths;
         });
     };

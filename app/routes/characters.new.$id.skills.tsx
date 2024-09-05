@@ -19,7 +19,7 @@ export const loader: LoaderFunction = async ({ request, params }) => {
 
   const character = await prisma.character.findUnique({
     where: { id: characterId },
-    include:{ skills: true}
+    include: { skills: true }
   });
 
   const maxSelectable = character?.level;
@@ -55,11 +55,11 @@ export const loader: LoaderFunction = async ({ request, params }) => {
       { rlSiz: { lte: 0 } },
       ],
       AND: [{
-        OR:[{
-        successorId: { in: character?.skills.map(skill => skill.skillId)},
+        OR: [{
+          successorId: { in: character?.skills.map(skill => skill.skillId) },
         },
-        {successorId: null},
-      ]
+        { successorId: null },
+        ]
       }]
 
     },
@@ -95,7 +95,9 @@ export const action: ActionFunction = async ({ request, params }) => {
   const characterId = params.id
 
   await submitCharSkills(selectedSkillIds, Number(characterId))
-
+  await prisma.charStats.delete({
+    where: { characterId: Number(characterId) }
+  })
   return redirect(`/characters/${characterId}/`)
 }
 

@@ -12,24 +12,44 @@ import { PTrelations } from "~/utils/types.server";
 export const loader: LoaderFunction = async ({ request, params }) => {
   const userId = await requireUserId(request)
   const characterId = Number(params.id)
-  const character_paths = await prisma.character_path.findMany({
-    where: { characterId },
-    include: { path: true }
+ 
+  const character = await prisma.character.findUnique({
+    where: { id: characterId },
+    include: {
+      trainings: true,
+      paths: true
+    }
   });
-
-  const general_trainings = await prisma.training.findMany();
 
   const pathTrainings = await prisma.path_training.findMany({
     where: {
-      pathId: { in: character_paths.map(cp => cp.pathId) },
+      pathId: { in: character?.paths.map(pc => pc.pathId) },
+      AND: [{
+        NOT: [{
+          trainingId: {in: character?.trainings.map(pt => pt.trainingId)}
+      }],
+    }],
     },
     include: {
       training: true,
     },
   });
 
+  const general_trainings = await prisma.training.findMany({
+      where: {
+      NOT: [{
+        id: { in: character?.trainings.map(t => t.trainingId) }
+      }],
+      OR: [{
+        prerequisiteId: { in: character?.trainings.map(training => training.trainingId) },
+      },
+      { prerequisiteId: null }], 
+    },
 
-  
+  });
+
+
+
   return json({ userId, general_trainings, pathTrainings });
 }
 
@@ -46,9 +66,9 @@ export const action: ActionFunction = async ({ request, params }) => {
 }
 
 export default function TrainingSelectionRoute() {
-  const { general_trainings, pathTrainings } = useLoaderData<{ general_trainings: training[], pathTrainings: PTrelations}>();
+  const { general_trainings, pathTrainings } = useLoaderData<{ general_trainings: training[], pathTrainings: PTrelations }>();
   const [selectedTrainings, setSelectedTrainings] = useState<number[]>([]);
- 
+
   const handleTrainingClick = (trainingId: number) => {
     setSelectedTrainings((prevTrainings) => {
       const isSelected = prevTrainings.includes(trainingId);
@@ -71,7 +91,7 @@ export default function TrainingSelectionRoute() {
       {pathTrainings.map(pt => (
         <input type="hidden" key={pt.trainingId} name="trainings" value={pt.trainingId} />
       ))}
-   
+
       <div className="trainings-grid">
         {general_trainings.map(training => (
           <TrainingCircle
@@ -85,7 +105,7 @@ export default function TrainingSelectionRoute() {
       {selectedTrainings.map(trainingId => (
         <input type="hidden" key={trainingId} name="trainings" value={trainingId} />
       ))}
-   
+
       <button type="submit" className="submit-button">Submit Trainings</button>
     </form>
   );

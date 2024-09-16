@@ -65,7 +65,7 @@ export default function PathSelection() {
                 : [...prevPaths, pathId];
 
             if (newSelectedPaths.length > 1) {
-                setError("You can select 1 only path.");
+                setError("You can select only 1 path.");
                 return prevPaths;
             } else {
                 setError(null);

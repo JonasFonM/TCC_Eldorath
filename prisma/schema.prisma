@@ -212,10 +212,8 @@ model training {
   upgrade training?   @relation("PreRequisite")
   characters character_training[] @relation
   paths path_training[] @relation
-
-  weapons weapon[] @relation(map: "wt_ibfk_2")
-
-  armors armor[] @relation(map: "at_ibfk_2")
+  weapons weapon[] @relation
+  armors armor[] @relation
 }
 
 enum trainingType {
@@ -250,15 +248,15 @@ model weapon {
   id      Int      @id @default(autoincrement())
   name String
   description String
-  trainingId Int @unique
   craftTier Int @default(1)
   material material
   type weaponType
   weight Int @default(0)
   cost Int @default(0)
   attacks attack[]
-
-  training training @relation(fields: [trainingId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "wt_ibfk_2")
+  
+  trainingId Int
+  training training @relation(fields: [trainingId], references: [id])
   characters character_weapon[] @relation
 }
 
@@ -364,7 +362,6 @@ model armor {
   id      Int      @id @default(autoincrement())
   name String
   description String
-  trainingId Int @unique
   craftTier Int @default(1)
   material material
   defense Int @default(1)
@@ -374,8 +371,8 @@ model armor {
 
   armorResistances armorResistances? @relation
   characters character_armor[] @relation
-  training training @relation(fields: [trainingId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "at_ibfk_2")
- 
+  trainingId Int
+  training training @relation(fields: [trainingId], references: [id])
 }
 
 model character_armor {

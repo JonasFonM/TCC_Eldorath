@@ -56,9 +56,9 @@ export const loader: LoaderFunction = async ({ request, params }) => {
       ],
       AND: [{
         OR: [{
-          successorId: { in: character?.skills.map(skill => skill.skillId) },
+          prerequisiteId: { in: character?.skills.map(skill => skill.skillId) },
         },
-        { successorId: null },
+        { prerequisiteId: null },
         ]
       }]
 

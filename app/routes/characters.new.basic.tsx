@@ -34,7 +34,7 @@ export const action: ActionFunction = async ({ request }) => {
 
     return (
       json({ character }, { status: 201 }),
-      redirect(`/characters/${character}`)
+      redirect(`/characters/new/${character}/paths`)
     );
   } catch (error) {
     console.error(error);
@@ -45,7 +45,7 @@ export const action: ActionFunction = async ({ request }) => {
 
 export default function NewCharacterRoute() {
   const actionData = useActionData<ActionFunction>();
-  const [limit, setLimit] = useState(5);
+  const [limit, setLimit] = useState(7);
 
   const firstLoad = useRef(true);
   const [formData, setFormData] = useState({

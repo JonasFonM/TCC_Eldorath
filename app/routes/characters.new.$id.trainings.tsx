@@ -12,7 +12,7 @@ import { PTrelations } from "~/utils/types.server";
 export const loader: LoaderFunction = async ({ request, params }) => {
   const userId = await requireUserId(request)
   const characterId = Number(params.id)
- 
+
   const character = await prisma.character.findUnique({
     where: { id: characterId },
     include: {
@@ -24,33 +24,48 @@ export const loader: LoaderFunction = async ({ request, params }) => {
   const pathTrainings = await prisma.path_training.findMany({
     where: {
       pathId: { in: character?.paths.map(pc => pc.pathId) },
-      AND: [{
-        NOT: [{
-          trainingId: {in: character?.trainings.map(pt => pt.trainingId)}
-      }],
-    }],
     },
     include: {
       training: true,
     },
   });
 
-  const general_trainings = await prisma.training.findMany({
-      where: {
-      NOT: [{
-        id: { in: character?.trainings.map(t => t.trainingId) }
+  const charTrainings = await prisma.character_training.findMany({
+    where: {
+      trainingId: { in: character?.trainings.map(pc => pc.trainingId) },
+      AND: [{
+        NOT: [{
+          trainingId: { in: pathTrainings?.map(pt => pt.trainingId) }
+        }],
       }],
-      OR: [{
-        prerequisiteId: { in: character?.trainings.map(training => training.trainingId) },
-      },
-      { prerequisiteId: null }], 
+    },
+    include: {
+      training: true,
+    },
+
+  });
+
+  const selectable_trainings = await prisma.training.findMany({
+    where: {
+      AND: [
+        {
+          NOT:
+            { id: { in: character?.trainings.map(t => t.trainingId) } },
+        },
+        {
+          NOT:
+            { id: { in: pathTrainings?.map(pt => pt.trainingId) } },
+        },
+        { tier: { in: charTrainings?.map(ct => ct.training.tier + 1) } }
+      ]
+
     },
 
   });
 
 
 
-  return json({ userId, general_trainings, pathTrainings });
+  return json({ userId, selectable_trainings, pathTrainings });
 }
 
 
@@ -66,18 +81,26 @@ export const action: ActionFunction = async ({ request, params }) => {
 }
 
 export default function TrainingSelectionRoute() {
-  const { general_trainings, pathTrainings } = useLoaderData<{ general_trainings: training[], pathTrainings: PTrelations }>();
+  const { selectable_trainings, pathTrainings } = useLoaderData<{ selectable_trainings: training[], pathTrainings: PTrelations }>();
   const [selectedTrainings, setSelectedTrainings] = useState<number[]>([]);
 
   const handleTrainingClick = (trainingId: number) => {
     setSelectedTrainings((prevTrainings) => {
       const isSelected = prevTrainings.includes(trainingId);
-      return isSelected ? prevTrainings.filter(id => id !== trainingId) : [...prevTrainings, trainingId];
+      const newSelectedTrainings =
+        isSelected ? prevTrainings.filter(id => id !== trainingId) : [...prevTrainings, trainingId];
+
+      if (newSelectedTrainings.length > 1) {
+        alert("You can select only 1 path.");
+        return prevTrainings;
+      }
+      return newSelectedTrainings
     });
   };
 
   return (
     <form method="post">
+      <h2>Trainings gained from your Paths</h2>
       <div className="path-trainings">
         {pathTrainings.map(pt => (
           <TrainingCircle
@@ -92,8 +115,9 @@ export default function TrainingSelectionRoute() {
         <input type="hidden" key={pt.trainingId} name="trainings" value={pt.trainingId} />
       ))}
 
+      <h2>Choose your Trainings</h2>
       <div className="trainings-grid">
-        {general_trainings.map(training => (
+        {selectable_trainings.map(training => (
           <TrainingCircle
             key={training.id}
             training={training}

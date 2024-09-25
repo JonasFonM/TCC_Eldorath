@@ -206,10 +206,7 @@ model training {
   name String @db.Text
   description String @db.Text
   type          trainingType @default(ARMOR)
-  weightClass Int @default(1)
-  prerequisiteId Int?    @unique
-  prerequisite   training?   @relation("PreRequisite", fields: [prerequisiteId], references: [id])
-  upgrade training?   @relation("PreRequisite")
+  tier Int @default(1)
   characters character_training[] @relation
   paths path_training[] @relation
   weapons weapon[] @relation

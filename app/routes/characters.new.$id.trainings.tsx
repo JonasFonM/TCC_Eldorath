@@ -47,19 +47,45 @@ export const loader: LoaderFunction = async ({ request, params }) => {
 
   const selectable_trainings = await prisma.training.findMany({
     where: {
-      AND: [
-        {
-          NOT:
-            { id: { in: character?.trainings.map(t => t.trainingId) } },
+      OR:
+        [{
+          AND: [
+            {
+              NOT:
+                { id: { in: character?.trainings.map(t => t.trainingId) } },
+            },
+            {
+              NOT:
+                { id: { in: pathTrainings?.map(pt => pt.trainingId) } },
+            },
+            {
+              NOT:
+              {
+                AND: [
+                  { tier: { in: charTrainings?.map(ct => ct.training.tier) } },
+                  { type: { in: charTrainings?.map(ct => ct.training.type) } }
+                ],
+              },
+            },
+          ]
         },
         {
-          NOT:
-            { id: { in: pathTrainings?.map(pt => pt.trainingId) } },
-        },
-        { tier: { in: charTrainings?.map(ct => ct.training.tier + 1) } }
+          AND: [
+            {
+              NOT:
+                { id: { in: character?.trainings.map(t => t.trainingId) } },
+            },
+            {
+              NOT:
+                { id: { in: pathTrainings?.map(pt => pt.trainingId) } },
+            },
+            {tier: 1},
+          ]
+        }
       ]
 
     },
+    orderBy: { type: 'asc' }
 
   });
 

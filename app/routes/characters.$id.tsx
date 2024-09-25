@@ -7,7 +7,7 @@ import { createStats } from "~/utils/character.server";
 import { LineageCircle } from "~/components/lineage-circle";
 import { LSrelations, trainingWithTier } from "~/utils/types.server";
 import { TrainingCircle } from "~/components/training-circle";
-import { character, charStats, lineage, path, skill } from "@prisma/client";
+import { character, charStats, lineage, path, resistances, skill } from "@prisma/client";
 
 export const loader: LoaderFunction = async ({ params }) => {
   const characterId = Number(params.id);
@@ -80,7 +80,13 @@ export const loader: LoaderFunction = async ({ params }) => {
     stats = await createStats({ skills, character, paths })
   }
 
-  return json({ skills, trainingsWithTier, pureLineageSkills, nonPureLineageSkills, character, characterId, stats, lineages, isPure, paths });
+  const resistances = await prisma.resistances.findUnique({
+    where: {
+      id: stats?.resistanceId
+    }
+  })
+
+  return json({ skills, trainingsWithTier, pureLineageSkills, nonPureLineageSkills, character, characterId, stats, lineages, isPure, paths, resistances });
 };
 
 export default function CharacterRoute() {
@@ -89,7 +95,7 @@ export default function CharacterRoute() {
   const { lineages, isPure } = useLoaderData<{ lineages: lineage[], isPure: boolean }>();
   const { paths } = useLoaderData<{ paths: path[] }>();
 
-  const { stats } = useLoaderData<{ stats: charStats }>()
+  const { stats, resistances } = useLoaderData<{ stats: charStats; resistances: resistances }>()
 
   return (
     <>
@@ -99,22 +105,31 @@ export default function CharacterRoute() {
           <NavLink to={`/characters/new/${characterId}/lineages`}>Lineages</NavLink>
           <NavLink to={`/characters/new/${characterId}/paths`}>Paths</NavLink>
           <NavLink to={`/characters/new/${characterId}/trainings`}>Trainings</NavLink>
+          <NavLink to={`/characters/new/${characterId}/inventory`}>Items</NavLink>
         </div>
 
         <h2> {character.name}</h2>
         <div className="col-12">
           <h2>{paths.map(path => path.name)}</h2>
         </div>
+
+        <h2>Progression</h2>
+
         <div className="container">
           <div className="block">Level:{character.level}</div>
           <div className="block">Tier:{character.tier}</div>
         </div>
+
+        <h2>Attributes</h2>
 
         <div className="container">
           <div className="block">Agility:{character.agility}</div>
           <div className="block">Body:{character.body}</div>
           <div className="block">Mind:{character.mind}</div>
         </div>
+
+        <h2>Stats</h2>
+
         <div className="container">
           <div className="block">Vitality:{stats.vitality}</div>
           <div className="block">Vigor:{stats.vigor}</div>
@@ -125,8 +140,33 @@ export default function CharacterRoute() {
           <div className="block">Weight:{stats.baseWeight}</div>
           <div className="block">Carry Capacity:{stats.carryCap}</div>
           <div className="block">Lifting Capacity:{stats.liftCap}</div>
-
         </div>
+
+        <h2>Resistances</h2>
+        
+        <h3>Physical Resistances</h3>
+
+        <div className="container">
+          <div className="block">Impact Damage Resistance:{resistances.impactRes}</div>
+          <div className="block">Piercing Damage Resistance:{resistances.pierceRes}</div>
+          <div className="block">Slashing Damage Resistance:{resistances.slashRes}</div>
+        </div>
+
+        <h3>Magical Resistances</h3>
+
+        <div className="container">
+          <div className="block">Acid Damage Resistance:{resistances.acidRes}</div>
+          <div className="block">Cold Damage Resistance:{resistances.coldRes}</div>
+          <div className="block">Fire Damage Resistance:{resistances.fireRes}</div>
+          <div className="block">Lightning Damage Resistance:{resistances.lightningRes}</div>
+          <div className="block">Arcane Damage Resistance:{resistances.arcaneRes}</div>
+          <div className="block">Cosmic Damage Resistance:{resistances.cosmicRes}</div>
+          <div className="block">Psychic Damage Resistance:{resistances.psychicRes}</div>
+          <div className="block">Occult Damage Resistance:{resistances.occultRes}</div>
+          <div className="block">Profane Damage Resistance:{resistances.profaneRes}</div>
+          <div className="block">Sacred Damage Resistance:{resistances.sacredRes}</div>
+        </div>
+
         <div className="col-6">
           <div className="skills-grid">
             {skills.map(skill => (

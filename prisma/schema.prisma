@@ -20,7 +20,7 @@ model character {
   mind Int
   public Boolean  @default(false)
   authorId  Int
-  user      user     @relation(fields: [authorId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "character_ibfk_1")
+  user      user     @relation(fields: [authorId], references: [id], map: "character_ibfk_1")
 
   skills character_skill[] @relation
   lineages character_lineage[] @relation
@@ -30,8 +30,6 @@ model character {
   armors character_armor[] @relation
 
   stats charStats? @relation
-  resistances charResistances? @relation
-
 
   @@index([authorId], map: "authorId")
   
@@ -40,6 +38,7 @@ model character {
 model charStats {
   id Int @id @default(autoincrement())
   createdAt DateTime @default(now()) @db.Timestamp(0)
+  resistanceId Int @default(1)
   vitality Int
   vigor Int
   power Int
@@ -52,26 +51,9 @@ model charStats {
   carryCap Int
   liftCap Int
   characterId Int     @unique(map: "characterId")
-  character character @relation(fields: [characterId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "c_ibfk_1")
-}
+  resistances resistances? @relation(fields: [resistanceId], references: [id])
 
-model charResistances {
-  id Int @id @default(autoincrement())
-  characterId Int @unique(map: "characterId")
-  impactRes Int @default(0)
-  pierceRes Int @default(0)
-  slashRes Int @default(0)
-  acidRes Int @default(0)
-  coldRes Int @default(0)
-  fireRes Int @default(0)
-  arcaneRes Int @default(0)
-  cosmicRes Int @default(0)
-  psychicRes Int @default(0)
-  occultRes Int @default(0)
-  profaneRes Int @default(0)
-  sacredRes Int @default(0)
-  character       character     @relation(fields: [characterId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-
+  character character @relation(fields: [characterId], references: [id], map: "c_ibfk_1")
 }
 
 model lineage {
@@ -245,16 +227,31 @@ model weapon {
   id      Int      @id @default(autoincrement())
   name String
   description String
-  craftTier Int @default(1)
-  material material
   type weaponType
-  weight Int @default(0)
-  cost Int @default(0)
-  attacks attack[]
-  
+  baseWeight Int @default(0)
+  baseCost Int @default(0)
+
   trainingId Int
   training training @relation(fields: [trainingId], references: [id])
   characters character_weapon[] @relation
+}
+
+model character_weapon {
+  id Int @id @default(autoincrement())
+  characterId Int
+  weaponId Int
+  craftTier Int @default(1)
+  material material
+  baseReach Int @default(1)
+  weight Int @default(0)
+  cost Int @default(0)
+  wielding Boolean @default(false)
+  twoHanding Boolean @default(false)
+  trained Boolean @default(false)
+  
+  character   character @relation(fields: [characterId], references: [id])
+  weapon       weapon     @relation(fields: [weaponId], references: [id])
+  attacks attack[]
 }
 
 enum weaponType {
@@ -280,27 +277,28 @@ enum weaponType {
 
 model attack {
   id Int @id @default(autoincrement())
-  weaponId Int
+  charWeaponId Int
   name String
   hitOn Int @default(4)
   critOn Int @default(6)
   reach Int @default(1)
   vigorCost Int @default(1)
-  damage atkDamage? @relation
-  weapon weapon @relation(fields: [weaponId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "a_ibfk_1")
+  damages atkDamage[] @relation
+  charWeapon character_weapon? @relation(fields: [charWeaponId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "a_ibfk_1")
 }
 
 model atkDamage {
   id Int @id @default(autoincrement())
   attackId Int @unique
-  physicalType physicalDamage
+  physicalType physicalDamage?
   magicalType magicalDamage?
   elementSubtype elementalDamage?
   hermeticSubtype hermeticDamage?
   baseDmg Int @default(1)
   critDmg Int @default(1)
-  agiScale Float @default(0.5)
-  strScale Float @default(0.5)
+  agiScale Int @default(0)
+  strScale Int @default(0)
+  mndScale Int @default(0)
   attack attack @relation(fields: [attackId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "dmg_ibfk_1")
 }
 
@@ -331,16 +329,7 @@ enum hermeticDamage {
   Psychic
 }
 
-model character_weapon {
-  id Int @id @default(autoincrement())
-  characterId Int
-  weaponId Int
-  wielding Boolean @default(false)
-  twoHanding Boolean @default(false)
-  trained Boolean @default(false)
-  character   character @relation(fields: [characterId], references: [id])
-  weapon       weapon     @relation(fields: [weaponId], references: [id])
-}
+
 
 enum material {
   Adamantine
@@ -357,49 +346,56 @@ enum material {
 
 model armor {
   id      Int      @id @default(autoincrement())
+  resistanceId Int @default(1)
+  trainingId Int
   name String
   description String
-  craftTier Int @default(1)
-  material material
-  defense Int @default(1)
-  
-  weight Int @default(4)
-  cost Int @default(200)
-
-  armorResistances armorResistances? @relation
-  characters character_armor[] @relation
-  trainingId Int
+  baseDefense Int @default(1)
+  weight Int @default(0)
+  baseCost Int @default(0)
+  resistances resistances? @relation(fields: [resistanceId], references: [id])
   training training @relation(fields: [trainingId], references: [id])
+  characters character_armor[] @relation
 }
 
 model character_armor {
   id Int @id @default(autoincrement())
   characterId Int
   armorId Int
+  resistanceId Int @default(1)
+  material material
+  craftTier Int @default(1)
+  defense Int @default(1)
+  weight Int @default(0)
+  baseCost Int @default(0)
   equipped Boolean @default(false)
   trained Boolean @default(false)
+  resistances resistances? @relation(fields: [resistanceId], references: [id])
   character   character @relation(fields: [characterId], references: [id])
   armor       armor     @relation(fields: [armorId], references: [id])
 }
 
-model armorResistances {
+model resistances {
   id Int @id @default(autoincrement())
-  armorId Int @unique(map: "armorId")
   impactRes Int @default(0)
   pierceRes Int @default(0)
   slashRes Int @default(0)
   acidRes Int @default(0)
   coldRes Int @default(0)
   fireRes Int @default(0)
+  lightningRes Int @default(0)
   arcaneRes Int @default(0)
   cosmicRes Int @default(0)
   psychicRes Int @default(0)
   occultRes Int @default(0)
   profaneRes Int @default(0)
   sacredRes Int @default(0)
-  armor       armor     @relation(fields: [armorId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  armors armor[] @relation
+  charArmors character_armor[] @relation
+  characters charStats[] @relation
 
 }
+
 
 model user {
   id      Int      @id @default(autoincrement())

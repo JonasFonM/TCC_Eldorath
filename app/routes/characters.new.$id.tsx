@@ -20,6 +20,7 @@ export default function NewCharacterRoute() {
                     <NavLink to={`/characters/new/${characterId}/lineages`}>Lineages</NavLink>
                     <NavLink to={`/characters/new/${characterId}/paths`}>Paths</NavLink>
                     <NavLink to={`/characters/new/${characterId}/trainings`}>Trainings</NavLink>
+                    <NavLink to={`/characters/new/${characterId}/inventory`}>Items</NavLink>
                 </div>
                 <Outlet />
             </main>

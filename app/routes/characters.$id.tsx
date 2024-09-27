@@ -8,6 +8,7 @@ import { LineageCircle } from "~/components/lineage-circle";
 import { LSrelations, trainingWithTier } from "~/utils/types.server";
 import { TrainingCircle } from "~/components/training-circle";
 import { character, charStats, lineage, path, resistances, skill } from "@prisma/client";
+import { PathCircle } from "~/components/path-circle";
 
 export const loader: LoaderFunction = async ({ params }) => {
   const characterId = Number(params.id);
@@ -143,7 +144,7 @@ export default function CharacterRoute() {
         </div>
 
         <h2>Resistances</h2>
-        
+
         <h3>Physical Resistances</h3>
 
         <div className="container">
@@ -168,6 +169,7 @@ export default function CharacterRoute() {
         </div>
 
         <div className="col-6">
+          <h2>Skills</h2>
           <div className="skills-grid">
             {skills.map(skill => (
               <SkillCircle
@@ -182,6 +184,7 @@ export default function CharacterRoute() {
         </div>
 
         <div className="col-6">
+          <h2>Lineages</h2>
           {lineages.map(lineage => (
             <LineageCircle key={lineage.id} lineage={lineage} isSelected={false}
               onClick={() => null} />
@@ -209,7 +212,24 @@ export default function CharacterRoute() {
               />
             ))}
           </div>
+        </div>
 
+        <div className="col-6">
+          <h2>Paths</h2>
+          <div className="trainings-grid">
+            {paths.map(pa => (
+              <PathCircle
+                key={pa.id}
+                path={pa}
+                isSelected={false}
+                onClick={() => null}
+              />
+            ))}
+          </div>
+        </div>
+
+        <div className="col-6">
+          <h2>Trainings</h2>
           <div className="trainings-grid">
             {trainingsWithTier.map(tt => (
               <TrainingCircle

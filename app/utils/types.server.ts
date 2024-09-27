@@ -31,13 +31,3 @@ export type RegisterForm = {
 
   export type armorWithTraining = (armor & { training: training})[];
 
-  /* vitality: number
-    vigor: number
-    power: number
-    speed: number
-    defense: number
-    iniciative: number
-    size: number
-    baseWeight: number
-    carryCap: number
-    liftCap: number*/

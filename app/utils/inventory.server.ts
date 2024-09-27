@@ -2,55 +2,90 @@ import { prisma } from "./prisma.server";
 
 
 export const submitCharWeapons = async (weaponList: number[], characterId: number) => {
-    const existingWeapons = await prisma.character_weapon.findMany({
-      where: {
-        weaponId: { in: weaponList },
-        characterId: characterId,
-      },
-    });
-  
-    const existingWeaponIds = existingWeapons.map(cs => cs.weaponId);
-    
-    const newWeapons = weaponList.filter(weaponId => !existingWeaponIds.includes(weaponId));
-  
-    if (newWeapons.length > 0) {
-      await prisma.character_weapon.createMany({
-        data: newWeapons.map(weaponId => ({
-          weaponId: weaponId,
-          characterId: characterId,
-          material: 'Iron',
-          craftTier: 1,
+  const selectedWeapons = await prisma.weapon.findMany({
+    where: {
+      id: { in: weaponList },
+    },
+  });
 
-        })),
-        skipDuplicates: true, 
-      });
+  const charTraining = await prisma.character_training.findMany({
+    where: {
+      characterId: characterId,
+      trainingId: { in: selectedWeapons.map(w => w.trainingId) }
     }
-  
-    return;
-  };
+  })
 
-  export const submitCharArmors = async (armorList: number[], characterId: number) => {
-    const existingArmors = await prisma.character_armor.findMany({
-      where: {
-        armorId: { in: armorList },
+
+  if (weaponList.length > 0) {
+    await prisma.character_weapon.createMany({
+      data: selectedWeapons.map(w => ({
+        weaponId: w.id,
         characterId: characterId,
-      },
+        cost: w.baseCost,
+        material: 'Iron',
+        craftTier: 1,
+        weight: w.baseWeight,
+        trained: charTraining ? true : false,
+
+      })),
+      skipDuplicates: false,
     });
-  
-    const existingArmorIds = existingArmors.map(cs => cs.armorId);
-    
-    const newArmors = armorList.filter(armorId => !existingArmorIds.includes(armorId));
-  
-    if (newArmors.length > 0) {
-      await prisma.character_armor.createMany({
-        data: newArmors.map(armorId => ({
-          armorId: armorId,
-          characterId: characterId,
-          material: 'Iron'
-        })),
-        skipDuplicates: true, 
-      });
+
+    await prisma.character.update({
+      where: {
+        id: characterId
+      },
+      data: {
+        gold: { decrement: selectedWeapons.map(w => w.baseCost).reduce((accumulator, currentValue) => accumulator + currentValue, 0) }
+      }
+    })
+  }
+
+  return;
+};
+
+export const submitCharArmors = async (armorList: number[], characterId: number) => {
+  const selectedArmors = await prisma.armor.findMany({
+    where: {
+      id: { in: armorList },
+    },
+  });
+
+  const charTraining = await prisma.character_training.findMany({
+    where: {
+      characterId: characterId,
+      trainingId: { in: selectedArmors.map(a => a.trainingId) }
     }
-  
-    return;
-  };
+  })
+
+
+  if (armorList.length > 0) {
+    await prisma.character_armor.createMany({
+      data: selectedArmors.map(a => ({
+        armorId: a.id,
+        characterId: characterId,
+        baseCost: a.baseCost,
+        material: 'Iron',
+        craftTier: 1,
+        defense: a.baseDefense,
+        weight: a.weight,
+        resistanceId: a.resistanceId,
+        trained: charTraining ? true : false,
+
+      })),
+      skipDuplicates: false,
+    });
+
+    await prisma.character.update({
+      where: {
+        id: characterId
+      },
+      data: {
+        gold: { decrement: selectedArmors.map(a => a.baseCost).reduce((accumulator, currentValue) => accumulator + currentValue, 0) }        
+      }
+    })
+   
+  }
+
+  return;
+};

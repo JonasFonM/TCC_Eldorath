@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { weapon, armor, training } from "@prisma/client";
+import { weapon, armor, training, character } from "@prisma/client";
 import { ActionFunction, json, LoaderFunction, redirect } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import { useState } from "react";
@@ -10,100 +10,123 @@ import { submitCharWeapons, submitCharArmors } from "~/utils/inventory.server";
 import { prisma } from "~/utils/prisma.server";
 import { armorWithTraining, weaponWithTraining } from "~/utils/types.server";
 
-export const loader: LoaderFunction = async ({ request }) => {
+export const loader: LoaderFunction = async ({ request, params }) => {
     const userId = await requireUserId(request)
 
-    const weapons = await prisma.weapon.findMany()
+    const characterId = Number(params.id)
 
-    const armors = await prisma.armor.findMany()
+    const character = await prisma.character.findUnique({
+        where: { id: characterId },
+    })
+
+    const weapons = await prisma.weapon.findMany({
+        include: {training: true}
+    })
+
+    const armors = await prisma.armor.findMany({
+        include: {training: true}
+    })
 
 
-    return json({ userId, weapons, armors });
+    return json({ userId, weapons, armors, character });
 }
 
 export const action: ActionFunction = async ({ request, params }) => {
     const form = await request.formData();
     const selectedWeapons = form.getAll('weapons') as string[];
     const selectedWeaponIds = selectedWeapons.map(id => parseInt(id))
+    const selectedArmors = form.getAll('armors') as string[];
+    const selectedArmorIds = selectedArmors.map(id => parseInt(id))
     const characterId = params.id
 
-    if (!selectedWeapons || selectedWeapons.length === 0) {
-        return json({ error: "You must select at least one weapon." }, { status: 400 });
-    }
     try {
         await submitCharWeapons(selectedWeaponIds, Number(characterId))
+        await submitCharArmors(selectedArmorIds, Number(characterId))
         await prisma.charStats.delete({
             where: { characterId: Number(characterId) }
         })
         return redirect(`/characters/${characterId}/`)
     } catch (error) {
         console.error(error);
-        return json({ error: "Failed to save weapons." }, { status: 500 });
+        return json({ error: "Failed to save items." }, { status: 500 });
     }
 
 }
 
 export default function WeaponSelection() {
-    const { weapons, armors } = useLoaderData<{ weapons: weaponWithTraining; armors: armorWithTraining }>();
+    const { weapons, armors, character } = useLoaderData<{ weapons: weaponWithTraining; armors: armorWithTraining; character: character }>();
     const [selectedWeapons, setSelectedWeapons] = useState<number[]>([]);
     const [selectedArmors, setSelectedArmors] = useState<number[]>([]);
+    const [selectedCost, setSelectedCost] = useState<number>(0);
     const [error, setError] = useState<string | null>(null);
-    const maxSelectable = 1;
+    const maxCost = character.gold;
 
 
-    const isMaxSelected = selectedWeapons.length >= maxSelectable;
+    const isMaxSelected = selectedCost >= maxCost;
 
 
-    const handleWeaponClick = (weaponId: number) => {
+    const handleWeaponClick = (weaponId: number, cost: number) => {
         setSelectedWeapons((prevWeapons) => {
             const isSelected = prevWeapons.includes(weaponId);
+            let newCost = selectedCost;
 
-            const newSelectedWeapons = isSelected
-                ? prevWeapons.filter(id => id !== weaponId)
-                : [...prevWeapons, weaponId];
-
-            if (newSelectedWeapons.length > 1) {
-                setError("You can select only 1 weapon.");
-                return prevWeapons;
+            if (isSelected) {
+                // If already selected, deselect and subtract cost
+                newCost -= cost;
+                setSelectedCost(newCost);
+                return prevWeapons.filter(id => id !== weaponId);
             } else {
-                setError(null);
+                // If not selected, check if adding this weapon exceeds the budget
+                if (newCost + cost > maxCost) {
+                    setError("You don't have enough gold.");
+                    return prevWeapons; // No change
+                } else {
+                    newCost += cost;
+                    setSelectedCost(newCost);
+                    setError(null);
+                    return [...prevWeapons, weaponId];
+                }
             }
-
-            return newSelectedWeapons;
         });
     };
 
-    const handleArmorClick = (armorId: number) => {
+    const handleArmorClick = (armorId: number, cost: number) => {
         setSelectedArmors((prevArmors) => {
             const isSelected = prevArmors.includes(armorId);
+            let newCost = selectedCost;
 
-            const newSelectedArmors = isSelected
-                ? prevArmors.filter(id => id !== armorId)
-                : [...prevArmors, armorId];
-
-            if (newSelectedArmors.length > 1) {
-                setError("You can select only 1 armor.");
-                return prevArmors;
+            if (isSelected) {
+                // If already selected, deselect and subtract cost
+                newCost -= cost;
+                setSelectedCost(newCost);
+                return prevArmors.filter(id => id !== armorId);
             } else {
-                setError(null);
+                // If not selected, check if adding this armor exceeds the budget
+                if (newCost + cost > maxCost) {
+                    setError("You don't have enough gold.");
+                    return prevArmors; // No change
+                } else {
+                    newCost += cost;
+                    setSelectedCost(newCost);
+                    setError(null);
+                    return [...prevArmors, armorId];
+                }
             }
-
-            return newSelectedArmors;
         });
     };
-
 
 
 
     return (
         <form method="post">
+            <h2>Gold:{character.gold}</h2>
             <div className="weapons-grid">
                 {weapons.map(weapon => (
                     <WeaponCircle
                         key={weapon.id}
                         weapon={weapon}
                         isSelected={selectedWeapons.includes(weapon.id)}
-                        onClick={() => !isMaxSelected || selectedWeapons.includes(weapon.id) ? handleWeaponClick(weapon.id) : null}
+                        onClick={() => !isMaxSelected || selectedWeapons.includes(weapon.id) ? handleWeaponClick(weapon.id, weapon.baseCost) : null}
                     />
                 ))}
             </div>
@@ -116,17 +139,14 @@ export default function WeaponSelection() {
                     <ArmorCircle
                         key={armor.id}
                         armor={armor}
-                        training={armor.training}
                         isSelected={selectedArmors.includes(armor.id)}
-                        onClick={() => !isMaxSelected || selectedArmors.includes(armor.id) ? handleArmorClick(armor.id) : null}
+                        onClick={() => !isMaxSelected || selectedArmors.includes(armor.id) ? handleArmorClick(armor.id, armor.baseCost) : null}
                     />
                 ))}
             </div>
             {selectedArmors.map(armorId => (
                 <input type="hidden" key={armorId} name="armors" value={armorId} />
             ))}
-
-            {error && <p>{error}</p>}
 
             {error && <p>{error}</p>}
 

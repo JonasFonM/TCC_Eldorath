@@ -20,6 +20,7 @@ export function WeaponCircle({ weapon, isSelected, onClick }: Props) {
       <p>Training:{weapon.training?.name}</p>
       <p>Cost:{weapon.baseCost}</p>
       <p>Weight:{weapon.baseWeight}</p>
+      <p>Reach/Range:{weapon.baseReach}</p>
     </div>
   );
 }

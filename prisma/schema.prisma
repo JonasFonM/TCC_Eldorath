@@ -235,6 +235,7 @@ model weapon {
   type weaponType
   baseWeight Int @default(0)
   baseCost Int @default(0)
+  baseReach Int @default(1)
 
   trainingId Int
   training training @relation(fields: [trainingId], references: [id])
@@ -247,7 +248,7 @@ model character_weapon {
   weaponId Int
   craftTier Int @default(1)
   material material
-  baseReach Int @default(1)
+  reach Int @default(1)
   weight Int @default(0)
   cost Int @default(0)
   wielding Boolean @default(false)

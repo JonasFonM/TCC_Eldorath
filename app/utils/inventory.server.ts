@@ -25,6 +25,7 @@ export const submitCharWeapons = async (weaponList: number[], characterId: numbe
         material: 'Iron',
         craftTier: 1,
         weight: w.baseWeight,
+        reach: w.baseReach,
         trained: charTraining ? true : false,
 
       })),
@@ -42,6 +43,12 @@ export const submitCharWeapons = async (weaponList: number[], characterId: numbe
   }
 
   return;
+};
+
+export const deleteWeaponById = async (id: number) => {
+  await prisma.character_weapon.delete({
+    where: {id: id}
+  })
 };
 
 export const submitCharArmors = async (armorList: number[], characterId: number) => {

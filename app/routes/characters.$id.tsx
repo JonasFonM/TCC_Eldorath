@@ -7,8 +7,10 @@ import { createStats } from "~/utils/character.server";
 import { LineageCircle } from "~/components/lineage-circle";
 import { LSrelations, trainingWithTier } from "~/utils/types.server";
 import { TrainingCircle } from "~/components/training-circle";
-import { character, charStats, lineage, path, resistances, skill } from "@prisma/client";
+import { armor, character, character_armor, character_weapon, charStats, lineage, path, resistances, skill, weapon } from "@prisma/client";
 import { PathCircle } from "~/components/path-circle";
+import { CharacterWeaponCircle } from "~/components/c-weapon-circle";
+import { CharacterArmorCircle } from "~/components/c-armor-circle";
 
 export const loader: LoaderFunction = async ({ params }) => {
   const characterId = Number(params.id);
@@ -87,13 +89,28 @@ export const loader: LoaderFunction = async ({ params }) => {
     }
   })
 
-  return json({ skills, trainingsWithTier, pureLineageSkills, nonPureLineageSkills, character, characterId, stats, lineages, isPure, paths, resistances });
+  const weapons = await prisma.character_weapon.findMany({
+    where: {
+      characterId: characterId
+    },
+    include: { weapon: true }
+  })
+
+  const armors = await prisma.character_armor.findMany({
+    where: {
+      characterId: characterId
+    },
+    include: { armor: true }
+  })
+
+  return json({ skills, trainingsWithTier, pureLineageSkills, nonPureLineageSkills, character, characterId, stats, lineages, isPure, paths, resistances, weapons, armors });
 };
 
 export default function CharacterRoute() {
   const { character, characterId } = useLoaderData<{ character: character, characterId: string }>()
   const { skills, pureLineageSkills, nonPureLineageSkills, trainingsWithTier } = useLoaderData<{ skills: skill[], pureLineageSkills: LSrelations, nonPureLineageSkills: LSrelations, trainingsWithTier: trainingWithTier }>();
   const { lineages, isPure } = useLoaderData<{ lineages: lineage[], isPure: boolean }>();
+  const { weapons, armors } = useLoaderData<{ weapons: (character_weapon & { weapon: weapon })[], armors: (character_armor & { armor: armor })[] }>();
   const { paths } = useLoaderData<{ paths: path[] }>();
 
   const { stats, resistances } = useLoaderData<{ stats: charStats; resistances: resistances }>()
@@ -239,6 +256,38 @@ export default function CharacterRoute() {
                 onClick={() => null}
               />
             ))}
+          </div>
+        </div>
+
+        <div className="col-12">
+          <h2>Inventory</h2>
+          <h3>Gold: {character.gold}</h3>
+          <h3>Carried Weight: {weapons.map(weapons => weapons.weight).reduce((accumulator, currentValue) => accumulator + currentValue, 0)}/{stats.carryCap}</h3>
+          <div className="col-6">
+            <h2>Weapons</h2>
+            <div className="weapons-grid">
+              {weapons.map(weapon => (
+                <CharacterWeaponCircle
+                  key={weapon.id}
+                  weapon={weapon}
+                  isSelected={false}
+                  onClick={() => null}
+                />
+              ))}
+            </div>
+          </div>
+          <div className="col-6">
+            <h2>Armors</h2>
+            <div className="armors-grid">
+                {armors.map(armor => (
+                    <CharacterArmorCircle
+                        key={armor.id}
+                        armor={armor}
+                        isSelected={false}
+                        onClick={() => null}
+                    />
+                ))}
+            </div>
           </div>
         </div>
       </main>

@@ -14,7 +14,7 @@ interface Props {
 export function CharacterArmorCircle({ armor, isSelected, onClick }: Props) {
     
     return (
-    <div onClick={onClick} style={{ border: isSelected ? '2px solid green' : '1px solid gray', padding: '5%', borderRadius: '2%' }}>
+    <div onClick={onClick} className='grid-item' style={{ border: isSelected ? '2px solid green' : '1px solid gray', padding: '5%', borderRadius: '2%' }}>
       <h3>{armor.armor.name}</h3>
       <p>{armor.armor.description}</p>
       <p style={{color: armor.trained ? 'green' : 'red'}}>{armor.trained ? 'Trained' : 'Not Trained'}</p>

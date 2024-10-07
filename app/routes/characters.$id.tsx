@@ -126,10 +126,9 @@ export default function CharacterRoute() {
           <NavLink to={`/characters/new/${characterId}/inventory`}>Items</NavLink>
         </div>
 
-        <h2> {character.name}</h2>
-        <div className="col-12">
-          <h2>{paths.map(path => path.name)}</h2>
-        </div>
+        <h2>{character.name}</h2>
+
+        <h2>{paths.map(path => path.name)}</h2>
 
         <h2>Progression</h2>
 
@@ -185,110 +184,96 @@ export default function CharacterRoute() {
           <div className="block">Sacred Damage Resistance:{resistances.sacredRes}</div>
         </div>
 
-        <div className="col-6">
-          <h2>Skills</h2>
-          <div className="skills-grid">
-            {skills.map(skill => (
-              <SkillCircle
-                key={skill.id}
-                skill={skill}
-                isSelected={false}
-                onClick={() => null}
-                isPureLineage={false}
-              />
-            ))}
-          </div>
-        </div>
-
-        <div className="col-6">
-          <h2>Lineages</h2>
-          {lineages.map(lineage => (
-            <LineageCircle key={lineage.id} lineage={lineage} isSelected={false}
-              onClick={() => null} />
+        <h2>Skills</h2>
+        <div className="skills-grid">
+          {skills.map(skill => (
+            <SkillCircle
+              key={skill.id}
+              skill={skill}
+              isSelected={false}
+              onClick={() => null}
+              isPureLineage={false}
+            />
           ))}
-          {isPure ? <div className="pure-lineage-skills">
-            {pureLineageSkills.map(ls => (
-              <SkillCircle
-                key={ls.skill.id}
-                skill={ls.skill}
-                isSelected={false}
-                onClick={() => null}
-                isPureLineage={true}
-              />
-            ))}
-          </div> : null}
-
-          <div className="nonpure-lineage-skills">
-            {nonPureLineageSkills.map(ls => (
-              <SkillCircle
-                key={ls.skill.id}
-                skill={ls.skill}
-                isSelected={false}
-                onClick={() => null}
-                isPureLineage={false}
-              />
-            ))}
-          </div>
         </div>
 
-        <div className="col-6">
-          <h2>Paths</h2>
-          <div className="trainings-grid">
-            {paths.map(pa => (
-              <PathCircle
-                key={pa.id}
-                path={pa}
-                isSelected={false}
-                onClick={() => null}
-              />
-            ))}
-          </div>
+        <h2>Lineages</h2>
+        {lineages.map(lineage => (
+          <LineageCircle key={lineage.id} lineage={lineage} isSelected={false}
+            onClick={() => null} />
+        ))}
+        {isPure ? <div className="pure-lineage-skills">
+          {pureLineageSkills.map(ls => (
+            <SkillCircle
+              key={ls.skill.id}
+              skill={ls.skill}
+              isSelected={false}
+              onClick={() => null}
+              isPureLineage={true}
+            />
+          ))}
+        </div> : null}
+
+        <div className="nonpure-lineage-skills">
+          {nonPureLineageSkills.map(ls => (
+            <SkillCircle
+              key={ls.skill.id}
+              skill={ls.skill}
+              isSelected={false}
+              onClick={() => null}
+              isPureLineage={false}
+            />
+          ))}
         </div>
 
-        <div className="col-6">
-          <h2>Trainings</h2>
-          <div className="trainings-grid">
-            {trainingsWithTier.map(tt => (
-              <TrainingCircle
-                key={tt.training.id}
-                training={tt.training}
-                isSelected={false}
-                onClick={() => null}
-              />
-            ))}
-          </div>
+        <h2>Paths</h2>
+        <div className="trainings-grid">
+          {paths.map(pa => (
+            <PathCircle
+              key={pa.id}
+              path={pa}
+              isSelected={false}
+              onClick={() => null}
+            />
+          ))}
         </div>
 
-        <div className="col-12">
-          <h2>Inventory</h2>
-          <h3>Gold: {character.gold}</h3>
-          <h3>Carried Weight: {weapons.map(weapons => weapons.weight).reduce((accumulator, currentValue) => accumulator + currentValue, 0)}/{stats.carryCap}</h3>
-          <div className="col-6">
-            <h2>Weapons</h2>
-            <div className="weapons-grid">
-              {weapons.map(weapon => (
-                <CharacterWeaponCircle
-                  key={weapon.id}
-                  weapon={weapon}
-                  isSelected={false}
-                  onClick={() => null}
-                />
-              ))}
-            </div>
-          </div>
-          <div className="col-6">
-            <h2>Armors</h2>
-            <div className="armors-grid">
-                {armors.map(armor => (
-                    <CharacterArmorCircle
-                        key={armor.id}
-                        armor={armor}
-                        isSelected={false}
-                        onClick={() => null}
-                    />
-                ))}
-            </div>
-          </div>
+        <h2>Trainings</h2>
+        <div className="trainings-grid">
+          {trainingsWithTier.map(tt => (
+            <TrainingCircle
+              key={tt.training.id}
+              training={tt.training}
+              isSelected={false}
+              onClick={() => null}
+            />
+          ))}
+        </div>
+
+        <h2>Inventory</h2>
+        <h3>Gold: {character.gold}</h3>
+        <h3>Carried Weight: {weapons.map(weapons => weapons.weight).reduce((accumulator, currentValue) => accumulator + currentValue, 0)}/{stats.carryCap}</h3>
+        <h2>Weapons</h2>
+        <div className="weapons-grid">
+          {weapons.map(weapon => (
+            <CharacterWeaponCircle
+              key={weapon.id}
+              weapon={weapon}
+              isSelected={false}
+              onClick={() => null}
+            />
+          ))}
+        </div>
+        <h2>Armors</h2>
+        <div className="armors-grid">
+          {armors.map(armor => (
+            <CharacterArmorCircle
+              key={armor.id}
+              armor={armor}
+              isSelected={false}
+              onClick={() => null}
+            />
+          ))}
         </div>
       </main>
     </>

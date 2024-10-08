@@ -1,5 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import { weapon, armor, training, character } from "@prisma/client";
+import { character } from "@prisma/client";
 import { ActionFunction, json, LoaderFunction, redirect } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import { useState } from "react";

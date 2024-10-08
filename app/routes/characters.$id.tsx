@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { json, LoaderFunction, } from "@remix-run/node";
-import { NavLink, useLoaderData } from "@remix-run/react";
+import { NavLink, Outlet, useLoaderData } from "@remix-run/react";
 import { prisma } from "~/utils/prisma.server";
 import { SkillCircle } from "~/components/skill-circle";
 import { createStats } from "~/utils/character.server";
@@ -117,7 +117,9 @@ export default function CharacterRoute() {
 
   return (
     <>
+
       <main>
+
         <div className="topnav">
           <NavLink to={`/characters/new/${characterId}/skills`}>Skills</NavLink>
           <NavLink to={`/characters/new/${characterId}/lineages`}>Lineages</NavLink>
@@ -125,6 +127,10 @@ export default function CharacterRoute() {
           <NavLink to={`/characters/new/${characterId}/trainings`}>Trainings</NavLink>
           <NavLink to={`/characters/new/${characterId}/inventory`}>Items</NavLink>
         </div>
+
+        <NavLink to={`/characters/${characterId}/delete`}>Delete Character</NavLink>
+
+        <Outlet />
 
         <h2>{character.name}</h2>
 

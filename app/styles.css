@@ -4,7 +4,6 @@
 }
 
 body {
-  margin: 0;
   background-color: #121212; /* Dark background */
   color: #ffffff; /* White text */
   display: flex;
@@ -60,10 +59,10 @@ h3 {
 }
 
 .container {
-  margin: 0 auto;
   width: 100%;
   max-width: 1200px;
   display: flex;
+  justify-content: center;
   flex-wrap: wrap;
 }
 
@@ -246,15 +245,13 @@ li:last-child {
 
 @media (max-width: 900px) {
   .grid-item {
-      width: 12%; /* Adjusted fixed width for grid items */
-      height: 12%; /* Adjusted fixed height for grid items */
+      width: 40%; /* Adjusted fixed width for grid items */
   }
 }
 
 @media (max-width: 600px) {
   .grid-item {
-      width: 100px; /* Adjusted fixed width for smaller screens */
-      height: 100px; /* Adjusted fixed height for smaller screens */
+      width: 65%; /* Adjusted fixed width for smaller screens */
   }
 }
 

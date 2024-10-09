@@ -165,7 +165,7 @@ export default function SkillSelectionRoute() {
       {selectedSkills.map(skillId => (
         <input type="hidden" key={skillId} name="skills" value={skillId} />
       ))}
-      <button type="submit" className="submit-button">Submit Skills</button>
+      <button type="submit" className="button">Submit Skills</button>
     </form>
   );
 }

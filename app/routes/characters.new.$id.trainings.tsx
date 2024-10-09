@@ -156,7 +156,7 @@ export default function TrainingSelectionRoute() {
         <input type="hidden" key={trainingId} name="trainings" value={trainingId} />
       ))}
 
-      <button type="submit" className="submit-button">Submit Trainings</button>
+      <button type="submit" className="button">Submit Trainings</button>
     </form>
   );
 }

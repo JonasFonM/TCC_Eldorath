@@ -50,7 +50,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
           <NavLink to={`/home`}>Home</NavLink>
           <NavLink to={`/campaigns`}>Campaigns</NavLink>
           <NavLink to={`/characters`}>Characters</NavLink>
-          <NavLink to={`/logout`}>Logout</NavLink>
+          <NavLink className={'logout'} to={`/logout`}>Logout</NavLink>
         </div>
         {children}
         <ScrollRestoration />

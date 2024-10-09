@@ -18,9 +18,7 @@ export default function Home() {
     <>
       <h1>Welcome</h1>
       <main>
-        <div className="container">
           <UserPanel users={users} />
-        </div>
       </main>
     </>
   )

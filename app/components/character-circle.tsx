@@ -11,7 +11,7 @@ className?: string
 
 export function CharacterCircle({ character }: props) {
   return (
-    <NavLink to={`/characters/${character.id}`} className={"block"}>
+    <NavLink to={`/characters/${character.id}`}>
       <h2>
         {character.name.toUpperCase()}
       </h2>

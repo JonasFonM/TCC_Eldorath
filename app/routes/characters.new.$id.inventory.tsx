@@ -149,7 +149,7 @@ export default function WeaponSelection() {
 
             {error && <p>{error}</p>}
 
-            <button type="submit" className="submit-button">Submit Items</button>
+            <button type="submit" className="button">Submit Items</button>
         </form>
     );
 }

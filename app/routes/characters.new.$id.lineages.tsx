@@ -88,7 +88,7 @@ export default function LineageSelection() {
             
             {error && <p>{error}</p>}
             
-            <button type="submit" className="submit-button">Submit Lineages</button>
+            <button type="submit" className="button">Submit Lineages</button>
         </form>
     );
 }

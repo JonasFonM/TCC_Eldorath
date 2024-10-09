@@ -93,7 +93,7 @@ export default function PathSelection() {
 
             {error && <p>{error}</p>}
 
-            <button type="submit" className="submit-button">Submit Paths</button>
+            <button type="submit" className="button">Submit Paths</button>
         </form>
     );
 }

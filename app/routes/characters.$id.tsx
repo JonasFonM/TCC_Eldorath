@@ -117,20 +117,19 @@ export default function CharacterRoute() {
 
   return (
     <>
+      <div className="topnav">
+        <NavLink to={`/characters/new/${characterId}/skills`}>Skills</NavLink>
+        <NavLink to={`/characters/new/${characterId}/lineages`}>Lineages</NavLink>
+        <NavLink to={`/characters/new/${characterId}/paths`}>Paths</NavLink>
+        <NavLink to={`/characters/new/${characterId}/trainings`}>Trainings</NavLink>
+        <NavLink to={`/characters/new/${characterId}/inventory`}>Items</NavLink>
+      </div>
+      <NavLink to={`/characters/${characterId}/delete`}>Delete Character</NavLink>
 
+      <Outlet />
       <main>
 
-        <div className="topnav">
-          <NavLink to={`/characters/new/${characterId}/skills`}>Skills</NavLink>
-          <NavLink to={`/characters/new/${characterId}/lineages`}>Lineages</NavLink>
-          <NavLink to={`/characters/new/${characterId}/paths`}>Paths</NavLink>
-          <NavLink to={`/characters/new/${characterId}/trainings`}>Trainings</NavLink>
-          <NavLink to={`/characters/new/${characterId}/inventory`}>Items</NavLink>
-        </div>
 
-        <NavLink to={`/characters/${characterId}/delete`}>Delete Character</NavLink>
-
-        <Outlet />
 
         <h2>{character.name}</h2>
 

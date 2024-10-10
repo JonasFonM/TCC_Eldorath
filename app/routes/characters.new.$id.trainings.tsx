@@ -109,6 +109,7 @@ export const action: ActionFunction = async ({ request, params }) => {
 export default function TrainingSelectionRoute() {
   const { selectable_trainings, pathTrainings } = useLoaderData<{ selectable_trainings: training[], pathTrainings: PTrelations }>();
   const [selectedTrainings, setSelectedTrainings] = useState<number[]>([]);
+  const hasPath = pathTrainings.length >= 1;
 
   const handleTrainingClick = (trainingId: number) => {
     setSelectedTrainings((prevTrainings) => {
@@ -117,7 +118,7 @@ export default function TrainingSelectionRoute() {
         isSelected ? prevTrainings.filter(id => id !== trainingId) : [...prevTrainings, trainingId];
 
       if (newSelectedTrainings.length > 1) {
-        alert("You can select only 1 path.");
+        alert("You can select only 1 training.");
         return prevTrainings;
       }
       return newSelectedTrainings
@@ -126,7 +127,7 @@ export default function TrainingSelectionRoute() {
 
   return (
     <form method="post">
-      <h2>Trainings gained from your Paths</h2>
+      <h2 style={{ display: hasPath ? 'block' : 'none'}}>Trainings gained from your Paths</h2>
       <div className="path-trainings">
         {pathTrainings.map(pt => (
           <TrainingCircle

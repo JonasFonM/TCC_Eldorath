@@ -90,7 +90,6 @@ export default function PathSelection() {
             {selectedPaths.map(pathId => (
                 <input type="hidden" key={pathId} name="paths" value={pathId} />
             ))}
-
             {error && <p>{error}</p>}
 
             <button type="submit" className="button">Submit Paths</button>

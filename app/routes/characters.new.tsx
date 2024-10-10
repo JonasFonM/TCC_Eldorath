@@ -12,7 +12,6 @@ export default function NewCharacterRoute() {
 
   return (
     <div>
-      <h1>Character Creation</h1>
       <main>
         <Outlet />
       </main>

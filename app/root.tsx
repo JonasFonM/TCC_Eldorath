@@ -44,19 +44,25 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <Meta />
         <Links />
+
+
+
       </head>
       <body>
-        <div className="topnav">
-          <NavLink to={`/home`}>Home</NavLink>
-          <NavLink to={`/campaigns`}>Campaigns</NavLink>
-          <NavLink to={`/characters`}>Characters</NavLink>
-          <NavLink className={'logout'} to={`/logout`}>Logout</NavLink>
-        </div>
+
+        <ul className="topnav">
+          <li><NavLink to={`/home`}>Home</NavLink></li>
+          <li><NavLink to={`/campaigns`}>Campaigns</NavLink></li>
+          <li><NavLink to={`/characters`}>Characters</NavLink></li>
+          <li style={{ float: 'right' }}><NavLink className={'logout'} to={`/logout`}>Logout</NavLink></li>
+        </ul>
+
+
         {children}
         <ScrollRestoration />
         <Scripts />
 
-        
+
       </body>
 
 
@@ -85,7 +91,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
           <button id="d20" className="dice" type="button" onClick={() => rollDice(20)}>D20</button>
           <button id="d100" className="dice" type="button" onClick={() => rollDice(100)}>D100</button>
         </div>
-        */ 
+        */
 
 
 export default function App() {

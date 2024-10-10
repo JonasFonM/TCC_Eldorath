@@ -107,7 +107,7 @@ export default function Login() {
 
   return (
 
-    <div>
+    <div className='container'>
       <div>
         <button
           onClick={() => setAction(action == 'login' ? 'register' : 'login')}>

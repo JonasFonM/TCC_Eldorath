@@ -154,7 +154,7 @@ li a:hover {
   padding: 20px;
   width: 30%;
   /* Fixed width */
-  display: inline-flex;
+  display: flex;
   position: relative;
   flex-direction: column;
   align-items: center;
@@ -172,12 +172,11 @@ li a:hover {
   background-color: #1f1f1f;
   border: 1px solid #333;
   border-radius: 5px;
-  margin: 10px auto;
-  
+  margin: 10px auto;  
   padding: 20px;
-  width: 32%;
+  width: 30%;
   /* Fixed width for grid items */
-  display: inline-block;
+  display: flex;
   position: relative;
   flex-direction: column;
   justify-content: center;
@@ -187,7 +186,6 @@ li a:hover {
 
 .grid-item:hover {
   background-color: #575757;
-  transform: scale(1.02);
 }
 
 .dropdown {
@@ -200,12 +198,15 @@ li a:hover {
   position: absolute;
   background-color: #000000;
   width: 100%;
-  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  top: 100%;
+  margin: 0 auto;
+  left:0;
   padding: 12px 16px;
-  z-index: 5;
+  z-index: 10;
+  transition: 0.3s ease;
 }
 
-.dropdown:hover .dropdown-content {
+.grid-item:hover .dropdown-content {
   display: block;
 }
 
@@ -382,7 +383,6 @@ ul.log,
 }
 
 .skills-grid div:hover, .trainings-grid div:hover, .weapons-grid div:hover, .armors-grid div:hover, .block:hover {
-  transform: scale(1.05); /* slight zoom effect */
   transition: transform 0.2s;
 }
 

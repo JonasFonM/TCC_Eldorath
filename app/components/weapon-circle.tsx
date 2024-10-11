@@ -14,7 +14,7 @@ interface Props {
 export function WeaponCircle({ weapon, isSelected, onClick }: Props) {
     
     return (
-    <div onClick={onClick} className='dropdown' style={{ border: isSelected ? '1px solid green' : '1px solid gray', padding: '5%', borderRadius: '2%' }}>
+    <div onClick={onClick} className='grid-item' style={{ border: isSelected ? '1px solid green' : '1px solid gray', padding: '5%', borderRadius: '2%' }}>
       <div>
       <h3>{weapon.name}</h3>
       <p>{weapon.description}</p>

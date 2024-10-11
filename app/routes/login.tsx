@@ -107,15 +107,15 @@ export default function Login() {
 
   return (
 
-    <div className='container'>
+    <div>
       <div>
-        <button
+        <button className='button'
           onClick={() => setAction(action == 'login' ? 'register' : 'login')}>
-          {action === 'login' ? 'Sign Up' : 'Sign In'}
+          {action === 'login' ? 'Sign Up' : 'Log In'}
         </button>
         {/* ... */}
       </div>
-      <h2 className="font-semibold text-slate-300">
+      <h2>
         {action === 'login' ? 'Log In' : 'Sign Up'}
       </h2>
       <form method="POST" onSubmit={handleSubmit}>
@@ -154,8 +154,8 @@ export default function Login() {
           </>
         )}
 
-        <div className="block">
-          <button type="submit" name="_action" value={action} className="rounded-xl mt-2 bg-yellow-300 px-3 py-2 text-blue-600 font-semibold transition duration-300 ease-in-out hover:bg-yellow-400 hover:-translate-y-1">
+        <div className='block'>
+          <button type="submit" name="_action" value={action} className="login-button">
             {
               action === 'login' ? "Sign In" : "Sign Up"
             }

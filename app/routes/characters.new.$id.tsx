@@ -14,6 +14,7 @@ export default function NewCharacterRoute() {
     return (
         <>
             <ul className="charnav">
+                <li><NavLink to={`/characters/${characterId}`}>Overall</NavLink></li>
                 <li><NavLink to={`/characters/new/${characterId}/skills`}>Skills</NavLink></li>
                 <li><NavLink to={`/characters/new/${characterId}/lineages`}>Lineages</NavLink></li>
                 <li><NavLink to={`/characters/new/${characterId}/paths`}>Paths</NavLink></li>

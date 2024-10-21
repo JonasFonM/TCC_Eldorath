@@ -37,7 +37,7 @@ export function CharacterCircle({ character }: props) {
           {character.name.toUpperCase()}
         </h2>
       </NavLink>
-      <DeleteConfirm name={character.name} isHidden={selectedDelete === 0} onShow={showDelete} onCancel={cancelDelete} entity={"characters"} id={String(character.id)} />
+      <DeleteConfirm name={character.name} isHidden={selectedDelete === 0} onShow={showDelete} onCancel={cancelDelete} entity={"character"} id={String(character.id)} />
     </>
   )
 }

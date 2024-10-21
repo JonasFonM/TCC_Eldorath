@@ -23,7 +23,7 @@ export function DeleteConfirm({ name, isHidden, onShow, onCancel, entity, id }: 
           <h2 style={{ color: "black" }}>Are you sure you want to delete {name}?</h2>
           <div className="modal-buttons">
             <input placeholder="Type DELETE to confirm" value={confirmText} onChange={(e) => setConfirmText(e.target.value)}></input>
-            <NavLink to={`/${entity}/delete/${id}`}> <button className="btn-delete" disabled={!isConfirmed}>DELETE</button></NavLink>
+            <NavLink to={`/delete/${entity}/${id}`}> <button className="btn-delete" disabled={!isConfirmed}>DELETE</button></NavLink>
             <button onClick={onCancel} className="btn-cancel">CANCEL</button>
           </div>
         </div>

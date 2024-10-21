@@ -13,7 +13,6 @@ export const loader: LoaderFunction = async ({ params }) => {
         throw new Response("Character not found", { status: 404 });
     }
 
-    // Delete the character
     await prisma.character_armor.deleteMany({
         where: { characterId: characterId },
     });
@@ -41,5 +40,5 @@ export const loader: LoaderFunction = async ({ params }) => {
         where: { id: characterId },
     });
 
-    return redirect('/characters'); // Redirect to the character list or a relevant page after deletion
+    return redirect('/characters');
 };

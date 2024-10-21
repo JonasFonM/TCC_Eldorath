@@ -241,6 +241,69 @@ li a:hover {
   /* Darker shade for hover */
 }
 
+/* Modal overlay */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.7); /* semi-transparent background */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000; /* Ensure it's on top of other content */
+}
+
+/* Modal content */
+.modal-content {
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+  max-width: 500px;
+  width: 100%;
+  text-align: center;
+}
+
+/* Button styles */
+.modal-buttons {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 20px;
+}
+
+.btn-delete {
+  background-color: red;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.btn-cancel {
+  background-color: gray;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.btn-delete:hover, .btn-cancel:hover {
+  opacity: 0.8;
+}
+
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.modal-overlay {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
 .login-button {
   background-color: #008CBA;
   border: none;

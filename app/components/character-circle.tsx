@@ -3,18 +3,41 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { character } from '@prisma/client'
 import { NavLink } from '@remix-run/react'
+import { DeleteConfirm } from './delete-confirmation'
+import { useState } from 'react'
 
 interface props {
-character: character
-className?: string
+  character: character
+  className?: string
 }
 
 export function CharacterCircle({ character }: props) {
+
+  const [selectedDelete, setSelectedDelete] = useState<number>(0);
+
+
+    const showDelete = () => {
+        setSelectedDelete(() => {
+          return character.id;
+        });
+      };
+
+    const cancelDelete = () => {
+        setSelectedDelete(() => {
+            return 0
+        });
+    };
+
+    console.log(selectedDelete)
+
   return (
-    <NavLink to={`/characters/${character.id}`}>
-      <h2>
-        {character.name.toUpperCase()}
-      </h2>
-    </NavLink>
+    <>
+      <NavLink to={`/characters/${character.id}`}>
+        <h2>
+          {character.name.toUpperCase()}
+        </h2>
+      </NavLink>
+      <DeleteConfirm name={character.name} isHidden={selectedDelete === 0} onShow={showDelete} onCancel={cancelDelete} onClick={() => null} />
+    </>
   )
 }

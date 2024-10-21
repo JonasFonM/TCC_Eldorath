@@ -34,7 +34,7 @@ export const action: ActionFunction = async ({ request }) => {
 
     return (
       json({ character }, { status: 201 }),
-      redirect(`/characters/new/${character}/lineages`)
+      redirect(`/characters/${character}`)
     );
   } catch (error) {
     console.error(error);

@@ -106,7 +106,9 @@ export default function Login() {
   };
 
   return (
-
+      <>
+      <h1 className='title-screen'>Welcome<br></br>to<br></br> Aeternida</h1>
+      
     <div>
       <div>
         <button className='button'
@@ -163,5 +165,6 @@ export default function Login() {
         </div>
       </form>
     </div>
+    </>
   )
 }

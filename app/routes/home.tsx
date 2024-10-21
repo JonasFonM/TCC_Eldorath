@@ -16,7 +16,7 @@ export default function Home() {
   const { users } = useLoaderData<any>()
   return (
     <>
-      <h1 className='title-screen'>Welcome <br></br>to<br></br> Aeternida</h1>
+      <h1 className='title-screen'>Welcome<br></br>to<br></br> Aeternida</h1>
       <main>
           <UserPanel users={users} />
       </main>

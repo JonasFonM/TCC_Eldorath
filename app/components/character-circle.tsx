@@ -2,7 +2,7 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { character } from '@prisma/client'
-import { NavLink } from '@remix-run/react'
+import { NavLink, } from '@remix-run/react'
 import { DeleteConfirm } from './delete-confirmation'
 import { useState } from 'react'
 
@@ -11,24 +11,24 @@ interface props {
   className?: string
 }
 
+
 export function CharacterCircle({ character }: props) {
 
   const [selectedDelete, setSelectedDelete] = useState<number>(0);
 
+  const showDelete = () => {
+    setSelectedDelete(() => {
+      return character.id;
+    });
+  };
 
-    const showDelete = () => {
-        setSelectedDelete(() => {
-          return character.id;
-        });
-      };
+  const cancelDelete = () => {
+    setSelectedDelete(() => {
+      return 0
+    });
+  };
 
-    const cancelDelete = () => {
-        setSelectedDelete(() => {
-            return 0
-        });
-    };
-
-    console.log(selectedDelete)
+  console.log(selectedDelete)
 
   return (
     <>
@@ -37,7 +37,7 @@ export function CharacterCircle({ character }: props) {
           {character.name.toUpperCase()}
         </h2>
       </NavLink>
-      <DeleteConfirm name={character.name} isHidden={selectedDelete === 0} onShow={showDelete} onCancel={cancelDelete} onClick={() => null} />
+      <DeleteConfirm name={character.name} isHidden={selectedDelete === 0} onShow={showDelete} onCancel={cancelDelete} entity={"characters"} id={String(character.id)} />
     </>
   )
 }

@@ -125,7 +125,6 @@ export default function CharacterRoute() {
         <li><NavLink to={`/characters/new/${characterId}/trainings`}>Trainings</NavLink></li>
         <li><NavLink to={`/characters/new/${characterId}/inventory`}>Items</NavLink></li>
       </ul>
-      <NavLink to={`/characters/${characterId}/delete`}>Delete Character</NavLink>
 
       <Outlet />
       <main>

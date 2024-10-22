@@ -149,7 +149,6 @@ export default function NewCharacterRoute() {
     };
 
     return (
-        <div className="container">
             <form method="post" onSubmit={handleSubmit}>
 
                 <div className="container">
@@ -205,6 +204,5 @@ export default function NewCharacterRoute() {
                     <button className="button" type="submit">Submit</button>
                 </div>
             </form>
-        </div>
     );
 }

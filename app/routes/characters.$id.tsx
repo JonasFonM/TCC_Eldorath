@@ -131,24 +131,24 @@ export default function CharacterRoute() {
 
 
 
-        <h2>{character.name}</h2>
+        <h1>{character.name}</h1>
 
         <h2>{paths.map(path => path.name)}</h2>
 
         <h2>Progression</h2>
 
         <div className="container">
-          <div className="block">Level:{character.level}</div>
-          <div className="block">Tier:{character.tier}</div>
+          <div className="block"><h1>{character.level}</h1>Level</div>
+          <div className="block"><h1>{character.tier}</h1>Tier</div>
         </div>
 
         <h2>Attributes</h2>
 
 
         <div className="container">
-          <div className="block">Agility:{character.agility}</div>
-          <div className="block">Body:{character.body}</div>
-          <div className="block">Mind:{character.mind}</div>
+          <div className="block"><h1>{character.agility}</h1>Agility</div>
+          <div className="block"><h1>{character.body}</h1>Body</div>
+          <div className="block"><h1>{character.mind}</h1>Mind</div>
         </div>
         <NavLink to={`/characters/update/${characterId}/basic`} className="button">Reasign Attributes</NavLink>
 
@@ -156,15 +156,15 @@ export default function CharacterRoute() {
         <h2>Stats</h2>
 
         <div className="container">
-          <div className="block">Vitality:{stats.vitality}</div>
-          <div className="block">Vigor:{stats.vigor}</div>
-          <div className="block">Power:{stats.power}</div>
-          <div className="block">Speed:{stats.speed}</div>
-          <div className="block">Defense:{stats.defense}</div>
-          <div className="block">Initiative:{stats.initiative}</div>
-          <div className="block">Weight:{stats.baseWeight}</div>
-          <div className="block">Carry Capacity:{stats.carryCap}</div>
-          <div className="block">Lifting Capacity:{stats.liftCap}</div>
+          <div className="block"><h1>{stats.vitality}</h1>Vitality</div>
+          <div className="block"><h1>{stats.vigor}</h1>Vigor</div>
+          <div className="block"><h1>{stats.power}</h1>Power</div>
+          <div className="block"><h1>{stats.speed}</h1>Speed</div>
+          <div className="block"><h1>{stats.defense}</h1>Defense</div>
+          <div className="block"><h1>{stats.initiative}</h1>Initiative</div>
+          <div className="block"><h1>{stats.baseWeight}</h1>Weight</div>
+          <div className="block"><h1>{stats.carryCap}</h1>Carry Capacity</div>
+          <div className="block"><h1>{stats.liftCap}</h1>Lifting Capacity</div>
         </div>
 
         <h2>Resistances</h2>

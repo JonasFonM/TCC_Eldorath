@@ -20,6 +20,24 @@ export const createCharacter = async (character: CharacterForm) => {
   return { id: newcharacter.id, name: character.name, tier: character.tier, agility: character.agility, body: character.body, mind: character.mind, authorId: character.authorId }
 }
 
+export const updateCharacter = async (character: CharacterForm, characterId: number) => {
+  const updatedCharacter = await prisma.character.update({
+    where:{
+      id: characterId 
+    }
+    ,
+    data: {
+      name: character.name,
+      level: character.level,
+      tier: character.tier,
+      agility: character.agility,
+      body: character.body,
+      mind: character.mind,
+      },
+  })
+  return { id: updatedCharacter.id, name: character.name, tier: character.tier, agility: character.agility, body: character.body, mind: character.mind, authorId: character.authorId }
+}
+
 export async function submitCharacter(character: CharacterForm) {
   const newcharacter = await createCharacter(character)
   if (!newcharacter) {

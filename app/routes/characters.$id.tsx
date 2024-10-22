@@ -144,11 +144,14 @@ export default function CharacterRoute() {
 
         <h2>Attributes</h2>
 
+
         <div className="container">
           <div className="block">Agility:{character.agility}</div>
           <div className="block">Body:{character.body}</div>
           <div className="block">Mind:{character.mind}</div>
         </div>
+        <NavLink to={`/characters/update/${characterId}/basic`} className="button">Reasign Attributes</NavLink>
+
 
         <h2>Stats</h2>
 

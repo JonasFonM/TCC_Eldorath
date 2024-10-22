@@ -11,9 +11,12 @@ interface Props {
 
 export function LineageCircle({ lineage, isSelected, onClick }: Props) {
   return (
-    <div onClick={onClick} style={{ border: isSelected ? '2px solid green' : '1px solid gray', padding: '5%', borderRadius: '2%' }}>
+    <div className='grid-item' onClick={onClick} style={{ border: isSelected ? '2px solid green' : '1px solid gray', padding: '5%', borderRadius: '2%' }}>
       <h3>{lineage.name}</h3>
-      <p>{lineage.description}</p>
+      <div className='dropdown-content'>
+
+        <p>{lineage.description}</p>
+      </div>
     </div>
   );
 }

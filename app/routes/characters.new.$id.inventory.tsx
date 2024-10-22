@@ -119,6 +119,8 @@ export default function WeaponSelection() {
     return (
         <form method="post">
             <h2>Gold:{character.gold}</h2>
+            {error && <p>{error}</p>}
+
             <div className="weapons-grid">
                 {weapons.map(weapon => (
                     <WeaponCircle
@@ -147,7 +149,6 @@ export default function WeaponSelection() {
                 <input type="hidden" key={armorId} name="armors" value={armorId} />
             ))}
 
-            {error && <p>{error}</p>}
 
             <button type="submit" className="button">Submit Items</button>
         </form>

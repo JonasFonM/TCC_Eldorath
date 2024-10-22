@@ -11,9 +11,11 @@ interface Props {
 
 export function TrainingCircle({ training, isSelected, onClick }: Props) {
   return (
-    <div onClick={onClick} style={{ border: isSelected ? '2px solid green' : '1px solid gray', padding: '5%', borderRadius: '2%', backgroundColor: isSelected ? 'rgb(209, 153, 12)' : '' } }>
+    <div className='grid-item' onClick={onClick} style={{ border: isSelected ? '2px solid green' : '1px solid gray', padding: '5%', borderRadius: '2%', backgroundColor: isSelected ? 'rgb(209, 153, 12)' : '' }}>
       <h3>{training.name}</h3>
-      <p>{training.description}</p>
+      <div className='dropdown-content'>
+        <p>{training.description}</p>
+      </div>
     </div>
   );
 }

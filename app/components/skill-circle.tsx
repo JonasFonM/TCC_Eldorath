@@ -21,11 +21,13 @@ export function SkillCircle({ skill, isSelected, onClick, isPureLineage }: Props
   if (skill.mnd) prerequisites.push(`Mind ${skill.mnd}`);
 
   return (
-    <div onClick={onClick} style={{ border: isSelected ? '2px solid green' : '1px solid gray', padding: '5%', borderRadius: '2%', backgroundColor: isSelected ? 'rgb(209, 153, 12)' : '' } }>
-      <h3 style={{backgroundColor: isPureLineage ? 'gold' : '', color: isPureLineage ? 'black' : 'white'}}>{skill.name}</h3>
-      {prerequisites.length > 0 && <p>Prerequisites: {prerequisites.join(' ')}</p>}
-      <p>{skill.techniqueSubtype || skill.type}</p>
-      <p>{skill.description}</p>
+    <div className='grid-item' onClick={onClick} style={{ border: isSelected ? '2px solid green' : '1px solid gray', padding: '5%', borderRadius: '2%', backgroundColor: isSelected ? 'rgb(209, 153, 12)' : '' }}>
+      <h3 style={{ backgroundColor: isPureLineage ? 'gold' : '', color: isPureLineage ? 'black' : 'white' }}>{skill.name}</h3>
+      <div className='dropdown-content'>
+        {prerequisites.length > 0 && <p>Prerequisites: {prerequisites.join(' ')}</p>}
+        <p>{skill.techniqueSubtype || skill.type}</p>
+        <p>{skill.description}</p>
+      </div>
     </div>
   );
 }

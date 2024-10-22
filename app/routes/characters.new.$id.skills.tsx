@@ -22,7 +22,7 @@ export const loader: LoaderFunction = async ({ request, params }) => {
     include: { skills: true }
   });
 
-  const maxSelectable = character?.level;
+  const maxSelectable = character?.pendingSkills;
 
   const stats = await prisma.charStats.findUnique({
     where: { characterId: characterId }
@@ -91,10 +91,11 @@ export const loader: LoaderFunction = async ({ request, params }) => {
 export const action: ActionFunction = async ({ request, params }) => {
   const form = await request.formData();
   const selectedSkills = form.getAll('skills') as string[];
+  const pendingSkills = form.get('pendingSkills') as string;
   const selectedSkillIds = selectedSkills.map(id => parseInt(id))
   const characterId = params.id
 
-  await submitCharSkills(selectedSkillIds, Number(characterId))
+  await submitCharSkills(selectedSkillIds, Number(characterId), Number(pendingSkills))
   await prisma.charStats.delete({
     where: { characterId: Number(characterId) }
   })
@@ -121,6 +122,7 @@ export default function SkillSelectionRoute() {
 
   return (
     <form method="post">
+      <h1>Choose up to {maxSelectable} Skills</h1>
       <div className="pure-lineage-skills">
         {pureLineageSkills.map(ls => (
           <SkillCircle
@@ -165,6 +167,8 @@ export default function SkillSelectionRoute() {
       {selectedSkills.map(skillId => (
         <input type="hidden" key={skillId} name="skills" value={skillId} />
       ))}
+      <input type="hidden" key={maxSelectable} name="pendingSkills" value={maxSelectable} />
+
       <button type="submit" className="button">Submit Skills</button>
     </form>
   );

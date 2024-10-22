@@ -141,7 +141,7 @@ export function tierByLevel(level: any) {
 }
 
 //SKILLS
-export const submitCharSkills = async (skillList: number[], characterId: number) => {
+export const submitCharSkills = async (skillList: number[], characterId: number, pendingSkills: number) => {
   const existingSkills = await prisma.character_skill.findMany({
     where: {
       skillId: { in: skillList },
@@ -153,6 +153,10 @@ export const submitCharSkills = async (skillList: number[], characterId: number)
   
   const newSkills = skillList.filter(skillId => !existingSkillIds.includes(skillId));
 
+  const newPendingSkills = pendingSkills? - (newSkills.length -1) : 0;
+
+
+
   if (newSkills.length > 0) {
     await prisma.character_skill.createMany({
       data: newSkills.map(skillId => ({
@@ -161,6 +165,13 @@ export const submitCharSkills = async (skillList: number[], characterId: number)
       })),
       skipDuplicates: true, 
     });
+    if (newPendingSkills < 2){
+    await prisma.character.update({
+      where: {id: characterId},
+      data: {
+        pendingSkills: newPendingSkills
+      }
+    })}
   }
 
   return;

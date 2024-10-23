@@ -1,7 +1,8 @@
 import { prisma } from "./prisma.server";
 
 
-export const submitCharWeapons = async (weaponList: number[], characterId: number) => {
+export const checkWeaponTrainings = async (weaponList: number[], characterId: number) => {
+
   const selectedWeapons = await prisma.weapon.findMany({
     where: {
       id: { in: weaponList },
@@ -12,8 +13,31 @@ export const submitCharWeapons = async (weaponList: number[], characterId: numbe
     where: {
       characterId: characterId,
       trainingId: { in: selectedWeapons.map(w => w.trainingId) }
+    },
+  })
+  const isTrained = charTraining.length > 0;
+
+  await prisma.character_weapon.updateMany({
+    where: {
+      characterId: characterId,
+      weaponId: { in: selectedWeapons.map(w => w.id) }
+    },
+    data: {
+      trained: isTrained,
     }
   })
+  return isTrained
+};
+
+export const submitCharWeapons = async (weaponList: number[], characterId: number) => {
+
+  const selectedWeapons = await prisma.weapon.findMany({
+    where: {
+      id: { in: weaponList },
+    },
+  });
+
+  const isTrained = await checkWeaponTrainings(weaponList, characterId);
 
 
   if (weaponList.length > 0) {
@@ -26,7 +50,7 @@ export const submitCharWeapons = async (weaponList: number[], characterId: numbe
         craftTier: 1,
         weight: w.baseWeight,
         reach: w.baseReach,
-        trained: charTraining ? true : false,
+        trained: isTrained,
 
       })),
       skipDuplicates: false,
@@ -47,7 +71,7 @@ export const submitCharWeapons = async (weaponList: number[], characterId: numbe
 
 export const deleteWeaponById = async (id: number) => {
   await prisma.character_weapon.delete({
-    where: {id: id}
+    where: { id: id }
   })
 };
 
@@ -88,10 +112,10 @@ export const submitCharArmors = async (armorList: number[], characterId: number)
         id: characterId
       },
       data: {
-        gold: { decrement: selectedArmors.map(a => a.baseCost).reduce((accumulator, currentValue) => accumulator + currentValue, 0) }        
+        gold: { decrement: selectedArmors.map(a => a.baseCost).reduce((accumulator, currentValue) => accumulator + currentValue, 0) }
       }
     })
-   
+
   }
 
   return;

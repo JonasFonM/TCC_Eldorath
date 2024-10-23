@@ -118,7 +118,7 @@ export default function WeaponSelection() {
 
     return (
         <form method="post">
-            <h2>Gold:{character.gold}</h2>
+            <h2>Gold:{character.gold - selectedCost}</h2>
             {error && <p>{error}</p>}
 
             <div className="weapons-grid">

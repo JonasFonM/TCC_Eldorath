@@ -31,6 +31,7 @@ export const loader: LoaderFunction = async ({ request, params }) => {
   const general_skills = await prisma.skill.findMany({
     where: {
       lineages: { none: {} },
+      id: {notIn: character?.skills.map(skill => skill.skillId)},
       agi: {
         lte: character?.agility
       },
@@ -122,7 +123,23 @@ export default function SkillSelectionRoute() {
 
   return (
     <form method="post">
-      <h1>Choose up to {maxSelectable} Skills</h1>
+
+      {nonPureLineageSkills.length > 0 ? <h1>Skills inherited from Lineage</h1> : ''}
+      <div className="nonpure-lineage-skills">
+        {nonPureLineageSkills.map(ls => (
+          <SkillCircle
+            key={ls.skill.id}
+            skill={ls.skill}
+            isSelected={true}
+            onClick={() => null}
+            isPureLineage={false}
+          />
+        ))}
+      </div>
+      {nonPureLineageSkills.map(ls => (
+        <input type="hidden" key={ls.skillId} name="skills" value={ls.skillId} />
+
+      ))}{pureLineageSkills.length > 0 ? <h1>Skills inherited from Pure Lineage</h1> : ''}
       <div className="pure-lineage-skills">
         {pureLineageSkills.map(ls => (
           <SkillCircle
@@ -138,20 +155,8 @@ export default function SkillSelectionRoute() {
         <input type="hidden" key={ls.skillId} name="skills" value={ls.skillId} />
       ))}
 
-      <div className="nonpure-lineage-skills">
-        {nonPureLineageSkills.map(ls => (
-          <SkillCircle
-            key={ls.skill.id}
-            skill={ls.skill}
-            isSelected={true}
-            onClick={() => null}
-            isPureLineage={false}
-          />
-        ))}
-      </div>
-      {nonPureLineageSkills.map(ls => (
-        <input type="hidden" key={ls.skillId} name="skills" value={ls.skillId} />
-      ))}
+
+      <h1>Choose up to {maxSelectable} Skills</h1>
 
       <div className="skills-grid">
         {general_skills.map(skill => (

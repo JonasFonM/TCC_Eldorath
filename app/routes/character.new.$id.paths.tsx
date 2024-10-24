@@ -38,7 +38,7 @@ export const action: ActionFunction = async ({ request, params }) => {
         await prisma.charStats.delete({
             where: { characterId: Number(characterId) }
         })
-        return redirect(`/characters/${characterId}/`)
+        return redirect(`/character/${characterId}/`)
     } catch (error) {
         console.error(error);
         return json({ error: "Failed to save paths." }, { status: 500 });

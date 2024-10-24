@@ -52,7 +52,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
 
         <ul className="topnav">
           <li><NavLink to={`/home`}>Home</NavLink></li>
-          <li><NavLink to={`/characters`}>Characters</NavLink></li>
+          <li><NavLink to={`/character`}>Characters</NavLink></li>
           <li style={{ float: 'right' }}><NavLink className={'logout'} to={`/logout`}>Logout</NavLink></li>
         </ul>
 

@@ -102,7 +102,7 @@ export const action: ActionFunction = async ({ request, params }) => {
   await prisma.charStats.delete({
     where: { characterId: Number(characterId) }
   })
-  return redirect(`/characters/${characterId}/`)
+  return redirect(`/character/${characterId}/`)
 }
 
 export default function SkillSelectionRoute() {

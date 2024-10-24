@@ -20,10 +20,10 @@ export function WeaponCircle({ weapon, isSelected, onClick }: Props) {
       <p>{weapon.description}</p>
       </div>
       <div className='dropdown-content'>
-      <p>Training:{weapon.training?.name}</p>
-      <p>Cost:{weapon.baseCost}</p>
-      <p>Weight:{weapon.baseWeight}</p>
-      <p>Reach/Range:{weapon.baseReach}</p>
+      <p>Training: {weapon.training?.name}</p>
+      <p>Cost: {weapon.baseCost}</p>
+      <p>Weight: {weapon.baseWeight}</p>
+      <p>Reach/Range: {weapon.baseReach}</p>
       </div>
     </div>
   );

@@ -18,10 +18,10 @@ export function ArmorCircle({ armor, isSelected, onClick }: Props) {
       <h3>{armor.name}</h3>
       <p>{armor.description}</p>
       <div className='dropdown-content'>
-        <p>Training:{armor.training?.name}</p>
-        <p>Cost:{armor.baseCost}</p>
-        <p>Weight:{armor.weight}</p>
-        <p>Defense:{armor.baseDefense}</p>
+        <p>Training: {armor.training?.name}</p>
+        <p>Cost: {armor.baseCost}</p>
+        <p>Weight: {armor.weight}</p>
+        <p>Defense: {armor.baseDefense}</p>
       </div>
     </div>
   );

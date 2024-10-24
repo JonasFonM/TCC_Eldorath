@@ -19,11 +19,17 @@ export const loader: LoaderFunction = async ({ request, params }) => {
     })
 
     const weapons = await prisma.weapon.findMany({
-        include: {training: true}
+        where: {
+            baseCost: { lte: 500 }
+        },
+        include: { training: true }
     })
 
     const armors = await prisma.armor.findMany({
-        include: {training: true}
+        where: {
+            baseCost: { lte: 500 }
+        },
+        include: { training: true }
     })
 
 
@@ -121,6 +127,7 @@ export default function WeaponSelection() {
             <h2>Gold:{character.gold - selectedCost}</h2>
             {error && <p>{error}</p>}
 
+            <h1>Weapons</h1>
             <div className="weapons-grid">
                 {weapons.map(weapon => (
                     <WeaponCircle
@@ -135,6 +142,7 @@ export default function WeaponSelection() {
                 <input type="hidden" key={weaponId} name="weapons" value={weaponId} />
             ))}
 
+            <h1>Armors</h1>
             <div className="armors-grid">
                 {armors.map(armor => (
                     <ArmorCircle

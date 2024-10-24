@@ -118,7 +118,7 @@ export default function CharacterRoute() {
   return (
     <>
       <ul className="charnav">
-        <li><NavLink to={`/characters/${characterId}/stats`}>Character</NavLink></li>
+        <li><NavLink to={`/characters/${characterId}`}>Character</NavLink></li>
         <li><NavLink to={`/characters/new/${characterId}/lineages`}>Lineages</NavLink></li>
         <li><NavLink to={`/characters/${characterId}/skills`}>Skills</NavLink></li>
         <li><NavLink to={`/characters/new/${characterId}/paths`}>Paths</NavLink></li>

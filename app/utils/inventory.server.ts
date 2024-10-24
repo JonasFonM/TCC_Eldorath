@@ -75,7 +75,8 @@ export const deleteWeaponById = async (id: number) => {
   })
 };
 
-export const submitCharArmors = async (armorList: number[], characterId: number) => {
+export const checkArmorTrainings = async (armorList: number[], characterId: number) => {
+
   const selectedArmors = await prisma.armor.findMany({
     where: {
       id: { in: armorList },
@@ -85,9 +86,31 @@ export const submitCharArmors = async (armorList: number[], characterId: number)
   const charTraining = await prisma.character_training.findMany({
     where: {
       characterId: characterId,
-      trainingId: { in: selectedArmors.map(a => a.trainingId) }
+      trainingId: { in: selectedArmors.map(w => w.trainingId) }
+    },
+  })
+  const isTrained = charTraining.length > 0;
+
+  await prisma.character_armor.updateMany({
+    where: {
+      characterId: characterId,
+      armorId: { in: selectedArmors.map(w => w.id) }
+    },
+    data: {
+      trained: isTrained,
     }
   })
+  return isTrained
+};
+
+export const submitCharArmors = async (armorList: number[], characterId: number) => {
+  const selectedArmors = await prisma.armor.findMany({
+    where: {
+      id: { in: armorList },
+    },
+  });
+
+  const isTrained = await checkArmorTrainings(armorList, characterId);
 
 
   if (armorList.length > 0) {
@@ -101,7 +124,7 @@ export const submitCharArmors = async (armorList: number[], characterId: number)
         defense: a.baseDefense,
         weight: a.weight,
         resistanceId: a.resistanceId,
-        trained: charTraining ? true : false,
+        trained: isTrained,
 
       })),
       skipDuplicates: false,

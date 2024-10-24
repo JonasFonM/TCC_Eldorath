@@ -31,7 +31,7 @@ export const loader: LoaderFunction = async ({ request, params }) => {
   const general_skills = await prisma.skill.findMany({
     where: {
       lineages: { none: {} },
-      id: {notIn: character?.skills.map(skill => skill.skillId)},
+      id: { notIn: character?.skills.map(skill => skill.skillId) },
       agi: {
         lte: character?.agility
       },
@@ -71,6 +71,7 @@ export const loader: LoaderFunction = async ({ request, params }) => {
 
   const pureLineageSkills = await prisma.lineage_skill.findMany({
     where: {
+      skillId: { notIn: character?.skills.map(skill => skill.skillId) },
       lineageId: { in: character_lineages.map(cl => cl.lineageId) },
       pureSkill: true
     },
@@ -79,6 +80,7 @@ export const loader: LoaderFunction = async ({ request, params }) => {
 
   const nonPureLineageSkills = await prisma.lineage_skill.findMany({
     where: {
+      skillId: { notIn: character?.skills.map(skill => skill.skillId) },
       lineageId: { in: character_lineages.map(cl => cl.lineageId) },
       pureSkill: false
     },
@@ -124,38 +126,32 @@ export default function SkillSelectionRoute() {
   return (
     <form method="post">
 
-      {nonPureLineageSkills.length > 0 ? <h1>Skills inherited from Lineage</h1> : ''}
+      {nonPureLineageSkills.length > 0 ? <h1>Skills available from Lineages</h1> : ''}
       <div className="nonpure-lineage-skills">
         {nonPureLineageSkills.map(ls => (
           <SkillCircle
             key={ls.skill.id}
             skill={ls.skill}
-            isSelected={true}
-            onClick={() => null}
+            isSelected={selectedSkills.includes(ls.skill.id)}
+            onClick={() => !isMaxSelected || selectedSkills.includes(ls.skill.id) ? handleSkillClick(ls.skill.id) : alert((`You can select up to ${maxSelectable} skills only.`))}
             isPureLineage={false}
           />
         ))}
       </div>
-      {nonPureLineageSkills.map(ls => (
-        <input type="hidden" key={ls.skillId} name="skills" value={ls.skillId} />
-
-      ))}{pureLineageSkills.length > 0 ? <h1>Skills inherited from Pure Lineage</h1> : ''}
+      
+      {isPure && pureLineageSkills.length > 0 ? <h1>Skills available from Pure Lineage</h1> : ''}
       <div className="pure-lineage-skills">
         {pureLineageSkills.map(ls => (
           <SkillCircle
             key={ls.skill.id}
             skill={ls.skill}
-            isSelected={isPure}
-            onClick={() => null}
+            isSelected={selectedSkills.includes(ls.skill.id)}
+            onClick={() => !isMaxSelected || selectedSkills.includes(ls.skill.id) ? handleSkillClick(ls.skill.id) : alert((`You can select up to ${maxSelectable} skills only.`))}
             isPureLineage={true}
           />
         ))}
       </div>
-      {isPure && pureLineageSkills.map(ls => (
-        <input type="hidden" key={ls.skillId} name="skills" value={ls.skillId} />
-      ))}
-
-
+      
       <h1>Choose up to {maxSelectable} Skills</h1>
 
       <div className="skills-grid">

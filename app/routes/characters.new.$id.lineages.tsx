@@ -76,32 +76,43 @@ export default function LineageSelection() {
         });
     };
 
+    const handleSubmit = async (event: React.FormEvent) => {
 
-    return (
-        <form method="post">
+        if (!selectedLineages || selectedLineages.length <= 0) {
+            event.preventDefault();
 
-            <h1>Choose up to {maxSelectable} Lineages</h1>
-            <h3>Choosing a single Lineage makes it Pure</h3>
+            return alert(`Please select at least one Lineage.`);
+        }
+        return;
+    }
 
-            <div className="lineages-grid">
-                {lineages.map(lineage => (
-                    <LineageCircle
-                        key={lineage.id}
-                        lineage={lineage}
-                        isSelected={selectedLineages.includes(lineage.id)}
-                        onClick={() => !isMaxSelected || selectedLineages.includes(lineage.id) ? handleLineageClick(lineage.id) : null}
-                    />
-                ))}
-            </div>
-            {selectedLineages.map(lineageId => (
-                <input type="hidden" key={lineageId} name="lineages" value={lineageId} />
+
+
+return (
+    <form method="post" onSubmit={handleSubmit}>
+
+        <h1>Choose up to {maxSelectable} Lineages</h1>
+        <h3>Choosing a single Lineage makes it Pure</h3>
+
+        <div className="lineages-grid">
+            {lineages.map(lineage => (
+                <LineageCircle
+                    key={lineage.id}
+                    lineage={lineage}
+                    isSelected={selectedLineages.includes(lineage.id)}
+                    onClick={() => !isMaxSelected || selectedLineages.includes(lineage.id) ? handleLineageClick(lineage.id) : null}
+                />
             ))}
+        </div>
+        {selectedLineages.map(lineageId => (
+            <input type="hidden" key={lineageId} name="lineages" value={lineageId} />
+        ))}
 
-            <input type="hidden" key='pure' name="pure" value={isPure ? 'true' : 'false'} />
+        <input type="hidden" key='pure' name="pure" value={isPure ? 'true' : 'false'} />
 
-            {error && <p>{error}</p>}
+        {error && <p>{error}</p>}
 
-            <button type="submit" className="button">Submit Lineages</button>
-        </form>
-    );
+        <button type="submit" className="button">Submit Lineages</button>
+    </form>
+);
 }

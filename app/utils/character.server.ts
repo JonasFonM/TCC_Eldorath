@@ -3,7 +3,7 @@ import type { CharacterForm } from './types.server'
 import { prisma } from './prisma.server'
 import { json } from '@remix-run/node'
 import { character, path, skill } from '@prisma/client'
-import { checkWeaponTrainings } from './inventory.server'
+import { checkArmorTrainings, checkWeaponTrainings } from './inventory.server'
 
 //BASIC
 export const createCharacter = async (character: CharacterForm) => {
@@ -155,7 +155,7 @@ export const submitCharSkills = async (skillList: number[], characterId: number,
 
   const newSkills = skillList.filter(skillId => !existingSkillIds.includes(skillId));
 
-  const newPendingSkills = pendingSkills ? - (newSkills.length - 1) : 0;
+  const newPendingSkills = pendingSkills - newSkills.length;
 
 
 
@@ -167,7 +167,6 @@ export const submitCharSkills = async (skillList: number[], characterId: number,
       })),
       skipDuplicates: true,
     });
-    if (newPendingSkills < 2) {
       await prisma.character.update({
         where: { id: characterId },
         data: {
@@ -175,7 +174,6 @@ export const submitCharSkills = async (skillList: number[], characterId: number,
         }
       })
     }
-  }
 
   return;
 };
@@ -250,16 +248,32 @@ export const submitCharTrainings = async (trainingList: number[], characterId: n
     },
   });
 
-  const weaponList = await prisma.character_weapon.findMany({
+  const weapons = await prisma.character_weapon.findMany({
     where: {
       characterId: characterId
     },
-    include: { weapon: true }
+    include: { weapon: true },
   });
+  
+  const armors = await prisma.character_armor.findMany({
+    where: {
+      characterId: characterId
+    },
+    include: { armor: true },
+  });
+
 
   const existingTrainingIds = existingTrainings.map(ct => ct.trainingId);
 
   const newTrainings = trainingList.filter(trainingId => !existingTrainingIds.includes(trainingId));
+
+  const weaponTrainingIds = weapons.map(w => w.weapon.trainingId);
+
+  const weaponUpdateList = weaponTrainingIds.filter(id => newTrainings.includes(id) || (existingTrainingIds.includes(id)))
+  
+  const armorTrainingIds = armors.map(a => a.armor.trainingId);
+
+  const armorUpdateList = armorTrainingIds.filter(id => newTrainings.includes(id) || (existingTrainingIds.includes(id)))
 
   if (newTrainings.length > 0) {
     await prisma.character_training.createMany({
@@ -270,7 +284,8 @@ export const submitCharTrainings = async (trainingList: number[], characterId: n
       skipDuplicates: true,
     });
 
-    await checkWeaponTrainings(weaponList.map(w => w.id), characterId)
+    await checkWeaponTrainings(weaponUpdateList, characterId)
+    await checkArmorTrainings(armorUpdateList, characterId)
   }
 
 

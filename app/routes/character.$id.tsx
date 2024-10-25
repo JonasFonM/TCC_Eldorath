@@ -113,6 +113,8 @@ export default function CharacterRoute() {
   return (
     <>
       <ul className="charnav">
+      <p style={{float: "right", marginRight: '24px', textAlign: 'right'}}>Level<h1 style={{display: "inline"}}>{character.level}</h1> <br/>Tier <h1 style={{display: "inline"}}>{character.tier}</h1></p>
+
       <h1>{character.name}</h1>
       <h2>{paths.map(path => path.name)}</h2>
 

@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { ActionFunction, json, LoaderFunction, redirect } from "@remix-run/node"
-import { useActionData } from "@remix-run/react"
+import { NavLink, useActionData } from "@remix-run/react"
 import { useEffect, useRef, useState } from "react"
 import { getUserIdFromSession, requireUserId } from '~/utils/auth.server'
 import { submitCharacter, tierByLevel } from "~/utils/character.server"
@@ -128,14 +128,18 @@ export default function NewCharacterRoute() {
     <form method="post" onSubmit={handleSubmit}>
 
       <div className="container">
-        <input type="text" name="name" placeholder="Name" value={formData.name} onChange={handleChange} />
-        {errors.name && <p className="error">{errors.name}</p>}
+        <input className="block" style={{ fontFamily: 'serif', fontSize: '2rem', color: "gold", textAlign: 'center' }} type="text" name="name" placeholder="Name" value={formData.name} onChange={handleChange} />
+        {errors.name && <p style={{ width: '100%' }} className="error">{errors.name}</p>}
       </div>
 
       <input hidden type="number" name="level" value={formData.level} onChange={handleChange} />
-      {errors.level && <p>{errors.level}</p>}
+      {errors.level && <h3>{errors.level}</h3>}
+      <div className="title-container">
+        <h1>Attributes</h1>
+        <NavLink to ='/home/' className='question-button'/>
+      </div>
+      <h3>Points remaining: {limit}</h3>
 
-      <h2>Attributes:</h2>
       <div className="container">
         <div className="block">
           <label>
@@ -174,8 +178,7 @@ export default function NewCharacterRoute() {
         </div>
       </div>
 
-      <h3>Points remaining: {limit}</h3>
-      {formError && <p className="error">{formError}</p>}
+      {formError && <p style={{ textAlign: 'center', margin: 'auto', width: '100%' }} className="error">{formError}</p>}
       <div className="container">
         <button className="button" type="submit">Submit</button>
       </div>

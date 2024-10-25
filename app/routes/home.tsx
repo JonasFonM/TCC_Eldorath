@@ -18,7 +18,9 @@ export default function Home() {
     <>
       <h1 className='title-screen'>Welcome<br></br>to<br></br> Aeternida</h1>
       <main>
+        <div>
           <UserPanel users={users} />
+        </div>
       </main>
     </>
   )

@@ -5,7 +5,7 @@ import "~/styles.css";
 export function UserPanel({ users }: { users: user[] }) {
   return (
     <div className="block">
-        <div >
+        <div>
         {users.map(user => (
           <UserCircle key={user.id} user={user} />
         ))}

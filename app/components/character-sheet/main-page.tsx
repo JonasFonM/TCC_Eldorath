@@ -33,6 +33,7 @@ export function StatsAndRes({ character, resistances, stats }: Props) {
             <div className="container">
                 <div className="block"><h1>{character.level}</h1>Level</div>
                 <div className="block"><h1>{character.tier}</h1>Tier</div>
+                <div className="block"><h1>{character.experience}/{(character.level+1)*4*character.tier}</h1>Experience</div>
             </div>
 
             <h1>Attributes</h1>

@@ -17,9 +17,7 @@ a :hover {
 
 body {
   background-color: #121212;
-  /* Dark background */
   color: #ffffff;
-  /* White text */
   line-height: 1.6;
   margin-top: 120px;
 }
@@ -61,8 +59,7 @@ h3 {
 
 
 
-
-ul.topnav {
+.topnav {
   position: fixed;
   top: 0;
   width: 100%;
@@ -70,22 +67,22 @@ ul.topnav {
   margin: 0;
   left: 0;
   padding: 0;
-  height: 8%;
+  height: 64px;
   overflow: hidden;
   background-color: #000000;
   z-index: 10;
   font-weight: bold;
 
-  border-bottom: 1px solid crimson;
+  border-bottom: 1.5px solid goldenrod;
 
 }
 
-ul.charnav {
+.charnav {
   position: fixed;
   width: 100%;
-  min-height: 5%;
+  height: 96px;
   list-style-type: none;
-  top: 5%;
+  top: 48px;
   left: 0;
   padding: 0;
   overflow: hidden;
@@ -96,12 +93,21 @@ ul.charnav {
 .charnav a {
   text-decoration: none;
   font-weight: bold;
-  margin-right: 1rem;
+  font-size: medium;
+  margin-right: 8px;
 }
 
 .charnav a.active {
-  color: gold; /* Gold accent for active link */
+  color: gold;
 }
+
+.charnav h1, .charnav h2{
+  text-align: left;
+  font-size: larger;
+  margin-left: 16px;
+  margin-top: 8px;
+  margin-bottom: 0;
+} 
 
 
 li {
@@ -109,18 +115,18 @@ li {
 }
 
 li:first-child {
-  margin-left: 5%
+  margin-left: 16px
 }
 
 li:last-child {
-  margin-right: 5%;
+  margin-right: 16px;
 }
 
 li a {
   display: block;
   color: white;
   text-align: center;
-  padding: 15px 15px;
+  padding: 19px 19px;
   text-decoration: none;
 }
 
@@ -135,7 +141,7 @@ li a:hover {
 
 
 .topnav a.active {
-  background-color: rgb(209, 153, 12);
+  background-color: goldenrod;
 }
 
 .container {
@@ -442,7 +448,6 @@ ul.log,
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  /* Center the grid items */
 }
 
 .skills-grid div:hover, .trainings-grid div:hover, .weapons-grid div:hover, .armors-grid div:hover, .block:hover {
@@ -470,7 +475,6 @@ ul.log,
 
 .col-6 {
   flex: 0 0 48%;
-  /* Two columns layout */
 }
 
 @media (max-width: 900px) {
@@ -481,7 +485,6 @@ ul.log,
   .block,
   .grid-item {
     width: 46%;
-    /* Adjusted width for medium screens */
   }
 }
 
@@ -493,6 +496,5 @@ ul.log,
   .block,
   .grid-item {
     width: 65%;
-    /* Adjusted width for smaller screens */
   }
 }

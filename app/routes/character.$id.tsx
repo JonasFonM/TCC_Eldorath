@@ -2,15 +2,10 @@
 import { json, LoaderFunction, } from "@remix-run/node";
 import { NavLink, Outlet, useLoaderData } from "@remix-run/react";
 import { prisma } from "~/utils/prisma.server";
-import { SkillCircle } from "~/components/skill-circle";
 import { createStats } from "~/utils/character.server";
-import { LineageCircle } from "~/components/lineage-circle";
 import { LSrelations, trainingWithTier } from "~/utils/types.server";
-import { TrainingCircle } from "~/components/training-circle";
 import { armor, character, character_armor, character_weapon, charStats, lineage, path, resistances, skill, weapon } from "@prisma/client";
-import { PathCircle } from "~/components/path-circle";
-import { CharacterWeaponCircle } from "~/components/c-weapon-circle";
-import { CharacterArmorCircle } from "~/components/c-armor-circle";
+
 
 export const loader: LoaderFunction = async ({ params }) => {
   const characterId = Number(params.id);
@@ -118,114 +113,17 @@ export default function CharacterRoute() {
   return (
     <>
       <ul className="charnav">
+      <h1>{character.name}</h1>
+      <h2>{paths.map(path => path.name)}</h2>
+
         <li><NavLink to={`/character/${characterId}`}>Character</NavLink></li>
-        <li><NavLink to={`/character/new/${characterId}/lineages`}>Lineages</NavLink></li>
-        <li><NavLink to={`/character/${characterId}/skills`}>Skills</NavLink></li>
-        <li><NavLink to={`/character/new/${characterId}/paths`}>Paths</NavLink></li>
-        <li><NavLink to={`/character/new/${characterId}/trainings`}>Trainings</NavLink></li>
-        <li><NavLink to={`/character/new/${characterId}/inventory`}>Items</NavLink></li>
+        <li><NavLink to={`/character/${characterId}/capabilities`}>Capabilities</NavLink></li>
+        <li><NavLink to={`/character/${characterId}/inventory`}>Inventory</NavLink></li>
       </ul>
 
-      <main>
-
-        <h1>{character.name}</h1>
-
-        <h2>{paths.map(path => path.name)}</h2>
-
-        <Outlet context={{ character, stats, resistances }} />
-
-        <h2>Skills</h2>
-        <div className="skills-grid">
-          {skills.map(skill => (
-            <SkillCircle
-              key={skill.id}
-              skill={skill}
-              isSelected={false}
-              onClick={() => null}
-              isPureLineage={false}
-            />
-          ))}
-        </div>
-
-        <h2>Lineages</h2>
-        {lineages.map(lineage => (
-          <LineageCircle key={lineage.id} lineage={lineage} isSelected={false}
-            onClick={() => null} />
-        ))}
-        {isPure ? <div className="pure-lineage-skills">
-          {pureLineageSkills.map(ls => (
-            <SkillCircle
-              key={ls.skill.id}
-              skill={ls.skill}
-              isSelected={false}
-              onClick={() => null}
-              isPureLineage={true}
-            />
-          ))}
-        </div> : null}
-
-        <div className="nonpure-lineage-skills">
-          {nonPureLineageSkills.map(ls => (
-            <SkillCircle
-              key={ls.skill.id}
-              skill={ls.skill}
-              isSelected={false}
-              onClick={() => null}
-              isPureLineage={false}
-            />
-          ))}
-        </div>
-
-        <h2>Paths</h2>
-        <div className="trainings-grid">
-          {paths.map(pa => (
-            <PathCircle
-              key={pa.id}
-              path={pa}
-              isSelected={false}
-              onClick={() => null}
-            />
-          ))}
-        </div>
-
-        <h2>Trainings</h2>
-        <div className="trainings-grid">
-          {trainingsWithTier.map(tt => (
-            <TrainingCircle
-              key={tt.training.id}
-              training={tt.training}
-              isSelected={false}
-              onClick={() => null}
-            />
-          ))}
-        </div>
-
-        <h2>Inventory</h2>
-        <h3>Gold: {character.gold}</h3>
-        <h3>Carried Weight: {weapons.map(weapons => weapons.weight).reduce((accumulator, currentValue) => accumulator + currentValue, 0)}/{stats.carryCap}</h3>
-        <h2>Weapons</h2>
-        <div className="weapons-grid">
-          {weapons.map(weapon => (
-            <CharacterWeaponCircle
-              key={weapon.id}
-              weapon={weapon}
-              isSelected={false}
-              onClick={() => null}
-            />
-          ))}
-        </div>
-        <h2>Armors</h2>
-        <div className="armors-grid">
-          {armors.map(armor => (
-            <CharacterArmorCircle
-              key={armor.id}
-              armor={armor}
-              isSelected={false}
-              onClick={() => null}
-            />
-          ))}
-        </div>
-      </main >
+      <main style={{marginTop: '164px'}}>
+        <Outlet context={{ character, stats, resistances, skills, trainingsWithTier, paths, lineages, pureLineageSkills, nonPureLineageSkills, isPure, weapons, armors }} />
+        </main >
     </>
   );
 

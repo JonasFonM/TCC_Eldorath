@@ -28,14 +28,14 @@ export function StatsAndRes({ character, resistances, stats }: Props) {
 
     return (
         <div>
-            <h2>Progression</h2>
+            <h1>Progression</h1>
 
             <div className="container">
                 <div className="block"><h1>{character.level}</h1>Level</div>
                 <div className="block"><h1>{character.tier}</h1>Tier</div>
             </div>
 
-            <h2>Attributes</h2>
+            <h1>Attributes</h1>
 
 
             <div className="container">
@@ -46,7 +46,7 @@ export function StatsAndRes({ character, resistances, stats }: Props) {
             <NavLink to={`/character/update/${String(character.id)}/basic`} className="button">Reasign Attributes</NavLink>
 
 
-            <h2>Stats</h2>
+            <h1>Stats</h1>
 
             <div className="container">
                 <div className="block"><h1>{stats.vitality}</h1>Vitality</div>
@@ -60,7 +60,7 @@ export function StatsAndRes({ character, resistances, stats }: Props) {
                 <div className="block"><h1>{stats.liftCap}</h1>Lifting Capacity</div>
             </div>
 
-            <h2>Resistances</h2>
+            <h1>Resistances</h1>
 
             <h3>Physical Resistances</h3>
 

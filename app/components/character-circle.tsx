@@ -28,11 +28,9 @@ export function CharacterCircle({ character }: props) {
     });
   };
 
-  console.log(selectedDelete)
-
   return (
     <>
-      <NavLink to={`/character/${character.id}`}>
+      <NavLink to={`/character/${character.id}/stats`}>
         <h2>
           {character.name.toUpperCase()}
         </h2>

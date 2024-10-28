@@ -116,14 +116,14 @@ export default function CharacterRoute() {
       <p style={{float: "right", marginRight: '24px', textAlign: 'right'}}>Level<h1 style={{display: "inline"}}>{character.level}</h1> <br/>Tier <h1 style={{display: "inline"}}>{character.tier}</h1></p>
 
       <h1>{character.name}</h1>
-      <h2>{paths.map(path => path.name)}</h2>
+      <p style={{marginLeft: '32px', marginTop: '0', marginBottom: '0'}}>{paths.map(path => path.name)}</p>
 
-        <li><NavLink to={`/character/${characterId}`}>Character</NavLink></li>
+        <li><NavLink to={`/character/${characterId}/stats`}>Character</NavLink></li>
         <li><NavLink to={`/character/${characterId}/capabilities`}>Capabilities</NavLink></li>
         <li><NavLink to={`/character/${characterId}/inventory`}>Inventory</NavLink></li>
       </ul>
 
-      <main style={{marginTop: '164px'}}>
+      <main style={{marginTop: '196px'}}>
         <Outlet context={{ character, stats, resistances, skills, trainingsWithTier, paths, lineages, pureLineageSkills, nonPureLineageSkills, isPure, weapons, armors }} />
         </main >
     </>

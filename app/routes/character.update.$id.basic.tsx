@@ -43,7 +43,7 @@ export const action: ActionFunction = async ({ params, request }) => {
           })
 
         return (
-            redirect(`/character/${String(character.id)}`)
+            redirect(`/character/${String(character.id)}/stats`)
         );
     } catch (error) {
         console.error(error);
@@ -160,6 +160,8 @@ export default function NewCharacterRoute() {
                 {errors.level && <p>{errors.level}</p>}
 
                 <h2>Attributes:</h2>
+                <h3>Points remaining: {limit}</h3>
+                {formError && <p className="error">{formError}</p>}
                 <div className="container">
                     <div className="block">
                         <label>
@@ -198,8 +200,7 @@ export default function NewCharacterRoute() {
                     </div>
                 </div>
 
-                <h3>Points remaining: {limit}</h3>
-                {formError && <p className="error">{formError}</p>}
+                
                 <div className="container">
                     <button className="button" type="submit">Submit</button>
                 </div>

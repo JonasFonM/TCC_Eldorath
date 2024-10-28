@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { StatsAndRes } from "~/components/character-sheet/main-page";
 import { useOutletContext } from "@remix-run/react";
+import { StatsAndRes } from "~/components/character-sheet/main-page";
 
 export default function StatsRoute() {
     const { character, stats, resistances } = useOutletContext<{character: any, stats: any, resistances: any }>();

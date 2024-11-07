@@ -8,6 +8,48 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model campaign {
+  id Int @id @default(autoincrement())
+  createdAt DateTime @default(now()) @db.Timestamp(0)
+  title String @db.Text
+  daysPassed Int
+  month monthName @default(Vivenerius)
+  weekDay weekDay
+  tod timeOfDay
+}
+
+enum monthName {
+  Vivenerius //Summer - Month of Life
+  Iudelo //Summer - Month of Light and Justice
+  Auramo //Summer - Month of Prosperity
+  Taxidinas // Autumn - Month of Journeys
+  Ipnas // Autumn - Month of Slumber
+  Malkan // Autumn - Moth of Mourning
+  Fengarinas //Winter - Month of the Moon
+  Belliurus //Winter - Month of Battles
+  Hermicus //Winter - Month of Magic
+  Artemino // Spring - Month of Nature
+  Irinias // Spring - Month of Peace
+  Krona // Spring - Month of Thoughtfulness
+}
+
+enum weekDay {
+  
+  Magdas // Day of Magnus
+
+
+
+
+  Victas // Day of Victory
+}
+
+enum timeOfDay {
+  Dawn
+  Day
+  Night
+  Dusk
+}
+
 model character {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now()) @db.Timestamp(0)

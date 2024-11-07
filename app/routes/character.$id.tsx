@@ -120,7 +120,8 @@ export default function CharacterRoute() {
 
         <li><NavLink to={`/character/${characterId}/stats`}>Character</NavLink></li>
         <li><NavLink to={`/character/${characterId}/capabilities`}>Capabilities</NavLink></li>
-        <li><NavLink to={`/character/${characterId}/inventory`}>Inventory</NavLink></li>
+        <li><NavLink to={`/character/${characterId}/inventory`}>Inventory</NavLink></li>        
+        <li style={{float: 'right'}}><NavLink to={`/character/${characterId}/reset`}>Reset</NavLink></li>        
       </ul>
 
       <main style={{marginTop: '196px'}}>

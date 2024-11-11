@@ -34,13 +34,14 @@ enum monthName {
 }
 
 enum weekDay {
+  Magdai // Day of Magnus
+  Agredai // Day of Ageron the Ironhearted
   
-  Magdas // Day of Magnus
+  
+  Oridai // Day of Orithon the Veilwalker
 
 
-
-
-  Victas // Day of Victory
+  Victadai // Day of Victory
 }
 
 enum timeOfDay {

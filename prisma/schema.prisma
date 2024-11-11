@@ -34,7 +34,7 @@ enum monthName {
 }
 
 enum weekDay {
-  Magdai // Day of Magnus
+  Helidai // Day of Heliodax the Father of Unicorns
   Agredai // Day of Ageron the Ironhearted
   
   

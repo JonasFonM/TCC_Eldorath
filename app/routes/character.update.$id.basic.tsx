@@ -37,10 +37,10 @@ export const action: ActionFunction = async ({ params, request }) => {
 
     try {
         const character = await updateCharacter({ name, level, tier, agility, body, mind, authorId }, Number(params.id));
-        
+
         await prisma.charStats.delete({
             where: { characterId: character.id }
-          })
+        })
 
         return (
             redirect(`/character/${String(character.id)}/stats`)
@@ -75,7 +75,7 @@ export default function NewCharacterRoute() {
                 body: character.body,
                 mind: character.mind
             });
-            setLimit(6 + character.tier -character.mind - character.body - character.agility)
+            setLimit(6 + character.tier - character.mind - character.body - character.agility)
         }
     }, [character]);
 
@@ -149,61 +149,65 @@ export default function NewCharacterRoute() {
     };
 
     return (
-            <form method="post" onSubmit={handleSubmit}>
+        <form method="post" onSubmit={handleSubmit}>
 
-                <div className="container">
-                    <input type="text" name="name" placeholder={character.name} value={formData.name} onChange={handleChange} />
-                    {errors.name && <p className="error">{errors.name}</p>}
+            <div className="container">
+                <input className="block" style={{ fontFamily: 'serif', fontSize: '2rem', color: "gold", textAlign: 'center' }} type="text" name="name" placeholder={character.name} value={formData.name} onChange={handleChange} />
+                {errors.name && <p className="error">{errors.name}</p>}
+            </div>
+
+            <input hidden type="number" name="level" value={formData.level} onChange={handleChange} />
+            {errors.level && <p>{errors.level}</p>}
+
+            <div className="title-container">
+                <h1>Attributes</h1>
+                <li className='question-button'>?</li>
+                <p className="dropdown-content">AAAA</p>
+            </div>
+            <h3>Points remaining: {limit}</h3>
+            {formError && <p className="error">{formError}</p>}
+            <div className="container">
+                <div className="block">
+                    <label>
+                        Agility: {formData.agility}
+                        <input hidden type="number" name="agility" value={formData.agility} onChange={handleChange} />
+                        <div className="col-12">
+                            <button className="col-6 button" type="button" onClick={() => adjustAttribute('agility', 1)}>+</button>
+                            <button className="col-6 button" type="button" onClick={() => adjustAttribute('agility', -1)}>-</button>
+                        </div>
+                    </label>
+                    {errors.agility && <p className="error">{errors.agility}</p>}
                 </div>
 
-                <input hidden type="number" name="level" value={formData.level} onChange={handleChange} />
-                {errors.level && <p>{errors.level}</p>}
-
-                <h2>Attributes:</h2>
-                <h3>Points remaining: {limit}</h3>
-                {formError && <p className="error">{formError}</p>}
-                <div className="container">
-                    <div className="block">
-                        <label>
-                            Agility: {formData.agility}
-                            <input hidden type="number" name="agility" value={formData.agility} onChange={handleChange} />
-                            <div className="col-12">
-                                <button className="col-6 button" type="button" onClick={() => adjustAttribute('agility', 1)}>+</button>
-                                <button className="col-6 button" type="button" onClick={() => adjustAttribute('agility', -1)}>-</button>
-                            </div>
-                        </label>
-                        {errors.agility && <p className="error">{errors.agility}</p>}
-                    </div>
-
-                    <div className="block">
-                        <label>
-                            Body: {formData.body}
-                            <input hidden type="number" name="body" value={formData.body} onChange={handleChange} />
-                            <div className="col-12">
-                                <button className="col-6 button" type="button" onClick={() => adjustAttribute('body', 1)}>+</button>
-                                <button className="col-6 button" type="button" onClick={() => adjustAttribute('body', -1)}>-</button>
-                            </div>
-                        </label>
-                        {errors.body && <p className="error">{errors.body}</p>}
-                    </div>
-
-                    <div className="block">
-                        <label>
-                            Mind: {formData.mind}
-                            <input hidden type="number" name="mind" value={formData.mind} onChange={handleChange} />
-                            <div className="col-12">
-                                <button className="col-6 button" type="button" onClick={() => adjustAttribute('mind', 1)}>+</button>
-                                <button className="col-6 button" type="button" onClick={() => adjustAttribute('mind', -1)}>-</button>
-                            </div>
-                        </label>
-                        {errors.mind && <p className="error">{errors.mind}</p>}
-                    </div>
+                <div className="block">
+                    <label>
+                        Body: {formData.body}
+                        <input hidden type="number" name="body" value={formData.body} onChange={handleChange} />
+                        <div className="col-12">
+                            <button className="col-6 button" type="button" onClick={() => adjustAttribute('body', 1)}>+</button>
+                            <button className="col-6 button" type="button" onClick={() => adjustAttribute('body', -1)}>-</button>
+                        </div>
+                    </label>
+                    {errors.body && <p className="error">{errors.body}</p>}
                 </div>
 
-                
-                <div className="container">
-                    <button className="button" type="submit">Submit</button>
+                <div className="block">
+                    <label>
+                        Mind: {formData.mind}
+                        <input hidden type="number" name="mind" value={formData.mind} onChange={handleChange} />
+                        <div className="col-12">
+                            <button className="col-6 button" type="button" onClick={() => adjustAttribute('mind', 1)}>+</button>
+                            <button className="col-6 button" type="button" onClick={() => adjustAttribute('mind', -1)}>-</button>
+                        </div>
+                    </label>
+                    {errors.mind && <p className="error">{errors.mind}</p>}
                 </div>
-            </form>
+            </div>
+
+
+            <div className="container">
+                <button className="button" type="submit">Submit</button>
+            </div>
+        </form>
     );
 }

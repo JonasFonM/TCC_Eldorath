@@ -113,20 +113,22 @@ export default function CharacterRoute() {
   return (
     <>
       <ul className="charnav">
-      <p style={{float: "right", marginRight: '24px', textAlign: 'right'}}>Level<h1 style={{display: "inline"}}>{character.level}</h1> <br/>Tier <h1 style={{display: "inline"}}>{character.tier}</h1></p>
+        <p style={{ float: "right", marginRight: '24px', textAlign: 'right' }}>Level<h1 style={{ display: "inline" }}>{character.level}</h1> <br />Tier <h1 style={{ display: "inline" }}>{character.tier}</h1></p>
 
-      <h1>{character.name}</h1>
-      <p style={{marginLeft: '32px', marginTop: '0', marginBottom: '0'}}>{paths.map(path => path.name)}</p>
+        <h1>{character.name}</h1>
+        <p style={{ marginLeft: '32px', marginTop: '0', marginBottom: '0' }}>{paths && paths.length > 0 ? (
+          paths.map(path => path.name)
+        ) : ("Pathless")}</p>
 
         <li><NavLink to={`/character/${characterId}/stats`}>Character</NavLink></li>
         <li><NavLink to={`/character/${characterId}/capabilities`}>Capabilities</NavLink></li>
-        <li><NavLink to={`/character/${characterId}/inventory`}>Inventory</NavLink></li>        
-        <li style={{float: 'right'}}><NavLink to={`/character/${characterId}/reset`}>Reset</NavLink></li>        
+        <li><NavLink to={`/character/${characterId}/inventory`}>Inventory</NavLink></li>
+        <li style={{ float: 'right' }}><NavLink to={`/character/${characterId}/reset`}>Reset</NavLink></li>
       </ul>
 
-      <main style={{marginTop: '196px'}}>
+      <main style={{ marginTop: '196px' }}>
         <Outlet context={{ character, stats, resistances, skills, trainingsWithTier, paths, lineages, pureLineageSkills, nonPureLineageSkills, isPure, weapons, armors }} />
-        </main >
+      </main >
     </>
   );
 

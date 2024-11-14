@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { ActionFunction, json, LoaderFunction, redirect } from "@remix-run/node"
-import { NavLink, useActionData } from "@remix-run/react"
+import { useActionData } from "@remix-run/react"
 import { useEffect, useRef, useState } from "react"
 import { getUserIdFromSession, requireUserId } from '~/utils/auth.server'
 import { submitCharacter, tierByLevel } from "~/utils/character.server"
@@ -34,7 +34,7 @@ export const action: ActionFunction = async ({ request }) => {
 
     return (
       json({ character }, { status: 201 }),
-      redirect(`/character/new/${character}`)
+      redirect(`/character/${character}/stats`)
     );
   } catch (error) {
     console.error(error);
@@ -136,7 +136,8 @@ export default function NewCharacterRoute() {
       {errors.level && <h3>{errors.level}</h3>}
       <div className="title-container">
         <h1>Attributes</h1>
-        <NavLink to ='/home/' className='question-button'/>
+        <li className='question-button'>?</li>
+        <p className="dropdown-content">AAAA</p>
       </div>
       <h3>Points remaining: {limit}</h3>
 

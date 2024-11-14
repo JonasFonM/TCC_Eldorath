@@ -46,8 +46,6 @@ export const action: ActionFunction = async ({ request }) => {
   }
 }
 
-
-
 export default function Login() {
   const [action, setAction] = useState('login')
 
@@ -106,65 +104,68 @@ export default function Login() {
   };
 
   return (
-      <>
-      <h1 className='title-screen'>Welcome<br></br>to<br></br> Aeternida</h1>
-      
-    <div>
-      <div>
-        <button className='button'
-          onClick={() => setAction(action == 'login' ? 'register' : 'login')}>
-          {action === 'login' ? 'Sign Up' : 'Log In'}
-        </button>
-        {/* ... */}
+    <>
+      <div className='title-screen'>
+        <h1 id='first'>Welcome</h1>
+        <h1 id='second'>to</h1>
+        <h1 id='third'>Aeternida</h1>
       </div>
-      <h2>
-        {action === 'login' ? 'Log In' : 'Sign Up'}
-      </h2>
-      <form method="POST" onSubmit={handleSubmit}>
-        <div>{formError}</div>
-        <div className='block'> <FormField
-          htmlFor="email"
-          label="Email"
-          value={formData.email}
-          onChange={e => handleInputChange(e, 'email')}
-          error={errors?.email}
-        />
-        </div>
-        <div className='block'><FormField
-          htmlFor="password"
-          type="password"
-          label="Password"
-          value={formData.password}
-          onChange={e => handleInputChange(e, 'password')}
-          error={errors?.password}
-        />
-        </div>
-
-        {action === 'register' && (
-          <>
-            <div className='block'>
-              <FormField
-                htmlFor="username"
-                label="Username"
-                onChange={e => handleInputChange(e, 'username')}
-                value={formData.username}
-                error={errors?.username}
-              />
-            </div>
-
-
-          </>
-        )}
-
-        <div className='block'>
-          <button type="submit" name="_action" value={action} className="login-button">
-            {
-              action === 'login' ? "Sign In" : "Sign Up"
-            }
+      <div className='login'>
+        <div>
+          <button className='button'
+            onClick={() => setAction(action == 'login' ? 'register' : 'login')}>
+            {action === 'login' ? 'Sign Up' : 'Log In'}
           </button>
+          {/* ... */}
         </div>
-      </form>
-    </div>
+        <h2>
+          {action === 'login' ? 'Log In' : 'Sign Up'}
+        </h2>
+        <form method="POST" onSubmit={handleSubmit}>
+          <div>{formError}</div>
+          <div className='block'> <FormField
+            htmlFor="email"
+            label="Email"
+            value={formData.email}
+            onChange={e => handleInputChange(e, 'email')}
+            error={errors?.email}
+          />
+          </div>
+          <div className='block'><FormField
+            htmlFor="password"
+            type="password"
+            label="Password"
+            value={formData.password}
+            onChange={e => handleInputChange(e, 'password')}
+            error={errors?.password}
+          />
+          </div>
+
+          {action === 'register' && (
+            <>
+              <div className='block'>
+                <FormField
+                  htmlFor="username"
+                  label="Username"
+                  onChange={e => handleInputChange(e, 'username')}
+                  value={formData.username}
+                  error={errors?.username}
+                />
+              </div>
+
+
+            </>
+          )}
+
+          <div className='block'>
+            <button type="submit" name="_action" value={action} className="login-button">
+              {
+                action === 'login' ? "Sign In" : "Sign Up"
+              }
+            </button>
+          </div>
+        </form>
+      </div>
     </>
   )
 }

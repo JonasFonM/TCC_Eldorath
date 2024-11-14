@@ -11,70 +11,78 @@ export default function SkillsRoute() {
 
   return (
     <>
-      <h1>Skills</h1>
-      <div className="skills-grid">
-        {skills.map(skill => (
-          <SkillCircle
-            key={skill.id}
-            skill={skill}
-            isSelected={false}
-            onClick={() => null}
-            isPureLineage={false}
-          />
-        ))}
+      <div className="col-3">
+        <h1>Skills</h1>
+        <div className="skills-grid">
+          {skills.map(skill => (
+            <SkillCircle
+              key={skill.id}
+              skill={skill}
+              isSelected={false}
+              onClick={() => null}
+              isPureLineage={false}
+            />
+          ))}
+        </div>
       </div>
 
-      <h1>Lineages</h1>
-      {lineages.map(lineage => (
-        <LineageCircle key={lineage.id} lineage={lineage} isSelected={false}
-          onClick={() => null} />
-      ))}
-      {isPure ? <div className="pure-lineage-skills">
-        {pureLineageSkills.map(ls => (
-          <SkillCircle
-            key={ls.skill.id}
-            skill={ls.skill}
-            isSelected={false}
-            onClick={() => null}
-            isPureLineage={true}
-          />
+      <div className="col-3">
+        <h1>Lineages</h1>
+        {lineages.map(lineage => (
+          <LineageCircle key={lineage.id} lineage={lineage} isSelected={false}
+            onClick={() => null} />
         ))}
-      </div> : null}
-
-      <div className="nonpure-lineage-skills">
-        {nonPureLineageSkills.map(ls => (
-          <SkillCircle
-            key={ls.skill.id}
-            skill={ls.skill}
-            isSelected={false}
-            onClick={() => null}
-            isPureLineage={false}
-          />
-        ))}
+        {isPure ? <div className="pure-lineage-skills">
+          {pureLineageSkills.map(ls => (
+            <SkillCircle
+              key={ls.skill.id}
+              skill={ls.skill}
+              isSelected={false}
+              onClick={() => null}
+              isPureLineage={true}
+            />
+          ))}
+        </div> : null}
+        <div className="nonpure-lineage-skills">
+          {nonPureLineageSkills.map(ls => (
+            <SkillCircle
+              key={ls.skill.id}
+              skill={ls.skill}
+              isSelected={false}
+              onClick={() => null}
+              isPureLineage={false}
+            />
+          ))}
+        </div>
       </div>
 
-      <h1>Paths</h1>
-      <div className="trainings-grid">
-        {paths.map(pa => (
-          <PathCircle
-            key={pa.id}
-            path={pa}
-            isSelected={false}
-            onClick={() => null}
-          />
-        ))}
+
+      <div className="col-3">
+        <h1>Paths</h1>
+        <div className="trainings-grid">
+          {paths.map(pa => (
+            <PathCircle
+              key={pa.id}
+              path={pa}
+              isSelected={false}
+              onClick={() => null}
+            />
+          ))}
+        </div>
       </div>
 
-      <h1>Trainings</h1>
-      <div className="trainings-grid">
-        {trainingsWithTier.map(tt => (
-          <TrainingCircle
-            key={tt.training.id}
-            training={tt.training}
-            isSelected={false}
-            onClick={() => null}
-          />
-        ))}
+      <div className="trainings">
+        <h1>Trainings</h1>
+        <div className="trainings-grid">
+          {trainingsWithTier.map(tt => (
+            <TrainingCircle
+              key={tt.training.id}
+              training={tt.training}
+              isSelected={false}
+              onClick={() => null}
+            />
+          ))}
+        </div>
       </div>
     </>
   )

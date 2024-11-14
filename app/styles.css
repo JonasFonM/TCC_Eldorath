@@ -22,15 +22,38 @@ body {
   margin-top: 120px;
 }
 
+@keyframes spawn {
+  0% {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .title-screen {
   color: gold;
   font-weight: 900;
+  font-size: 56px;
   font-variant: small-caps;
-  letter-spacing: 0.3rem;
-  line-height: 4rem;
-  transition: 0.5s ease;
-  text-shadow: 0px 2px 15px #787878;
+  letter-spacing: 1rem;
+  line-height: 8rem;
+  text-shadow: 0px 10px 15px #787878;
 }
+
+.title-screen #first {
+  animation: spawn 1s ease-out forwards;
+}
+.title-screen #second {
+  animation: spawn 2s ease-out forwards;
+}
+.title-screen #third {
+  animation: spawn 3s ease-out forwards;
+}
+
+
 
 h1{
   font-family: Georgia;
@@ -59,10 +82,10 @@ h3 {
 
 .title-container {
   display: flex;
-  align-items: center; /* Vertically aligns elements within */
-  width: 100%;
   text-align: center;
-  margin: auto;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
   gap: 8px; /* Space between the title and "?" button */
 }
 
@@ -239,6 +262,7 @@ li a:hover {
   transform: scale(1.02);
 }
 
+
 .grid-item {
   background-color: #1f1f1f;
   border: 1px solid #333;
@@ -373,6 +397,11 @@ li a:hover {
 
 .modal-overlay {
   animation: fadeIn 0.3s ease-in-out;
+}
+
+.login {
+  display: none;
+
 }
 
 .login-button {
@@ -551,6 +580,10 @@ ul.log,
   .grid-item {
     width: 46%;
   }
+
+  .title-screen {
+    font-size: 38px;
+  }
 }
 
 @media (max-width: 600px) {
@@ -561,5 +594,9 @@ ul.log,
   .block,
   .grid-item {
     width: 65%;
+  }
+
+  .title-screen {
+    font-size: 28px;
   }
 }

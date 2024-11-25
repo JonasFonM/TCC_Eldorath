@@ -5,6 +5,8 @@ import { prisma } from "~/utils/prisma.server";
 import { createStats } from "~/utils/character.server";
 import { LSrelations, trainingWithTier } from "~/utils/types.server";
 import { armor, character, character_armor, character_weapon, charStats, lineage, path, resistances, skill, weapon } from "@prisma/client";
+import { ResetConfirm } from "~/components/character-sheet/reset-confirm";
+import { useState } from "react";
 
 
 export const loader: LoaderFunction = async ({ params }) => {
@@ -110,20 +112,39 @@ export default function CharacterRoute() {
 
   const { stats, resistances } = useLoaderData<{ stats: charStats; resistances: resistances }>()
 
+  const [selectReset, setReset] = useState<number>(0);
+
+  const showReset = () => {
+    setReset(() => {
+      return character.id;
+    });
+  };
+
+  const cancelReset = () => {
+    setReset(() => {
+      return 0
+    });
+  };
+
   return (
     <>
       <ul className="charnav">
-        <p style={{ float: "right", marginRight: '24px', textAlign: 'right' }}>Level<h1 style={{ display: "inline" }}>{character.level}</h1> <br />Tier <h1 style={{ display: "inline" }}>{character.tier}</h1></p>
+        <div>
+          <p style={{ float: "right", marginRight: '24px', marginTop: '0', marginBottom: '0', textAlign: 'right' }}>Level<h1 style={{ display: "inline" }}>{character.level}</h1> <br />Tier <h1 style={{ display: "inline" }}>{character.tier}</h1></p>
 
-        <h1>{character.name}</h1>
-        <p style={{ marginLeft: '32px', marginTop: '0', marginBottom: '0' }}>{paths && paths.length > 0 ? (
-          paths.map(path => path.name)
-        ) : ("Pathless")}</p>
+          <h1>{character.name}</h1>
+          <p style={{ marginLeft: '32px', marginTop: '0', marginBottom: '0' }}>{paths && paths.length > 0 ? (
+            paths.map(path => path.name)
+          ) : ("Sem Caminho")}</p>
+        </div>
 
-        <li><NavLink to={`/user/character/${characterId}/stats`}>Character</NavLink></li>
-        <li><NavLink to={`/user/character/${characterId}/capabilities`}>Capabilities</NavLink></li>
-        <li><NavLink to={`/user/character/${characterId}/inventory`}>Inventory</NavLink></li>
-        <li style={{ float: 'right' }}><NavLink to={`/user/character/${characterId}/reset`}>Reset</NavLink></li>
+        <div>
+          <li><NavLink to={`/user/character/${characterId}/stats/`}>Personagem</NavLink></li>
+          <li><NavLink to={`/user/character/${characterId}/capabilities/`}>Capacidades</NavLink></li>
+          <li><NavLink to={`/user/character/${characterId}/inventory/`}>Inventário</NavLink></li>
+          <ResetConfirm name={character.name} isHidden={selectReset === 0} onShow={showReset} onCancel={cancelReset} id={String(character.id)} />
+        </div>
+
       </ul>
 
       <main style={{ marginTop: '196px' }}>

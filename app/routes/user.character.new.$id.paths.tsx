@@ -1,6 +1,6 @@
 import { path } from "@prisma/client";
 import { ActionFunction, json, LoaderFunction, redirect } from "@remix-run/node";
-import { useLoaderData } from "@remix-run/react";
+import { NavLink, useLoaderData } from "@remix-run/react";
 import { useState } from "react";
 import { PathCircle } from "~/components/path-circle";
 import { requireUserId } from "~/utils/auth.server";
@@ -20,8 +20,10 @@ export const loader: LoaderFunction = async ({ request, params }) => {
     }
     )
 
+    const maxSelectable = character?.pendingPath
 
-    return json({ userId, paths });
+
+    return json({ userId, paths, maxSelectable, characterId });
 }
 
 export const action: ActionFunction = async ({ request, params }) => {
@@ -35,10 +37,10 @@ export const action: ActionFunction = async ({ request, params }) => {
     }
     try {
         await submitCharPaths(selectedPathIds, Number(characterId))
-        await prisma.charStats.delete({
+        await prisma.charStats?.delete({
             where: { characterId: Number(characterId) }
         })
-        return redirect(`/user/character/${characterId}/`)
+        return redirect(`/user/character/${characterId}/capabilities/`)
     } catch (error) {
         console.error(error);
         return json({ error: "Failed to save paths." }, { status: 500 });
@@ -47,10 +49,9 @@ export const action: ActionFunction = async ({ request, params }) => {
 }
 
 export default function PathSelection() {
-    const { paths } = useLoaderData<{ paths: path[] }>();
+    const { paths, characterId, maxSelectable } = useLoaderData<{ paths: path[], characterId: string, maxSelectable: number }>();
     const [selectedPaths, setSelectedPaths] = useState<number[]>([]);
     const [error, setError] = useState<string | null>(null);
-    const maxSelectable = 1;
 
 
     const isMaxSelected = selectedPaths.length >= maxSelectable;
@@ -65,7 +66,7 @@ export default function PathSelection() {
                 : [...prevPaths, pathId];
 
             if (newSelectedPaths.length > 1) {
-                setError("You can select only 1 path.");
+                setError("Você só pode selecionar 1 caminho por Categoria.");
                 return prevPaths;
             } else {
                 setError(null);
@@ -76,23 +77,42 @@ export default function PathSelection() {
     };
 
     return (
-        <form method="post">
-            <div className="paths-grid">
-                {paths.map(path => (
-                    <PathCircle
-                        key={path.id}
-                        path={path}
-                        isSelected={selectedPaths.includes(path.id)}
-                        onClick={() => !isMaxSelected || selectedPaths.includes(path.id) ? handlePathClick(path.id) : null}
-                    />
-                ))}
-            </div>
-            {selectedPaths.map(pathId => (
-                <input type="hidden" key={pathId} name="paths" value={pathId} />
-            ))}
-            {error && <p>{error}</p>}
+        <>
 
-            <button type="submit" className="button">Submit Paths</button>
-        </form>
+            {maxSelectable > 0 ?
+                <>
+                    <form method="post">
+
+                        <h1 className="title-container">Escolha seu Caminho<NavLink to={`/user/character/${characterId}/capabilities/`} className="question-button">X</NavLink></h1>
+                        <div className="paths-grid">
+                            {paths.map(path => (
+                                <PathCircle
+                                    key={path.id}
+                                    path={path}
+                                    isSelected={selectedPaths.includes(path.id)}
+                                    onClick={() => !isMaxSelected || selectedPaths.includes(path.id) ? handlePathClick(path.id) : null}
+                                />
+                            ))}
+                        </div>
+                        {selectedPaths.map(pathId => (
+                            <input type="hidden" key={pathId} name="paths" value={pathId} />
+                        ))}
+                        {error && <p>{error}</p>}
+
+                        <button type="submit" className="button">Submit Paths</button>
+                    </form>
+
+                </>
+                :
+                <>
+                    <h1 className="title-container">Você já tomou um Caminho para sua Categoria</h1>
+                    <NavLink className='button' to={`/user/character/${characterId}/capabilities/`}>Sair</NavLink>
+                </>
+
+            }
+
+
+
+        </>
     );
 }

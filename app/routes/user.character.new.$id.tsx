@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { json, LoaderFunction } from "@remix-run/node"
-import { NavLink, Outlet, useLoaderData } from "@remix-run/react"
+import { Outlet } from "@remix-run/react"
 import { requireUserId } from '~/utils/auth.server'
 
 export const loader: LoaderFunction = async ({ request, params }) => {
@@ -10,17 +10,9 @@ export const loader: LoaderFunction = async ({ request, params }) => {
 }
 
 export default function NewCharacterRoute() {
-    const { characterId } = useLoaderData<{ characterId: string }>()
     return (
         <>
-            <ul className="charnav">
-                <li><NavLink to={`/user/character/${characterId}`}>Character</NavLink></li>
-                <li><NavLink to={`/user/character/new/${characterId}/skills`}>Skills</NavLink></li>
-                <li><NavLink to={`/user/character/new/${characterId}/lineages`}>Lineages</NavLink></li>
-                <li><NavLink to={`/user/character/new/${characterId}/paths`}>Paths</NavLink></li>
-                <li><NavLink to={`/user/character/new/${characterId}/trainings`}>Trainings</NavLink></li>
-                <li><NavLink to={`/user/character/new/${characterId}/inventory`}>Items</NavLink></li>
-            </ul>
+            
             <main>
 
                 <Outlet />
@@ -28,3 +20,19 @@ export default function NewCharacterRoute() {
         </>
     );
 }
+
+/*
+
+
+
+    const { characterId } = useLoaderData<{ characterId: string }>()
+
+
+<ul className="charnav">
+                <li><NavLink to={`/user/character/${characterId}`}>Character</NavLink></li>
+                <li><NavLink to={`/user/character/new/${characterId}/skills`}>Skills</NavLink></li>
+                <li><NavLink to={`/user/character/new/${characterId}/lineages`}>Lineages</NavLink></li>
+                <li><NavLink to={`/user/character/new/${characterId}/paths`}>Paths</NavLink></li>
+                <li><NavLink to={`/user/character/new/${characterId}/trainings`}>Trainings</NavLink></li>
+                <li><NavLink to={`/user/character/new/${characterId}/inventory`}>Items</NavLink></li>
+            </ul>*/

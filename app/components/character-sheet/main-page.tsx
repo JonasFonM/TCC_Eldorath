@@ -28,62 +28,68 @@ export function StatsAndRes({ character, resistances, stats }: Props) {
 
     return (
         <div>
-            <h1>Progression</h1>
+            <div className="col-5">
 
-            <div className="container">
-                <div className="block"><h1>{character.level}</h1>Level</div>
-                <div className="block"><h1>{character.tier}</h1>Tier</div>
-                <div className="block"><h1>{character.experience}/{(character.level+1)*4*character.tier}</h1>Experience</div>
+                <h1 className="title-container">Atributos<NavLink className="question-button" to={`/user/character/update/${String(character.id)}/basic`}>!</NavLink></h1>
+
+                <div className="container">
+                    <div className="block"><h1>{character.agility}</h1><p style={{fontFamily: 'serif', fontSize: '1.35rem', fontWeight: 'bolder'}}>AGI</p></div>
+                    <div className="block"><h1>{character.body}</h1><p style={{fontFamily: 'serif', fontSize: '1.35rem', fontWeight: 'bolder'}}>COR</p></div>
+                    <div className="block"><h1>{character.mind}</h1><p style={{fontFamily: 'serif', fontSize: '1.35rem', fontWeight: 'bolder'}}>MEN</p></div>
+                </div>
+
             </div>
 
-            <h1>Attributes</h1>
+            <div className="col-7">
 
+                <h1>Progresso</h1>
 
-            <div className="container">
-                <div className="block"><h1>{character.agility}</h1>Agility</div>
-                <div className="block"><h1>{character.body}</h1>Body</div>
-                <div className="block"><h1>{character.mind}</h1>Mind</div>
+                <div className="container">
+                    <div className="block"><h1>{character.level}</h1><p style={{fontFamily: 'serif', fontSize: '1.35rem', fontWeight: 'bolder'}}>NV</p></div>
+                    <div className="block"><h1>{character.tier}</h1><p style={{fontFamily: 'serif', fontSize: '1.35rem', fontWeight: 'bolder'}}>CC</p></div>
+                    <div className="block"><h1>{character.experience}/{(character.level + 1) * 4 * character.tier}</h1><p style={{fontFamily: 'serif', fontSize: '1.35rem', fontWeight: 'bolder'}}>XP</p></div>
+                </div>
             </div>
-            <NavLink to={`/user/character/update/${String(character.id)}/basic`} className="button">Reasign Attributes</NavLink>
 
 
-            <h1>Stats</h1>
+            <h1>Estatísticas</h1>
 
             <div className="container">
-                <div className="block"><h1>{stats.vitality}</h1>Vitality</div>
+                <div className="block"><h1>{stats.vitality}</h1>Vitalidade</div>
                 <div className="block"><h1>{stats.vigor}</h1>Vigor</div>
-                <div className="block"><h1>{stats.power}</h1>Power</div>
-                <div className="block"><h1>{stats.speed}</h1>Speed</div>
-                <div className="block"><h1>{stats.defense}</h1>Defense</div>
-                <div className="block"><h1>{stats.initiative}</h1>Initiative</div>
-                <div className="block"><h1>{stats.baseWeight}</h1>Weight</div>
-                <div className="block"><h1>{stats.carryCap}</h1>Carry Capacity</div>
-                <div className="block"><h1>{stats.liftCap}</h1>Lifting Capacity</div>
+                <div className="block"><h1>{stats.power}</h1>Poder</div>
+                <div className="block"><h1>{stats.defense}</h1>Defesa</div>
+                <div className="block"><h1>{stats.initiative}</h1>Iniciativa</div>
+                <div className="block"><h1>{stats.speed}</h1>Velocidade</div>
+                <div className="block"><h1>{stats.baseWeight}</h1>Peso</div>
+                <div className="block"><h1>{stats.carryCap}</h1>Capacidade de Carga</div>
+                <div className="block"><h1>{stats.liftCap}</h1>Capacidade de Levantamento</div>
             </div>
 
-            <h1>Resistances</h1>
 
-            <h3>Physical Resistances</h3>
+            <h1>Resistências</h1>
+
+            <h3>Resistências Físicas</h3>
 
             <div className="container">
-                <div className="block">Impact Damage Resistance:{resistances.impactRes}</div>
-                <div className="block">Piercing Damage Resistance:{resistances.pierceRes}</div>
-                <div className="block">Slashing Damage Resistance:{resistances.slashRes}</div>
+                <div className="block">Impacto: {resistances.impactRes}</div>
+                <div className="block">Perfuração: {resistances.pierceRes}</div>
+                <div className="block">Corte: {resistances.slashRes}</div>
             </div>
 
-            <h3>Magical Resistances</h3>
+            <h3>Resistências Mágicas</h3>
 
             <div className="container">
-                <div className="block">Acid Damage Resistance:{resistances.acidRes}</div>
-                <div className="block">Cold Damage Resistance:{resistances.coldRes}</div>
-                <div className="block">Fire Damage Resistance:{resistances.fireRes}</div>
-                <div className="block">Lightning Damage Resistance:{resistances.lightningRes}</div>
-                <div className="block">Arcane Damage Resistance:{resistances.arcaneRes}</div>
-                <div className="block">Cosmic Damage Resistance:{resistances.cosmicRes}</div>
-                <div className="block">Psychic Damage Resistance:{resistances.psychicRes}</div>
-                <div className="block">Occult Damage Resistance:{resistances.occultRes}</div>
-                <div className="block">Profane Damage Resistance:{resistances.profaneRes}</div>
-                <div className="block">Sacred Damage Resistance:{resistances.sacredRes}</div>
+                <div className="block">Ácida: {resistances.acidRes}</div>
+                <div className="block">Gélida: {resistances.coldRes}</div>
+                <div className="block">Flamejante: {resistances.fireRes}</div>
+                <div className="block">Elétrica: {resistances.lightningRes}</div>
+                <div className="block">Arcana: {resistances.arcaneRes}</div>
+                <div className="block">Cósmica: {resistances.cosmicRes}</div>
+                <div className="block">Psíquica: {resistances.psychicRes}</div>
+                <div className="block">Maligna: {resistances.occultRes}</div>
+                <div className="block">Profana: {resistances.profaneRes}</div>
+                <div className="block">Sagrada: {resistances.sacredRes}</div>
             </div>
         </div>
 

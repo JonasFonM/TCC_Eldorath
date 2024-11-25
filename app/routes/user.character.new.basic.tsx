@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { ActionFunction, json, LoaderFunction, redirect } from "@remix-run/node"
-import { useActionData } from "@remix-run/react"
+import { NavLink, useActionData } from "@remix-run/react"
 import { useEffect, useRef, useState } from "react"
 import { getUserIdFromSession, requireUserId } from '~/utils/auth.server'
 import { submitCharacter, tierByLevel } from "~/utils/character.server"
@@ -134,10 +134,11 @@ export default function NewCharacterRoute() {
 
       <input hidden type="number" name="level" value={formData.level} onChange={handleChange} />
       {errors.level && <h3>{errors.level}</h3>}
+
       <div className="title-container">
-        <h1>Attributes</h1>
-        <li className='question-button'>?</li>
+        <h1>Atributos<NavLink to={'../../../user/home'} className='question-button'>?</NavLink></h1>
       </div>
+
       <h3>Points remaining: {limit}</h3>
 
       <div className="container">

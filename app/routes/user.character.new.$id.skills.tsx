@@ -1,6 +1,6 @@
 import { skill } from "@prisma/client";
 import { ActionFunction, json, LoaderFunction, redirect } from "@remix-run/node";
-import { useLoaderData } from "@remix-run/react";
+import { NavLink, useLoaderData } from "@remix-run/react";
 import { useState } from "react";
 import { SkillCircle } from "~/components/skill-circle";
 import { requireUserId } from "~/utils/auth.server";
@@ -87,7 +87,7 @@ export const loader: LoaderFunction = async ({ request, params }) => {
     include: { skill: true },
   });
 
-  return json({ userId, maxSelectable, general_skills, pureLineageSkills, nonPureLineageSkills, isPure });
+  return json({ userId, maxSelectable, general_skills, pureLineageSkills, nonPureLineageSkills, isPure, characterId });
 }
 
 
@@ -102,11 +102,11 @@ export const action: ActionFunction = async ({ request, params }) => {
   await prisma.charStats.delete({
     where: { characterId: Number(characterId) }
   })
-  return redirect(`/user/character/${characterId}/`)
+  return redirect(`/user/character/${characterId}/capabilities`)
 }
 
 export default function SkillSelectionRoute() {
-  const { maxSelectable, general_skills, nonPureLineageSkills, pureLineageSkills, isPure } = useLoaderData<{ maxSelectable: number, general_skills: skill[], pureLineageSkills: LSrelations, nonPureLineageSkills: LSrelations, isPure: boolean }>();
+  const { maxSelectable, general_skills, nonPureLineageSkills, pureLineageSkills, isPure, characterId } = useLoaderData<{ maxSelectable: number, general_skills: skill[], pureLineageSkills: LSrelations, nonPureLineageSkills: LSrelations, isPure: boolean, characterId: string }>();
   const [selectedSkills, setSelectedSkills] = useState<number[]>([]);
 
   const isMaxSelected = selectedSkills.length >= maxSelectable;
@@ -126,7 +126,17 @@ export default function SkillSelectionRoute() {
   return (
     <form method="post">
 
-      {nonPureLineageSkills.length > 0 ? <h1>Skills available from Lineages</h1> : ''}
+      { maxSelectable > 0 ?
+
+        <h1 className="title-container">Escolha até {maxSelectable} Habilidades<NavLink to={`/user/character/${characterId}/capabilities/`} className="question-button">X</NavLink></h1>
+
+        :
+
+        <h1 className="title-container">Máximo de escolhas atingido<NavLink to={`/user/character/${characterId}/capabilities/`} className="question-button">X</NavLink></h1>
+
+      }
+
+      {nonPureLineageSkills.length > 0 ? <h1>Habilidades Exclusivas de Linhagem</h1> : ''}
       <div className="nonpure-lineage-skills">
         {nonPureLineageSkills.map(ls => (
           <SkillCircle
@@ -138,8 +148,8 @@ export default function SkillSelectionRoute() {
           />
         ))}
       </div>
-      
-      {isPure && pureLineageSkills.length > 0 ? <h1>Skills available from Pure Lineage</h1> : ''}
+
+      {isPure && pureLineageSkills.length > 0 ? <h1>Habilidades Exclusivas de Linhagem Pura</h1> : ''}
       <div className="pure-lineage-skills">
         {pureLineageSkills.map(ls => (
           <SkillCircle
@@ -151,8 +161,7 @@ export default function SkillSelectionRoute() {
           />
         ))}
       </div>
-      
-      <h1>Choose up to {maxSelectable} Skills</h1>
+
 
       <div className="skills-grid">
         {general_skills.map(skill => (
@@ -170,7 +179,7 @@ export default function SkillSelectionRoute() {
       ))}
       <input type="hidden" key={maxSelectable} name="pendingSkills" value={maxSelectable} />
 
-      <button type="submit" className="button">Submit Skills</button>
+      <button type="submit" className="button">Confirmar</button>
     </form>
   );
 }

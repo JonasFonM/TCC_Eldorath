@@ -1,18 +1,25 @@
-import { useOutletContext } from "@remix-run/react";
+import { NavLink, useLoaderData, useOutletContext } from "@remix-run/react";
 import { SkillCircle } from "~/components/skill-circle";
 import { lineage, path, skill } from "@prisma/client";
 import { LSrelations, trainingWithTier } from "~/utils/types.server";
 import { LineageCircle } from "~/components/lineage-circle";
 import { PathCircle } from "~/components/path-circle";
 import { TrainingCircle } from "~/components/training-circle";
+import { LoaderFunction } from "@remix-run/node";
+
+export const loader: LoaderFunction = async ({ params }) => {
+  const characterId = params.id;
+  return(characterId)
+}
 
 export default function SkillsRoute() {
   const { skills, trainingsWithTier, paths, lineages, pureLineageSkills, nonPureLineageSkills, isPure } = useOutletContext<{ skills: skill[], pureLineageSkills: LSrelations, nonPureLineageSkills: LSrelations, trainingsWithTier: trainingWithTier, paths: path[], lineages: lineage[], isPure: boolean }>();
+  const characterId = useLoaderData<string>();
 
   return (
     <>
-      <div className="col-3">
-        <h1>Skills</h1>
+      <div className="col-5">
+        <h1 className="title-container">Habilidades<NavLink to={`../../new/${characterId}/skills/`} style={{color: 'blue'}} className='question-button'>+</NavLink></h1>
         <div className="skills-grid">
           {skills.map(skill => (
             <SkillCircle
@@ -24,10 +31,10 @@ export default function SkillsRoute() {
             />
           ))}
         </div>
-      </div>
+              </div>
 
-      <div className="col-3">
-        <h1>Lineages</h1>
+      <div className="col-7">
+        <h1 className="title-container">Linhagens<NavLink to={`../../new/${characterId}/lineages/`} style={{color: 'blue'}} className='question-button'>+</NavLink></h1>
         {lineages.map(lineage => (
           <LineageCircle key={lineage.id} lineage={lineage} isSelected={false}
             onClick={() => null} />
@@ -54,11 +61,9 @@ export default function SkillsRoute() {
             />
           ))}
         </div>
-      </div>
 
 
-      <div className="col-3">
-        <h1>Paths</h1>
+        <h1 className="title-container">Caminhos<NavLink to={`../../new/${characterId}/paths/`} style={{color: 'blue'}} className='question-button'>+</NavLink></h1>
         <div className="trainings-grid">
           {paths.map(pa => (
             <PathCircle
@@ -69,10 +74,8 @@ export default function SkillsRoute() {
             />
           ))}
         </div>
-      </div>
 
-      <div className="trainings">
-        <h1>Trainings</h1>
+        <h1 className="title-container">Treinos<NavLink to={`../../new/${characterId}/trainings/`} style={{color: 'blue'}} className='question-button'>+</NavLink></h1>
         <div className="trainings-grid">
           {trainingsWithTier.map(tt => (
             <TrainingCircle

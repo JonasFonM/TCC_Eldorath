@@ -1,6 +1,6 @@
 * {
   box-sizing: border-box;
-  font-family:  sans-serif;
+  font-family: sans-serif;
 }
 
 a {
@@ -18,7 +18,7 @@ body {
   line-height: 1.6;
 }
 
-.user{
+.user {
   margin-top: 120px;
 }
 
@@ -27,6 +27,7 @@ body {
     opacity: 0;
     transform: translateY(40px);
   }
+
   100% {
     opacity: 1;
     transform: translateY(0);
@@ -48,16 +49,18 @@ body {
 .title-screen #first {
   animation: spawn 1s ease-out forwards;
 }
+
 .title-screen #second {
   animation: spawn 2s ease-out forwards;
 }
+
 .title-screen #third {
   animation: spawn 3s ease-out forwards;
 }
 
 
 
-h1{
+h1 {
   font-family: Georgia;
   font-variant: small-caps;
   color: gold;
@@ -70,15 +73,15 @@ h2 {
   margin-bottom: 1rem;
 }
 
-h2{
-  color: #FFFFFF; 
+h2 {
+  color: #FFFFFF;
 
 }
 
 h3 {
   text-align: center;
   font-size: 1.2rem;
-  color: #FFFFFF; 
+  color: #FFFFFF;
   margin-bottom: 0.5rem;
 }
 
@@ -88,26 +91,29 @@ h3 {
   align-items: center;
   justify-content: center;
   flex-wrap: wrap;
-  gap: 8px; /* Space between the title and "?" button */
+  gap: 8px;
 }
 
+.title-screen .question-button{
+  padding-left: 6.5px;
+}
 
 .question-button {
   display: inline;
   float: right;
   width: 24px;
   height: 24px;
-  background-color: #ddd; 
+  background-color: #ddd;
   color: #333;
   font-weight: bold;
   font-size: 1rem;
   text-align: center;
   align-items: center;
-  padding-left: 6.5px;
-  line-height: 24px; /* Centers the "?" */
+  padding-left: auto;
+  line-height: 24px;
   border-radius: 50%;
   cursor: pointer;
-  text-decoration: none; 
+  text-decoration: none;
 }
 
 /* Optional: add hover effect */
@@ -117,17 +123,25 @@ h3 {
 
 
 .parchment {
-  background: #f8e8c8; /* Light parchment color */
-  background: radial-gradient(circle at center, #f8e8c8, #e8d0a0 80%, #d1b487); /* Adds subtle gradient for texture */
-  border: 1px solid #c1a16d; /* Border resembling the edge of parchment */
+  background: #f8e8c8;
+  /* Light parchment color */
+  background: radial-gradient(circle at center, #f8e8c8, #e8d0a0 80%, #d1b487);
+  /* Adds subtle gradient for texture */
+  border: 1px solid #c1a16d;
+  /* Border resembling the edge of parchment */
   padding: 20px;
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.3), /* Soft drop shadow */
-              inset 0 0 10px rgba(0, 0, 0, 0.1), /* Inner shadow for depth */
-              0px 0px 15px rgba(255, 255, 255, 0.2); /* Slight glow for magical effect */
-  font-family: 'Papyrus', 'Cursive', serif; /* Choose a decorative font */
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.3),
+    /* Soft drop shadow */
+    inset 0 0 10px rgba(0, 0, 0, 0.1),
+    /* Inner shadow for depth */
+    0px 0px 15px rgba(255, 255, 255, 0.2);
+  /* Slight glow for magical effect */
+  font-family: 'Papyrus', 'Cursive', serif;
+  /* Choose a decorative font */
   font-size: 1.1rem;
   line-height: 1.6;
-  color: #4d3d28; /* Darker brown for old ink effect */
+  color: #4d3d28;
+  /* Darker brown for old ink effect */
 }
 
 /* Adding texture using pseudo-elements for a more realistic feel */
@@ -138,8 +152,10 @@ h3 {
   left: 0;
   width: 100%;
   height: 100%;
-  background-image: url('https://www.example.com/path-to-texture.png'); /* Add a parchment texture */
-  opacity: 0.2; /* Light opacity to blend with background */
+  background-image: url('https://www.example.com/path-to-texture.png');
+  /* Add a parchment texture */
+  opacity: 0.2;
+  /* Light opacity to blend with background */
   z-index: -1;
   pointer-events: none;
 }
@@ -188,18 +204,29 @@ h3 {
   margin-right: 8px;
 }
 
+.charnav button {
+  text-decoration: none;
+  font-weight: bold;
+  font-size: medium;
+  margin-right: 8px;
+}
+
 .charnav a.active {
   color: gold;
 }
 
-.charnav h1, .charnav h2{
+.charnav h1,
+.charnav h2 {
   text-align: left;
   font-size: larger;
   margin-left: 16px;
   margin-top: 8px;
   margin-bottom: 0;
-} 
+}
 
+li#reset button:hover {
+  color: red;
+}
 
 li {
   float: left;
@@ -219,6 +246,20 @@ li a {
   text-align: center;
   padding: 19px 19px;
   text-decoration: none;
+}
+
+li button {
+  display: block;
+  color: white;
+  text-align: center;
+  padding: 19px 19px;
+  text-decoration: none;
+  background: none;
+	color: inherit;
+	border: none;
+	font: inherit;
+	cursor: pointer;
+	outline: inherit;
 }
 
 li a:hover {
@@ -248,7 +289,7 @@ li a:hover {
   border: 1px solid #333;
   border-radius: 5px;
   margin: 10px auto;
-  padding: 20px;
+  padding: auto;
   width: 30%;
   font-family: sans-serif;
   font-weight: bolder;
@@ -265,13 +306,11 @@ li a:hover {
   transform: scale(1.02);
 }
 
-
-
 .grid-item {
   background-color: #1f1f1f;
   border: 1px solid #333;
   border-radius: 5px;
-  margin: 10px auto;  
+  margin: 10px auto;
   padding: 20px;
   width: 30%;
   /* Fixed width for grid items */
@@ -299,7 +338,7 @@ li a:hover {
   width: 100%;
   top: 100%;
   margin: 0 auto;
-  left:0;
+  left: 0;
   padding: 12px 16px;
   z-index: 4;
   transition: 0.3s ease;
@@ -317,18 +356,18 @@ li a:hover {
   min-height: 80px;
   padding: 39px 15px;
   text-align: center;
-  text-decoration:none;
+  text-decoration: none;
   font-weight: bold;
   font-size: 20px;
   margin: 10px auto;
   border-radius: 5px;
   cursor: pointer;
-  display: flex; 
+  display: flex;
   justify-content: center;
   transition: background-color 0.3s ease;
 }
 
-.block .button{
+.block .button {
   width: 100%;
   margin: 10px auto;
   padding-top: 29px;
@@ -347,11 +386,13 @@ li a:hover {
   left: 0;
   width: 100vw;
   height: 100vh;
-  background-color: rgba(0, 0, 0, 0.7); /* semi-transparent background */
+  background-color: rgba(0, 0, 0, 0.7);
+  /* semi-transparent background */
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 1000; /* Ensure it's on top of other content */
+  z-index: 1000;
+  /* Ensure it's on top of other content */
 }
 
 /* Modal content */
@@ -372,7 +413,7 @@ li a:hover {
 }
 
 .btn-delete {
-  background-color: red;
+  background-color: darkred;
   color: white;
   padding: 10px 20px;
   border: none;
@@ -381,7 +422,7 @@ li a:hover {
 }
 
 .btn-cancel {
-  background-color: gray;
+  background-color: darkgray;
   color: white;
   padding: 10px 20px;
   border: none;
@@ -389,14 +430,20 @@ li a:hover {
   cursor: pointer;
 }
 
-.btn-delete:hover, .btn-cancel:hover {
+.btn-delete:hover,
+.btn-cancel:hover {
   opacity: 0.8;
 }
 
 
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }
 
 .modal-overlay {
@@ -419,7 +466,7 @@ li a:hover {
   margin: 10px auto;
   border-radius: 5px;
   cursor: pointer;
-  display: flex; 
+  display: flex;
   justify-content: center;
   transition: background-color 0.3s ease;
 }
@@ -547,7 +594,11 @@ ul.log,
   justify-content: center;
 }
 
-.skills-grid div:hover, .trainings-grid div:hover, .weapons-grid div:hover, .armors-grid div:hover, .block:hover {
+.skills-grid div:hover,
+.trainings-grid div:hover,
+.weapons-grid div:hover,
+.armors-grid div:hover,
+.block:hover {
   transition: transform 0.2s;
 }
 
@@ -575,9 +626,9 @@ ul.log,
 }
 
 @media (max-width: 900px) {
-  .button{
+  .button {
     width: 30%;
-   }
+  }
 
   .block,
   .grid-item {
@@ -590,9 +641,9 @@ ul.log,
 }
 
 @media (max-width: 600px) {
- .button{
-  width: 35%;
- }
+  .button {
+    width: 35%;
+  }
 
   .block,
   .grid-item {

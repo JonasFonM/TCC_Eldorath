@@ -1,6 +1,6 @@
 import { lineage } from "@prisma/client";
 import { ActionFunction, json, LoaderFunction, redirect } from "@remix-run/node";
-import { useLoaderData } from "@remix-run/react";
+import { NavLink, useLoaderData } from "@remix-run/react";
 import { useState } from "react";
 import { LineageCircle } from "~/components/lineage-circle";
 import { requireUserId } from "~/utils/auth.server";
@@ -20,7 +20,7 @@ export const loader: LoaderFunction = async ({ request, params }) => {
 
     const maxSelectable = character?.pendingLineages;
 
-    return json({ userId, lineages, maxSelectable });
+    return json({ userId, lineages, maxSelectable, characterId });
 }
 
 export const action: ActionFunction = async ({ request, params }) => {
@@ -35,7 +35,7 @@ export const action: ActionFunction = async ({ request, params }) => {
     }
     try {
         await submitCharLineages(selectedLineageIds, Number(characterId), pure)
-        return redirect(`/user/character/${characterId}/`)
+        return redirect(`/user/character/${characterId}/capabilities/`)
     } catch (error) {
         console.error(error);
         return json({ error: "Failed to save lineages." }, { status: 500 });
@@ -44,7 +44,7 @@ export const action: ActionFunction = async ({ request, params }) => {
 }
 
 export default function LineageSelection() {
-    const { lineages, maxSelectable } = useLoaderData<{ lineages: lineage[], maxSelectable: number }>();
+    const { lineages, maxSelectable, characterId } = useLoaderData<{ lineages: lineage[], maxSelectable: number, characterId: string }>();
     const [selectedLineages, setSelectedLineages] = useState<number[]>([]);
     const [error, setError] = useState<string | null>(null);
     const [isPure, setPure] = useState<boolean>(true);
@@ -66,7 +66,7 @@ export default function LineageSelection() {
 
             // Handle error state based on the number of selected lineages
             if (newSelectedLineages.length > maxSelectable) {
-                setError("You cannot select any more lineages.");
+                setError("Você não pode escolher mais Linhagens.");
                 return prevSelectedLineages; // Prevent the addition if limit is exceeded
             } else {
                 setError(null);
@@ -78,41 +78,48 @@ export default function LineageSelection() {
 
     const handleSubmit = async (event: React.FormEvent) => {
 
-        if (!selectedLineages || selectedLineages.length <= 0) {
+        if (!selectedLineages && maxSelectable != 0 || selectedLineages.length <= 0 && maxSelectable != 0) {
             event.preventDefault();
 
-            return alert(`Please select at least one Lineage.`);
+            return alert(`Selecione pelo menos uma Linhagem.`);
         }
         return;
     }
 
 
 
-return (
-    <form method="post" onSubmit={handleSubmit}>
+    return (
+        <form method="post" onSubmit={handleSubmit}>
 
-        <h1>Choose up to {maxSelectable} Lineages</h1>
-        <h3>Choosing a single Lineage makes it Pure</h3>
+            {maxSelectable > 0 ? <h1 className="title-container">Escolha até {maxSelectable} Linhagens<NavLink to={`/user/character/${characterId}/capabilities/`} className="question-button">X</NavLink>
+            </h1> :
+                <>
+                    <h1 className="title-container">Máximo de escolhas atingido<NavLink to={`/user/character/${characterId}/capabilities/`} className="question-button">X</NavLink>
+                    </h1>
+                </>
+            }
 
-        <div className="lineages-grid">
-            {lineages.map(lineage => (
-                <LineageCircle
-                    key={lineage.id}
-                    lineage={lineage}
-                    isSelected={selectedLineages.includes(lineage.id)}
-                    onClick={() => !isMaxSelected || selectedLineages.includes(lineage.id) ? handleLineageClick(lineage.id) : null}
-                />
+            <h3>Escolher apenas 1 Linhagem a torna Pura</h3>
+
+            <div className="lineages-grid">
+                {lineages.map(lineage => (
+                    <LineageCircle
+                        key={lineage.id}
+                        lineage={lineage}
+                        isSelected={selectedLineages.includes(lineage.id)}
+                        onClick={() => !isMaxSelected || selectedLineages.includes(lineage.id) ? handleLineageClick(lineage.id) : null}
+                    />
+                ))}
+            </div>
+            {selectedLineages.map(lineageId => (
+                <input type="hidden" key={lineageId} name="lineages" value={lineageId} />
             ))}
-        </div>
-        {selectedLineages.map(lineageId => (
-            <input type="hidden" key={lineageId} name="lineages" value={lineageId} />
-        ))}
 
-        <input type="hidden" key='pure' name="pure" value={isPure ? 'true' : 'false'} />
+            <input type="hidden" key='pure' name="pure" value={isPure ? 'true' : 'false'} />
 
-        {error && <p>{error}</p>}
+            {error && <p>{error}</p>}
 
-        <button type="submit" className="button">Submit Lineages</button>
-    </form>
-);
+            <button type="submit" className="button">Confirmar</button>
+        </form>
+    );
 }

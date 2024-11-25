@@ -2,7 +2,7 @@
 import {  redirect, LoaderFunction } from "@remix-run/node";
 import { prisma } from "~/utils/prisma.server";
 
-export const loader: LoaderFunction = async ({ params }) => {
+export const loader: LoaderFunction = async ({ params, request }) => {
     const characterId = Number(params.id);
 
     const character = await prisma.character.findUnique({
@@ -12,6 +12,18 @@ export const loader: LoaderFunction = async ({ params }) => {
     if (!character) {
         throw new Response("Character not found", { status: 404 });
     }
+
+    await prisma.character.updateMany({
+        where: { id: characterId },
+        data: {
+            level: 1,
+            tier: 1,
+            pendingLineages: 2,
+            pendingPath: 1,
+            pendingSkills: 2,
+            pendingTrainings: 1
+        }
+    });
 
     await prisma.character_armor.deleteMany({
         where: { characterId: characterId },
@@ -35,6 +47,7 @@ export const loader: LoaderFunction = async ({ params }) => {
         where: { characterId: characterId },
     });
     
+    const referer = request.headers.get("Referer") || "/"; // Fallback to "/" if no referer
 
-    return redirect(`/user/character/new/${String(characterId)}`);
+    return redirect(referer);
 };

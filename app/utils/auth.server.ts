@@ -48,7 +48,7 @@ export async function register(user: RegisterForm) {
     )
   }
   return (
-    createUserSession(newUser.id, '/user/character'));
+    createUserSession(newUser.id, '/user/character/'));
 
 }
 
@@ -58,7 +58,7 @@ export async function login({ email, password }: LoginForm) {
   })
   if (!user || !(await bcrypt.compare(password, user.password)))
     return json({ error: `Incorrect login` }, { status: 400 })
-  return createUserSession(user.id, "/user/character");
+  return createUserSession(user.id, "/user/character/");
 }
 
 export async function requireUserId(request: Request, redirectTo: string = new URL(request.url).pathname) {
@@ -113,7 +113,7 @@ export async function getUser(request: Request) {
 
 export async function logout(request: Request) {
   const session = await getUserSession(request)
-  return redirect('/login', {
+  return redirect('/home', {
     headers: {
       'Set-Cookie': await storage.destroySession(session),
     },

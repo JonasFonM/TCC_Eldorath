@@ -233,6 +233,12 @@ export const submitCharPaths = async (pathList: number[], characterId: number) =
       })),
       skipDuplicates: true,
     });
+    await prisma.character.update({
+      where: { id: characterId },
+      data: {
+        pendingPath: 0
+      }
+    })
   }
 
   return;

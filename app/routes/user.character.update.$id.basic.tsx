@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { character } from "@prisma/client"
 import { ActionFunction, json, LoaderFunction, redirect } from "@remix-run/node"
-import { useActionData, useLoaderData } from "@remix-run/react"
+import { NavLink, useActionData, useLoaderData } from "@remix-run/react"
 import { useEffect, useRef, useState } from "react"
 import { getUserIdFromSession, requireUserId } from '~/utils/auth.server'
 import { tierByLevel, updateCharacter } from "~/utils/character.server"
@@ -160,10 +160,9 @@ export default function NewCharacterRoute() {
             {errors.level && <p>{errors.level}</p>}
 
             <div className="title-container">
-                <h1>Attributes</h1>
-                <li className='question-button'>?</li>
-                <p className="dropdown-content">AAAA</p>
+                <h1>Atributos<NavLink to={'../../../user/home/atr'} className='question-button'>?</NavLink></h1>
             </div>
+
             <h3>Points remaining: {limit}</h3>
             {formError && <p className="error">{formError}</p>}
             <div className="container">

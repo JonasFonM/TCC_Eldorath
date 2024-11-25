@@ -35,6 +35,15 @@ export function Layout({ children }: { children: React.ReactNode }) {
       logEndRef.current.scrollIntoView({ behavior: 'smooth' });
     }
   }, [logs]);
+---------------------------------------------------------------------
+
+              TOPNAV
+
+   <ul className="topnav">
+          <li><NavLink to={`/home`}>Home</NavLink></li>
+          <li><NavLink to={`/character`}>Characters</NavLink></li>
+          <li style={{ float: 'right' }}><NavLink className={'logout'} to={`/logout`}>Logout</NavLink></li>
+        </ul>
 
   */
   return (
@@ -50,11 +59,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
       </head>
       <body>
 
-        <ul className="topnav">
-          <li><NavLink to={`/home`}>Home</NavLink></li>
-          <li><NavLink to={`/character`}>Characters</NavLink></li>
-          <li style={{ float: 'right' }}><NavLink className={'logout'} to={`/logout`}>Logout</NavLink></li>
-        </ul>
+
 
 
         {children}

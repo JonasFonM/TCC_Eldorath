@@ -3,22 +3,22 @@
   font-family:  sans-serif;
 }
 
-
 a {
   text-decoration: none;
-
 }
 
 a :hover {
   color: white;
   transition: color 0.3s ease;
-
 }
 
 body {
   background-color: #121212;
   color: #ffffff;
   line-height: 1.6;
+}
+
+.user{
   margin-top: 120px;
 }
 
@@ -34,12 +34,14 @@ body {
 }
 
 .title-screen {
+  margin-right: 2px;
   color: gold;
   font-weight: 900;
   font-size: 56px;
   font-variant: small-caps;
-  letter-spacing: 1rem;
-  line-height: 8rem;
+  margin-bottom: 8rem;
+  letter-spacing: 0.5rem;
+  line-height: 4rem;
   text-shadow: 0px 10px 15px #787878;
 }
 
@@ -91,18 +93,21 @@ h3 {
 
 
 .question-button {
-  display: inline-block;
+  display: inline;
+  float: right;
   width: 24px;
   height: 24px;
-  background-color: #ddd; /* Button color */
-  color: #333; /* Text color */
+  background-color: #ddd; 
+  color: #333;
   font-weight: bold;
   font-size: 1rem;
   text-align: center;
+  align-items: center;
+  padding-left: 6.5px;
   line-height: 24px; /* Centers the "?" */
   border-radius: 50%;
   cursor: pointer;
-  text-decoration: none; /* Removes underline for NavLink */
+  text-decoration: none; 
 }
 
 /* Optional: add hover effect */
@@ -247,13 +252,11 @@ li a:hover {
   width: 30%;
   font-family: sans-serif;
   font-weight: bolder;
-  /* Fixed width */
   display: flex;
   position: relative;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  /* Center content vertically */
   transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
@@ -261,6 +264,7 @@ li a:hover {
   background-color: #575757;
   transform: scale(1.02);
 }
+
 
 
 .grid-item {
@@ -400,8 +404,7 @@ li a:hover {
 }
 
 .login {
-  display: none;
-
+  animation: spawn 1.5s ease-out forwards;
 }
 
 .login-button {

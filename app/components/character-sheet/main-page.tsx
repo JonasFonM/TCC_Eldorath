@@ -44,7 +44,7 @@ export function StatsAndRes({ character, resistances, stats }: Props) {
                 <div className="block"><h1>{character.body}</h1>Body</div>
                 <div className="block"><h1>{character.mind}</h1>Mind</div>
             </div>
-            <NavLink to={`/character/update/${String(character.id)}/basic`} className="button">Reasign Attributes</NavLink>
+            <NavLink to={`/user/character/update/${String(character.id)}/basic`} className="button">Reasign Attributes</NavLink>
 
 
             <h1>Stats</h1>

@@ -34,7 +34,7 @@ export const action: ActionFunction = async ({ request }) => {
 
     return (
       json({ character }, { status: 201 }),
-      redirect(`/character/${character}/stats`)
+      redirect(`/user/character/${character}/stats`)
     );
   } catch (error) {
     console.error(error);
@@ -137,7 +137,6 @@ export default function NewCharacterRoute() {
       <div className="title-container">
         <h1>Attributes</h1>
         <li className='question-button'>?</li>
-        <p className="dropdown-content">AAAA</p>
       </div>
       <h3>Points remaining: {limit}</h3>
 

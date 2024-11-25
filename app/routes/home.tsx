@@ -1,27 +1,19 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { LoaderFunction, json } from '@remix-run/node'
-import { requireUserId } from '~/utils/auth.server'
-import { UserPanel } from '~/components/user-panel'
-import { getOtherUsers } from '~/utils/user.server'
-import { useLoaderData } from '@remix-run/react'
+import { NavLink } from '@remix-run/react'
 
 
-export const loader: LoaderFunction = async ({ request }) => {
-  const userId = await requireUserId(request)
-  const users = await getOtherUsers(userId)
-  return json({ users })
-}
 
 export default function Home() {
-  const { users } = useLoaderData<any>()
   return (
     <>
-      <h1 className='title-screen'>Welcome<br></br>to<br></br> Aeternida</h1>
-      <main>
-        <div>
-          <UserPanel users={users} />
+      <div className='title-container'>
+        <div className='title-screen'>
+          <h1 id='first'>Bem Vindo</h1>
+          <h1 id='second'>A</h1>
+          <h1 id='third'>Aeternida<NavLink to={"../intro"} className='question-button'>?</NavLink></h1>
         </div>
-      </main>
+      </div>
+      <NavLink to={`../login`}><button className="button">Entrar</button></NavLink>
+      <NavLink to={`../intro`}><button className="button">Leia Mais</button></NavLink>
     </>
   )
 }

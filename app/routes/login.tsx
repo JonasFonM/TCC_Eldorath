@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState, useEffect, useRef } from 'react'
-import { useActionData } from '@remix-run/react'
+import { NavLink, useActionData } from '@remix-run/react'
 import { FormField } from '~/components/form-field'
 import { ActionFunction, json } from '@remix-run/node'
 import { validateEmail, validateName, validatePassword } from '~/utils/validators.server'
@@ -105,10 +105,8 @@ export default function Login() {
 
   return (
     <>
-      <div className='title-screen'>
-        <h1 id='first'>Welcome</h1>
-        <h1 id='second'>to</h1>
-        <h1 id='third'>Aeternida</h1>
+      <div className='title-container'>
+        <div className='title-screen'><h1 id='first'>Aeternida<NavLink to={"../intro"} className='question-button'>?</NavLink></h1></div>
       </div>
       <div className='login'>
         <div>
@@ -123,15 +121,14 @@ export default function Login() {
         </h2>
         <form method="POST" onSubmit={handleSubmit}>
           <div>{formError}</div>
-          <div className='block'> <FormField
+          <FormField
             htmlFor="email"
             label="Email"
             value={formData.email}
             onChange={e => handleInputChange(e, 'email')}
             error={errors?.email}
           />
-          </div>
-          <div className='block'><FormField
+          <FormField
             htmlFor="password"
             type="password"
             label="Password"
@@ -139,19 +136,16 @@ export default function Login() {
             onChange={e => handleInputChange(e, 'password')}
             error={errors?.password}
           />
-          </div>
 
           {action === 'register' && (
             <>
-              <div className='block'>
-                <FormField
-                  htmlFor="username"
-                  label="Username"
-                  onChange={e => handleInputChange(e, 'username')}
-                  value={formData.username}
-                  error={errors?.username}
-                />
-              </div>
+              <FormField
+                htmlFor="username"
+                label="Username"
+                onChange={e => handleInputChange(e, 'username')}
+                value={formData.username}
+                error={errors?.username}
+              />
 
 
             </>

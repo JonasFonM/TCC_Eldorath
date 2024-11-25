@@ -43,7 +43,7 @@ export const action: ActionFunction = async ({ params, request }) => {
         })
 
         return (
-            redirect(`/character/${String(character.id)}/stats`)
+            redirect(`/user/character/${String(character.id)}/stats`)
         );
     } catch (error) {
         console.error(error);

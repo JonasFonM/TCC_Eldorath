@@ -19,13 +19,10 @@ export function FormField({ htmlFor, label, type = 'text', value, onChange = () 
 
   return (
     <>
-      <label htmlFor={htmlFor} className="text-blue-600 font-semibold">
-        {label}
-      </label>
-      <input onChange={e => {
+      <input className="block" onChange={e => {
         onChange(e)
         setErrorText('')
-      }} type={type} id={htmlFor} name={htmlFor} className="w-full p-2 rounded-xl my-2" value={value} />
+      }} type={type} id={htmlFor} name={htmlFor} placeholder={label} style={{ fontFamily: 'serif', fontSize: '2rem', color: "gold", textAlign: 'center' }} value={value} />
       <div>
         {errorText || ''}
       </div>

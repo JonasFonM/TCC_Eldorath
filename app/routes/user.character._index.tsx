@@ -14,7 +14,7 @@ export const loader: LoaderFunction = async ({ request }) => {
 
 export default function CharactersIndexRoute() {
     const { characters } = useLoaderData<any>()
- 
+
 
     return (<>
         <h1>Character List</h1>
@@ -23,7 +23,7 @@ export default function CharactersIndexRoute() {
             <CharacterPanel characters={characters} />
         </div>
         <NavLink to={`new/basic`}><button className="button">New Character</button></NavLink>
-        
+
 
     </>);
 }

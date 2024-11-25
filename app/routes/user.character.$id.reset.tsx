@@ -36,5 +36,5 @@ export const loader: LoaderFunction = async ({ params }) => {
     });
     
 
-    return redirect(`/character/new/${String(characterId)}`);
+    return redirect(`/user/character/new/${String(characterId)}`);
 };

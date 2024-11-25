@@ -35,7 +35,7 @@ export const action: ActionFunction = async ({ request, params }) => {
     }
     try {
         await submitCharLineages(selectedLineageIds, Number(characterId), pure)
-        return redirect(`/character/${characterId}/`)
+        return redirect(`/user/character/${characterId}/`)
     } catch (error) {
         console.error(error);
         return json({ error: "Failed to save lineages." }, { status: 500 });

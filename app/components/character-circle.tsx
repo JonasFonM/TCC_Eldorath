@@ -30,7 +30,7 @@ export function CharacterCircle({ character }: props) {
 
   return (
     <>
-      <NavLink to={`/character/${character.id}/stats`}>
+      <NavLink to={`/user/character/${character.id}/stats`}>
         <h2>
           {character.name.toUpperCase()}
         </h2>

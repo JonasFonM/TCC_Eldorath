@@ -40,5 +40,5 @@ export const loader: LoaderFunction = async ({ params }) => {
         where: { id: characterId },
     });
 
-    return redirect('/character');
+    return redirect('/user/character/');
 };

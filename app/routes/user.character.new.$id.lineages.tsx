@@ -53,21 +53,17 @@ export default function LineageSelection() {
 
     const handleLineageClick = (lineageId: number) => {
         setSelectedLineages((prevSelectedLineages) => {
-            // Determine if the lineage is already selected
             const isSelected = prevSelectedLineages.includes(lineageId);
 
-            // Filter out the lineage if it's already selected, otherwise add it
             const newSelectedLineages = isSelected
                 ? prevSelectedLineages.filter(id => id !== lineageId)
                 : [...prevSelectedLineages, lineageId];
 
-            // Update the 'pure' state based on the number of selected lineages
             setPure(newSelectedLineages.length === 1);
 
-            // Handle error state based on the number of selected lineages
             if (newSelectedLineages.length > maxSelectable) {
                 setError("Você não pode escolher mais Linhagens.");
-                return prevSelectedLineages; // Prevent the addition if limit is exceeded
+                return prevSelectedLineages;
             } else {
                 setError(null);
             }
@@ -89,37 +85,44 @@ export default function LineageSelection() {
 
 
     return (
-        <form method="post" onSubmit={handleSubmit}>
-
-            {maxSelectable > 0 ? <h1 className="title-container">Escolha até {maxSelectable} Linhagens<NavLink to={`/user/character/${characterId}/capabilities/`} className="question-button">X</NavLink>
-            </h1> :
+        <>
+            {maxSelectable > 0 ?
                 <>
-                    <h1 className="title-container">Máximo de escolhas atingido<NavLink to={`/user/character/${characterId}/capabilities/`} className="question-button">X</NavLink>
-                    </h1>
+                    <form method="post" onSubmit={handleSubmit}>
+                        <h1 className="title-container">Escolha até {maxSelectable} Linhagens<NavLink to={`/user/character/${characterId}/capabilities/`} style={{ color: 'red' }} className="question-button">X</NavLink></h1>
+                        <h3>Escolher apenas 1 Linhagem a torna Pura</h3>
+
+                        <div className="lineages-grid">
+                            {lineages.map(lineage => (
+                                <LineageCircle
+                                    key={lineage.id}
+                                    lineage={lineage}
+                                    isPure={selectedLineages.length <=1}
+                                    isSelected={selectedLineages.includes(lineage.id)}
+                                    onClick={() => !isMaxSelected || selectedLineages.includes(lineage.id) ? handleLineageClick(lineage.id) : null}
+                                />
+                            ))}
+                        </div>
+                        {selectedLineages.map(lineageId => (
+                            <input type="hidden" key={lineageId} name="lineages" value={lineageId} />
+                        ))}
+
+                        <input type="hidden" key='pure' name="pure" value={isPure ? 'true' : 'false'} />
+
+                        {error && <p>{error}</p>}
+
+                        <button type="submit" className="button">Confirmar</button>
+                    </form>
+                </>
+
+                :
+                <>
+                    <h1 className="title-container">Sua Linhagem já foi Escolhida</h1>
+                    <NavLink to={`/user/character/${characterId}/capabilities/`}><button type="button" className="button">Sair</button></NavLink>
+
                 </>
             }
 
-            <h3>Escolher apenas 1 Linhagem a torna Pura</h3>
-
-            <div className="lineages-grid">
-                {lineages.map(lineage => (
-                    <LineageCircle
-                        key={lineage.id}
-                        lineage={lineage}
-                        isSelected={selectedLineages.includes(lineage.id)}
-                        onClick={() => !isMaxSelected || selectedLineages.includes(lineage.id) ? handleLineageClick(lineage.id) : null}
-                    />
-                ))}
-            </div>
-            {selectedLineages.map(lineageId => (
-                <input type="hidden" key={lineageId} name="lineages" value={lineageId} />
-            ))}
-
-            <input type="hidden" key='pure' name="pure" value={isPure ? 'true' : 'false'} />
-
-            {error && <p>{error}</p>}
-
-            <button type="submit" className="button">Confirmar</button>
-        </form>
+        </>
     );
 }

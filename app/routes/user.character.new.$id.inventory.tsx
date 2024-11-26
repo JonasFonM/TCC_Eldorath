@@ -1,6 +1,6 @@
 import { character } from "@prisma/client";
 import { ActionFunction, json, LoaderFunction, redirect } from "@remix-run/node";
-import { useLoaderData } from "@remix-run/react";
+import { NavLink, useLoaderData } from "@remix-run/react";
 import { useState } from "react";
 import { WeaponCircle } from "~/components/weapon-circle";
 import { ArmorCircle } from "~/components/armor-circle";
@@ -33,7 +33,7 @@ export const loader: LoaderFunction = async ({ request, params }) => {
     })
 
 
-    return json({ userId, weapons, armors, character });
+    return json({ userId, weapons, armors, character, characterId });
 }
 
 export const action: ActionFunction = async ({ request, params }) => {
@@ -50,7 +50,7 @@ export const action: ActionFunction = async ({ request, params }) => {
         await prisma.charStats.delete({
             where: { characterId: Number(characterId) }
         })
-        return redirect(`/user/character/${characterId}/`)
+        return redirect(`/user/character/${characterId}/inventory`)
     } catch (error) {
         console.error(error);
         return json({ error: "Failed to save items." }, { status: 500 });
@@ -59,7 +59,7 @@ export const action: ActionFunction = async ({ request, params }) => {
 }
 
 export default function WeaponSelection() {
-    const { weapons, armors, character } = useLoaderData<{ weapons: weaponWithTraining; armors: armorWithTraining; character: character }>();
+    const { weapons, armors, character, characterId } = useLoaderData<{ weapons: weaponWithTraining; armors: armorWithTraining; character: character, characterId: string }>();
     const [selectedWeapons, setSelectedWeapons] = useState<number[]>([]);
     const [selectedArmors, setSelectedArmors] = useState<number[]>([]);
     const [selectedCost, setSelectedCost] = useState<number>(0);
@@ -76,15 +76,17 @@ export default function WeaponSelection() {
             let newCost = selectedCost;
 
             if (isSelected) {
-                // If already selected, deselect and subtract cost
+
                 newCost -= cost;
                 setSelectedCost(newCost);
                 return prevWeapons.filter(id => id !== weaponId);
+
             } else {
-                // If not selected, check if adding this weapon exceeds the budget
+
                 if (newCost + cost > maxCost) {
-                    setError("You don't have enough gold.");
-                    return prevWeapons; // No change
+                    setError("Você não pode pagar este item.");
+                    return prevWeapons;
+
                 } else {
                     newCost += cost;
                     setSelectedCost(newCost);
@@ -101,15 +103,16 @@ export default function WeaponSelection() {
             let newCost = selectedCost;
 
             if (isSelected) {
-                // If already selected, deselect and subtract cost
                 newCost -= cost;
                 setSelectedCost(newCost);
                 return prevArmors.filter(id => id !== armorId);
+
             } else {
-                // If not selected, check if adding this armor exceeds the budget
+
                 if (newCost + cost > maxCost) {
-                    setError("You don't have enough gold.");
-                    return prevArmors; // No change
+                    setError("Você não pode pagar este item.");
+                    return prevArmors;
+
                 } else {
                     newCost += cost;
                     setSelectedCost(newCost);
@@ -124,10 +127,8 @@ export default function WeaponSelection() {
 
     return (
         <form method="post">
-            <h2>Gold:{character.gold - selectedCost}</h2>
-            {error && <p>{error}</p>}
-
-            <h1>Weapons</h1>
+            <h1 className="title-container">Inventário<NavLink style={{ color: 'red' }} className={'question-button'} to={`../../../${characterId}/inventory/`}>X</NavLink></h1>
+            <h1>Armas</h1>
             <div className="weapons-grid">
                 {weapons.map(weapon => (
                     <WeaponCircle
@@ -142,7 +143,7 @@ export default function WeaponSelection() {
                 <input type="hidden" key={weaponId} name="weapons" value={weaponId} />
             ))}
 
-            <h1>Armors</h1>
+            <h1>Armaduras</h1>
             <div className="armors-grid">
                 {armors.map(armor => (
                     <ArmorCircle
@@ -156,9 +157,11 @@ export default function WeaponSelection() {
             {selectedArmors.map(armorId => (
                 <input type="hidden" key={armorId} name="armors" value={armorId} />
             ))}
-
-
-            <button type="submit" className="button">Submit Items</button>
+            <div className="dice-box">
+                <h2>Auramares: {character.gold - selectedCost}</h2>
+                {error && <p>{error}</p>}
+                <button type="submit" className="button">Confirmar</button>
+            </div>
         </form>
     );
 }

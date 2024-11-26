@@ -16,15 +16,18 @@ export default function CharactersIndexRoute() {
     const { characters } = useLoaderData<any>()
 
 
-    return (<>
-        <h1>Character List</h1>
-
-        <div className="container">
-            <CharacterPanel characters={characters} />
-        </div>
-        <NavLink to={`new/basic`}><button className="button">New Character</button></NavLink>
+    return (
+        <>
+            <h1 className="title-container">Seus Personagens<NavLink style={{ color: 'blue' }} className="question-button" to={`new/basic`}>+</NavLink></h1>
 
 
-    </>);
+            <div className="col-12">
+                <div className="container">
+                    <CharacterPanel characters={characters} />
+                </div>
+            </div>
+
+
+        </>);
 }
 

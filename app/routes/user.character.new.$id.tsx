@@ -12,9 +12,7 @@ export const loader: LoaderFunction = async ({ request, params }) => {
 export default function NewCharacterRoute() {
     return (
         <>
-            
             <main>
-
                 <Outlet />
             </main>
         </>

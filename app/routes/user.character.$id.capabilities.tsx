@@ -9,7 +9,7 @@ import { LoaderFunction } from "@remix-run/node";
 
 export const loader: LoaderFunction = async ({ params }) => {
   const characterId = params.id;
-  return(characterId)
+  return (characterId)
 }
 
 export default function SkillsRoute() {
@@ -18,8 +18,10 @@ export default function SkillsRoute() {
 
   return (
     <>
-      <div className="col-5">
-        <h1 className="title-container">Habilidades<NavLink to={`../../new/${characterId}/skills/`} style={{color: 'blue'}} className='question-button'>+</NavLink></h1>
+      <div className="capability-container">
+
+        <h1 className="title-container">Talentos<NavLink to={`../../new/${characterId}/skills/`} style={{ color: 'blue' }} className='question-button'>+</NavLink></h1>
+
         <div className="skills-grid">
           {skills.map(skill => (
             <SkillCircle
@@ -31,12 +33,15 @@ export default function SkillsRoute() {
             />
           ))}
         </div>
-              </div>
 
-      <div className="col-7">
-        <h1 className="title-container">Linhagens<NavLink to={`../../new/${characterId}/lineages/`} style={{color: 'blue'}} className='question-button'>+</NavLink></h1>
+      </div>
+
+      <div className="capability-container">
+
+        <h1 className="title-container">Linhagens<NavLink to={`../../new/${characterId}/lineages/`} style={{ color: 'blue' }} className='question-button'>+</NavLink></h1>
+
         {lineages.map(lineage => (
-          <LineageCircle key={lineage.id} lineage={lineage} isSelected={false}
+          <LineageCircle key={lineage.id} lineage={lineage} isPure={isPure} isSelected={false}
             onClick={() => null} />
         ))}
         {isPure ? <div className="pure-lineage-skills">
@@ -49,7 +54,10 @@ export default function SkillsRoute() {
               isPureLineage={true}
             />
           ))}
-        </div> : null}
+        </div>
+
+          : null}
+
         <div className="nonpure-lineage-skills">
           {nonPureLineageSkills.map(ls => (
             <SkillCircle
@@ -62,8 +70,8 @@ export default function SkillsRoute() {
           ))}
         </div>
 
+        <h1 className="title-container">Caminhos<NavLink to={`../../new/${characterId}/paths/`} style={{ color: 'blue' }} className='question-button'>+</NavLink></h1>
 
-        <h1 className="title-container">Caminhos<NavLink to={`../../new/${characterId}/paths/`} style={{color: 'blue'}} className='question-button'>+</NavLink></h1>
         <div className="trainings-grid">
           {paths.map(pa => (
             <PathCircle
@@ -75,7 +83,8 @@ export default function SkillsRoute() {
           ))}
         </div>
 
-        <h1 className="title-container">Treinos<NavLink to={`../../new/${characterId}/trainings/`} style={{color: 'blue'}} className='question-button'>+</NavLink></h1>
+        <h1 className="title-container">Treinos<NavLink to={`../../new/${characterId}/trainings/`} style={{ color: 'blue' }} className='question-button'>+</NavLink></h1>
+
         <div className="trainings-grid">
           {trainingsWithTier.map(tt => (
             <TrainingCircle
@@ -86,6 +95,7 @@ export default function SkillsRoute() {
             />
           ))}
         </div>
+
       </div>
     </>
   )

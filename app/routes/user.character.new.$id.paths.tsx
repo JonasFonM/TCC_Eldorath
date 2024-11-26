@@ -29,6 +29,7 @@ export const loader: LoaderFunction = async ({ request, params }) => {
 export const action: ActionFunction = async ({ request, params }) => {
     const form = await request.formData();
     const selectedPaths = form.getAll('paths') as string[];
+    const pendingPaths = form.get('pendingPaths') as string;
     const selectedPathIds = selectedPaths.map(id => parseInt(id))
     const characterId = params.id
 
@@ -36,7 +37,7 @@ export const action: ActionFunction = async ({ request, params }) => {
         return json({ error: "You must select at least one path." }, { status: 400 });
     }
     try {
-        await submitCharPaths(selectedPathIds, Number(characterId))
+        await submitCharPaths(selectedPathIds, Number(characterId), Number(pendingPaths))
         await prisma.charStats?.delete({
             where: { characterId: Number(characterId) }
         })
@@ -83,7 +84,7 @@ export default function PathSelection() {
                 <>
                     <form method="post">
 
-                        <h1 className="title-container">Escolha seu Caminho<NavLink to={`/user/character/${characterId}/capabilities/`} className="question-button">X</NavLink></h1>
+                        <h1 className="title-container">Escolha seu Caminho<NavLink to={`/user/character/${characterId}/capabilities/`} style={{ color: 'red' }} className="question-button">X</NavLink></h1>
                         <div className="paths-grid">
                             {paths.map(path => (
                                 <PathCircle
@@ -99,13 +100,16 @@ export default function PathSelection() {
                         ))}
                         {error && <p>{error}</p>}
 
-                        <button type="submit" className="button">Submit Paths</button>
+                        <input type="hidden" key={maxSelectable} name="pendingPaths" value={maxSelectable} />
+
+
+                        <button type="submit" className="button">Confirmar</button>
                     </form>
 
                 </>
                 :
                 <>
-                    <h1 className="title-container">Você já tomou um Caminho para sua Categoria</h1>
+                    <h1 className="title-container">Você já escolheu um Caminho</h1>
                     <NavLink className='button' to={`/user/character/${characterId}/capabilities/`}>Sair</NavLink>
                 </>
 

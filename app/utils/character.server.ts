@@ -167,13 +167,13 @@ export const submitCharSkills = async (skillList: number[], characterId: number,
       })),
       skipDuplicates: true,
     });
-      await prisma.character.update({
-        where: { id: characterId },
-        data: {
-          pendingSkills: newPendingSkills
-        }
-      })
-    }
+    await prisma.character.update({
+      where: { id: characterId },
+      data: {
+        pendingSkills: newPendingSkills
+      }
+    })
+  }
 
   return;
 };
@@ -213,7 +213,7 @@ export const submitCharLineages = async (lineageList: number[], characterId: num
 
 //PATHS
 
-export const submitCharPaths = async (pathList: number[], characterId: number) => {
+export const submitCharPaths = async (pathList: number[], characterId: number, pendingPaths: number) => {
   const existingPaths = await prisma.character_path.findMany({
     where: {
       pathId: { in: pathList },
@@ -224,6 +224,9 @@ export const submitCharPaths = async (pathList: number[], characterId: number) =
   const existingSkillIds = existingPaths.map(cs => cs.pathId);
 
   const newPaths = pathList.filter(pathId => !existingSkillIds.includes(pathId));
+
+  const newPendingPaths = pendingPaths - newPaths.length;
+
 
   if (newPaths.length > 0) {
     await prisma.character_path.createMany({
@@ -236,7 +239,7 @@ export const submitCharPaths = async (pathList: number[], characterId: number) =
     await prisma.character.update({
       where: { id: characterId },
       data: {
-        pendingPath: 0
+        pendingPath: newPendingPaths
       }
     })
   }
@@ -246,7 +249,7 @@ export const submitCharPaths = async (pathList: number[], characterId: number) =
 
 //TRAININGS
 
-export const submitCharTrainings = async (trainingList: number[], characterId: number) => {
+export const submitCharTrainings = async (trainingList: number[], characterId: number, pendingTrainings: number) => {
   const existingTrainings = await prisma.character_training.findMany({
     where: {
       trainingId: { in: trainingList },
@@ -260,7 +263,7 @@ export const submitCharTrainings = async (trainingList: number[], characterId: n
     },
     include: { weapon: true },
   });
-  
+
   const armors = await prisma.character_armor.findMany({
     where: {
       characterId: characterId
@@ -276,10 +279,13 @@ export const submitCharTrainings = async (trainingList: number[], characterId: n
   const weaponTrainingIds = weapons.map(w => w.weapon.trainingId);
 
   const weaponUpdateList = weaponTrainingIds.filter(id => newTrainings.includes(id) || (existingTrainingIds.includes(id)))
-  
+
   const armorTrainingIds = armors.map(a => a.armor.trainingId);
 
   const armorUpdateList = armorTrainingIds.filter(id => newTrainings.includes(id) || (existingTrainingIds.includes(id)))
+
+  const newPendingTrainings = pendingTrainings - newTrainings.length;
+
 
   if (newTrainings.length > 0) {
     await prisma.character_training.createMany({
@@ -292,8 +298,14 @@ export const submitCharTrainings = async (trainingList: number[], characterId: n
 
     await checkWeaponTrainings(weaponUpdateList, characterId)
     await checkArmorTrainings(armorUpdateList, characterId)
+
+    await prisma.character.update({
+      where: { id: characterId },
+      data: {
+        pendingTrainings: newPendingTrainings
+      }
+    })
   }
-
-
   return;
+
 };

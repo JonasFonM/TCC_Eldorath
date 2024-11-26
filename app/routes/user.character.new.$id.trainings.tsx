@@ -1,6 +1,6 @@
 import { training } from ".prisma/client";
 import { ActionFunction, json, LoaderFunction, redirect } from "@remix-run/node";
-import { useLoaderData } from "@remix-run/react";
+import { NavLink, useLoaderData } from "@remix-run/react";
 import { useState } from "react";
 import { TrainingCircle } from "~/components/training-circle";
 import { requireUserId } from "~/utils/auth.server";
@@ -79,35 +79,38 @@ export const loader: LoaderFunction = async ({ request, params }) => {
               NOT:
                 { id: { in: pathTrainings?.map(pt => pt.trainingId) } },
             },
-            {tier: 1},
+            { tier: 1 },
           ]
         }
-      ]
+        ]
 
     },
     orderBy: { type: 'asc' }
 
   });
 
+  const maxSelectable = character?.pendingTrainings;
 
 
-  return json({ userId, selectable_trainings, pathTrainings });
+
+  return json({ userId, selectable_trainings, pathTrainings, maxSelectable, characterId });
 }
 
 
 export const action: ActionFunction = async ({ request, params }) => {
   const form = await request.formData();
   const selectedTrainings = form.getAll('trainings') as string[];
+  const pendingTrainings = form.get('pendingTrainings') as string;
   const selectedTrainingIds = selectedTrainings.map(id => parseInt(id))
   const characterId = params.id
 
-  await submitCharTrainings(selectedTrainingIds, Number(characterId))
+  await submitCharTrainings(selectedTrainingIds, Number(characterId), Number(pendingTrainings))
 
-  return redirect(`/user/character/${characterId}/`)
+  return redirect(`/user/character/${characterId}/capabilities`)
 }
 
 export default function TrainingSelectionRoute() {
-  const { selectable_trainings, pathTrainings } = useLoaderData<{ selectable_trainings: training[], pathTrainings: PTrelations }>();
+  const { selectable_trainings, pathTrainings, maxSelectable, characterId } = useLoaderData<{ selectable_trainings: training[], pathTrainings: PTrelations, maxSelectable: number, characterId: string }>();
   const [selectedTrainings, setSelectedTrainings] = useState<number[]>([]);
   const hasPath = pathTrainings.length >= 1;
 
@@ -117,8 +120,8 @@ export default function TrainingSelectionRoute() {
       const newSelectedTrainings =
         isSelected ? prevTrainings.filter(id => id !== trainingId) : [...prevTrainings, trainingId];
 
-      if (newSelectedTrainings.length > 1) {
-        alert("You can select only 1 training.");
+      if (newSelectedTrainings.length > maxSelectable) {
+        alert("Você já escolheu o máximo de Treinos possível.");
         return prevTrainings;
       }
       return newSelectedTrainings
@@ -126,38 +129,53 @@ export default function TrainingSelectionRoute() {
   };
 
   return (
-    <form method="post">
-      <h2 style={{ display: hasPath ? 'block' : 'none'}}>Trainings gained from your Paths</h2>
-      <div className="path-trainings">
-        {pathTrainings.map(pt => (
-          <TrainingCircle
-            key={pt.training.id}
-            training={pt.training}
-            isSelected={true}
-            onClick={() => null}
-          />
-        ))}
-      </div>
-      {pathTrainings.map(pt => (
-        <input type="hidden" key={pt.trainingId} name="trainings" value={pt.trainingId} />
-      ))}
+    <> {maxSelectable > 0 ?
+      <>
+        <form method="post">
+          <h1 className="title-container">Escolha até {maxSelectable} Treino(s)<NavLink to={`/user/character/${characterId}/capabilities/`} style={{ color: 'red' }} className="question-button">X</NavLink></h1>
 
-      <h2>Choose your Trainings</h2>
-      <div className="trainings-grid">
-        {selectable_trainings.map(training => (
-          <TrainingCircle
-            key={training.id}
-            training={training}
-            isSelected={selectedTrainings.includes(training.id)}
-            onClick={() => handleTrainingClick(training.id)}
-          />
-        ))}
-      </div>
-      {selectedTrainings.map(trainingId => (
-        <input type="hidden" key={trainingId} name="trainings" value={trainingId} />
-      ))}
+          <h2 style={{ display: hasPath ? 'block' : 'none' }}>Treinos recebidos por seu Caminho:</h2>
+          <div className="path-trainings">
+            {pathTrainings.map(pt => (
+              <TrainingCircle
+                key={pt.training.id}
+                training={pt.training}
+                isSelected={true}
+                onClick={() => null}
+              />
+            ))}
+          </div>
+          {pathTrainings.map(pt => (
+            <input type="hidden" key={pt.trainingId} name="trainings" value={pt.trainingId} />
+          ))}
 
-      <button type="submit" className="button">Submit Trainings</button>
-    </form>
+          <div className="trainings-grid">
+            {selectable_trainings.map(training => (
+              <TrainingCircle
+                key={training.id}
+                training={training}
+                isSelected={selectedTrainings.includes(training.id)}
+                onClick={() => handleTrainingClick(training.id)}
+              />
+            ))}
+          </div>
+          {selectedTrainings.map(trainingId => (
+            <input type="hidden" key={trainingId} name="trainings" value={trainingId} />
+          ))}
+          <input type="hidden" key={maxSelectable} name="pendingTrainings" value={maxSelectable} />
+
+
+          <button type="submit" className="button">Confirmar</button>
+        </form>
+      </>
+      :
+
+      <>
+        <h1 className="title-container">Máximo de escolhas atingido</h1>
+        <NavLink to={`/user/character/${characterId}/capabilities/`} className="button">Sair</NavLink>
+
+      </>
+    }
+    </>
   );
 }

@@ -21,11 +21,9 @@ export default function CharactersIndexRoute() {
             <h1 className="title-container">Seus Personagens<NavLink style={{ color: 'blue' }} className="question-button" to={`new/basic`}>+</NavLink></h1>
 
 
-            <div className="col-12">
                 <div className="container">
                     <CharacterPanel characters={characters} />
                 </div>
-            </div>
 
 
         </>);

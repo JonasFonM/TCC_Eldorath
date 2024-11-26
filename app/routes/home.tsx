@@ -12,7 +12,7 @@ export default function Home() {
           <h1 id='third'>Aeternida<NavLink to={"../intro"} className='question-button'>?</NavLink></h1>
         </div>
       </div>
-      <NavLink to={`../login`}><button className="button">Entrar</button></NavLink>
+      <NavLink to={`../user/home`}><button className="button">Entrar</button></NavLink>
       <NavLink to={`../intro`}><button className="button">Leia Mais</button></NavLink>
     </>
   )

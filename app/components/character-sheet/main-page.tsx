@@ -28,42 +28,56 @@ export function StatsAndRes({ character, resistances, stats }: Props) {
 
     return (
         <div>
-            <div className="col-5">
+            <div className="col-6">
 
                 <h1 className="title-container">Atributos<NavLink className="question-button" to={`/user/character/update/${String(character.id)}/basic`}>!</NavLink></h1>
 
                 <div className="container">
-                    <div className="block"><h1>{character.agility}</h1><p style={{fontFamily: 'serif', fontSize: '1.35rem', fontWeight: 'bolder'}}>AGI</p></div>
-                    <div className="block"><h1>{character.body}</h1><p style={{fontFamily: 'serif', fontSize: '1.35rem', fontWeight: 'bolder'}}>COR</p></div>
-                    <div className="block"><h1>{character.mind}</h1><p style={{fontFamily: 'serif', fontSize: '1.35rem', fontWeight: 'bolder'}}>MEN</p></div>
+                    <div className="block"><h1>{character.agility}</h1><p style={{ fontFamily: 'serif', fontSize: '1.35rem', fontWeight: 'bolder' }}>AGI</p></div>
+                    <div className="block"><h1>{character.body}</h1><p style={{ fontFamily: 'serif', fontSize: '1.35rem', fontWeight: 'bolder' }}>COR</p></div>
+                    <div className="block"><h1>{character.mind}</h1><p style={{ fontFamily: 'serif', fontSize: '1.35rem', fontWeight: 'bolder' }}>MEN</p></div>
                 </div>
 
             </div>
 
-            <div className="col-7">
+            <div className="col-6">
 
                 <h1>Progresso</h1>
 
                 <div className="container">
-                    <div className="block"><h1>{character.level}</h1><p style={{fontFamily: 'serif', fontSize: '1.35rem', fontWeight: 'bolder'}}>NV</p></div>
-                    <div className="block"><h1>{character.tier}</h1><p style={{fontFamily: 'serif', fontSize: '1.35rem', fontWeight: 'bolder'}}>CC</p></div>
-                    <div className="block"><h1>{character.experience}/{(character.level + 1) * 4 * character.tier}</h1><p style={{fontFamily: 'serif', fontSize: '1.35rem', fontWeight: 'bolder'}}>XP</p></div>
+                    <div className="block"><h1>{character.level}</h1><p style={{ fontFamily: 'serif', fontSize: '1.35rem', fontWeight: 'bolder' }}>NV</p></div>
+                    <div className="block"><h1>{character.tier}</h1><p style={{ fontFamily: 'serif', fontSize: '1.35rem', fontWeight: 'bolder' }}>CC</p></div>
+                    <div className="block"><h1>{character.experience}/{(character.level + 1) * 4 * character.tier}</h1><p style={{ fontFamily: 'serif', fontSize: '1.35rem', fontWeight: 'bolder' }}>XP</p></div>
                 </div>
             </div>
 
 
             <h1>Estatísticas</h1>
+            <h2>Recursos</h2>
 
             <div className="container">
+
                 <div className="block"><h1>{stats.vitality}</h1>Vitalidade</div>
                 <div className="block"><h1>{stats.vigor}</h1>Vigor</div>
                 <div className="block"><h1>{stats.power}</h1>Poder</div>
+            </div>
+            <h2>Combate</h2>
+
+            <div className="container">
+
                 <div className="block"><h1>{stats.defense}</h1>Defesa</div>
                 <div className="block"><h1>{stats.initiative}</h1>Iniciativa</div>
                 <div className="block"><h1>{stats.speed}</h1>Velocidade</div>
+
+            </div>
+            <h2>Carga</h2>
+
+            <div className="container">
+
                 <div className="block"><h1>{stats.baseWeight}</h1>Peso</div>
                 <div className="block"><h1>{stats.carryCap}</h1>Capacidade de Carga</div>
                 <div className="block"><h1>{stats.liftCap}</h1>Capacidade de Levantamento</div>
+
             </div>
 
 
@@ -91,7 +105,7 @@ export function StatsAndRes({ character, resistances, stats }: Props) {
                 <div className="block">Profana: {resistances.profaneRes}</div>
                 <div className="block">Sagrada: {resistances.sacredRes}</div>
             </div>
-        </div>
+        </div >
 
     );
 }

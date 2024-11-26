@@ -261,151 +261,186 @@ export default function SkillSelectionRoute() {
     <>
       {maxSelectable > 0 || maxMagics > 0 || maxTechniques > 0 || maxManeuvers > 0 || maxOaths > 0 || maxTricks > 0 ?
         <>
+          <ul className="skillnav">
+            <li><NavLink to={`/user/character/${characterId}`}>Todos</NavLink></li>
+            <li><NavLink to={`/user/character/new/${characterId}/skills`}>Características</NavLink></li>
+            <li><NavLink to={`/user/character/new/${characterId}/lineages`}>Técnicas</NavLink></li>
+            <li><NavLink to={`/user/character/new/${characterId}/paths`}>Manobras</NavLink></li>
+            <li><NavLink to={`/user/character/new/${characterId}/trainings`}>Juramentos</NavLink></li>
+            <li><NavLink to={`/user/character/new/${characterId}/inventory`}>Trapaças</NavLink></li>
+            <li><NavLink to={`/user/character/new/${characterId}/inventory`}>Mágicas</NavLink></li>
+          </ul>
           <form method="post">
-            <h1 className="title-container">Escolha seus Talentos<NavLink to={`/user/character/${characterId}/capabilities/`} style={{ color: 'red' }} className="question-button">X</NavLink></h1>
 
-            {nonPureLineageSkills.length > 0 ? <h1>Talento(s) Exclusivos de Linhagem</h1> : ''}
+            <h1 style={{ marginLeft: '164px' }} className="title-container">Escolha seus Talentos<NavLink to={`/user/character/${characterId}/capabilities/`} style={{ color: 'red' }} className="question-button">X</NavLink></h1>
 
-            <div className="nonpure-lineage-skills">
-              {nonPureLineageSkills.map(ls => (
-                <SkillCircle
-                  key={ls.skill.id}
-                  skill={ls.skill}
-                  isSelected={selectedSkills.includes(ls.skill.id)}
-                  onClick={() => !isMaxSelected || selectedSkills.includes(ls.skill.id) ? handleSkillClick(ls.skill.id) : alert((`Você já escolheu o seu limite de Talento(s).`))}
-                  isPureLineage={false}
-                />
-              ))}
-            </div>
+            <div className="skill-container">
 
-            {isPure && pureLineageSkills.length > 0 ? <h1>Talento(s) Exclusivos de Linhagem Pura</h1> : ''}
+              <div className="col-12">
 
-            <div className="pure-lineage-skills">
-              {pureLineageSkills.map(ls => (
-                <SkillCircle
-                  key={ls.skill.id}
-                  skill={ls.skill}
-                  isSelected={selectedSkills.includes(ls.skill.id)}
-                  onClick={() => !isMaxSelected || selectedSkills.includes(ls.skill.id) ? handleSkillClick(ls.skill.id) : alert((`Você já escolheu o seu limite de Talento(s).`))}
-                  isPureLineage={true}
-                />
-              ))}
-            </div>
+                {nonPureLineageSkills.length > 0 ? <h1>Talento(s) Exclusivos de Linhagem</h1> : ''}
 
-            {characteristics.length > 0 ? <h1>Características</h1> : ''}
+                <div className="nonpure-lineage-skills">
+                  {nonPureLineageSkills.map(ls => (
+                    <SkillCircle
+                      key={ls.skill.id}
+                      skill={ls.skill}
+                      isSelected={selectedSkills.includes(ls.skill.id)}
+                      onClick={() => !isMaxSelected || selectedSkills.includes(ls.skill.id) ? handleSkillClick(ls.skill.id) : alert((`Você já escolheu o seu limite de Talentos.`))}
+                      isPureLineage={false}
+                    />
+                  ))}
+                </div>
 
+              </div>
 
-            <div className="skills-grid">
-              {characteristics.map(skill => (
-                <SkillCircle
-                  key={skill.id}
-                  skill={skill}
-                  isSelected={selectedSkills.includes(skill.id)}
-                  onClick={() => !isMaxSelected || selectedSkills.includes(skill.id) ? handleSkillClick(skill.id) : alert((`Você já escolheu o seu limite de Talento(s).`))}
-                  isPureLineage={false}
-                />
-              ))}
-            </div>
+              <div className="col-12">
 
-            <div className="col-12">
-              <div className="col-4">
-                <h1>Manobras</h1>
+                {isPure && pureLineageSkills.length > 0 ? <h1>Talento(s) Exclusivos de Linhagem Pura</h1> : ''}
+
+                <div className="pure-lineage-skills">
+                  {pureLineageSkills.map(ls => (
+                    <SkillCircle
+                      key={ls.skill.id}
+                      skill={ls.skill}
+                      isSelected={selectedSkills.includes(ls.skill.id)}
+                      onClick={() => !isMaxSelected || selectedSkills.includes(ls.skill.id) ? handleSkillClick(ls.skill.id) : alert((`Você já escolheu o seu limite de Talentos.`))}
+                      isPureLineage={true}
+                    />
+                  ))}
+                </div>
+
+              </div>
+
+              <div className="col-12">
+                
+                <h1>Características</h1>
+
                 <div className="skills-grid">
-                  {maneuvers.map(skill => (
+                  {characteristics.map(skill => (
                     <SkillCircle
                       key={skill.id}
                       skill={skill}
-                      isSelected={selectedManeuvers.includes(skill.id) || selectedTechniques.includes(skill.id) || selectedSkills.includes(skill.id)}
-                      onClick={() => !isMaxManeuvers || selectedManeuvers.includes(skill.id) ? handleManeuverClick(skill.id) : !isMaxTechniques || selectedTechniques.includes(skill.id) ? handleTechniqueClick(skill.id) : !isMaxSelected || selectedSkills.includes(skill.id) ? handleSkillClick(skill.id) : alert((`Você já escolheu o seu limite deManobras.`))}
+                      isSelected={selectedSkills.includes(skill.id)}
+                      onClick={() => !isMaxSelected || selectedSkills.includes(skill.id) ? handleSkillClick(skill.id) : alert((`Você já escolheu o seu limite de Características.`))}
                       isPureLineage={false}
                     />
                   ))}
                 </div>
               </div>
 
+              <div className="col-12">
+
+                <div className="col-4">
+
+                  <h1>Manobras</h1>
+
+                  <div className="skills-grid">
+                    {maneuvers.map(skill => (
+                      <SkillCircle
+                        key={skill.id}
+                        skill={skill}
+                        isSelected={selectedManeuvers.includes(skill.id) || selectedTechniques.includes(skill.id) || selectedSkills.includes(skill.id)}
+                        onClick={() => !isMaxManeuvers || selectedManeuvers.includes(skill.id) ? handleManeuverClick(skill.id) : !isMaxTechniques || selectedTechniques.includes(skill.id) ? handleTechniqueClick(skill.id) : !isMaxSelected || selectedSkills.includes(skill.id) ? handleSkillClick(skill.id) : alert((`Você já escolheu o seu limite de Manobras.`))}
+                        isPureLineage={false}
+                      />
+                    ))}
+                  </div>
+                </div>
+
+                {
+                  selectedManeuvers.map(skillId => (
+                    <input type="hidden" key={skillId} name="skills" value={skillId} />
+                  ))
+                }
+
+                <div className="col-4">
+
+                  <h1>Juramentos</h1>
+
+                  <div className="skills-grid">
+                    {oaths.map(skill => (
+                      <SkillCircle
+                        key={skill.id}
+                        skill={skill}
+                        isSelected={selectedOaths.includes(skill.id) || selectedTechniques.includes(skill.id) || selectedSkills.includes(skill.id)}
+                        onClick={() => !isMaxOaths || selectedOaths.includes(skill.id) ? handleOathClick(skill.id) : !isMaxTechniques || selectedTechniques.includes(skill.id) ? handleTechniqueClick(skill.id) : !isMaxSelected || selectedSkills.includes(skill.id) ? handleSkillClick(skill.id) : alert((`Você já escolheu seu limite de Juramentos.`))}
+                        isPureLineage={false}
+                      />
+                    ))}
+                  </div>
+                </div>
+
+                {
+                  selectedOaths.map(skillId => (
+                    <input type="hidden" key={skillId} name="skills" value={skillId} />
+                  ))
+                }
+
+                <div className="col-4">
+
+                  <h1>Trapaças</h1>
+
+                  <div className="skills-grid">
+                    {tricks.map(skill => (
+                      <SkillCircle
+                        key={skill.id}
+                        skill={skill}
+                        isSelected={selectedTricks.includes(skill.id) || selectedTechniques.includes(skill.id) || selectedSkills.includes(skill.id)}
+                        onClick={() => !isMaxTricks || selectedTricks.includes(skill.id) ? handleTrickClick(skill.id) : !isMaxTechniques || selectedTechniques.includes(skill.id) ? handleTechniqueClick(skill.id) : !isMaxSelected || selectedSkills.includes(skill.id) ? handleSkillClick(skill.id) : alert((`Você já escolheu seu limite de Trapaças.`))}
+                        isPureLineage={false}
+                      />
+                    ))}
+                  </div>
+                </div>
+
+                {
+                  selectedTricks.map(skillId => (
+                    <input type="hidden" key={skillId} name="skills" value={skillId} />
+                  ))
+                }
+              </div>
+
               {
-                selectedManeuvers.map(skillId => (
+                selectedTechniques.map(skillId => (
                   <input type="hidden" key={skillId} name="skills" value={skillId} />
                 ))
               }
 
-              <div className="col-4">
-                <h1>Juramentos</h1>
+              <div className="col-12">
+
+                <h1>Mágicas</h1>
+
                 <div className="skills-grid">
-                  {oaths.map(skill => (
+                  {magics.map(skill => (
                     <SkillCircle
                       key={skill.id}
                       skill={skill}
-                      isSelected={selectedOaths.includes(skill.id) || selectedTechniques.includes(skill.id) || selectedSkills.includes(skill.id)}
-                      onClick={() => !isMaxOaths || selectedOaths.includes(skill.id) ? handleOathClick(skill.id) : !isMaxTechniques || selectedTechniques.includes(skill.id) ? handleTechniqueClick(skill.id) : !isMaxSelected || selectedSkills.includes(skill.id) ? handleSkillClick(skill.id) : alert((`Você já escolheu seu limite de Juramentos.`))}
+                      isSelected={selectedMagics.includes(skill.id) || selectedSkills.includes(skill.id)}
+                      onClick={() => !isMaxMagics || selectedMagics.includes(skill.id) ? handleMagicClick(skill.id) : !isMaxSelected || selectedSkills.includes(skill.id) ? handleSkillClick(skill.id) : alert((`Você já escolheu seu limite de Mágicas.`))}
                       isPureLineage={false}
                     />
                   ))}
                 </div>
+
               </div>
 
               {
-                selectedOaths.map(skillId => (
+                selectedMagics.map(skillId => (
                   <input type="hidden" key={skillId} name="skills" value={skillId} />
                 ))
               }
 
-              <div className="col-4">
-                <h1>Trapaças</h1>
-                <div className="skills-grid">
-                  {tricks.map(skill => (
-                    <SkillCircle
-                      key={skill.id}
-                      skill={skill}
-                      isSelected={selectedTricks.includes(skill.id) || selectedTechniques.includes(skill.id) || selectedSkills.includes(skill.id)}
-                      onClick={() => !isMaxTricks || selectedTricks.includes(skill.id) ? handleTrickClick(skill.id) : !isMaxTechniques || selectedTechniques.includes(skill.id) ? handleTechniqueClick(skill.id) : !isMaxSelected || selectedSkills.includes(skill.id) ? handleSkillClick(skill.id) : alert((`Você já escolheu seu limite de  Trapaças.`))}
-                      isPureLineage={false}
-                    />
-                  ))}
-                </div>
-              </div>
-
-              {
-                selectedTricks.map(skillId => (
-                  <input type="hidden" key={skillId} name="skills" value={skillId} />
-                ))
-              }
-            </div>
-
-            {
-              selectedTechniques.map(skillId => (
+              {selectedSkills.map(skillId => (
                 <input type="hidden" key={skillId} name="skills" value={skillId} />
               ))
-            }
+              }
 
-            {magics.length > 0 ? <h1>Mágicas</h1> : ''}
+              <input type="hidden" key={maxSelectable} name="pendingSkills" value={maxSelectable} />
 
-            <div className="skills-grid">
-              {magics.map(skill => (
-                <SkillCircle
-                  key={skill.id}
-                  skill={skill}
-                  isSelected={selectedMagics.includes(skill.id) || selectedSkills.includes(skill.id)}
-                  onClick={() => !isMaxMagics || selectedMagics.includes(skill.id) ? handleMagicClick(skill.id) : !isMaxSelected || selectedSkills.includes(skill.id) ? handleSkillClick(skill.id) : alert((`Você já escolheu seu limite de Mágicas.`))}
-                  isPureLineage={false}
-                />
-              ))}
+              <button type="submit" className="button">Confirmar</button>
             </div>
 
-            {
-              selectedMagics.map(skillId => (
-                <input type="hidden" key={skillId} name="skills" value={skillId} />
-              ))
-            }
-
-            {selectedSkills.map(skillId => (
-              <input type="hidden" key={skillId} name="skills" value={skillId} />
-            ))
-            }
-
-            <input type="hidden" key={maxSelectable} name="pendingSkills" value={maxSelectable} />
-
-            <button type="submit" className="button">Confirmar</button>
           </form>
 
         </>

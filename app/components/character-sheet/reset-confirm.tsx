@@ -16,7 +16,7 @@ export function ResetConfirm({ name, isHidden, onShow, onCancel, id }: props) {
 
   return (
     <>
-      <li id="reset" style={{ float: 'right', marginRight: '0' }}><button onClick={onShow}>Reset</button></li>
+      <li id="reset" style={{ float: 'right', marginRight: '0', display: 'inline' }}><button style={{marginLeft: '0'}} onClick={onShow}>Reset</button></li>
       <div className="modal-overlay" style={{ display: isHidden ? 'none' : 'flex' }}>
         <div className="modal-content">
           <h2 style={{ color: "black" }}>Tem certeza que quer resetar {name}?</h2>

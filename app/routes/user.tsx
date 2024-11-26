@@ -16,9 +16,9 @@ export default function UserRoute() {
           <li><NavLink to={`/user/character/`}>Characters</NavLink></li>
           <li style={{ float: 'right' }}><NavLink className={'logout'} to={`/logout`}>Logout</NavLink></li>
         </ul>
-      <main className="user">
+      <div className="user">
         <Outlet />
-      </main>
+      </div>
     </>
   );
 }

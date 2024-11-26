@@ -130,9 +130,9 @@ export default function CharacterRoute() {
     <>
       <ul className="charnav">
         <div>
-          <p style={{ float: "right", marginRight: '24px', marginTop: '0', marginBottom: '0', textAlign: 'right' }}>Level<h1 style={{ display: "inline" }}>{character.level}</h1> <br />Tier <h1 style={{ display: "inline" }}>{character.tier}</h1></p>
+          <p style={{ float: "right", marginRight: '24px', marginTop: '0', marginBottom: '0', textAlign: 'right' }}>Level<h1 style={{ display: "inline", marginBottom: '0' }}>{character.level}</h1> <br />Tier <h1 style={{ display: "inline", marginBottom: '0' }}>{character.tier}</h1></p>
 
-          <h1>{character.name}</h1>
+          <h1 style={{ marginLeft: '32px' }}>{character.name}</h1>
           <p style={{ marginLeft: '32px', marginTop: '0', marginBottom: '0' }}>{paths && paths.length > 0 ? (
             paths.map(path => path.name)
           ) : ("Sem Caminho")}</p>
@@ -147,9 +147,9 @@ export default function CharacterRoute() {
 
       </ul>
 
-      <main style={{ marginTop: '196px' }}>
+      <div style={{ marginTop: '196px' }}>
         <Outlet context={{ character, stats, resistances, skills, trainingsWithTier, paths, lineages, pureLineageSkills, nonPureLineageSkills, isPure, weapons, armors }} />
-      </main >
+      </div >
     </>
   );
 

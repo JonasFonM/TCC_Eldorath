@@ -3,10 +3,8 @@ import { Outlet } from "@remix-run/react";
 export default function CampaignsRoute() {
   return (
     <div>
-      <h1>Campaigns</h1>
-      <main>
+      <h1>Suas Campanhas</h1>
         <Outlet />
-      </main>
     </div>
   );
 }

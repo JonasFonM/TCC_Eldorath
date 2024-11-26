@@ -6,13 +6,14 @@ import { lineage } from '@prisma/client';
 interface Props {
   lineage: lineage;
   isSelected: boolean;
+  isPure: boolean;
   onClick: () => void;
 }
 
-export function LineageCircle({ lineage, isSelected, onClick }: Props) {
+export function LineageCircle({ lineage, isSelected, isPure, onClick }: Props) {
   return (
     <div className='grid-item' onClick={onClick} style={{ border: isSelected ? '2px solid green' : '1px solid gray', padding: '5%', borderRadius: '2%' }}>
-      <h3>{lineage.name}</h3>
+      <h3>{lineage.name} {isPure ? 'Pura' : ''}</h3>
       <div className='dropdown-content'>
 
         <p>{lineage.description}</p>

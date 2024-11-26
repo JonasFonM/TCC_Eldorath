@@ -12,20 +12,27 @@ interface props {
 }
 
 export function DeleteConfirm({ name, isHidden, onShow, onCancel, entity, id }: props) {
-  const [confirmText, setConfirmText] = useState(""); // State to track input
-  const isConfirmed = confirmText === "DELETE"; // Boolean condition for enabling the delete button
+  const [confirmText, setConfirmText] = useState(""); 
+  const isConfirmed = confirmText === "DELETAR"; 
 
   return (
     <>
-      <button onClick={onShow}>DELETE</button>
+      <button style={{color: 'red', border: 0 }} className="question-button" onClick={onShow}>X</button>
       <div className="modal-overlay" style={{ display: isHidden ? 'none' : 'flex' }}>
+
         <div className="modal-content">
-          <h2 style={{ color: "black" }}>Are you sure you want to delete {name}?</h2>
+
+          <h2 style={{ color: "black" }}>Você tem certeza que quer deletar {name}?</h2>
+
           <div className="modal-buttons">
-            <input placeholder="Type DELETE to confirm" value={confirmText} onChange={(e) => setConfirmText(e.target.value)}></input>
-            <NavLink to={`/delete/${entity}/${id}`}> <button className="btn-delete" disabled={!isConfirmed}>DELETE</button></NavLink>
-            <button onClick={onCancel} className="btn-cancel">CANCEL</button>
+            
+            <input placeholder="Digite DELETAR" value={confirmText} onChange={(e) => setConfirmText(e.target.value)}></input>
+            
+            <NavLink to={`/delete/${entity}/${id}`}> <button className="btn-delete" disabled={!isConfirmed}>DELETAR</button></NavLink>
+
+            <button onClick={onCancel} className="btn-cancel">CANCELAR</button>
           </div>
+
         </div>
 
       </div>

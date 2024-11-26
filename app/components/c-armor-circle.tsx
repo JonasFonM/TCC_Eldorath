@@ -29,18 +29,23 @@ export function CharacterArmorCircle({ armor, isSelected, onClick }: Props) {
   };
 
   return (
-    <div className='grid-item' onClick={onClick}  style={{ border: isSelected ? '2px solid green' : '1px solid gray', padding: '5%', borderRadius: '2%' }}>
-      <h3>{armor.armor.name}</h3>
-      <p>{armor.armor.description}</p>
-      <DeleteConfirm name={armor.material + ' ' + armor.armor.name} isHidden={selectedDelete === 0} onShow={showDelete} onCancel={cancelDelete} entity='armor' id={String(armor.id)}/>
+    <div className='title-container'>        
 
-      <div className='dropdown-content'>
-        <p style={{ color: armor.trained ? 'green' : 'red' }}>{armor.trained ? 'Trained' : 'Not Trained'}</p>
-        <p>Cost:{armor.baseCost}</p>
-        <p>Weight:{armor.weight}</p>
-        <p>Defense:{armor.defense}</p>
-        <p>Crafting Tier:{armor.craftTier}</p>
-        <p>Material:{armor.material}</p>
+      <div className='grid-item' onClick={onClick} style={{ border: isSelected ? '2px solid green' : '1px solid gray', padding: '5%', borderRadius: '2%' }}>
+        <h3>{armor.armor.name}</h3>
+        <p>{armor.armor.description}</p>
+
+        <div className='dropdown-content'>
+          <p style={{ color: armor.trained ? 'green' : 'red' }}>{armor.trained ? 'Trained' : 'Not Trained'}</p>
+          <p>Cost:{armor.baseCost}</p>
+          <p>Weight:{armor.weight}</p>
+          <p>Defense:{armor.defense}</p>
+          <p>Crafting Tier:{armor.craftTier}</p>
+          <p>Material:{armor.material}</p>
+          <DeleteConfirm name={armor.material + ' ' + armor.armor.name} isHidden={selectedDelete === 0} onShow={showDelete} onCancel={cancelDelete} entity='armor' id={String(armor.id)} />
+
+        </div>
+
       </div>
     </div>
   );

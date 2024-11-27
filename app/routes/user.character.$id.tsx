@@ -128,26 +128,48 @@ export default function CharacterRoute() {
 
   return (
     <>
-      <ul className="charnav">
-        <div>
-          <p style={{ float: "right", marginRight: '24px', marginTop: '0', marginBottom: '0', textAlign: 'right' }}>Level<h1 style={{ display: "inline", marginBottom: '0' }}>{character.level}</h1> <br />Tier <h1 style={{ display: "inline", marginBottom: '0' }}>{character.tier}</h1></p>
 
-          <h1 style={{ marginLeft: '32px' }}>{character.name}</h1>
-          <p style={{ marginLeft: '32px', marginTop: '0', marginBottom: '0' }}>{paths && paths.length > 0 ? (
-            paths.map(path => path.name)
-          ) : ("Sem Caminho")}</p>
+
+      <div className="header">
+
+        <h1 id='name'>{character.name}</h1>
+
+        <p id='path'> {paths && paths.length > 0 ? (paths.map(path => path.name)) : ("Sem Caminho")} </p>
+
+
+
+        <div className="half">
+          <h1>Level</h1>
+        </div>
+        <div className="half-2">
+          <h1>{character.level}</h1>
         </div>
 
-        <div>
-          <li><NavLink to={`/user/character/${characterId}/stats/`}>Personagem</NavLink></li>
-          <li><NavLink to={`/user/character/${characterId}/capabilities/`}>Capacidades</NavLink></li>
-          <li><NavLink to={`/user/character/${characterId}/inventory/`}>Inventário</NavLink></li>
-          <ResetConfirm name={character.name} isHidden={selectReset === 0} onShow={showReset} onCancel={cancelReset} id={String(character.id)} />
+        <div className="half">
+          <h1>Cat</h1>
         </div>
+        <div className="half-2">
+          <h1>{character.tier}</h1>
+        </div>
+
+        <div className="half">
+          <h1>XP</h1>
+        </div>
+        <div className="half-2" >
+          <h1>{character.experience}/{(character.level + 1) * 4 * character.tier}</h1>
+        </div>
+
+      </div>
+      <ul className="skillnav">
+
+        <li><NavLink to={`/user/character/${characterId}/stats/`}>Personagem</NavLink></li>
+        <li><NavLink to={`/user/character/${characterId}/capabilities/`}>Capacidades</NavLink></li>
+        <li><NavLink to={`/user/character/${characterId}/inventory/`}>Inventário</NavLink></li>
+        <ResetConfirm name={character.name} isHidden={selectReset === 0} onShow={showReset} onCancel={cancelReset} id={String(character.id)} />
 
       </ul>
 
-      <div style={{ marginTop: '196px' }}>
+      <div className="character-sheet">
         <Outlet context={{ character, stats, resistances, skills, trainingsWithTier, paths, lineages, pureLineageSkills, nonPureLineageSkills, isPure, weapons, armors }} />
       </div >
     </>

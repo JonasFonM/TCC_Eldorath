@@ -27,8 +27,8 @@ interface Props {
 export function StatsAndRes({ character, resistances, stats }: Props) {
 
     return (
-        <div>
-            <div className="col-6">
+        <>
+            <div className="col-12">
 
                 <h1 className="title-container">Atributos<NavLink className="question-button" to={`/user/character/update/${String(character.id)}/basic`}>!</NavLink></h1>
 
@@ -39,18 +39,6 @@ export function StatsAndRes({ character, resistances, stats }: Props) {
                 </div>
 
             </div>
-
-            <div className="col-6">
-
-                <h1>Progresso</h1>
-
-                <div className="container">
-                    <div className="block"><h1>{character.level}</h1><p style={{ fontFamily: 'serif', fontSize: '1.35rem', fontWeight: 'bolder' }}>NV</p></div>
-                    <div className="block"><h1>{character.tier}</h1><p style={{ fontFamily: 'serif', fontSize: '1.35rem', fontWeight: 'bolder' }}>CC</p></div>
-                    <div className="block"><h1>{character.experience}/{(character.level + 1) * 4 * character.tier}</h1><p style={{ fontFamily: 'serif', fontSize: '1.35rem', fontWeight: 'bolder' }}>XP</p></div>
-                </div>
-            </div>
-
 
             <h1>Estatísticas</h1>
             <h2>Recursos</h2>
@@ -105,7 +93,7 @@ export function StatsAndRes({ character, resistances, stats }: Props) {
                 <div className="block">Profana: {resistances.profaneRes}</div>
                 <div className="block">Sagrada: {resistances.sacredRes}</div>
             </div>
-        </div >
+        </>
 
     );
 }

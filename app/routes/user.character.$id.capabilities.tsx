@@ -6,6 +6,7 @@ import { LineageCircle } from "~/components/lineage-circle";
 import { PathCircle } from "~/components/path-circle";
 import { TrainingCircle } from "~/components/training-circle";
 import { LoaderFunction } from "@remix-run/node";
+import { SkillTable } from "~/components/character-sheet/skill-table";
 
 export const loader: LoaderFunction = async ({ params }) => {
   const characterId = params.id;
@@ -22,16 +23,9 @@ export default function SkillsRoute() {
 
         <h1 className="title-container">Talentos<NavLink to={`../../new/${characterId}/skills/`} style={{ color: 'blue' }} className='question-button'>+</NavLink></h1>
 
-        <div className="skills-grid">
-          {skills.map(skill => (
-            <SkillCircle
-              key={skill.id}
-              skill={skill}
-              isSelected={false}
-              onClick={() => null}
-              isPureLineage={false}
-            />
-          ))}
+        <div style={{left:'0', right: '0'}}>
+          <SkillTable skills={skills} />
+
         </div>
 
       </div>

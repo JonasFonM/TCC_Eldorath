@@ -128,6 +128,7 @@ export default function CharacterRoute() {
 
   return (
     <>
+      <ul className="skillnav">
 
 
       <div className="header">
@@ -160,7 +161,6 @@ export default function CharacterRoute() {
         </div>
 
       </div>
-      <ul className="skillnav">
 
         <li><NavLink to={`/user/character/${characterId}/stats/`}>Personagem</NavLink></li>
         <li><NavLink to={`/user/character/${characterId}/capabilities/`}>Capacidades</NavLink></li>

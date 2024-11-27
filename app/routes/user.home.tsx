@@ -13,7 +13,7 @@ export const loader: LoaderFunction = async ({ request }) => {
 export default function CharactersIndexRoute() {
     return (
         <>
-            <h1>O que fazer em Aeternida?</h1>
+            <h1>O que fazer em Æternida?</h1>
 
             <div className='col-1'>
 

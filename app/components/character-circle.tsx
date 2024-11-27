@@ -33,7 +33,7 @@ export function CharacterCircle({ character }: props) {
 
       <h2 className='title-container'>
         
-        <NavLink style={{textDecoration: 'none', color: 'white'}} to={`/user/character/${character.id}/stats`}>{character.name.toUpperCase()}</NavLink>
+        <NavLink style={{textDecoration: 'none', color: 'white'}} to={`/user/character/${character.id}/stats/`}>{character.name.toUpperCase()}</NavLink>
 
         <DeleteConfirm name={character.name} isHidden={selectedDelete === 0} onShow={showDelete} onCancel={cancelDelete} entity={"character"} id={String(character.id)} />
       </h2>

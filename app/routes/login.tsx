@@ -106,7 +106,7 @@ export default function Login() {
   return (
     <>
       <div className='title-container'>
-        <div className='title-screen'><h1 id='first'>Aeternida<NavLink to={"../intro"} className='question-button'>?</NavLink></h1></div>
+        <div className='title-screen'><h1 id='first'>Æternida<NavLink to={"../intro"} className='question-button'>?</NavLink></h1></div>
       </div>
       <div className='login'>
         <div>

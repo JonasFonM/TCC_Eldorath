@@ -349,12 +349,12 @@ li a:hover {
 .block:hover {
   background-color: #575757;
   transform: scale(1.02);
+  cursor: pointer;
 }
 
 .grid-item {
   background-color: #1f1f1f;
   border: 1px solid #333;
-  border-radius: 5px;
   margin: 10px auto;
   padding: 20px;
   width: 65%;
@@ -366,11 +366,7 @@ li a:hover {
 
 .grid-item:hover {
   background-color: #575757;
-}
-
-.dropdown {
-  position: relative;
-  display: inline-block;
+  cursor: pointer;
 }
 
 .dropdown-content {

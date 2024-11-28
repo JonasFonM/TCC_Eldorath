@@ -12,12 +12,12 @@ interface props {
 }
 
 export function DeleteConfirm({ name, isHidden, onShow, onCancel, entity, id }: props) {
-  const [confirmText, setConfirmText] = useState(""); 
-  const isConfirmed = confirmText === "DELETAR"; 
+  const [confirmText, setConfirmText] = useState("");
+  const isConfirmed = confirmText === "DELETAR";
 
   return (
     <>
-      <button style={{color: 'red', border: 0 }} className="question-button" onClick={onShow}>X</button>
+      <button style={{ color: 'red', border: 0 }} className="question-button" onClick={onShow}>X</button>
       <div className="modal-overlay" style={{ display: isHidden ? 'none' : 'flex' }}>
 
         <div className="modal-content">
@@ -25,9 +25,9 @@ export function DeleteConfirm({ name, isHidden, onShow, onCancel, entity, id }: 
           <h2 style={{ color: "black" }}>Você tem certeza que quer deletar {name}?</h2>
 
           <div className="modal-buttons">
-            
+
             <input placeholder="Digite DELETAR" value={confirmText} onChange={(e) => setConfirmText(e.target.value)}></input>
-            
+
             <NavLink to={`/delete/${entity}/${id}`}> <button className="btn-delete" disabled={!isConfirmed}>DELETAR</button></NavLink>
 
             <button onClick={onCancel} className="btn-cancel">CANCELAR</button>

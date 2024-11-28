@@ -19,20 +19,20 @@ export default function SkillsRoute() {
 
   return (
     <>
-      <div className="capability-container">
 
-        <h1 className="title-container">Talentos<NavLink to={`../../new/${characterId}/skills/`} style={{ color: 'blue' }} className='question-button'>+</NavLink></h1>
+        <div className="title-container">
+                <NavLink to={`../new/skills/`}> <h1 style={{marginTop: '0', marginBottom: '0', padding: '0'}}>Talentos</h1></NavLink>
+                <NavLink className="question-button" to={`/user/home/atr/`}>?</NavLink>
+            </div>
 
         <div style={{left:'0', right: '0'}}>
           <SkillTable skills={skills} />
 
         </div>
 
-      </div>
 
-      <div className="capability-container">
 
-        <h1 className="title-container">Linhagens<NavLink to={`../../new/${characterId}/lineages/`} style={{ color: 'blue' }} className='question-button'>+</NavLink></h1>
+        <h1 className="title-container">Linhagens<NavLink to={`../new/lineages/`} style={{ color: 'blue' }} className='question-button'>+</NavLink></h1>
 
         {lineages.map(lineage => (
           <LineageCircle key={lineage.id} lineage={lineage} isPure={isPure} isSelected={false}
@@ -64,7 +64,7 @@ export default function SkillsRoute() {
           ))}
         </div>
 
-        <h1 className="title-container">Caminhos<NavLink to={`../../new/${characterId}/paths/`} style={{ color: 'blue' }} className='question-button'>+</NavLink></h1>
+        <h1 className="title-container">Caminhos<NavLink to={`../new/paths/`} style={{ color: 'blue' }} className='question-button'>+</NavLink></h1>
 
         <div className="trainings-grid">
           {paths.map(pa => (
@@ -77,7 +77,7 @@ export default function SkillsRoute() {
           ))}
         </div>
 
-        <h1 className="title-container">Treinos<NavLink to={`../../new/${characterId}/trainings/`} style={{ color: 'blue' }} className='question-button'>+</NavLink></h1>
+        <h1 className="title-container">Treinos<NavLink to={`../new/trainings/`} style={{ color: 'blue' }} className='question-button'>+</NavLink></h1>
 
         <div className="trainings-grid">
           {trainingsWithTier.map(tt => (
@@ -90,7 +90,6 @@ export default function SkillsRoute() {
           ))}
         </div>
 
-      </div>
     </>
   )
 }

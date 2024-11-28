@@ -13,13 +13,20 @@ a :hover {
 }
 
 body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
   background-color: #121212;
   color: #ffffff;
   line-height: 1.6;
 }
 
 .user {
+  width: 100%;
+  height: 100%;
   margin-top: 64px;
+  margin-left: 0;
+  margin-right: 0;
 }
 
 @keyframes spawn {
@@ -58,13 +65,10 @@ body {
   animation: spawn 3s ease-out forwards;
 }
 
-
-
 h1 {
   font-family: Georgia;
   font-variant: small-caps;
   color: gold;
-
 }
 
 h1,
@@ -75,7 +79,6 @@ h2 {
 
 h2 {
   color: #FFFFFF;
-
 }
 
 h3 {
@@ -133,9 +136,7 @@ h3 {
   background-color: #000000;
   z-index: 10;
   font-weight: bold;
-
   border-bottom: 1.5px solid goldenrod;
-
 }
 
 .charnav {
@@ -179,87 +180,84 @@ h3 {
 }
 
 .character-sheet {
-  margin-left: 164px;
+  margin-left: 200px;
+  transition: 0.3s ease-in-out
 }
 
-.skillnav {
+.header {
+  overflow: auto;
+  transition: 0.3s ease-in-out;
   position: fixed;
-  width: 164px;
-  height: 100%;
-  list-style-type: none;
-  top: 48px;
+  width: 200px;
+  height: calc(100% - 64px);
+  top: 64px;
   left: 0;
   padding: 0;
-  overflow: initial;
-  background-color: #333;
-  border-right: 3px solid rgba(102, 73, 1, 0.753);
+  background-color: #090809;
+  box-shadow: 1px 0px 8px 1px gold;
   z-index: 5;
 }
 
-.skillnav a,
-.skillnav button {
+.header h1 {
+  margin-top: 8px;
+  font-size: 1.35rem;
+  width: 100%;
+}
+
+.header p {
+  text-align: center;
+  width: 100%;
+
+}
+
+.header ul li {
+  width: 100%;
+  box-shadow: 1px 0px 4px 1px gold;
+}
+
+ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+.header table {
+  color: white;
+  left: 0;
+  right: 0;
   font-family: serif;
-  font-weight: 500;
-  font-size: 1.2rem;
-  text-align: left;
-  margin-left: 4px;
-  margin-top: 4px;
-  margin-bottom: 4px;
-}
-
-.skillnav button {
-  bottom: 0
-}
-
-.skillnav li {
+  border-collapse: collapse;
   width: 100%;
-  border-bottom: 1px solid goldenrod;
+  height: 16px;
+  box-shadow: 1px 0px 4px 1px gold;
 }
 
-.skillnav h1 {
+.header td,
+.header th {
+  border: none;
+  font-weight: bold;
+  font-family: serif;
   font-size: 1.3rem;
-}
-
-.skillnav .header {
-  display: flex;
-  flex-wrap: wrap;
-  text-align: center;
-  align-items: left;
-  justify-content: left;
-  width: auto;
-  border-bottom: 2px solid goldenrod;
-  border-top: 2px solid goldenrod;
-}
-
-.skillnav .header h1 {
-  text-align: left;
-  margin: 16px;
-}
-
-#path {
-  width: 100%;
-  text-align: center;
-  margin-right: 8px;
-  margin-left: 0;
-}
-
-#name {
-  width: 100%;
-  text-align: left;
-  margin-left: 16px;
-}
-
-.skillnav .header .half,
-.skillnav .header .half-2 {
   width: 50%;
-  border-bottom: 2px solid goldenrod;
-  border-top: 2px solid goldenrod
+  text-align: center;
 }
 
-.skillnav .header .half-2 h1 {
-  text-align: right;
-  margin-right: 8px;
-  margin-left: 0;
+.toggle-menu {
+  position: absolute;
+  border: none;
+  top: 62px;
+  height: calc(100% + 64px);
+  width: 16px;
+  background-color: gold;
+  opacity: 0;
+  margin-left: 196px;
+  transition: 0.3s ease-in-out
+}
+
+.toggle-menu:hover.toggle-menu {
+  display: block;
+  opacity: 0.5;
+  cursor: pointer;
 }
 
 .skill-container {
@@ -268,7 +266,7 @@ h3 {
   align-items: left;
   justify-content: left;
   flex-wrap: wrap;
-  margin-left: 164px;
+  margin-left: 200px;
   width: auto;
 }
 
@@ -296,7 +294,8 @@ li a {
   text-decoration: none;
 }
 
-li button {
+.header li button {
+  width: 100%;
   display: block;
   color: white;
   text-align: center;
@@ -304,10 +303,9 @@ li button {
   text-decoration: none;
   background: none;
   color: inherit;
-  border: none;
+  border: inherit;
   font: inherit;
   cursor: pointer;
-  outline: inherit;
 }
 
 li a:hover {
@@ -330,11 +328,6 @@ li a:hover {
   align-items: center;
   justify-content: center;
   flex-wrap: wrap;
-}
-
-.capability-container {
-  float: left;
-  width: 100%;
 }
 
 .block {
@@ -468,26 +461,22 @@ td:last-child {
 
 .button:hover {
   background-color: #005F7A;
-  /* Darker shade for hover */
 }
 
-/* Modal overlay */
 .modal-overlay {
+  animation: fadeIn 0.2s ease-in-out;
   position: fixed;
   top: 0;
   left: 0;
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  height: 100%;
   background-color: rgba(0, 0, 0, 0.7);
-  /* semi-transparent background */
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 1000;
-  /* Ensure it's on top of other content */
 }
 
-/* Modal content */
 .modal-content {
   background-color: white;
   padding: 20px;
@@ -497,7 +486,6 @@ td:last-child {
   text-align: center;
 }
 
-/* Button styles */
 .modal-buttons {
   display: flex;
   justify-content: space-around;
@@ -538,10 +526,6 @@ td:last-child {
   }
 }
 
-.modal-overlay {
-  animation: fadeIn 0.3s ease-in-out;
-}
-
 .login {
   animation: spawn 1.5s ease-out forwards;
 }
@@ -561,67 +545,6 @@ td:last-child {
   display: flex;
   justify-content: center;
   transition: background-color 0.3s ease;
-}
-
-.user_panel,
-.log,
-.dice-box {
-  position: fixed;
-  width: 22%;
-  height: 60%;
-  overflow: auto;
-  background-color: #333;
-  color: white;
-  text-align: center;
-  border: 1px solid #333;
-  border-radius: 5px;
-  transition: background-color 0.3s ease;
-}
-
-.user_panel {
-  bottom: 2%;
-  left: 25%;
-}
-
-.log {
-  bottom: 5%;
-  left: 3%;
-}
-
-.dice-box {
-  right: 2%;
-  bottom: 5%;
-}
-
-.log:hover,
-.dice-box:hover {
-  background-color: #4d4c4c;
-}
-
-ul.log,
-.dice-box button {
-  list-style-type: none;
-  margin: 0;
-  padding: 0;
-  border: 1px solid #555;
-}
-
-
-.dice-box button {
-  display: inline-block;
-  text-align: center;
-  width: 100%;
-  min-height: 14.29%;
-  background-color: #555;
-  border: none;
-  color: white;
-  cursor: pointer;
-  font-size: 1rem;
-  transition: background-color 0.3s ease;
-}
-
-.dice-box button:hover {
-  background-color: #777;
 }
 
 [class*="col-"] {
@@ -705,129 +628,6 @@ ul.log,
   margin: 10px;
 }
 
-@media (max-height: 700px) {
-  #name {
-    display: none;
-  }
-
-  #path {
-    display: none;
-  }
-
-  .skillnav {
-    position: fixed;
-    width: 100%;
-    height: 128px;
-    list-style-type: none;
-    top: 48px;
-    left: 0;
-    padding: 0;
-    overflow: hidden;
-    background-color: #333;
-    z-index: 5;
-  }
-
-  .skillnav li {
-    width: initial;
-  }
-
-  .skillnav li a {
-    display: block;
-    color: white;
-    text-align: center;
-    padding: 19px 19px;
-    text-decoration: none;
-  }
-
-  .skillnav li a button {
-    display: block;
-    color: white;
-    text-align: center;
-    padding: 19px 19px;
-    text-decoration: none;
-    background: none;
-    color: inherit;
-    border: none;
-    font: inherit;
-    cursor: pointer;
-    outline: inherit;
-  }
-
-  .skillnav li a:hover {
-    color: gold;
-  }
-  
-  .skillnav a {
-    text-decoration: none;
-    font-weight: bold;
-    font-size: medium;
-    margin-right: 8px;
-  }
-
-  .skillnav button {
-    text-decoration: none;
-    font-weight: bold;
-    font-size: medium;
-    margin-right: 8px;
-  }
-
-  .skillnav a.active {
-    color: gold;
-  }
-
-  
-
-  .header {
-    display: initial;
-    flex-wrap: initial;
-    text-align: inherit;
-    align-items: inherit;
-    justify-content: inherit;
-    width: 10%;
-    border-bottom: 0;
-    border-top: 0;
-  }
-
-  .header .half,
-  .header .half-2 {
-    width: 10%;
-    float: "right";
-    margin-right: '24px';
-    margin-top: '0';
-    margin-bottom: '0';
-    text-align: 'right';
-    display: none;
-  }
-
-  .header .half h1,
-  header .half-2 h1 {
-    display: "inline";
-    margin-bottom: '0'
-  }
-
-
-
-
-
-
-
-  .skillnav h1,
-  .skillnav h2 {
-    text-align: left;
-    font-size: larger;
-    margin-left: 16px;
-    margin-top: 8px;
-    margin-bottom: 0;
-  }
-
-  .character-sheet {
-    margin-top: 190px;
-    margin-left: 0;
-  }
-
-
-
-}
 
 @media (max-width: 900px) {
   .button {

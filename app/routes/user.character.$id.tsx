@@ -113,6 +113,7 @@ export default function CharacterRoute() {
   const { stats, resistances } = useLoaderData<{ stats: charStats; resistances: resistances }>()
 
   const [selectReset, setReset] = useState<number>(0);
+  const [selectHeader, setHeader] = useState<number>(0);
 
   const showReset = () => {
     setReset(() => {
@@ -126,50 +127,57 @@ export default function CharacterRoute() {
     });
   };
 
+  const showHeader = () => {
+    setHeader(() => {
+      return character.id;
+    });
+  };
+
+  const cancelHeader = () => {
+    setHeader(() => {
+      return 0
+    });
+  };
+
   return (
     <>
-      <ul className="skillnav">
+      <div className="header" style={selectHeader === 0 ? {} : { position: 'absolute', transform: 'translate(-200px)' }}>
+        <h1 >{character.name}</h1>
+        <p>{paths && paths.length > 0 ? (paths.map(path => path.name)) : ("Sem Caminho")} </p>
+
+        <table>
+          <tr>
+            <th>NV</th>
+            <td>{character.level}</td>
 
 
-      <div className="header">
+          </tr>
+        </table>
+        <table>
+          <tr>
+            <th>CT</th>
+            <td>{character.tier}</td>
+          </tr>
+        </table>
+        <table>
+          <tr>
+            <th>XP</th>
+            <td>{character.experience}/{(character.level + 1) * 4 * character.tier}</td>
+          </tr>
+        </table>
 
-        <h1 id='name'>{character.name}</h1>
-
-        <p id='path'> {paths && paths.length > 0 ? (paths.map(path => path.name)) : ("Sem Caminho")} </p>
-
-
-
-        <div className="half">
-          <h1>Level</h1>
-        </div>
-        <div className="half-2">
-          <h1>{character.level}</h1>
-        </div>
-
-        <div className="half">
-          <h1>Cat</h1>
-        </div>
-        <div className="half-2">
-          <h1>{character.tier}</h1>
-        </div>
-
-        <div className="half">
-          <h1>XP</h1>
-        </div>
-        <div className="half-2" >
-          <h1>{character.experience}/{(character.level + 1) * 4 * character.tier}</h1>
-        </div>
+        <ul className="skillnav">
+          <li><NavLink to={`/user/character/${characterId}/stats/`}>Personagem</NavLink></li>
+          <li><NavLink to={`/user/character/${characterId}/capabilities/`}>Capacidades</NavLink></li>
+          <li><NavLink to={`/user/character/${characterId}/inventory/`}>Inventário</NavLink></li>
+          <ResetConfirm name={character.name} isHidden={selectReset === 0} onShow={showReset} onCancel={cancelReset} id={String(character.id)} />
+        </ul>
 
       </div>
+      <button className="toggle-menu" style={selectHeader === 0 ? {} : { transform: 'translate(-200px)' }} onClick={selectHeader === 0 ? showHeader : cancelHeader}></button>
 
-        <li><NavLink to={`/user/character/${characterId}/stats/`}>Personagem</NavLink></li>
-        <li><NavLink to={`/user/character/${characterId}/capabilities/`}>Capacidades</NavLink></li>
-        <li><NavLink to={`/user/character/${characterId}/inventory/`}>Inventário</NavLink></li>
-        <ResetConfirm name={character.name} isHidden={selectReset === 0} onShow={showReset} onCancel={cancelReset} id={String(character.id)} />
 
-      </ul>
-
-      <div className="character-sheet">
+      <div className="character-sheet" style={selectHeader === 0 ? {} : { margin: '0' }}>
         <Outlet context={{ character, stats, resistances, skills, trainingsWithTier, paths, lineages, pureLineageSkills, nonPureLineageSkills, isPure, weapons, armors }} />
       </div >
     </>

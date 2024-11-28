@@ -28,17 +28,20 @@ export function StatsAndRes({ character, resistances, stats }: Props) {
 
     return (
         <>
-            <div className="col-12">
 
-                <h1 className="title-container">Atributos<NavLink className="question-button" to={`/user/character/update/${String(character.id)}/basic`}>!</NavLink></h1>
 
-                <div className="container">
-                    <div className="block"><h1>{character.agility}</h1><p style={{ fontFamily: 'serif', fontSize: '1.35rem', fontWeight: 'bolder' }}>AGI</p></div>
-                    <div className="block"><h1>{character.body}</h1><p style={{ fontFamily: 'serif', fontSize: '1.35rem', fontWeight: 'bolder' }}>COR</p></div>
-                    <div className="block"><h1>{character.mind}</h1><p style={{ fontFamily: 'serif', fontSize: '1.35rem', fontWeight: 'bolder' }}>MEN</p></div>
-                </div>
-
+            <div className="title-container">
+                <NavLink style={{marginTop: '0', marginBottom: '0', padding: '0'}} to={`/user/character/update/${String(character.id)}/basic`}> <h1 style={{marginTop: '0', marginBottom: '0', padding: '0'}}> Atributos </h1></NavLink>
+                <NavLink className="question-button" to={`/user/home/atr/`}>?</NavLink>
             </div>
+
+
+            <div className="container">
+                <div className="block"><h1>{character.agility}</h1><p style={{ fontFamily: 'serif', fontSize: '1.35rem', fontWeight: 'bolder' }}>AGI</p></div>
+                <div className="block"><h1>{character.body}</h1><p style={{ fontFamily: 'serif', fontSize: '1.35rem', fontWeight: 'bolder' }}>COR</p></div>
+                <div className="block"><h1>{character.mind}</h1><p style={{ fontFamily: 'serif', fontSize: '1.35rem', fontWeight: 'bolder' }}>MEN</p></div>
+            </div>
+
 
             <h1>Estatísticas</h1>
             <h2>Recursos</h2>

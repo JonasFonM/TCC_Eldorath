@@ -168,7 +168,9 @@ export default function CharacterRoute() {
 
         <ul className="skillnav">
           <li><NavLink to={`/user/character/${characterId}/stats/`}>Personagem</NavLink></li>
-          <li><NavLink to={`/user/character/${characterId}/capabilities/`}>Capacidades</NavLink></li>
+          <li><NavLink to={`/user/character/${characterId}/paths/`}>Caminhos</NavLink></li>
+          <li><NavLink to={`/user/character/${characterId}/skills/`}>Talentos</NavLink></li>
+          <li><NavLink to={`/user/character/${characterId}/trainings/`}>Treinos</NavLink></li>
           <li><NavLink to={`/user/character/${characterId}/inventory/`}>Inventário</NavLink></li>
           <ResetConfirm name={character.name} isHidden={selectReset === 0} onShow={showReset} onCancel={cancelReset} id={String(character.id)} />
         </ul>

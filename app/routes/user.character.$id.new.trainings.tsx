@@ -172,7 +172,7 @@ export default function TrainingSelectionRoute() {
 
       <>
         <h1 className="title-container">Máximo de escolhas atingido</h1>
-        <NavLink to={`/user/character/${characterId}/capabilities/`} className="button">Sair</NavLink>
+        <NavLink to={`../../trainings`} className="button">Sair</NavLink>
 
       </>
     }

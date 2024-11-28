@@ -1,19 +1,15 @@
-import { skill } from '@prisma/client'
 import "~/styles.css";
-import { SkillTableItem } from './skill-table-item';
 
-export function SkillTable({ skills }: { skills: skill[] }) {
+interface Props {
+    onClick: () => void;
+}
+
+export function SkillTableHead({ onClick }: Props) {
+    
     return (
-        <div>
-            <table>
-                <tr>
-                    <th>Nome</th>
-                    <th>Tipo</th>
-                </tr>
-                {skills.map(skill => (
-                    <SkillTableItem key={skill.id} skill={skill} />
-                ))}
-            </table>
-        </div>
+        <tr style={{display: 'table-row'}} onClick={onClick}>
+            <th>Nome</th>
+            <th>Tipo</th>
+        </tr>
     )
 }

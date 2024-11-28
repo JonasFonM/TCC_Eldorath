@@ -110,7 +110,7 @@ export default function PathSelection() {
                 :
                 <>
                     <h1 className="title-container">Você já escolheu um Caminho</h1>
-                    <NavLink className='button' to={`/user/character/${characterId}/capabilities/`}>Sair</NavLink>
+                    <NavLink className='button' to={`../../paths`}>Sair</NavLink>
                 </>
 
             }

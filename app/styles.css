@@ -206,6 +206,9 @@ h3 {
 
 .header p {
   text-align: center;
+  font-variant: small-caps;
+  font-family: serif;
+  font-size: 1.25rem;
   width: 100%;
 
 }
@@ -237,6 +240,7 @@ ul {
   border: none;
   font-weight: bold;
   font-family: serif;
+  font-variant: small-caps;
   font-size: 1.3rem;
   width: 50%;
   text-align: center;
@@ -251,7 +255,8 @@ ul {
   background-color: gold;
   opacity: 0;
   margin-left: 196px;
-  transition: 0.3s ease-in-out
+  transition: 0.3s ease-in-out;
+  z-index: 4;
 }
 
 .toggle-menu:hover.toggle-menu {
@@ -310,6 +315,7 @@ li a {
 
 li a:hover {
   color: gold;
+
 }
 
 .logout:hover {
@@ -408,24 +414,39 @@ li a:hover {
 }
 
 table {
-  left: 0;
-  right: 0;
-  font-family: serif;
   border-collapse: collapse;
   width: 100%;
   height: 100%;
 }
 
+tr {
+  width: 100%;
+}
+
 td,
 th {
+  width: 50%;
+  font-size: 1.1rem;
+  font-family: serif;
+  font-variant: small-caps;
   border: 2px solid #dddddd;
   border-left: 0;
   text-align: left;
-  padding: 16px;
+  padding: 12px;
 }
 
-tr:nth-child(even) {
+.selected {
   background-color: darkgoldenrod;
+  box-shadow: 0px 0px 16px 1px gold;
+
+}
+
+tr:hover {
+  color: gold;
+  background-color: rgb(0, 0, 0);
+  box-shadow: 1px 1px 8px 1px gold;
+  cursor: pointer;
+
 }
 
 th:last-child,
@@ -474,16 +495,19 @@ td:last-child {
   display: flex;
   justify-content: center;
   align-items: center;
+  overflow: auto;
   z-index: 1000;
 }
 
 .modal-content {
   background-color: white;
+  box-shadow: 0px 0px 16px 1px gold;
   padding: 20px;
   border-radius: 10px;
   max-width: 500px;
   width: 100%;
   text-align: center;
+  
 }
 
 .modal-buttons {

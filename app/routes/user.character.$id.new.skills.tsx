@@ -2,6 +2,8 @@ import { skill } from "@prisma/client";
 import { ActionFunction, json, LoaderFunction, redirect } from "@remix-run/node";
 import { NavLink, useLoaderData } from "@remix-run/react";
 import { useState } from "react";
+import { SkillTableHead } from "~/components/character-sheet/skill-table";
+import { SkillTableData } from "~/components/character-sheet/skill-table-data";
 import { SkillCircle } from "~/components/skill-circle";
 import { requireUserId } from "~/utils/auth.server";
 import { submitCharSkills } from "~/utils/character.server";
@@ -141,12 +143,11 @@ export const action: ActionFunction = async ({ request, params }) => {
   await prisma.charStats.delete({
     where: { characterId: Number(characterId) }
   })
-  return redirect(`/user/character/${characterId}/capabilities`)
+  return redirect(`../../skills/`)
 }
 
 export default function SkillSelectionRoute() {
   const {
-    characterId,
     nonPureLineageSkills, pureLineageSkills, isPure,
     characteristics, magics, maneuvers, tricks, oaths,
     maxSelectable, maxMagics, maxTechniques, maxManeuvers, maxOaths, maxTricks, }
@@ -173,6 +174,20 @@ export default function SkillSelectionRoute() {
   const isMaxManeuvers = selectedManeuvers.length >= maxManeuvers;
   const isMaxOaths = selectedOaths.length >= maxOaths;
   const isMaxTricks = selectedTricks.length >= maxTricks;
+
+  const [show, setShow] = useState<number>();
+
+  const showRow = () => {
+    show != 1 ?
+      setShow(() => {
+        return 1;
+      })
+      :
+      setShow(() => {
+        return 0;
+      })
+  }
+
 
   const handleSkillClick = (skillId: number) => {
     setSelectedSkills((prevSkills) => {
@@ -261,18 +276,36 @@ export default function SkillSelectionRoute() {
     <>
       {maxSelectable > 0 || maxMagics > 0 || maxTechniques > 0 || maxManeuvers > 0 || maxOaths > 0 || maxTricks > 0 ?
         <>
-          <ul className="skillnav">
-            <li><NavLink to={`/user/character/${characterId}`}>Todos</NavLink></li>
-            <li><NavLink to={`/user/character/new/${characterId}/skills`}>Características</NavLink></li>
-            <li><NavLink to={`/user/character/new/${characterId}/lineages`}>Técnicas</NavLink></li>
-            <li><NavLink to={`/user/character/new/${characterId}/paths`}>Manobras</NavLink></li>
-            <li><NavLink to={`/user/character/new/${characterId}/trainings`}>Juramentos</NavLink></li>
-            <li><NavLink to={`/user/character/new/${characterId}/inventory`}>Trapaças</NavLink></li>
-            <li><NavLink to={`/user/character/new/${characterId}/inventory`}>Mágicas</NavLink></li>
-          </ul>
+
+
+
           <form method="post">
 
-            <h1 style={{ marginLeft: '164px' }} className="title-container">Escolha seus Talentos<NavLink to={`/user/character/${characterId}/capabilities/`} style={{ color: 'red' }} className="question-button">X</NavLink></h1>
+            <h1 style={{ marginLeft: '164px' }} className="title-container">Escolha seus Talentos<NavLink to={`../../skills/`} style={{ color: 'red' }} className="question-button">X</NavLink></h1>
+
+            <table>
+
+              <SkillTableHead onClick={() => showRow()} />
+
+              {maneuvers.map(skill => (
+                <SkillTableData
+                  key={skill.id}
+                  skill={skill}
+                  show={show === 1}
+                  onClick={() => !isMaxManeuvers || selectedManeuvers.includes(skill.id) ? handleManeuverClick(skill.id) : !isMaxTechniques || selectedTechniques.includes(skill.id) ? handleTechniqueClick(skill.id) : !isMaxSelected || selectedSkills.includes(skill.id) ? handleSkillClick(skill.id) : alert((`Você já escolheu o seu limite de Manobras.`))}
+                />
+              ))}
+            </table>
+
+            {characteristics.map(skill => (
+              <SkillCircle
+                key={skill.id}
+                skill={skill}
+                isSelected={selectedSkills.includes(skill.id)}
+                onClick={() => !isMaxSelected || selectedSkills.includes(skill.id) ? handleSkillClick(skill.id) : alert((`Você já escolheu o seu limite de Características.`))}
+                isPureLineage={false}
+              />
+            ))}
 
             <div className="skill-container">
 
@@ -313,7 +346,7 @@ export default function SkillSelectionRoute() {
               </div>
 
               <div className="col-12">
-                
+
                 <h1>Características</h1>
 
                 <div className="skills-grid">
@@ -449,7 +482,7 @@ export default function SkillSelectionRoute() {
 
         <>
           <h1 className="title-container">Máximo de escolhas atingido</h1>
-          <NavLink to={`/user/character/${characterId}/capabilities/`} className="button">Sair</NavLink>
+          <NavLink to={`../../skills/`} className="button">Sair</NavLink>
         </>
       }
 
@@ -457,3 +490,14 @@ export default function SkillSelectionRoute() {
 
   );
 }
+
+/*<ul className="skillnav">
+            <li><NavLink to={`/user/character/${characterId}`}>Todos</NavLink></li>
+            <li><NavLink to={`/user/character/new/${characterId}/skills`}>Características</NavLink></li>
+            <li><NavLink to={`/user/character/new/${characterId}/lineages`}>Técnicas</NavLink></li>
+            <li><NavLink to={`/user/character/new/${characterId}/paths`}>Manobras</NavLink></li>
+            <li><NavLink to={`/user/character/new/${characterId}/trainings`}>Juramentos</NavLink></li>
+            <li><NavLink to={`/user/character/new/${characterId}/inventory`}>Trapaças</NavLink></li>
+            <li><NavLink to={`/user/character/new/${characterId}/inventory`}>Mágicas</NavLink></li>
+          </ul>
+*/

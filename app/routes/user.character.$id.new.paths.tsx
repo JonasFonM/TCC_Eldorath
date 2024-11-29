@@ -1,8 +1,9 @@
-import { path } from "@prisma/client";
+import { character, path } from "@prisma/client";
 import { ActionFunction, json, LoaderFunction, redirect } from "@remix-run/node";
 import { NavLink, useLoaderData } from "@remix-run/react";
 import { useState } from "react";
-import { PathCircle } from "~/components/path-circle";
+import { PathTableHead } from "~/components/character-sheet/path-table";
+import { PathTableData } from "~/components/character-sheet/path-table-data";
 import { requireUserId } from "~/utils/auth.server";
 import { submitCharPaths } from "~/utils/character.server";
 import { prisma } from "~/utils/prisma.server";
@@ -15,15 +16,11 @@ export const loader: LoaderFunction = async ({ request, params }) => {
         where: { id: characterId },
     });
 
-    const paths = await prisma.path.findMany({
-        where: { pathTier: character?.tier }
-    }
-    )
+    const paths = await prisma.path.findMany()
 
     const maxSelectable = character?.pendingPath
 
-
-    return json({ userId, paths, maxSelectable, characterId });
+    return json({ userId, paths, maxSelectable, characterId, character });
 }
 
 export const action: ActionFunction = async ({ request, params }) => {
@@ -50,13 +47,27 @@ export const action: ActionFunction = async ({ request, params }) => {
 }
 
 export default function PathSelection() {
-    const { paths, characterId, maxSelectable } = useLoaderData<{ paths: path[], characterId: string, maxSelectable: number }>();
+    const { paths, maxSelectable, character } = useLoaderData<{ paths: path[], characterId: string, maxSelectable: number, character: character }>();
     const [selectedPaths, setSelectedPaths] = useState<number[]>([]);
     const [error, setError] = useState<string | null>(null);
 
+    const [show, setShow] = useState<number>();
 
-    const isMaxSelected = selectedPaths.length >= maxSelectable;
+    const tier1 = paths.filter(p => p.pathTier == 1);
+    const tier2 = paths.filter(p => p.pathTier == 2);
+    const tier3 = paths.filter(p => p.pathTier == 3);
+    const tier4 = paths.filter(p => p.pathTier == 4);
 
+    const showRow = (tier: number) => {
+        show != tier ?
+            setShow(() => {
+                return tier;
+            })
+            :
+            setShow(() => {
+                return 0;
+            })
+    }
 
     const handlePathClick = (pathId: number) => {
         setSelectedPaths((prevPaths) => {
@@ -66,7 +77,7 @@ export default function PathSelection() {
                 ? prevPaths.filter(id => id !== pathId)
                 : [...prevPaths, pathId];
 
-            if (newSelectedPaths.length > 1) {
+            if (newSelectedPaths.length > maxSelectable) {
                 setError("Você só pode selecionar 1 caminho por Categoria.");
                 return prevPaths;
             } else {
@@ -85,16 +96,106 @@ export default function PathSelection() {
                     <form method="post">
 
                         <h1 className="title-container">Escolha seu Caminho<NavLink to={`../../paths`} style={{ color: 'red' }} className="question-button">X</NavLink></h1>
-                        <div className="paths-grid">
-                            {paths.map(path => (
-                                <PathCircle
-                                    key={path.id}
-                                    path={path}
-                                    isSelected={selectedPaths.includes(path.id)}
-                                    onClick={() => !isMaxSelected || selectedPaths.includes(path.id) ? handlePathClick(path.id) : null}
-                                />
-                            ))}
-                        </div>
+
+                        <h2 style={{ fontVariant: 'small-caps' }}>Caminhos Iniciantes</h2>
+
+                        <table>
+
+                            <PathTableHead onClick={() => showRow(1)} />
+
+                            {tier1.map(p => (
+                                <>
+                                    <PathTableData
+                                        key={p.id}
+                                        path={p}
+                                        show={show === (p.pathTier)}
+                                        onClick={() => handlePathClick(p.id)}
+                                        selected={selectedPaths.includes(p.id)}
+
+                                    />
+                                </>
+
+                            ))
+                            }
+
+                        </table>
+
+
+                        {character.tier >= 2 ?
+                            <>
+                                <h2 style={{ fontVariant: 'small-caps' }}>Caminhos Veteranos</h2>
+
+                                <table>
+                                    <PathTableHead onClick={() => showRow(2)} />
+                                    {tier2.map(p => (
+                                        <>
+                                            <PathTableData
+                                                key={p.id}
+                                                path={p}
+                                                show={show === (p.pathTier)}
+                                                onClick={() => handlePathClick(p.id)}
+                                                selected={selectedPaths.includes(p.id)}
+
+                                            />
+                                        </>
+                                    ))
+                                    }
+                                </table>
+
+                            </>
+                            : ''
+                        }
+
+                        {character.tier >= 3 ?
+                            <>
+                                <h2 style={{ fontVariant: 'small-caps' }}>Caminhos Mestres</h2>
+
+                                <table>
+
+                                    <PathTableHead onClick={() => showRow(3)} />
+
+                                    {tier3.map(p => (
+                                        <>
+                                            <PathTableData
+                                                key={p.id}
+                                                path={p}
+                                                show={show === (p.pathTier)}
+                                                onClick={() => handlePathClick(p.id)}
+                                                selected={selectedPaths.includes(p.id)}
+                                            />
+                                        </>
+                                    ))
+                                    }
+                                </table>
+                            </>
+                            : ''}
+
+                        {character.tier >= 4 ?
+                            <>
+                                <h2 style={{ fontVariant: 'small-caps' }}>Caminhos Lendários</h2>
+
+                                <table>
+
+                                    <PathTableHead onClick={() => showRow(4)} />
+
+                                    {tier4.map(p => (
+                                        <>
+                                            <PathTableData
+                                                key={p.id}
+                                                path={p}
+                                                show={show === (p.pathTier)}
+                                                onClick={() => handlePathClick(p.id)}
+                                                selected={selectedPaths.includes(p.id)}
+
+                                            />
+                                        </>
+                                    ))
+                                    }
+                                </table>
+                            </>
+                            : ''
+                        }
+
                         {selectedPaths.map(pathId => (
                             <input type="hidden" key={pathId} name="paths" value={pathId} />
                         ))}
@@ -107,7 +208,9 @@ export default function PathSelection() {
                     </form>
 
                 </>
+
                 :
+
                 <>
                     <h1 className="title-container">Você já escolheu um Caminho</h1>
                     <NavLink className='button' to={`../../paths`}>Sair</NavLink>

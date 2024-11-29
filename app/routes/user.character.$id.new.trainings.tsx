@@ -110,7 +110,7 @@ export const action: ActionFunction = async ({ request, params }) => {
 }
 
 export default function TrainingSelectionRoute() {
-  const { selectable_trainings, pathTrainings, maxSelectable, characterId } = useLoaderData<{ selectable_trainings: training[], pathTrainings: PTrelations, maxSelectable: number, characterId: string }>();
+  const { selectable_trainings, pathTrainings, maxSelectable } = useLoaderData<{ selectable_trainings: training[], pathTrainings: PTrelations, maxSelectable: number, characterId: string }>();
   const [selectedTrainings, setSelectedTrainings] = useState<number[]>([]);
   const hasPath = pathTrainings.length >= 1;
 

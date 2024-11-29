@@ -12,9 +12,7 @@ export function PathTableData({ path, show, onClick, selected }: Props) {
 
     return (
         <>
-            {
-                <tr className={selected ? 'selected' : ''} onClick={onClick} style={show ? { display: 'table-row' } : { display: 'none' } }>
-                    <td>{path.pathTier}</td>
+            {<tr style={selected ?{ backgroundColor: 'darkgoldenrod'} : {}} onClick={onClick} className={show ? '' : 'hidden-row'}>
                     <td>{path.name}</td>
                     <td>{path.vitality}</td>
                     <td>{path.power}</td>

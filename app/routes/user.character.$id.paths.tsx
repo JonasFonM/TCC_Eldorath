@@ -15,16 +15,22 @@ export default function PathsRoute() {
   const { paths } = useOutletContext<{ paths: path[] }>();
   const [show, setShow] = useState<number>();
 
-  const showRow = () => {
-    show != 1 ?
+  const tier1 = paths.filter(p => p.pathTier == 1);
+  const tier2 = paths.filter(p => p.pathTier == 2);
+  const tier3 = paths.filter(p => p.pathTier == 3);
+  const tier4 = paths.filter(p => p.pathTier == 4);
+
+  const showRow = (tier: number) => {
+    show != tier ?
       setShow(() => {
-        return 1;
+        return tier;
       })
       :
       setShow(() => {
         return 0;
       })
   }
+
   const [showPath, setShowPath] = useState<number>();
 
   const explainPath = (id: number) => {
@@ -45,25 +51,99 @@ export default function PathsRoute() {
         <NavLink className="question-button" to={`/user/home/atr/`}>?</NavLink>
       </div>
 
-      <table >
-        <PathTableHead onClick={() => showRow()} />
-        {paths.map(p => (
-          <>
+
+
+      {tier1.map(p => (
+        <>
+          <h2 style={{ fontVariant: 'small-caps' }}>Caminhos Iniciantes</h2>
+
+          <table >
+
+            <PathTableHead onClick={() => showRow(p.pathTier)} />
+
             <PathTableData
               key={p.id}
               path={p}
-              show={show === 1}
+              show={show === (p.pathTier)}
               onClick={() => explainPath(p.id)}
               selected={false}
 
             />
             <PathExplain style={'linear-gradient(to bottom right, gold, goldenrod)'} path={p} isHidden={showPath != p.id} onCancel={() => setShowPath(0)} />
 
-          </>
+          </table>
+        </>
 
-        ))}
-      </table>
+      ))}
 
+
+
+      {tier2.map(p => (
+        <>
+          <h2 style={{ fontVariant: 'small-caps' }}>Caminhos Veteranos</h2>
+
+          <table >
+            <PathTableHead onClick={() => showRow(p.pathTier)} />
+
+            <PathTableData
+              key={p.id}
+              path={p}
+              show={show === (p.pathTier)}
+              onClick={() => explainPath(p.id)}
+              selected={false}
+
+            />
+            <PathExplain style={'linear-gradient(to bottom right, gold, goldenrod)'} path={p} isHidden={showPath != p.id} onCancel={() => setShowPath(0)} />
+          </table>
+        </>
+
+      ))}
+
+      {tier3.map(p => (
+        <>
+          <h2 style={{ fontVariant: 'small-caps' }}>Caminhos Mestres</h2>
+
+          <table >
+
+            <PathTableHead onClick={() => showRow(p.pathTier)} />
+
+            <PathTableData
+              key={p.id}
+              path={p}
+              show={show === (p.pathTier)}
+              onClick={() => explainPath(p.id)}
+              selected={false}
+
+            />
+            <PathExplain style={'linear-gradient(to bottom right, gold, goldenrod)'} path={p} isHidden={showPath != p.id} onCancel={() => setShowPath(0)} />
+          </table>
+
+        </>
+
+      ))}
+
+      {tier4.map(p => (
+        <>
+          <h2 style={{ fontVariant: 'small-caps' }}>Caminhos Lendários</h2>
+
+          <table >
+
+            <PathTableHead onClick={() => showRow(p.pathTier)} />
+
+            <PathTableData
+              key={p.id}
+              path={p}
+              show={show === (p.pathTier)}
+              onClick={() => explainPath(p.id)}
+              selected={false}
+
+            />
+            <PathExplain style={'linear-gradient(to bottom right, gold, goldenrod)'} path={p} isHidden={showPath != p.id} onCancel={() => setShowPath(0)} />
+          </table>
+
+        </>
+
+      ))}
     </>
   )
 }

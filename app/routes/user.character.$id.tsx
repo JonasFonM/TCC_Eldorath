@@ -140,10 +140,32 @@ export default function CharacterRoute() {
       return 0
     });
   };
+  const [selectTemp, setTemp] = useState<number>(0);
+
+  const showTemp = () => {
+    setTemp(() => {
+      return character.id;
+    });
+  };
+
+  const cancelTemp = () => {
+    setTemp(() => {
+      return 0
+    });
+  };
+
+  const [childData, setChildData] = useState(null);
+
+
+  const isAllOpen = selectHeader === 0 && selectTemp === 0
+  const isHeaderOpen = selectHeader === 0 && selectTemp != 0
+  const isTempOpen = selectTemp === 0 && selectHeader != 0
 
   return (
     <>
-      <div className="header" style={selectHeader === 0 ? {} : { position: 'absolute', transform: 'translate(-200px)' }}>
+
+      <div className="header" style={selectHeader === 0 ? {} : { transform: 'translate(-200px)' }}>
+
         <h1 >{character.name}</h1>
         <p>{paths && paths.length > 0 ? (paths.map(path => path.name)) : ("Sem Caminho")} </p>
 
@@ -151,8 +173,6 @@ export default function CharacterRoute() {
           <tr>
             <th>NV</th>
             <td>{character.level}</td>
-
-
           </tr>
         </table>
         <table>
@@ -181,14 +201,15 @@ export default function CharacterRoute() {
       </div>
       <button className="toggle-menu" style={selectHeader === 0 ? {} : { transform: 'translate(-200px)' }} onClick={selectHeader === 0 ? showHeader : cancelHeader}></button>
 
-      <div className="temp" style={selectHeader === 0 ? {} : { position: 'absolute', transform: 'translate(200px)' }}>
+      <div className="temp" style={selectTemp === 0 ? {} : { transform: 'translate(200px)' }}>
+      {childData}
       </div>
 
-      <button className="toggle-temp" style={selectHeader === 0 ? {} : { transform: 'translate(200px)' }} onClick={selectHeader === 0 ? showHeader : cancelHeader}></button>
+      <button className="toggle-temp" style={selectTemp === 0 ? {} : { transform: 'translate(200px)' }} onClick={selectTemp === 0 ? showTemp : cancelTemp}></button>
 
 
-      <div className="character-sheet" style={selectHeader === 0 ? {} : { margin: '0' }}>
-        <Outlet context={{ character, stats, resistances, skills, trainingsWithTier, paths, lineages, pureLineageSkills, nonPureLineageSkills, isPure, weapons, armors }} />
+      <div className="character-sheet" style={isAllOpen ? { marginLeft: '200px', marginRight: '200px' } : isHeaderOpen ? { marginLeft: '200px' } : isTempOpen ? { marginRight: '200px' } : {}}>
+        <Outlet context={{ character, stats, resistances, skills, trainingsWithTier, paths, lineages, pureLineageSkills, nonPureLineageSkills, isPure, weapons, armors, setChildData }} />
       </div >
     </>
   );

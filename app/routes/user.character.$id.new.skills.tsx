@@ -332,7 +332,7 @@ export default function SkillSelectionRoute() {
                   skill={skill}
                   show={show === 1}
                   selected={selectedMagics.includes(skill.id) || selectedSkills.includes(skill.id)}
-                  onClick={() => !isMaxMagics || selectedMagics.includes(skill.id) ? handleTechniqueClick(skill.id) : !isMaxSelected || selectedSkills.includes(skill.id) ? handleSkillClick(skill.id) : alert((`Você já escolheu o seu limite de Mágicas.`))}
+                  onClick={() => !isMaxMagics || selectedMagics.includes(skill.id) ? handleMagicClick(skill.id) : !isMaxSelected || selectedSkills.includes(skill.id) ? handleSkillClick(skill.id) : alert((`Você já escolheu o seu limite de Mágicas.`))}
                 />
               ))}
             </table>

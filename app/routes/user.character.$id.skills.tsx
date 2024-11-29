@@ -50,6 +50,38 @@ export default function SkillsRoute() {
       <table>
 
         <SkillTableHead onClick={() => showRow()} />
+        {pureLineageSkills.map(pls => (
+          <>
+            <SkillTableData
+              key={pls.skill.id}
+              skill={pls.skill}
+              show={show === 1}
+              onClick={() => explainSkill(pls.skill.id)}
+              selected={false}
+
+            />
+            <SkillExplain style={'linear-gradient(to bottom right, gold, goldenrod)'} skill={pls.skill} isHidden={showSkill != pls.skill.id} onCancel={() => setShowSkill(0)} />
+
+          </>
+
+        ))}
+
+
+        {nonPureLineageSkills.map(npls => (
+          <>
+            <SkillTableData
+              key={npls.skill.id}
+              skill={npls.skill}
+              show={show === 1}
+              onClick={() => explainSkill(npls.skill.id)}
+              selected={false}
+
+            />
+            <SkillExplain style={'linear-gradient(to bottom right, goldenrod, darkgoldenrod)'} skill={npls.skill} isHidden={showSkill != npls.skill.id} onCancel={() => setShowSkill(0)} />
+
+          </>
+
+        ))}
 
         {skills.map(skill => (
           <>
@@ -58,42 +90,16 @@ export default function SkillsRoute() {
               skill={skill}
               show={show === 1}
               onClick={() => explainSkill(skill.id)}
+              selected={false}
             />
-            <SkillExplain style={'linear-gradient(to bottom right, gold, darkgoldenrod)'} skill={skill} isHidden={showSkill != skill.id} onCancel={() => setShowSkill(0)} />
+            <SkillExplain style={'linear-gradient(to bottom right, darkgoldenrod, darkyellow )'} skill={skill} isHidden={showSkill != skill.id} onCancel={() => setShowSkill(0)} />
 
           </>
 
         ))}
       </table>
 
-      {pureLineageSkills.map(pls => (
-        <>
-          <SkillTableData
-            key={pls.skill.id}
-            skill={pls.skill}
-            show={show === 1}
-            onClick={() => explainSkill(pls.skill.id)}
-          />
-          <SkillExplain style={'linear-gradient(to bottom right, red, yellow)'} skill={pls.skill} isHidden={showSkill != pls.skill.id} onCancel={() => setShowSkill(0)} />
 
-        </>
-
-      ))}
-
-
-      {nonPureLineageSkills.map(npls => (
-        <>
-          <SkillTableData
-            key={npls.skill.id}
-            skill={npls.skill}
-            show={show === 1}
-            onClick={() => explainSkill(npls.skill.id)}
-          />
-          <SkillExplain style={'linear-gradient(to bottom right, red, yellow)'} skill={npls.skill} isHidden={showSkill != npls.skill.id} onCancel={() => setShowSkill(0)} />
-
-        </>
-
-      ))}
 
 
     </>

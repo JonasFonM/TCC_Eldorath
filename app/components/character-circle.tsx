@@ -6,6 +6,7 @@ import { NavLink, } from '@remix-run/react'
 import { DeleteConfirm } from './delete-confirmation'
 import { useState } from 'react'
 
+
 interface props {
   character: character
   className?: string
@@ -33,7 +34,7 @@ export function CharacterCircle({ character }: props) {
 
       <h2 className='title-container'>
         
-        <NavLink style={{textDecoration: 'none', color: 'white'}} to={`/user/character/${character.id}/stats/`}>{character.name.toUpperCase()}</NavLink>
+        <NavLink style={{textDecoration: 'none', color: 'white'}} to={`/user/character/${character.id}/stats/`}><h1 style={{fontSize: '1.5rem'}}>{character.name}</h1></NavLink>
 
         <DeleteConfirm name={character.name} isHidden={selectedDelete === 0} onShow={showDelete} onCancel={cancelDelete} entity={"character"} id={String(character.id)} />
       </h2>

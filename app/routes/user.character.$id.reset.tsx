@@ -18,6 +18,10 @@ export const loader: LoaderFunction = async ({ params, request }) => {
         data: {
             level: 1,
             tier: 1,
+            agility: 1,
+            body: 1,
+            mind: 1,
+            experience: 0,
             pendingLineages: 2,
             pendingPath: 1,
             pendingSkills: 2,

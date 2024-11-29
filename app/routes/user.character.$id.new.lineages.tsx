@@ -35,7 +35,7 @@ export const action: ActionFunction = async ({ request, params }) => {
     }
     try {
         await submitCharLineages(selectedLineageIds, Number(characterId), pure)
-        return redirect(`/user/character/${characterId}/capabilities/`)
+        return redirect(`../../lineages`)
     } catch (error) {
         console.error(error);
         return json({ error: "Failed to save lineages." }, { status: 500 });
@@ -89,7 +89,7 @@ export default function LineageSelection() {
             {maxSelectable > 0 ?
                 <>
                     <form method="post" onSubmit={handleSubmit}>
-                        <h1 className="title-container">Escolha até {maxSelectable} Linhagens<NavLink to={`/user/character/${characterId}/capabilities/`} style={{ color: 'red' }} className="question-button">X</NavLink></h1>
+                        <h1 className="title-container">Escolha até {maxSelectable} Linhagens<NavLink to={`../../lineages`} style={{ color: 'red' }} className="question-button">X</NavLink></h1>
                         <h3>Escolher apenas 1 Linhagem a torna Pura</h3>
 
                         <div className="lineages-grid">
@@ -118,7 +118,7 @@ export default function LineageSelection() {
                 :
                 <>
                     <h1 className="title-container">Sua Linhagem já foi Escolhida</h1>
-                    <NavLink to={`/user/character/${characterId}/capabilities/`}><button type="button" className="button">Sair</button></NavLink>
+                    <NavLink to={`../../lineages`}><button type="button" className="button">Sair</button></NavLink>
 
                 </>
             }

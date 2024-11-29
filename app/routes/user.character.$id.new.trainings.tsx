@@ -106,7 +106,7 @@ export const action: ActionFunction = async ({ request, params }) => {
 
   await submitCharTrainings(selectedTrainingIds, Number(characterId), Number(pendingTrainings))
 
-  return redirect(`/user/character/${characterId}/capabilities`)
+  return redirect(`../../trainings`)
 }
 
 export default function TrainingSelectionRoute() {
@@ -132,7 +132,7 @@ export default function TrainingSelectionRoute() {
     <> {maxSelectable > 0 ?
       <>
         <form method="post">
-          <h1 className="title-container">Escolha até {maxSelectable} Treino(s)<NavLink to={`/user/character/${characterId}/capabilities/`} style={{ color: 'red' }} className="question-button">X</NavLink></h1>
+          <h1 className="title-container">Escolha até {maxSelectable} Treino(s)<NavLink to={`../../trainings`} style={{ color: 'red' }} className="question-button">X</NavLink></h1>
 
           <h2 style={{ display: hasPath ? 'block' : 'none' }}>Treinos recebidos por seu Caminho:</h2>
           <div className="path-trainings">

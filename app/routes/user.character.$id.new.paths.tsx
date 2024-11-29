@@ -41,7 +41,7 @@ export const action: ActionFunction = async ({ request, params }) => {
         await prisma.charStats?.delete({
             where: { characterId: Number(characterId) }
         })
-        return redirect(`/user/character/${characterId}/capabilities/`)
+        return redirect(`../../paths`)
     } catch (error) {
         console.error(error);
         return json({ error: "Failed to save paths." }, { status: 500 });
@@ -84,7 +84,7 @@ export default function PathSelection() {
                 <>
                     <form method="post">
 
-                        <h1 className="title-container">Escolha seu Caminho<NavLink to={`/user/character/${characterId}/capabilities/`} style={{ color: 'red' }} className="question-button">X</NavLink></h1>
+                        <h1 className="title-container">Escolha seu Caminho<NavLink to={`../../paths`} style={{ color: 'red' }} className="question-button">X</NavLink></h1>
                         <div className="paths-grid">
                             {paths.map(path => (
                                 <PathCircle

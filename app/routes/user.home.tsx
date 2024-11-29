@@ -13,20 +13,21 @@ export const loader: LoaderFunction = async ({ request }) => {
 export default function CharactersIndexRoute() {
     return (
         <>
-            <h1>O que fazer em Æternida?</h1>
+            <h1>O que é Æternida?</h1>
 
-            <div className='col-1'>
+            <div className='container'>
+                <div className='col-2'>
+                    <p>Teste</p>
 
+                </div>
+
+                <div className='col-6'>
+                </div>
+
+                <div className='col-4'>
+
+                </div>
             </div>
-
-            <div className='col-7'>
-                <p>Teste</p>
-            </div>
-
-            <div className='col-4'>
-
-            </div>
-
         </>
     );
 }

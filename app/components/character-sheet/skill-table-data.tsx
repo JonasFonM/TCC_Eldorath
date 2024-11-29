@@ -5,14 +5,15 @@ interface Props {
     skill: skill;
     show: boolean;
     onClick: () => void;
+    selected: boolean;
 }
 
-export function SkillTableData({ skill, show, onClick }: Props) {
+export function SkillTableData({ skill, show, onClick, selected }: Props) {
 
     return (
         <>
             {
-                <tr onClick={onClick} style={show ? { display: 'table-row' } : { display: 'none' }}>
+                <tr className={selected ? 'selected' : ''} onClick={onClick} style={show ? { display: 'table-row' } : { display: 'none' } }>
                     <td>{skill.name}</td>
                     <td>{skill.techniqueSubtype || skill.type}</td>
                 </tr>}

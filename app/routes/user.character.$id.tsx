@@ -113,7 +113,6 @@ export default function CharacterRoute() {
   const { stats, resistances } = useLoaderData<{ stats: charStats; resistances: resistances }>()
 
   const [selectReset, setReset] = useState<number>(0);
-  const [selectHeader, setHeader] = useState<number>(0);
 
   const showReset = () => {
     setReset(() => {
@@ -126,6 +125,9 @@ export default function CharacterRoute() {
       return 0
     });
   };
+
+
+  const [selectHeader, setHeader] = useState<number>(0);
 
   const showHeader = () => {
     setHeader(() => {
@@ -178,6 +180,11 @@ export default function CharacterRoute() {
 
       </div>
       <button className="toggle-menu" style={selectHeader === 0 ? {} : { transform: 'translate(-200px)' }} onClick={selectHeader === 0 ? showHeader : cancelHeader}></button>
+
+      <div className="temp" style={selectHeader === 0 ? {} : { position: 'absolute', transform: 'translate(200px)' }}>
+      </div>
+
+      <button className="toggle-temp" style={selectHeader === 0 ? {} : { transform: 'translate(200px)' }} onClick={selectHeader === 0 ? showHeader : cancelHeader}></button>
 
 
       <div className="character-sheet" style={selectHeader === 0 ? {} : { margin: '0' }}>

@@ -181,6 +181,7 @@ h3 {
 
 .character-sheet {
   margin-left: 200px;
+  margin-right: 200px;
   transition: 0.3s ease-in-out
 }
 
@@ -188,6 +189,7 @@ h3 {
   overflow: auto;
   transition: 0.3s ease-in-out;
   position: fixed;
+  display: block;
   width: 200px;
   height: calc(100% - 64px);
   top: 64px;
@@ -226,8 +228,6 @@ ul {
 
 .header table {
   color: white;
-  left: 0;
-  right: 0;
   font-family: serif;
   border-collapse: collapse;
   width: 100%;
@@ -248,19 +248,55 @@ ul {
 
 .toggle-menu {
   position: absolute;
-  border: none;
+  border: 0;
   top: 62px;
-  height: calc(100% + 64px);
+  height: calc(100% + 900px);
   width: 16px;
   background-color: gold;
   opacity: 0;
   margin-left: 196px;
   transition: 0.3s ease-in-out;
   z-index: 4;
+  box-shadow: 1px 0px 4px 1px gold;
+
 }
 
 .toggle-menu:hover.toggle-menu {
-  display: block;
+  opacity: 0.5;
+  cursor: pointer;
+}
+
+
+.temp {
+  overflow: auto;
+  transition: 0.3s ease-in-out;
+  position: fixed;
+  width: 200px;
+  height: calc(100% - 64px);
+  top: 64px;
+  right: 0;
+  padding: 0;
+  background-color: #090809;
+  box-shadow: -1px 0px 8px 1px gold;
+  z-index: 5;
+}
+
+.toggle-temp {
+  position: absolute;
+  border: 0;
+  top: 62px;
+  right: 0;
+  height: calc(100% + 64px);
+  width: 16;
+  background-color: gold;
+  opacity: 0;
+  margin-right: 200px;
+  transition: 0.3s ease-in-out;
+  z-index: 4;
+  box-shadow: 1px 0px 4px 1px gold;
+}
+
+.toggle-temp:hover.toggle-temp {
   opacity: 0.5;
   cursor: pointer;
 }

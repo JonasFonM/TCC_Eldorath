@@ -9,32 +9,254 @@ datasource db {
 }
 
 model personagem {
-  id             Int      @id @default(autoincrement())
-  criadoEm       DateTime @default(now()) @db.Timestamp(0)
-  nome           String   @db.Text
-  nivel          Int
-  xp             Int      @default(0)
-  tier           Int
-  ptsLinhagem    Int      @default(2)
-  ptsCaminhos    Int      @default(1)
-  ptsHabilidades Int      @default(2)
-  ptsTreinos     Int      @default(1)
-  ouro           Int      @default(50)
-  agi            Int
-  cor            Int
-  det            Int
-  foc            Int
-  men            Int
-  vig            Int
-  derivados derivados? @relation
-  authorId       Int
-  user           user     @relation(fields: [authorId], references: [id], map: "character_ibfk_1")
+  id               Int                  @id @default(autoincrement())
+  criadoEm         DateTime             @default(now()) @db.Timestamp(0)
+  nome             String               @db.Text
+  nivel            Int
+  xp               Int                  @default(0)
+  tier             Int
+  ptsLinhagem      Int                  @default(2)
+  ptsCaminhos      Int                  @default(1)
+  ptsHabilidades   Int                  @default(2)
+  ptsTreinos       Int                  @default(1)
+  ouro             Int                  @default(50)
+  agi              Int                  @default(1)
+  cor              Int                  @default(1)
+  det              Int                  @default(1)
+  foc              Int                  @default(1)
+  men              Int                  @default(1)
+  vig              Int                  @default(1)
+  elmo             Int                  @default(1)
+  ombreiras        Int                  @default(2)
+  luvas            Int                  @default(2)
+  aneis            Int                  @default(20)
+  manto            Int                  @default(1)
+  peitoral         Int                  @default(1)
+  pingente         Int                  @default(1)
+  cintura          Int                  @default(1)
+  pernas           Int                  @default(1)
+  botas            Int                  @default(2)
+  maosLivres       Int                  @default(2)
+  items            personagemItem[]
+  derivados        derivados?           @relation
+  imunidades       imunidades?          @relation
+  condicoes        condicaoPersonagem[]
+  authorId         Int
+  user             user                 @relation(fields: [authorId], references: [id], map: "character_ibfk_1")
+  personagemItemId Int
 }
 
 model derivados {
-  id   Int  @id @default(autoincrement())
-  charId Int @unique
-  personagem personagem @relation(fields: [charId], references: [id], map: "personagem_fk_1")
+  id             Int        @id @default(autoincrement())
+  vitalidade     Int
+  poder          Int
+  ptsAcao        Int
+  equilibrio     Int
+  iniciativa     Int
+  limiteMagico   Int
+  tamanhoReal    Int
+  tamanhoEfetivo Int
+  capCarga       Int
+  capLevantar    Int
+  peso           Int
+  danoCrit       Int
+  defCrit        Int
+  charId         Int        @unique
+  personagem     personagem @relation(fields: [charId], references: [id], map: "derivados_fk_1")
+}
+
+model imunidades {
+  id                  Int                 @id @default(autoincrement())
+  nome                String
+  imunidadeCorte      Boolean
+  imunidadeImpacto    Boolean
+  imunidadePerfurante Boolean
+  imunidadeAcida      Boolean
+  imunidadeAquatica   Boolean
+  imunidadeEletrica   Boolean
+  imunidadeFlamejante Boolean
+  imunidadeArcana     Boolean
+  imunidadeCosmica    Boolean
+  imunidadeMental     Boolean
+  imunidadeProfana    Boolean
+  imunidadeSagrada    Boolean
+  condicoes           imunidadeCondicao[]
+  charId              Int                 @unique
+  personagem          personagem          @relation(fields: [charId], references: [id], map: "imunidades_fk_1")
+}
+
+model imunidadeCondicao {
+  id          Int        @id @default(autoincrement())
+  condicaoId  Int
+  imunidadeId Int
+  condicao    condicao   @relation(fields: [condicaoId], references: [id])
+  imunidade   imunidades @relation(fields: [imunidadeId], references: [id])
+}
+
+model defesas {
+  id     Int      @id @default(autoincrement())
+  defFis tipoFis?
+  defMag tipoMag?
+  valor  Int
+}
+
+enum tipoFis {
+  Corte
+  Impacto
+  Perfurante
+
+  Total
+}
+
+enum tipoMag {
+  Elemental
+  Acido
+  Aquatico
+  Eletrico
+  Flamejante
+
+  Hermetico
+  Arcano
+  Cosmico
+  Mental
+
+  Profano
+  Sagrado
+
+  Total
+}
+
+model condicao {
+  id         Int                  @id @default(autoincrement())
+  tipo       tipoCondicao
+  efeitos    efeitoCondicao[]
+  personagem condicaoPersonagem[]
+  imunidades imunidadeCondicao[]
+}
+
+model condicaoPersonagem {
+  id           Int        @id @default(autoincrement())
+  personagemId Int
+  condicaoId   Int
+  condicao     condicao   @relation(fields: [condicaoId], references: [id])
+  personagem   personagem @relation(fields: [personagemId], references: [id])
+}
+
+model efeitoCondicao {
+  id         Int      @id @default(autoincrement())
+  efeitoId   Int
+  condicaoId Int
+  condicao   condicao @relation(fields: [condicaoId], references: [id])
+  efeito     efeito   @relation(fields: [efeitoId], references: [id])
+}
+
+enum tipoCondicao {
+  Agarrado
+  Amarrado
+  Alienado
+  Amedrontado
+  Atordoado
+  Camuflado
+  Caindo
+  Cegado
+  Cintilante
+  Coberto
+  Congelado
+  Corroendo
+  Derretendo
+  Derrubado
+  Desarmado
+  Drenado
+  Encantado
+  Encharcado
+  Enfraquecido
+  Envenenado
+  Ensurdecido
+  Escondido
+  Escravizado
+  Esmagado
+  Estonteado
+  Exausto
+  Flutuando
+  Lento
+  Luminoso
+  Insano
+  Invisivel
+  Imovel
+  Marcado
+  Montado
+  Nauseado
+  Obscurecido
+  Paralisado
+  Sangrando
+  Silenciado
+  Sobrecarregado
+  Submerso
+  Sufocado
+  Surpreso
+  Suspenso
+}
+
+model efeito {
+  id              Int              @id @default(autoincrement())
+  nome            String
+  atributoAfetado String
+  valor           Int
+  duracao         Int
+  operador        operador
+  condicoes       efeitoCondicao[]
+}
+
+enum operador {
+  Soma
+  Subtrai
+  Multiplica
+  Divide
+}
+
+model item {
+  id              Int              @id @default(autoincrement())
+  nome            String           @default("Item")
+  custoBase       Int
+  tipo            tipoItem
+  subtipoArma     tipoArma
+  subtipoArmadura tipoArmadura
+  armadura        Boolean          @default(false)
+  bloqueia        Boolean          @default(false)
+  personagens     personagemItem[]
+}
+
+enum tipoItem {
+  Arma
+  Elmo
+  Ombreira
+  Luva
+  Anel
+  Manto
+  Peitoral
+  Pingente
+  Cintura
+  Pernas
+  Bota
+}
+
+enum tipoArma {
+  ArmaFogo
+}
+
+enum tipoArmadura {
+  Leve
+  Media
+  Pesada
+}
+
+model personagemItem {
+  id           Int        @id @default(autoincrement())
+  personagemId Int
+  itemId       Int
+  slotItem     tipoItem
+  personagem   personagem @relation(fields: [personagemId], references: [id])
+  item         item       @relation(fields: [itemId], references: [id])
 }
 
 model user {

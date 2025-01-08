@@ -12,9 +12,9 @@ model personagem {
   id               Int                    @id @default(autoincrement())
   criadoEm         DateTime               @default(now()) @db.Timestamp(0)
   nome             String                 @db.Text
-  nivel            Int
+  nivel            Int                    @default(1)
   xp               Int                    @default(0)
-  tier             Int
+  tier             Int                    @default(1)
   ptsLinhagem      Int                    @default(2)
   ptsCaminhos      Int                    @default(1)
   ptsHabilidades   Int                    @default(2)
@@ -26,6 +26,21 @@ model personagem {
   foc              Int                    @default(1)
   men              Int                    @default(1)
   vig              Int                    @default(1)
+  defCorte         Int                    @default(0)
+  defImpacto       Int                    @default(0)
+  defPerfurante    Int                    @default(0)
+  defFisica        Int                    @default(0)
+  defAcida         Int                    @default(0)
+  defAquatica      Int                    @default(0)
+  defEletrica      Int                    @default(0)
+  defFlamejante    Int                    @default(0)
+  defArcana        Int                    @default(0)
+  defCosmica       Int                    @default(0)
+  defMental        Int                    @default(0)
+  defProfana       Int                    @default(0)
+  defSagrada       Int                    @default(0)
+  defMagica        Int                    @default(0)
+  defTotal         Int                    @default(0)
   elmo             Int                    @default(1)
   ombreiras        Int                    @default(2)
   luvas            Int                    @default(2)
@@ -37,7 +52,6 @@ model personagem {
   pernas           Int                    @default(1)
   botas            Int                    @default(2)
   maosLivres       Int                    @default(2)
-  armas            armaPersonagem[]
   items            personagemItem[]
   derivados        derivados?             @relation
   imunidades       imunidades?            @relation
@@ -231,6 +245,7 @@ model efeito {
   operador        operador
   condicoes       efeitoCondicao[]
   habilidades     efeitoHabilidade[]
+  itens           efeitoItem[]
 }
 
 enum operador {
@@ -241,31 +256,37 @@ enum operador {
 }
 
 model itemBase {
-  id              Int              @id @default(autoincrement())
-  nome            String           @default("Item")
-  custoBase       Int
-  pesoBase        Int
-  tipo            tipoItem
-  subtipoArma     tipoArma?
-  subtipoArmadura tipoArmadura?
-  subtipoEscudo   tipoEscudo?
-  personagemArma  armaPersonagem[]
-  personagemItem  personagemItem[]
+  id             Int              @id @default(autoincrement())
+  nome           String           @default("Item")
+  custoBase      Int
+  pesoBase       Int
+  tipo           tipoItem
+  subtipo        subTipoItem
+  personagemItem personagemItem[]
 }
 
-model armaPersonagem {
-  id           Int          @id @default(autoincrement())
-  nome         String
-  tier         Int          @default(0)
+model personagemItem {
+  id           Int     @id @default(autoincrement())
+  tier         Int     @default(0)
   custoReal    Int
   pesoReal     Int
-  danoBase     Int
-  atributoBase String
-  material     materialItem
-  itemBase     itemBase?    @relation(fields: [itemBaseId], references: [id])
-  itemBaseId   Int?
-  personagem   personagem?  @relation(fields: [personagemId], references: [id])
-  personagemId Int?
+  atributoBase String?
+  dadoDano     Int?
+
+  personagemId Int
+  itemId       Int
+  slotItem     tipoItem
+  efeitos      efeitoItem[]
+  personagem   personagem   @relation(fields: [personagemId], references: [id])
+  itemBase     itemBase     @relation(fields: [itemId], references: [id])
+}
+
+model efeitoItem {
+  id       Int            @id @default(autoincrement())
+  item     personagemItem @relation(fields: [itemId], references: [id])
+  itemId   Int
+  efeito   efeito         @relation(fields: [efeitoId], references: [id])
+  efeitoId Int
 }
 
 enum tipoItem {
@@ -283,7 +304,7 @@ enum tipoItem {
   Bota
 }
 
-enum tipoArma {
+enum subTipoItem {
   Arco
   Discreta
   Arremesso
@@ -302,21 +323,16 @@ enum tipoArma {
   LancaMontada
   Machado
   Martelo
-}
-
-enum tipoArmadura {
-  Leve
-  Media
-  Pesada
-}
-
-enum tipoEscudo {
-  Leve
-  Medio
-  Pesado
+  ArmaduraLeve
+  ArmaduraMedia
+  ArmaduraPesada
+  EscudoLeve
+  EscudoMedio
+  EscudoPesado
 }
 
 enum materialItem {
+  Couro
   Madeira
   Bronze
   Ferro
@@ -324,15 +340,6 @@ enum materialItem {
   Prata
   Adamantita
   Draconita
-}
-
-model personagemItem {
-  id           Int        @id @default(autoincrement())
-  personagemId Int
-  itemId       Int
-  slotItem     tipoItem
-  personagem   personagem @relation(fields: [personagemId], references: [id])
-  item         itemBase   @relation(fields: [itemId], references: [id])
 }
 
 model user {

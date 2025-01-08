@@ -242,6 +242,7 @@ model efeito {
   atributoAfetado String
   valor           Float
   duracao         Int
+  ativacao        ativaEfeito
   operador        operador
   condicoes       efeitoCondicao[]
   habilidades     efeitoHabilidade[]
@@ -255,30 +256,37 @@ enum operador {
   Divide
 }
 
+enum ativaEfeito {
+  Acerto
+  Crítico
+  Ativo
+  Passivo
+}
+
 model itemBase {
-  id             Int              @id @default(autoincrement())
-  nome           String           @default("Item")
-  custoBase      Int
-  pesoBase       Int
-  tipo           tipoItem
-  subtipo        subTipoItem
-  personagemItem personagemItem[]
+  id         Int              @id @default(autoincrement())
+  nome       String           @default("Item")
+  custoBase  Int
+  pesoBase   Int
+  tipo       tipoItem
+  subtipo    subTipoItem
+  instancias personagemItem[]
 }
 
 model personagemItem {
-  id           Int     @id @default(autoincrement())
-  tier         Int     @default(0)
-  custoReal    Int
-  pesoReal     Int
-  atributoBase String?
-  dadoDano     Int?
-
-  personagemId Int
-  itemId       Int
-  slotItem     tipoItem
-  efeitos      efeitoItem[]
-  personagem   personagem   @relation(fields: [personagemId], references: [id])
-  itemBase     itemBase     @relation(fields: [itemId], references: [id])
+  id             Int          @id @default(autoincrement())
+  tier           Int          @default(0)
+  custoReal      Int
+  pesoReal       Int
+  atributoBase   String?
+  personagemId   Int
+  itemBaseId     Int
+  slotItem       tipoItem
+  efeitos        efeitoItem[]
+  personagem     personagem   @relation(fields: [personagemId], references: [id])
+  itemBase       itemBase     @relation(fields: [itemBaseId], references: [id])
+  materialItem   materialItem @relation(fields: [materialItemId], references: [id])
+  materialItemId Int
 }
 
 model efeitoItem {
@@ -287,6 +295,13 @@ model efeitoItem {
   itemId   Int
   efeito   efeito         @relation(fields: [efeitoId], references: [id])
   efeitoId Int
+}
+
+model materialItem {
+  id    Int              @id @default(autoincrement())
+  nome  String
+  valor Int
+  itens personagemItem[]
 }
 
 enum tipoItem {
@@ -329,17 +344,6 @@ enum subTipoItem {
   EscudoLeve
   EscudoMedio
   EscudoPesado
-}
-
-enum materialItem {
-  Couro
-  Madeira
-  Bronze
-  Ferro
-  Aco
-  Prata
-  Adamantita
-  Draconita
 }
 
 model user {

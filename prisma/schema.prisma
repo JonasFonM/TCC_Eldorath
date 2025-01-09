@@ -26,40 +26,16 @@ model personagem {
   foc              Int                    @default(1)
   men              Int                    @default(1)
   vig              Int                    @default(1)
-  defCorte         Int                    @default(0)
-  defImpacto       Int                    @default(0)
-  defPerfurante    Int                    @default(0)
-  defFisica        Int                    @default(0)
-  defAcida         Int                    @default(0)
-  defAquatica      Int                    @default(0)
-  defEletrica      Int                    @default(0)
-  defFlamejante    Int                    @default(0)
-  defArcana        Int                    @default(0)
-  defCosmica       Int                    @default(0)
-  defMental        Int                    @default(0)
-  defProfana       Int                    @default(0)
-  defSagrada       Int                    @default(0)
-  defMagica        Int                    @default(0)
-  defTotal         Int                    @default(0)
-  elmo             Int                    @default(1)
-  ombreiras        Int                    @default(2)
-  luvas            Int                    @default(2)
-  aneis            Int                    @default(20)
-  manto            Int                    @default(1)
-  peitoral         Int                    @default(1)
-  pingente         Int                    @default(1)
-  cintura          Int                    @default(1)
-  pernas           Int                    @default(1)
-  botas            Int                    @default(2)
-  maosLivres       Int                    @default(2)
-  items            personagemItem[]
   derivados        derivados?             @relation
-  imunidades       imunidades?            @relation
+  defesas          defesa[]
+  imunidades       imunidadeCondicao[]
+  items            instanciaItem[]
+  slotsItem        slotItem[]
+  personagemAtaque personagemAtaque[]
   habilidades      habilidadePersonagem[]
   condicoes        condicaoPersonagem[]
   authorId         Int
   user             user                   @relation(fields: [authorId], references: [id], map: "character_ibfk_1")
-  personagemItemId Int
 }
 
 model derivados {
@@ -81,39 +57,45 @@ model derivados {
   personagem     personagem @relation(fields: [charId], references: [id], map: "derivados_fk_1")
 }
 
-model imunidades {
-  id                  Int                 @id @default(autoincrement())
-  nome                String
-  imunidadeCorte      Boolean
-  imunidadeImpacto    Boolean
-  imunidadePerfurante Boolean
-  imunidadeAcida      Boolean
-  imunidadeAquatica   Boolean
-  imunidadeEletrica   Boolean
-  imunidadeFlamejante Boolean
-  imunidadeArcana     Boolean
-  imunidadeCosmica    Boolean
-  imunidadeMental     Boolean
-  imunidadeProfana    Boolean
-  imunidadeSagrada    Boolean
-  condicoes           imunidadeCondicao[]
-  charId              Int                 @unique
-  personagem          personagem          @relation(fields: [charId], references: [id], map: "imunidades_fk_1")
+model defesa {
+  id           Int        @id @default(autoincrement())
+  tipoFis      tipoFis?
+  tipoMag      tipoMag?
+  imune        Boolean
+  valorFixo    Int
+  valorPorDado Int
+  personagem   personagem @relation(fields: [personagemId], references: [id])
+  personagemId Int
 }
 
 model imunidadeCondicao {
-  id          Int        @id @default(autoincrement())
-  condicaoId  Int
-  imunidadeId Int
-  condicao    condicao   @relation(fields: [condicaoId], references: [id])
-  imunidade   imunidades @relation(fields: [imunidadeId], references: [id])
+  id           Int          @id @default(autoincrement())
+  tipoCondicao tipoCondicao
+  personagemId Int          @unique
+  personagem   personagem   @relation(fields: [personagemId], references: [id], map: "imunidades_fk_1")
 }
 
-model defesas {
-  id     Int      @id @default(autoincrement())
-  defFis tipoFis?
-  defMag tipoMag?
-  valor  Int
+model personagemAtaque {
+  id           Int        @id @default(autoincrement())
+  personagemId Int
+  personagem   personagem @relation(fields: [personagemId], references: [id])
+  alvoId       Int?
+  atributo     String
+  alcance      Int
+  ptsAcao      Int
+  brutal       Boolean    @default(false)
+  dadosDano    dadoDano[]
+}
+
+model dadoDano {
+  id        Int              @id @default(autoincrement())
+  tipoDado  Int
+  numDados  Int
+  bonusFixo Int              @default(0)
+  tipoFis   tipoFis?
+  tipoMag   tipoMag?
+  idAtaque  Int
+  ataque    personagemAtaque @relation(fields: [idAtaque], references: [id])
 }
 
 enum tipoFis {
@@ -142,6 +124,19 @@ enum tipoMag {
   Total
 }
 
+model efeitoAplicado {
+  id       Int        @id @default(autoincrement())
+  tipoAlvo alvoEfeito
+  alvoId   Int
+  efeitoId Int
+  efeito   efeito     @relation(fields: [efeitoId], references: [id])
+}
+
+enum alvoEfeito {
+  personagem
+  instanciaItem
+}
+
 model habilidade {
   id         Int                    @id @default(autoincrement())
   tipo       tipoCondicao
@@ -166,11 +161,10 @@ model efeitoHabilidade {
 }
 
 model condicao {
-  id         Int                  @id @default(autoincrement())
-  tipo       tipoCondicao
-  efeitos    efeitoCondicao[]
-  personagem condicaoPersonagem[]
-  imunidades imunidadeCondicao[]
+  id           Int                  @id @default(autoincrement())
+  tipoCondicao tipoCondicao
+  efeitos      efeitoCondicao[]
+  personagens  condicaoPersonagem[]
 }
 
 model condicaoPersonagem {
@@ -241,12 +235,14 @@ model efeito {
   nome            String
   atributoAfetado String
   valor           Float
+  operador        operador
   duracao         Int
   ativacao        ativaEfeito
-  operador        operador
   condicoes       efeitoCondicao[]
   habilidades     efeitoHabilidade[]
-  itens           efeitoItem[]
+  efeitoAplicado  efeitoAplicado[]
+  instanciaItem   instanciaItem?     @relation(fields: [instanciaItemId], references: [id])
+  instanciaItemId Int?
 }
 
 enum operador {
@@ -258,22 +254,30 @@ enum operador {
 
 enum ativaEfeito {
   Acerto
-  Crítico
-  Ativo
+  Brutal
   Passivo
 }
 
 model itemBase {
-  id         Int              @id @default(autoincrement())
-  nome       String           @default("Item")
+  id         Int             @id @default(autoincrement())
+  nome       String          @default("Item")
   custoBase  Int
   pesoBase   Int
   tipo       tipoItem
   subtipo    subTipoItem
-  instancias personagemItem[]
+  instancias instanciaItem[]
 }
 
-model personagemItem {
+model slotItem {
+  id              Int            @id @default(autoincrement())
+  tipoSlot        tipoItem
+  item            instanciaItem? @relation(fields: [instanciaItemId], references: [id])
+  instanciaItemId Int?
+  personagem      personagem     @relation(fields: [personagemId], references: [id])
+  personagemId    Int
+}
+
+model instanciaItem {
   id             Int          @id @default(autoincrement())
   tier           Int          @default(0)
   custoReal      Int
@@ -281,32 +285,24 @@ model personagemItem {
   atributoBase   String?
   personagemId   Int
   itemBaseId     Int
-  slotItem       tipoItem
-  efeitos        efeitoItem[]
-  personagem     personagem   @relation(fields: [personagemId], references: [id])
+  tipoItem       tipoItem
+  efeitos        efeito[]
+  personagem     personagem?  @relation(fields: [personagemId], references: [id])
   itemBase       itemBase     @relation(fields: [itemBaseId], references: [id])
   materialItem   materialItem @relation(fields: [materialItemId], references: [id])
   materialItemId Int
-}
-
-model efeitoItem {
-  id       Int            @id @default(autoincrement())
-  item     personagemItem @relation(fields: [itemId], references: [id])
-  itemId   Int
-  efeito   efeito         @relation(fields: [efeitoId], references: [id])
-  efeitoId Int
+  slotItem       slotItem[]
 }
 
 model materialItem {
-  id    Int              @id @default(autoincrement())
+  id    Int             @id @default(autoincrement())
   nome  String
   valor Int
-  itens personagemItem[]
+  itens instanciaItem[]
 }
 
 enum tipoItem {
-  Arma
-  Escudo
+  MaoLivre
   Elmo
   Ombreira
   Luva

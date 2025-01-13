@@ -6,7 +6,7 @@ import { SkillTableHead } from "~/components/character-sheet/skill-table";
 import { SkillTableData } from "~/components/character-sheet/skill-table-data";
 import { SkillCircle } from "~/components/skill-circle";
 import { requireUserId } from "~/utils/auth.server";
-import { submitCharSkills } from "~/utils/character.server";
+import { submitCharSkills } from "~/utils/personagem.server";
 import { prisma } from "~/utils/prisma.server";
 import { LSrelations } from "~/utils/types.server";
 

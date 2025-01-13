@@ -2,7 +2,7 @@
 import { json, LoaderFunction, } from "@remix-run/node";
 import { NavLink, Outlet, useLoaderData } from "@remix-run/react";
 import { prisma } from "~/utils/prisma.server";
-import { createStats } from "~/utils/character.server";
+import { createStats } from "~/utils/personagem.server";
 import { LSrelations, trainingWithTier } from "~/utils/types.server";
 import { armor, character, character_armor, character_weapon, charStats, lineage, path, resistances, skill, weapon } from "@prisma/client";
 import { ResetConfirm } from "~/components/character-sheet/reset-confirm";

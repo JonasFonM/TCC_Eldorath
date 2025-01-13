@@ -4,7 +4,7 @@ import { NavLink, useLoaderData } from "@remix-run/react";
 import { useState } from "react";
 import { TrainingCircle } from "~/components/training-circle";
 import { requireUserId } from "~/utils/auth.server";
-import { submitCharTrainings } from "~/utils/character.server";
+import { submitCharTrainings } from "~/utils/personagem.server";
 import { prisma } from "~/utils/prisma.server";
 import { PTrelations } from "~/utils/types.server";
 

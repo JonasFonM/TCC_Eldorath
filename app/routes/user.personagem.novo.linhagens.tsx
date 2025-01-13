@@ -4,7 +4,7 @@ import { NavLink, useLoaderData } from "@remix-run/react";
 import { useState } from "react";
 import { LineageCircle } from "~/components/lineage-circle";
 import { requireUserId } from "~/utils/auth.server";
-import { submitCharLineages } from "~/utils/character.server";
+import { submitCharLineages } from "~/utils/personagem.server";
 import { prisma } from "~/utils/prisma.server";
 
 export const loader: LoaderFunction = async ({ request, params }) => {

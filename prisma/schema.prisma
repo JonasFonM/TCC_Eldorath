@@ -9,33 +9,36 @@ datasource db {
 }
 
 model personagem {
-  id               Int                    @id @default(autoincrement())
-  criadoEm         DateTime               @default(now()) @db.Timestamp(0)
-  nome             String                 @db.Text
-  nivel            Int                    @default(1)
-  xp               Int                    @default(0)
-  tier             Int                    @default(1)
-  ptsLinhagem      Int                    @default(2)
-  ptsCaminhos      Int                    @default(1)
-  ptsHabilidades   Int                    @default(2)
-  ptsTreinos       Int                    @default(1)
-  ouro             Int                    @default(50)
-  agi              Int                    @default(1)
-  cor              Int                    @default(1)
-  det              Int                    @default(1)
-  foc              Int                    @default(1)
-  men              Int                    @default(1)
-  vig              Int                    @default(1)
-  derivados        derivados?             @relation
+  id               Int                 @id @default(autoincrement())
+  criadoEm         DateTime            @default(now()) @db.Timestamp(0)
+  nome             String              @db.Text
+  nivel            Int                 @default(1)
+  xp               Int                 @default(0)
+  tier             Int                 @default(1)
+  ptsLinhagem      Int                 @default(2)
+  ptsCaminhos      Int                 @default(1)
+  ptsHabilidades   Int                 @default(2)
+  ptsTreinos       Int                 @default(1)
+  ouro             Int                 @default(50)
+  agi              Int                 @default(1)
+  cor              Int                 @default(1)
+  det              Int                 @default(1)
+  foc              Int                 @default(1)
+  men              Int                 @default(1)
+  vig              Int                 @default(1)
+  derivados        derivados?          @relation
   defesas          defesa[]
   imunidades       imunidadeCondicao[]
   items            instanciaItem[]
   slotsItem        slotItem[]
   personagemAtaque personagemAtaque[]
-  habilidades      habilidadePersonagem[]
-  condicoes        condicaoPersonagem[]
-  authorId         Int
-  user             user                   @relation(fields: [authorId], references: [id], map: "character_ibfk_1")
+  caminhos         caminhoPersonagem[]
+
+  habilidades habilidadePersonagem[]
+  condicoes   condicaoPersonagem[]
+  campanhas   personagemCampanha[]
+  authorId    Int
+  user        user                   @relation(fields: [authorId], references: [id], map: "character_ibfk_1")
 }
 
 model derivados {
@@ -80,9 +83,9 @@ model personagemAtaque {
   personagemId Int
   personagem   personagem @relation(fields: [personagemId], references: [id])
   alvoId       Int?
-  atributo     String
-  alcance      Int
-  ptsAcao      Int
+  atributo     String     @default("cor")
+  alcance      Int        @default(1)
+  ptsAcao      Int        @default(1)
   brutal       Boolean    @default(false)
   dadosDano    dadoDano[]
 }
@@ -92,6 +95,7 @@ model dadoDano {
   tipoDado  Int
   numDados  Int
   bonusFixo Int              @default(0)
+  bonusDado Int              @default(0)
   tipoFis   tipoFis?
   tipoMag   tipoMag?
   idAtaque  Int
@@ -137,11 +141,61 @@ enum alvoEfeito {
   instanciaItem
 }
 
+model caminho {
+  id             Int                 @id @default(autoincrement())
+  nome           String              @db.Text
+  descricao      String              @db.Text
+  caminhoTier    Int
+  vitalidade     Int
+  poder          Int
+  ptsMagia       Int                 @default(0)
+  ptsTecnica     Int                 @default(0)
+  ptsJuramento   Int                 @default(0)
+  ptsManobra     Int                 @default(0)
+  addTrapaca     Int                 @default(0)
+  reqMagia       Int                 @default(0)
+  reqTecnica     Int                 @default(0)
+  reqJuramento   Int                 @default(0)
+  reqManobra     Int                 @default(0)
+  reqTrapaca     Int                 @default(0)
+  prerequisiteId Int?                @unique
+  prerequisite   caminho?            @relation("PreRequisite", fields: [prerequisiteId], references: [id])
+  upgrade        caminho?            @relation("PreRequisite")
+  personagens    caminhoPersonagem[] @relation
+  habilidades    caminhoHabilidade[] @relation
+}
+
+model caminhoPersonagem {
+  id           Int        @id @default(autoincrement())
+  personagemId Int
+  personagem   personagem @relation(fields: [personagemId], references: [id])
+  caminhoId    Int
+  caminho      caminho    @relation(fields: [caminhoId], references: [id])
+}
+
+model caminhoHabilidade {
+  id           Int        @id @default(autoincrement())
+  habilidadeId Int
+  habilidade   habilidade @relation(fields: [habilidadeId], references: [id])
+  caminhoId    Int
+  caminho      caminho    @relation(fields: [caminhoId], references: [id])
+}
+
 model habilidade {
   id         Int                    @id @default(autoincrement())
-  tipo       tipoCondicao
+  tipo       tipoHabilidade
   efeitos    efeitoHabilidade[]
   personagem habilidadePersonagem[]
+  caminhos   caminhoHabilidade[]
+}
+
+enum tipoHabilidade {
+  Caracteristica
+  Juramento
+  Manobra
+  Trapaca
+  Runa
+  Sigilo
 }
 
 model habilidadePersonagem {
@@ -241,6 +295,7 @@ model efeito {
   condicoes       efeitoCondicao[]
   habilidades     efeitoHabilidade[]
   efeitoAplicado  efeitoAplicado[]
+  campanhas       efeitoCampanha[]
   instanciaItem   instanciaItem?     @relation(fields: [instanciaItemId], references: [id])
   instanciaItemId Int?
 }
@@ -342,12 +397,37 @@ enum subTipoItem {
   EscudoPesado
 }
 
+model campanha {
+  id          Int                  @id @default(autoincrement())
+  mestreId    Int
+  mestre      user                 @relation(fields: [mestreId], references: [id])
+  personagens personagemCampanha[]
+  efeitos     efeitoCampanha[]
+}
+
+model efeitoCampanha {
+  id         Int      @id @default(autoincrement())
+  efeitoId   Int
+  campanhaId Int
+  campanha   campanha @relation(fields: [campanhaId], references: [id])
+  efeito     efeito   @relation(fields: [efeitoId], references: [id])
+}
+
+model personagemCampanha {
+  id           Int        @id @default(autoincrement())
+  campanhaId   Int
+  campanha     campanha   @relation(fields: [campanhaId], references: [id])
+  personagemId Int
+  personagem   personagem @relation(fields: [personagemId], references: [id])
+}
+
 model user {
-  id          Int          @id @default(autoincrement())
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
-  email       String       @unique
-  username    String
-  password    String
-  personagens personagem[] @relation()
+  id              Int          @id @default(autoincrement())
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+  email           String       @unique
+  username        String
+  password        String
+  personagens     personagem[] @relation()
+  campanhasMestre campanha[]   @relation()
 }

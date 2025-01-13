@@ -3,7 +3,7 @@ import { ActionFunction, json, LoaderFunction, redirect } from "@remix-run/node"
 import { NavLink, useActionData } from "@remix-run/react"
 import { useEffect, useRef, useState } from "react"
 import { getUserIdFromSession, requireUserId } from '~/utils/auth.server'
-import { submitCharacter, tierByLevel } from "~/utils/character.server"
+import { submitPersonagem, tierByLevel } from "~/utils/personagem.server"
 
 export const loader: LoaderFunction = async ({ request }) => {
   const userId = await requireUserId(request)
@@ -30,20 +30,20 @@ export const action: ActionFunction = async ({ request }) => {
   }
 
   try {
-    const character = await submitCharacter({ name, level, tier, agility, body, mind, authorId });
+    const personagem = await submitPersonagem({ name, level, tier, agility, body, mind, authorId });
 
     return (
-      json({ character }, { status: 201 }),
-      redirect(`/user/character/${character}/stats`)
+      json({ personagem }, { status: 201 }),
+      redirect(`/user/personagem/${personagem}/derivados`)
     );
   } catch (error) {
     console.error(error);
-    return json({ error: "Failed to create character" }, { status: 500 });
+    return json({ error: "Não foi possível criar personagem" }, { status: 500 });
   }
 
 }
 
-export default function NewCharacterRoute() {
+export default function NewPersonagemRoute() {
   const actionData = useActionData<ActionFunction>();
   const [limit, setLimit] = useState(7);
 

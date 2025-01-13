@@ -4,7 +4,7 @@ import { ActionFunction, json, LoaderFunction, redirect } from "@remix-run/node"
 import { NavLink, useActionData, useLoaderData } from "@remix-run/react"
 import { useEffect, useRef, useState } from "react"
 import { getUserIdFromSession, requireUserId } from '~/utils/auth.server'
-import { tierByLevel, updateCharacter } from "~/utils/character.server"
+import { tierByLevel, updateCharacter } from "~/utils/personagem.server"
 import { prisma } from "~/utils/prisma.server"
 
 export const loader: LoaderFunction = async ({ request, params }) => {

@@ -3,7 +3,7 @@ import { NavLink, useLoaderData } from "@remix-run/react";
 import { json, LoaderFunction } from '@remix-run/node'
 import { requireUserId } from '~/utils/auth.server'
 import { CharacterPanel } from "~/components/character-panel";
-import { getCharactersFromUser } from "~/utils/character.server";
+import { getCharactersFromUser } from "~/utils/personagem.server";
 
 export const loader: LoaderFunction = async ({ request }) => {
     const userId = await requireUserId(request)

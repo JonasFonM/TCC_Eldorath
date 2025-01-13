@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { json, LoaderFunction } from '@remix-run/node'
 import { requireUserId } from '~/utils/auth.server'
-import { getCharactersFromUser } from "~/utils/character.server";
+import { getCharactersFromUser } from "~/utils/personagem.server";
 
 export const loader: LoaderFunction = async ({ request }) => {
     const userId = await requireUserId(request)

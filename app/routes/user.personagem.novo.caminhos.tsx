@@ -5,7 +5,7 @@ import { useState } from "react";
 import { PathTableHead } from "~/components/character-sheet/path-table";
 import { PathTableData } from "~/components/character-sheet/path-table-data";
 import { requireUserId } from "~/utils/auth.server";
-import { submitCharPaths } from "~/utils/character.server";
+import { submitCharPaths } from "~/utils/personagem.server";
 import { prisma } from "~/utils/prisma.server";
 
 export const loader: LoaderFunction = async ({ request, params }) => {

@@ -1,5 +1,5 @@
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
   previewFeatures = ["relationJoins"]
 }
 
@@ -9,13 +9,13 @@ datasource db {
 }
 
 model campaign {
-  id Int @id @default(autoincrement())
-  createdAt DateTime @default(now()) @db.Timestamp(0)
-  title String @db.Text
+  id         Int       @id @default(autoincrement())
+  createdAt  DateTime  @default(now()) @db.Timestamp(0)
+  title      String    @db.Text
   daysPassed Int
-  month monthName @default(Vivenerius)
-  weekDay weekDay
-  tod timeOfDay
+  month      monthName @default(Vivenerius)
+  weekDay    weekDay
+  tod        timeOfDay
 }
 
 enum monthName {
@@ -36,10 +36,8 @@ enum monthName {
 enum weekDay {
   Helidai // Day of Heliodax the Father of Unicorns
   Agredai // Day of Ageron the Ironhearted
-  
-  
-  Oridai // Day of Orithon the Veilwalker
 
+  Oridai // Day of Orithon the Veilwalker
 
   Victadai // Day of Victory
 }
@@ -54,143 +52,163 @@ enum timeOfDay {
 model character {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now()) @db.Timestamp(0)
-  name   String  @db.Text
-  level Int
-  experience Int @default(0)
-  tier Int
-  pendingLineages Int @default(2)
-  pendingPath Int @default(1)  
-  pendingSkills Int @default(2)
+  name      String   @db.Text
+
+  level            Int @default(1)
+  experience       Int @default(0)
+  tier             Int @default(1)
+  pendingLineages  Int @default(2)
+  pendingPath      Int @default(1)
+  pendingSkills    Int @default(2)
   pendingTrainings Int @default(1)
-  gold Int @default(500)
+
   agility Int
-  body Int
-  mind Int
-  public Boolean  @default(false)
-  authorId  Int
-  user      user     @relation(fields: [authorId], references: [id], map: "character_ibfk_1")
+  body    Int
+  mind    Int
 
-  skills character_skill[] @relation
-  lineages character_lineage[] @relation
+  vitality     Int @default(1)
+  vigor        Int @default(1)
+  power        Int @default(1)
+  actions      Int @default(1)
+  poise        Int @default(1)
+  initiative   Int @default(1)
+  trueSize     Int @default(1)
+  relativeSize Int @default(1)
+
+  baseWeight Int @default(10)
+  carryCap   Int @default(10)
+  liftCap    Int @default(15)
+
+  impactRes    Int @default(0)
+  pierceRes    Int @default(0)
+  slashRes     Int @default(0)
+  acidRes      Int @default(0)
+  coldRes      Int @default(0)
+  fireRes      Int @default(0)
+  lightningRes Int @default(0)
+  arcaneRes    Int @default(0)
+  cosmicRes    Int @default(0)
+  psychicRes   Int @default(0)
+  profaneRes   Int @default(0)
+  sacredRes    Int @default(0)
+  fullRes      Int @default(0)
+
+  gold Int @default(500)
+
+  slotWeapon   Int @default(2)
+  slotHelm     Int @default(1)
+  slotPauldron Int @default(2)
+  slotGauntlet Int @default(2)
+  slotCuirass  Int @default(1)
+  slotTassets  Int @default(1)
+  slotGreaves  Int @default(2)
+  slotCloak    Int @default(1)
+  slotAmulet   Int @default(1)
+  slotBelt     Int @default(1)
+  slotRings    Int @default(10)
+  slotEarings  Int @default(2)
+
+  public   Boolean @default(false)
+  authorId Int
+  user     user    @relation(fields: [authorId], references: [id], map: "character_ibfk_1")
+
+  skills    character_skill[]    @relation
+  lineages  character_lineage[]  @relation
   trainings character_training[] @relation
-  paths character_path[] @relation
-  weapons character_weapon[] @relation
-  armors character_armor[] @relation
-
-  stats charStats? @relation
+  paths     character_path[]     @relation
+  weapons   character_weapon[]   @relation
+  armors    character_armor[]    @relation
 
   @@index([authorId], map: "authorId")
-  
-}
-
-model charStats {
-  id Int @id @default(autoincrement())
-  createdAt DateTime @default(now()) @db.Timestamp(0)
-  resistanceId Int @default(1)
-  vitality Int
-  vigor Int
-  power Int
-  speed Int
-  defense Int
-  initiative Int
-  trueSize Int @default(1)
-  relativeSize Int @default(1)
-  baseWeight Int
-  carryCap Int
-  liftCap Int
-  characterId Int     @unique(map: "characterId")
-  resistances resistances? @relation(fields: [resistanceId], references: [id])
-
-  character character @relation(fields: [characterId], references: [id], map: "c_ibfk_1")
 }
 
 model lineage {
-  id     Int     @id @default(autoincrement())
-  name    String? @db.Text
-  description String @db.Text
-  characters   character_lineage[] @relation
-  skills lineage_skill[] @relation
+  id          Int                 @id @default(autoincrement())
+  name        String?             @db.Text
+  description String              @db.Text
+  characters  character_lineage[] @relation
+  skills      lineage_skill[]     @relation
 }
 
-model character_lineage{
-  id     Int     @id @default(autoincrement())
+model character_lineage {
+  id          Int     @id @default(autoincrement())
   characterId Int
-  lineageId Int 
-  pure Boolean @default(false)
+  lineageId   Int
+  pure        Boolean @default(false)
 
   character character @relation(fields: [characterId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "cl_ibfk_1")
-  lineage lineage @relation(fields: [lineageId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "cl_ibfk_2")
-  
+  lineage   lineage   @relation(fields: [lineageId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "cl_ibfk_2")
+
   @@unique([characterId, lineageId])
 }
 
 model path {
-  id Int @id @default(autoincrement())
-  name String @db.Text
-  description String @db.Text
-  pathTier Int
-  vitality Int
-  power Int
-  addMagics Int @default(0)
-  addTechniques Int @default(0)
-  addManeuvers Int @default(0)
-  addOaths Int @default(0)
-  addTricks Int @default(0)
-  reqMagics Int @default(0)
-  reqTechniques Int @default(0)
-  reqManeuvers Int @default(0)
-  reqOaths Int @default(0)
-  reqTricks Int @default(0)
-  prerequisiteId Int?    @unique
-  prerequisite   path?   @relation("PreRequisite", fields: [prerequisiteId], references: [id])
-  upgrade path?   @relation("PreRequisite")
-  characters   character_path[] @relation
-  skills path_skill[] @relation
-  trainings path_training[] @relation
+  id             Int              @id @default(autoincrement())
+  name           String           @db.Text
+  description    String           @db.Text
+  pathTier       Int
+  vitality       Int
+  power          Int
+  addMagics      Int              @default(0)
+  addTechniques  Int              @default(0)
+  addManeuvers   Int              @default(0)
+  addOaths       Int              @default(0)
+  addTricks      Int              @default(0)
+  reqMagics      Int              @default(0)
+  reqTechniques  Int              @default(0)
+  reqManeuvers   Int              @default(0)
+  reqOaths       Int              @default(0)
+  reqTricks      Int              @default(0)
+  prerequisiteId Int?             @unique
+  prerequisite   path?            @relation("PreRequisite", fields: [prerequisiteId], references: [id])
+  upgrade        path?            @relation("PreRequisite")
+  characters     character_path[] @relation
+  skills         path_skill[]     @relation
+  trainings      path_training[]  @relation
 }
 
 model character_path {
-  id Int @id @default(autoincrement())
-  characterId Int 
-  pathId Int
-    
+  id          Int @id @default(autoincrement())
+  characterId Int
+  pathId      Int
+
   character character @relation(fields: [characterId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "pc_ibfk_1")
-  path path @relation(fields: [pathId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "pc_ibfk_2")
+  path      path      @relation(fields: [pathId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "pc_ibfk_2")
 
   @@unique([characterId, pathId])
 }
 
 model path_skill {
-  id          Int  @id @default(autoincrement())
-  pathId Int
-  skillId     Int
+  id      Int @id @default(autoincrement())
+  pathId  Int
+  skillId Int
 
-  path   path @relation(fields: [pathId], references: [id])
-  skill skill     @relation(fields: [skillId], references: [id])
+  path  path  @relation(fields: [pathId], references: [id])
+  skill skill @relation(fields: [skillId], references: [id])
 
   @@unique([pathId, skillId])
 }
 
 model skill {
-  id     Int     @id @default(autoincrement())
-  name    String? @db.Text
-  description    String? @db.Text
-  agi Int @default(0)
-  bdy Int @default(0)
-  mnd Int @default(0)
-  lvl Int @default(0)
-  trSiz Int @default(0)
-  rlSiz Int @default(0)
-  increaseTrueSize Int @default(0)
-  increaseRelativeSize Int @default(0)
-  prerequisiteId Int?    @unique
-  prerequisite   skill?   @relation("PreRequisite", fields: [prerequisiteId], references: [id])
-  upgrade skill?   @relation("PreRequisite")
-  type          skillType @default(CHARACTERISTIC)
-  techniqueSubtype techniqueSubtype?
-  characters   character_skill[] @relation
-  lineages lineage_skill[] @relation
-  paths path_skill[] @relation  
+  id                   Int               @id @default(autoincrement())
+  name                 String?           @db.Text
+  description          String?           @db.Text
+  agi                  Int               @default(0)
+  bdy                  Int               @default(0)
+  mnd                  Int               @default(0)
+  lvl                  Int               @default(0)
+  trSiz                Int               @default(0)
+  rlSiz                Int               @default(0)
+  increaseTrueSize     Int               @default(0)
+  increaseRelativeSize Int               @default(0)
+  prerequisiteId       Int?              @unique
+  prerequisite         skill?            @relation("PreRequisite", fields: [prerequisiteId], references: [id])
+  upgrade              skill?            @relation("PreRequisite")
+  type                 skillType         @default(CHARACTERISTIC)
+  techniqueSubtype     techniqueSubtype?
+  characters           character_skill[] @relation
+  lineages             lineage_skill[]   @relation
+  paths                path_skill[]      @relation
 }
 
 enum skillType {
@@ -205,42 +223,40 @@ enum techniqueSubtype {
   TRICK
 }
 
-
 model character_skill {
-  id          Int  @id @default(autoincrement())
+  id          Int @id @default(autoincrement())
   characterId Int
   skillId     Int
-  level       Int  @default(1)
+  level       Int @default(1)
 
-  character   character @relation(fields: [characterId], references: [id])
-  skill       skill     @relation(fields: [skillId], references: [id])
+  character character @relation(fields: [characterId], references: [id])
+  skill     skill     @relation(fields: [skillId], references: [id])
 
   @@unique([characterId, skillId])
 }
 
 model lineage_skill {
-  id Int @id @default(autoincrement())
-  lineageId Int 
-  skillId Int     
+  id        Int     @id @default(autoincrement())
+  lineageId Int
+  skillId   Int
   pureSkill Boolean
 
   lineage lineage @relation(fields: [lineageId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "ls_ibfk_1")
-  skill skill @relation(fields: [skillId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "ls_ibfk_2")
-  
-  @@unique([lineageId, skillId])
+  skill   skill   @relation(fields: [skillId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "ls_ibfk_2")
 
+  @@unique([lineageId, skillId])
 }
 
 model training {
-  id Int @id @default(autoincrement())
-  name String @db.Text
-  description String @db.Text
-  type          trainingType @default(ARMOR)
-  tier Int @default(1)
-  characters character_training[] @relation
-  paths path_training[] @relation
-  weapons weapon[] @relation
-  armors armor[] @relation
+  id          Int                  @id @default(autoincrement())
+  name        String               @db.Text
+  description String               @db.Text
+  type        trainingType         @default(ARMOR)
+  tier        Int                  @default(1)
+  characters  character_training[] @relation
+  paths       path_training[]      @relation
+  weapons     weapon[]             @relation
+  armors      armor[]              @relation
 }
 
 enum trainingType {
@@ -249,58 +265,58 @@ enum trainingType {
   WEAPONS
 }
 
-model path_training{
-  id Int @id @default(autoincrement())
-  pathId Int 
-  trainingId Int     
+model path_training {
+  id         Int @id @default(autoincrement())
+  pathId     Int
+  trainingId Int
 
-  path path @relation(fields: [pathId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "pt_ibfk_1")
+  path     path     @relation(fields: [pathId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "pt_ibfk_1")
   training training @relation(fields: [trainingId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "pt_ibfk_2")
-  
+
   @@unique([pathId, trainingId])
 }
 
 model character_training {
-  id Int @id @default(autoincrement())
+  id          Int @id @default(autoincrement())
   characterId Int
-  trainingId Int
+  trainingId  Int
 
   character character @relation(fields: [characterId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "ct_ibfk_1")
-  training training @relation(fields: [trainingId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "ct_ibfk_2")
+  training  training  @relation(fields: [trainingId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "ct_ibfk_2")
 
   @@unique([characterId, trainingId])
 }
 
 model weapon {
-  id      Int      @id @default(autoincrement())
-  name String
+  id          Int        @id @default(autoincrement())
+  name        String
   description String
-  type weaponType
-  baseWeight Int @default(0)
-  baseCost Int @default(0)
-  baseReach Int @default(1)
+  type        weaponType
+  baseWeight  Int        @default(0)
+  baseCost    Int        @default(0)
+  baseReach   Int        @default(1)
 
   trainingId Int
-  training training @relation(fields: [trainingId], references: [id])
+  training   training           @relation(fields: [trainingId], references: [id])
   characters character_weapon[] @relation
 }
 
 model character_weapon {
-  id Int @id @default(autoincrement())
+  id          Int      @id @default(autoincrement())
   characterId Int
-  weaponId Int
-  craftTier Int @default(1)
-  material material
-  reach Int @default(1)
-  weight Int @default(0)
-  cost Int @default(0)
-  wielding Boolean @default(false)
-  twoHanding Boolean @default(false)
-  trained Boolean @default(false)
-  
-  character   character @relation(fields: [characterId], references: [id])
-  weapon       weapon     @relation(fields: [weaponId], references: [id])
-  attacks attack[]
+  weaponId    Int
+  craftTier   Int      @default(1)
+  material    material
+  reach       Int      @default(1)
+  weight      Int      @default(0)
+  cost        Int      @default(0)
+  wielding    Boolean  @default(false)
+  twoHanding  Boolean  @default(false)
+  trained     Boolean  @default(false)
+
+  character character @relation(fields: [characterId], references: [id])
+  weapon    weapon    @relation(fields: [weaponId], references: [id])
+  attacks   attack[]
 }
 
 enum weaponType {
@@ -325,30 +341,30 @@ enum weaponType {
 }
 
 model attack {
-  id Int @id @default(autoincrement())
+  id           Int               @id @default(autoincrement())
   charWeaponId Int
-  name String
-  hitOn Int @default(4)
-  critOn Int @default(6)
-  reach Int @default(1)
-  vigorCost Int @default(1)
-  damages atkDamage[] @relation
-  charWeapon character_weapon? @relation(fields: [charWeaponId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "a_ibfk_1")
+  name         String
+  hitOn        Int               @default(4)
+  critOn       Int               @default(6)
+  reach        Int               @default(1)
+  vigorCost    Int               @default(1)
+  damages      atkDamage[]       @relation
+  charWeapon   character_weapon? @relation(fields: [charWeaponId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "a_ibfk_1")
 }
 
 model atkDamage {
-  id Int @id @default(autoincrement())
-  attackId Int @unique
-  physicalType physicalDamage?
-  magicalType magicalDamage?
-  elementSubtype elementalDamage?
+  id              Int              @id @default(autoincrement())
+  attackId        Int              @unique
+  physicalType    physicalDamage?
+  magicalType     magicalDamage?
+  elementSubtype  elementalDamage?
   hermeticSubtype hermeticDamage?
-  baseDmg Int @default(1)
-  critDmg Int @default(1)
-  agiScale Int @default(0)
-  strScale Int @default(0)
-  mndScale Int @default(0)
-  attack attack @relation(fields: [attackId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "dmg_ibfk_1")
+  baseDmg         Int              @default(1)
+  critDmg         Int              @default(1)
+  agiScale        Int              @default(0)
+  strScale        Int              @default(0)
+  mndScale        Int              @default(0)
+  attack          attack           @relation(fields: [attackId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "dmg_ibfk_1")
 }
 
 enum physicalDamage {
@@ -378,8 +394,6 @@ enum hermeticDamage {
   Psychic
 }
 
-
-
 enum material {
   Adamantine
   Bronze
@@ -394,64 +408,40 @@ enum material {
 }
 
 model armor {
-  id      Int      @id @default(autoincrement())
-  resistanceId Int @default(1)
-  trainingId Int
-  name String
-  description String
-  baseDefense Int @default(1)
-  weight Int @default(0)
-  baseCost Int @default(0)
-  resistances resistances? @relation(fields: [resistanceId], references: [id])
-  training training @relation(fields: [trainingId], references: [id])
-  characters character_armor[] @relation
+  id           Int               @id @default(autoincrement())
+  resistanceId Int               @default(1)
+  trainingId   Int
+  name         String
+  description  String
+  baseDefense  Int               @default(1)
+  weight       Int               @default(0)
+  baseCost     Int               @default(0)
+  training     training          @relation(fields: [trainingId], references: [id])
+  characters   character_armor[] @relation
 }
 
 model character_armor {
-  id Int @id @default(autoincrement())
-  characterId Int
-  armorId Int
-  resistanceId Int @default(1)
-  material material
-  craftTier Int @default(1)
-  defense Int @default(1)
-  weight Int @default(0)
-  baseCost Int @default(0)
-  equipped Boolean @default(false)
-  trained Boolean @default(false)
-  resistances resistances? @relation(fields: [resistanceId], references: [id])
-  character   character @relation(fields: [characterId], references: [id])
-  armor       armor     @relation(fields: [armorId], references: [id])
+  id           Int       @id @default(autoincrement())
+  characterId  Int
+  armorId      Int
+  resistanceId Int       @default(1)
+  material     material
+  craftTier    Int       @default(1)
+  defense      Int       @default(1)
+  weight       Int       @default(0)
+  baseCost     Int       @default(0)
+  equipped     Boolean   @default(false)
+  trained      Boolean   @default(false)
+  character    character @relation(fields: [characterId], references: [id])
+  armor        armor     @relation(fields: [armorId], references: [id])
 }
-
-model resistances {
-  id Int @id @default(autoincrement())
-  impactRes Int @default(0)
-  pierceRes Int @default(0)
-  slashRes Int @default(0)
-  acidRes Int @default(0)
-  coldRes Int @default(0)
-  fireRes Int @default(0)
-  lightningRes Int @default(0)
-  arcaneRes Int @default(0)
-  cosmicRes Int @default(0)
-  psychicRes Int @default(0)
-  occultRes Int @default(0)
-  profaneRes Int @default(0)
-  sacredRes Int @default(0)
-  armors armor[] @relation
-  charArmors character_armor[] @relation
-  characters charStats[] @relation
-
-}
-
 
 model user {
-  id      Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  email     String   @unique
-  username  String
-  password  String
+  id         Int         @id @default(autoincrement())
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+  email      String      @unique
+  username   String
+  password   String
   characters character[] @relation()
 }

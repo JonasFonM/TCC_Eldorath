@@ -15,7 +15,7 @@ model campaign {
   daysPassed Int
   month      monthName @default(Vivenerius)
   weekDay    weekDay
-  tod        timeOfDay
+  timeOfDay  timeOfDay
 }
 
 enum monthName {
@@ -34,12 +34,13 @@ enum monthName {
 }
 
 enum weekDay {
-  Helidai // Day of Heliodax the Father of Unicorns
-  Agredai // Day of Ageron the Ironhearted
-
-  Oridai // Day of Orithon the Veilwalker
-
-  Victadai // Day of Victory
+  Aeteri //Dia de Aeter, o Aeterno
+  Silveri // Dia da Lua de Prata
+  Ulri // Dia de Ulrometh, o Guerreiro
+  Auramari //Dia de Auramar, o Dourado
+  Viveri // Dia de Viven, a Progenitora
+  Justari //Dia de Justicar, a Luz da Justiça
+  Exori // Dia do Êxodo
 }
 
 enum timeOfDay {
@@ -69,7 +70,6 @@ model character {
   vitality     Int @default(1)
   vigor        Int @default(1)
   power        Int @default(1)
-  actions      Int @default(1)
   poise        Int @default(1)
   initiative   Int @default(1)
   trueSize     Int @default(1)
@@ -112,12 +112,11 @@ model character {
   authorId Int
   user     user    @relation(fields: [authorId], references: [id], map: "character_ibfk_1")
 
-  skills    character_skill[]    @relation
-  lineages  character_lineage[]  @relation
-  trainings character_training[] @relation
-  paths     character_path[]     @relation
-  weapons   character_weapon[]   @relation
-  armors    character_armor[]    @relation
+  skills   character_skill[]   @relation
+  lineages character_lineage[] @relation
+  paths    character_path[]    @relation
+  weapons  character_weapon[]  @relation
+  armors   character_armor[]   @relation
 
   @@index([authorId], map: "authorId")
 }
@@ -164,7 +163,6 @@ model path {
   upgrade        path?            @relation("PreRequisite")
   characters     character_path[] @relation
   skills         path_skill[]     @relation
-  trainings      path_training[]  @relation
 }
 
 model character_path {
@@ -223,6 +221,28 @@ enum techniqueSubtype {
   TRICK
 }
 
+model effect {
+  id          Int          @id @default(autoincrement())
+  targetId    Int
+  targetModel effectTarget
+  targetField String
+  effectValue Float
+  operator    operator
+}
+
+enum effectTarget {
+  character
+  weapon
+  armor
+}
+
+enum operator {
+  Sum
+  Sub
+  Mult
+  Div
+}
+
 model character_skill {
   id          Int @id @default(autoincrement())
   characterId Int
@@ -247,46 +267,6 @@ model lineage_skill {
   @@unique([lineageId, skillId])
 }
 
-model training {
-  id          Int                  @id @default(autoincrement())
-  name        String               @db.Text
-  description String               @db.Text
-  type        trainingType         @default(ARMOR)
-  tier        Int                  @default(1)
-  characters  character_training[] @relation
-  paths       path_training[]      @relation
-  weapons     weapon[]             @relation
-  armors      armor[]              @relation
-}
-
-enum trainingType {
-  ARMOR
-  SHIELD
-  WEAPONS
-}
-
-model path_training {
-  id         Int @id @default(autoincrement())
-  pathId     Int
-  trainingId Int
-
-  path     path     @relation(fields: [pathId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "pt_ibfk_1")
-  training training @relation(fields: [trainingId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "pt_ibfk_2")
-
-  @@unique([pathId, trainingId])
-}
-
-model character_training {
-  id          Int @id @default(autoincrement())
-  characterId Int
-  trainingId  Int
-
-  character character @relation(fields: [characterId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "ct_ibfk_1")
-  training  training  @relation(fields: [trainingId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "ct_ibfk_2")
-
-  @@unique([characterId, trainingId])
-}
-
 model weapon {
   id          Int        @id @default(autoincrement())
   name        String
@@ -296,8 +276,6 @@ model weapon {
   baseCost    Int        @default(0)
   baseReach   Int        @default(1)
 
-  trainingId Int
-  training   training           @relation(fields: [trainingId], references: [id])
   characters character_weapon[] @relation
 }
 
@@ -344,8 +322,9 @@ model attack {
   id           Int               @id @default(autoincrement())
   charWeaponId Int
   name         String
-  hitOn        Int               @default(4)
-  critOn       Int               @default(6)
+  hitMod       Int               @default(0)
+  critOnPoise  Int               @default(1)
+  critMult     Float             @default(2)
   reach        Int               @default(1)
   vigorCost    Int               @default(1)
   damages      atkDamage[]       @relation
@@ -353,58 +332,45 @@ model attack {
 }
 
 model atkDamage {
-  id              Int              @id @default(autoincrement())
-  attackId        Int              @unique
-  physicalType    physicalDamage?
-  magicalType     magicalDamage?
-  elementSubtype  elementalDamage?
-  hermeticSubtype hermeticDamage?
-  baseDmg         Int              @default(1)
-  critDmg         Int              @default(1)
-  agiScale        Int              @default(0)
-  strScale        Int              @default(0)
-  mndScale        Int              @default(0)
-  attack          attack           @relation(fields: [attackId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "dmg_ibfk_1")
+  id         Int        @id @default(autoincrement())
+  attackId   Int        @unique
+  damageType damageType
+  baseDie    Int        @default(1)
+  agiScale   Float      @default(0)
+  strScale   Float      @default(0)
+  mndScale   Float      @default(0)
+  attack     attack     @relation(fields: [attackId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "dmg_ibfk_1")
 }
 
-enum physicalDamage {
+enum damageType {
   Impact
   Pierce
   Slash
-}
 
-enum magicalDamage {
-  Elemental
-  Hermetic
-  Occult
-  Profane
-  Sacred
-}
-
-enum elementalDamage {
   Acid
   Cold
   Fire
   Lightning
-}
 
-enum hermeticDamage {
   Arcane
   Cosmic
   Psychic
+
+  Profane
+  Sacred
 }
 
 enum material {
-  Adamantine
+  Couro
+  Tecidos
+  Madeira
   Bronze
-  DragonBone
-  Iron
-  Silver
-  Steel
-  Wood
-  Leather
-  Padding
-  DragonScale
+  Ferro
+  Aço
+  Prata
+  Ouro
+  Adamante
+  Draconico
 }
 
 model armor {
@@ -416,7 +382,6 @@ model armor {
   baseDefense  Int               @default(1)
   weight       Int               @default(0)
   baseCost     Int               @default(0)
-  training     training          @relation(fields: [trainingId], references: [id])
   characters   character_armor[] @relation
 }
 

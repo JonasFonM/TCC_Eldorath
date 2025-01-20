@@ -194,7 +194,7 @@ export default function PathSelection() {
                         }
 
                         {selectedPaths.map(pathId => (
-                            <input type="hidden" key={pathId} name="paths" value={pathId} />
+                            <input type="hidden" key={pathId} id={String(pathId)} name="paths" value={pathId} />
                         ))}
                         {error && <p>{error}</p>}
 

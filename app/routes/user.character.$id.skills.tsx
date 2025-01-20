@@ -17,7 +17,7 @@ export default function SkillsRoute() {
   const { skills, pureLineageSkills, nonPureLineageSkills } = useOutletContext<{ skills: skill[], pureLineageSkills: LSrelations, nonPureLineageSkills: LSrelations, paths: path[], lineages: lineage[], isPure: boolean }>();
   const [show, setShow] = useState<number>();
 
-  const { setChildData } = useOutletContext<{ setChildData: (data: any) => void }>();
+
 
   const showRow = () => {
     show != 1 ?
@@ -44,7 +44,6 @@ export default function SkillsRoute() {
 
   return (
     <>
-      {setChildData([])}
 
       <div className="title-container">
         <NavLink to={`../new/skills/`}> <h1 style={{ marginTop: '0', marginBottom: '0', padding: '0' }}>Talentos</h1></NavLink>

@@ -19,6 +19,8 @@ body {
   background-color: #121212;
   color: #ffffff;
   line-height: 1.6;
+  overflow-x: hidden;
+
 }
 
 .user {
@@ -155,7 +157,7 @@ ul {
 }
 
 .character-sheet {
-  transition: 0.3s ease-in-out
+  transition: 0.3s ease-in-out;
 }
 
 .header {
@@ -173,7 +175,7 @@ ul {
   z-index: 5;
 }
 
-.header h1, 
+.header h1,
 .temp h1 {
   margin-top: 8px;
   font-size: 1.35rem;
@@ -429,7 +431,7 @@ table {
   height: 100%;
 }
 
-tr{
+tr {
   width: 100%;
   transition: 0.3s ease-in-out;
 }
@@ -467,12 +469,12 @@ td:last-child {
 .hidden-row {
   position: absolute;
   top: 90;
-  transform: translateY(-60px); 
+  transform: translateY(-60px);
   opacity: 0;
   z-index: -1;
 }
 
-.hidden-row td{
+.hidden-row td {
   border: none;
 }
 
@@ -529,7 +531,7 @@ td:last-child {
   max-width: 500px;
   width: 100%;
   text-align: center;
-  
+
 }
 
 .modal-buttons {

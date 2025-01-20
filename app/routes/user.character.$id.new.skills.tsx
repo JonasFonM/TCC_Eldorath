@@ -53,11 +53,6 @@ export const loader: LoaderFunction = async ({ request, params }) => {
 
   const maxSelectable = character?.pendingSkills;
 
-
-  const stats = await prisma.charStats.findUnique({
-    where: { characterId: characterId }
-  });
-
   const general_skills = await prisma.skill.findMany({
     where: {
       lineages: { none: {} },
@@ -76,10 +71,10 @@ export const loader: LoaderFunction = async ({ request, params }) => {
       },
       OR: [{
         trSiz: {
-          lte: stats?.trueSize,
+          lte: character?.trueSize,
         },
         rlSiz: {
-          lte: stats?.relativeSize,
+          lte: character?.relativeSize,
         },
       },
       { trSiz: { lte: 0 } },
@@ -140,12 +135,8 @@ export const action: ActionFunction = async ({ request, params }) => {
   const characterId = params.id
 
   await submitCharSkills(selectedSkillIds, Number(characterId), Number(pendingSkills))
-  await prisma.charStats.delete({
-    where: { characterId: Number(characterId) }
-  })
   return redirect(`../../skills/`)
 }
-
 export default function SkillSelectionRoute() {
   const {
     nonPureLineageSkills, pureLineageSkills, isPure,
@@ -424,7 +415,6 @@ export default function SkillSelectionRoute() {
             <li><NavLink to={`/user/character/new/${characterId}/skills`}>Características</NavLink></li>
             <li><NavLink to={`/user/character/new/${characterId}/lineages`}>Técnicas</NavLink></li>
             <li><NavLink to={`/user/character/new/${characterId}/paths`}>Manobras</NavLink></li>
-            <li><NavLink to={`/user/character/new/${characterId}/trainings`}>Juramentos</NavLink></li>
             <li><NavLink to={`/user/character/new/${characterId}/inventory`}>Trapaças</NavLink></li>
             <li><NavLink to={`/user/character/new/${characterId}/inventory`}>Mágicas</NavLink></li>
           </ul>

@@ -139,12 +139,12 @@ export default function NewCharacterRoute() {
         <h1>Atributos<NavLink to={'../../../user/home'} className='question-button'>?</NavLink></h1>
       </div>
 
-      <h3>Points remaining: {limit}</h3>
+      <h3>Pontos: {limit}</h3>
 
       <div className="container">
         <div className="block">
           <label>
-            Agility: {formData.agility}
+          Agilidade: {formData.agility}
             <input hidden type="number" name="agility" value={formData.agility} onChange={handleChange} />
             <div className="col-12">
               <button className="col-6 button" type="button" onClick={() => adjustAttribute('agility', 1)}>+</button>
@@ -156,7 +156,7 @@ export default function NewCharacterRoute() {
 
         <div className="block">
           <label>
-            Body: {formData.body}
+            Corpo: {formData.body}
             <input hidden type="number" name="body" value={formData.body} onChange={handleChange} />
             <div className="col-12">
               <button className="col-6 button" type="button" onClick={() => adjustAttribute('body', 1)}>+</button>
@@ -168,7 +168,7 @@ export default function NewCharacterRoute() {
 
         <div className="block">
           <label>
-            Mind: {formData.mind}
+            Mente: {formData.mind}
             <input hidden type="number" name="mind" value={formData.mind} onChange={handleChange} />
             <div className="col-12">
               <button className="col-6 button" type="button" onClick={() => adjustAttribute('mind', 1)}>+</button>
@@ -181,7 +181,7 @@ export default function NewCharacterRoute() {
 
       {formError && <p style={{ textAlign: 'center', margin: 'auto', width: '100%' }} className="error">{formError}</p>}
       <div className="container">
-        <button className="button" type="submit">Submit</button>
+        <button className="button" type="submit">Confirmar</button>
       </div>
     </form>
   );

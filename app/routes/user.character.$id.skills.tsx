@@ -1,10 +1,11 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { NavLink, useOutletContext } from "@remix-run/react";
 import { lineage, path, skill } from "@prisma/client";
-import { LSrelations, trainingWithTier } from "~/utils/types.server";
+import { LSrelations } from "~/utils/types.server";
 import { LoaderFunction } from "@remix-run/node";
 import { SkillTableHead } from "~/components/character-sheet/skill-table";
 import { SkillTableData } from "~/components/character-sheet/skill-table-data";
-import { useState } from "react";
+import React, { useState } from "react";
 import { SkillExplain } from "~/components/explanations/skill-explain";
 
 export const loader: LoaderFunction = async ({ params }) => {
@@ -13,8 +14,10 @@ export const loader: LoaderFunction = async ({ params }) => {
 }
 
 export default function SkillsRoute() {
-  const { skills, pureLineageSkills, nonPureLineageSkills } = useOutletContext<{ skills: skill[], pureLineageSkills: LSrelations, nonPureLineageSkills: LSrelations, trainingsWithTier: trainingWithTier, paths: path[], lineages: lineage[], isPure: boolean }>();
+  const { skills, pureLineageSkills, nonPureLineageSkills } = useOutletContext<{ skills: skill[], pureLineageSkills: LSrelations, nonPureLineageSkills: LSrelations, paths: path[], lineages: lineage[], isPure: boolean }>();
   const [show, setShow] = useState<number>();
+
+  const { setChildData } = useOutletContext<{ setChildData: (data: any) => void }>();
 
   const showRow = () => {
     show != 1 ?
@@ -41,6 +44,7 @@ export default function SkillsRoute() {
 
   return (
     <>
+      {setChildData([])}
 
       <div className="title-container">
         <NavLink to={`../new/skills/`}> <h1 style={{ marginTop: '0', marginBottom: '0', padding: '0' }}>Talentos</h1></NavLink>
@@ -51,26 +55,26 @@ export default function SkillsRoute() {
 
         <SkillTableHead onClick={() => showRow()} />
         {pureLineageSkills.map(pls => (
-          <>
+          <React.Fragment key={pls.skill.id}>
             <SkillTableData
-              key={pls.skill.id}
               skill={pls.skill}
               show={show === 1}
               onClick={() => explainSkill(pls.skill.id)}
               selected={false}
-
             />
-            <SkillExplain style={'linear-gradient(to bottom right, gold, goldenrod)'} skill={pls.skill} isHidden={showSkill != pls.skill.id} onCancel={() => setShowSkill(0)} />
-
-          </>
-
+            <SkillExplain
+              style={'linear-gradient(to bottom right, gold, goldenrod)'}
+              skill={pls.skill}
+              isHidden={showSkill != pls.skill.id}
+              onCancel={() => setShowSkill(0)}
+            />
+          </React.Fragment>
         ))}
 
 
         {nonPureLineageSkills.map(npls => (
-          <>
+          <React.Fragment key={npls.skill.id}>
             <SkillTableData
-              key={npls.skill.id}
               skill={npls.skill}
               show={show === 1}
               onClick={() => explainSkill(npls.skill.id)}
@@ -79,14 +83,12 @@ export default function SkillsRoute() {
             />
             <SkillExplain style={'linear-gradient(to bottom right, goldenrod, darkgoldenrod)'} skill={npls.skill} isHidden={showSkill != npls.skill.id} onCancel={() => setShowSkill(0)} />
 
-          </>
-
+          </React.Fragment>
         ))}
 
         {skills.map(skill => (
-          <>
+          <React.Fragment key={skill.id}>
             <SkillTableData
-              key={skill.id}
               skill={skill}
               show={show === 1}
               onClick={() => explainSkill(skill.id)}
@@ -94,8 +96,7 @@ export default function SkillsRoute() {
             />
             <SkillExplain style={'linear-gradient(to bottom right, darkgoldenrod, darkyellow )'} skill={skill} isHidden={showSkill != skill.id} onCancel={() => setShowSkill(0)} />
 
-          </>
-
+          </React.Fragment>
         ))}
       </table>
 

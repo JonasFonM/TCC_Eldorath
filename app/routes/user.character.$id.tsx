@@ -1,10 +1,10 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { json, LoaderFunction, } from "@remix-run/node";
 import { NavLink, Outlet, useLoaderData } from "@remix-run/react";
 import { prisma } from "~/utils/prisma.server";
-import { createStats } from "~/utils/character.server";
-import { LSrelations, trainingWithTier } from "~/utils/types.server";
-import { armor, character, character_armor, character_weapon, charStats, lineage, path, resistances, skill, weapon } from "@prisma/client";
+import { LSrelations } from "~/utils/types.server";
+import { armor, character, character_armor, character_weapon, lineage, path, skill, weapon } from "@prisma/client";
 import { ResetConfirm } from "~/components/character-sheet/reset-confirm";
 import { useState } from "react";
 
@@ -14,7 +14,7 @@ export const loader: LoaderFunction = async ({ params }) => {
 
   const character = await prisma.character.findUnique({
     where: { id: characterId },
-    include: { skills: true, lineages: true, paths: true, trainings: true },
+    include: { skills: true, lineages: true, paths: true },
   });
 
   const character_lineages = await prisma.character_lineage.findMany({
@@ -65,27 +65,6 @@ export const loader: LoaderFunction = async ({ params }) => {
   });
 
 
-  const trainingsWithTier = await prisma.character_training.findMany({
-    where: {
-      id: { in: character.trainings.map(training => training.id) },
-    },
-    include: { training: true }
-  });
-
-  let stats = await prisma.charStats.findUnique({
-    where: { characterId: characterId }
-  });
-
-  if (!stats) {
-    stats = await createStats({ skills, character, paths })
-  }
-
-  const resistances = await prisma.resistances.findUnique({
-    where: {
-      id: stats?.resistanceId
-    }
-  })
-
   const weapons = await prisma.character_weapon.findMany({
     where: {
       characterId: characterId
@@ -100,17 +79,15 @@ export const loader: LoaderFunction = async ({ params }) => {
     include: { armor: true }
   })
 
-  return json({ skills, trainingsWithTier, pureLineageSkills, nonPureLineageSkills, character, characterId, stats, lineages, isPure, paths, resistances, weapons, armors });
+  return json({ skills, pureLineageSkills, nonPureLineageSkills, character, characterId, lineages, isPure, paths, weapons, armors });
 };
 
 export default function CharacterRoute() {
   const { character, characterId } = useLoaderData<{ character: character, characterId: string }>()
-  const { skills, pureLineageSkills, nonPureLineageSkills, trainingsWithTier } = useLoaderData<{ skills: skill[], pureLineageSkills: LSrelations, nonPureLineageSkills: LSrelations, trainingsWithTier: trainingWithTier }>();
+  const { skills, pureLineageSkills, nonPureLineageSkills } = useLoaderData<{ skills: skill[], pureLineageSkills: LSrelations, nonPureLineageSkills: LSrelations }>();
   const { lineages, isPure } = useLoaderData<{ lineages: lineage[], isPure: boolean }>();
   const { weapons, armors } = useLoaderData<{ weapons: (character_weapon & { weapon: weapon })[], armors: (character_armor & { armor: armor })[] }>();
   const { paths } = useLoaderData<{ paths: path[] }>();
-
-  const { stats, resistances } = useLoaderData<{ stats: charStats; resistances: resistances }>()
 
   const [selectReset, setReset] = useState<number>(0);
 
@@ -154,7 +131,7 @@ export default function CharacterRoute() {
     });
   };
 
-  const [childData, setChildData] = useState(null);
+  const [childData, setChildData] = useState([]);
 
 
   const isAllOpen = selectHeader === 0 && selectTemp === 0
@@ -193,7 +170,6 @@ export default function CharacterRoute() {
           <li><NavLink to={`/user/character/${characterId}/lineages/`}>Linhagens</NavLink></li>
           <li><NavLink to={`/user/character/${characterId}/paths/`}>Caminhos</NavLink></li>
           <li><NavLink to={`/user/character/${characterId}/skills/`}>Talentos</NavLink></li>
-          <li><NavLink to={`/user/character/${characterId}/trainings/`}>Treinos</NavLink></li>
           <li><NavLink to={`/user/character/${characterId}/inventory/`}>Inventário</NavLink></li>
           <ResetConfirm name={character.name} isHidden={selectReset === 0} onShow={showReset} onCancel={cancelReset} id={String(character.id)} />
         </ul>
@@ -202,14 +178,26 @@ export default function CharacterRoute() {
       <button className="toggle-menu" style={selectHeader === 0 ? {} : { transform: 'translate(-200px)' }} onClick={selectHeader === 0 ? showHeader : cancelHeader}></button>
 
       <div className="temp" style={selectTemp === 0 ? {} : { transform: 'translate(200px)' }}>
-      {childData}
+
+        <h1>Extras</h1>
+        <p>{childData.length > 0 ? 'Lista:' : 'Nada selecionado'}</p>
+
+        <ul>
+          {childData.map(data => (
+            <>
+              <li><a>{data}</a></li>
+
+            </>
+          )
+          )}
+        </ul>
       </div>
 
       <button className="toggle-temp" style={selectTemp === 0 ? {} : { transform: 'translate(200px)' }} onClick={selectTemp === 0 ? showTemp : cancelTemp}></button>
 
 
       <div className="character-sheet" style={isAllOpen ? { marginLeft: '200px', marginRight: '200px' } : isHeaderOpen ? { marginLeft: '200px' } : isTempOpen ? { marginRight: '200px' } : {}}>
-        <Outlet context={{ character, stats, resistances, skills, trainingsWithTier, paths, lineages, pureLineageSkills, nonPureLineageSkills, isPure, weapons, armors, setChildData }} />
+        <Outlet context={{ character, skills, paths, lineages, pureLineageSkills, nonPureLineageSkills, isPure, weapons, armors, setChildData }} />
       </div >
     </>
   );

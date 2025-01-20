@@ -1,10 +1,10 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { armor, training } from '@prisma/client';
+import { armor } from '@prisma/client';
 
 interface Props {
-  armor: armor & { training: training };
+  armor: armor;
   isSelected: boolean;
   onClick: () => void;
 }
@@ -18,10 +18,9 @@ export function ArmorCircle({ armor, isSelected, onClick }: Props) {
       <h3>{armor.name}</h3>
       <p>{armor.description}</p>
       <div className='dropdown-content'>
-        <p>Training: {armor.training?.name}</p>
-        <p>Cost: {armor.baseCost}</p>
-        <p>Weight: {armor.weight}</p>
-        <p>Defense: {armor.baseDefense}</p>
+        <p>Custo: {armor.baseCost}</p>
+        <p>Peso: {armor.weight}</p>
+        <p>Defesa: {armor.baseDefense}</p>
       </div>
     </div>
   );

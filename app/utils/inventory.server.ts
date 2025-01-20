@@ -1,34 +1,6 @@
 import { prisma } from "./prisma.server";
 
 
-export const checkWeaponTrainings = async (weaponList: number[], characterId: number) => {
-
-  const selectedWeapons = await prisma.weapon.findMany({
-    where: {
-      id: { in: weaponList },
-    },
-  });
-
-  const charTraining = await prisma.character_training.findMany({
-    where: {
-      characterId: characterId,
-      trainingId: { in: selectedWeapons.map(w => w.trainingId) }
-    },
-  })
-  const isTrained = charTraining.length > 0;
-
-  await prisma.character_weapon.updateMany({
-    where: {
-      characterId: characterId,
-      weaponId: { in: selectedWeapons.map(w => w.id) }
-    },
-    data: {
-      trained: isTrained,
-    }
-  })
-  return isTrained
-};
-
 export const submitCharWeapons = async (weaponList: number[], characterId: number) => {
 
   const selectedWeapons = await prisma.weapon.findMany({
@@ -37,20 +9,16 @@ export const submitCharWeapons = async (weaponList: number[], characterId: numbe
     },
   });
 
-  const isTrained = await checkWeaponTrainings(weaponList, characterId);
-
-
   if (weaponList.length > 0) {
     await prisma.character_weapon.createMany({
       data: selectedWeapons.map(w => ({
         weaponId: w.id,
         characterId: characterId,
         cost: w.baseCost,
-        material: 'Iron',
+        material: 'Ferro',
         craftTier: 1,
         weight: w.baseWeight,
         reach: w.baseReach,
-        trained: isTrained,
 
       })),
       skipDuplicates: false,
@@ -75,33 +43,7 @@ export const deleteWeaponById = async (id: number) => {
   })
 };
 
-export const checkArmorTrainings = async (armorList: number[], characterId: number) => {
 
-  const selectedArmors = await prisma.armor.findMany({
-    where: {
-      id: { in: armorList },
-    },
-  });
-
-  const charTraining = await prisma.character_training.findMany({
-    where: {
-      characterId: characterId,
-      trainingId: { in: selectedArmors.map(w => w.trainingId) }
-    },
-  })
-  const isTrained = charTraining.length > 0;
-
-  await prisma.character_armor.updateMany({
-    where: {
-      characterId: characterId,
-      armorId: { in: selectedArmors.map(w => w.id) }
-    },
-    data: {
-      trained: isTrained,
-    }
-  })
-  return isTrained
-};
 
 export const submitCharArmors = async (armorList: number[], characterId: number) => {
   const selectedArmors = await prisma.armor.findMany({
@@ -110,7 +52,6 @@ export const submitCharArmors = async (armorList: number[], characterId: number)
     },
   });
 
-  const isTrained = await checkArmorTrainings(armorList, characterId);
 
 
   if (armorList.length > 0) {
@@ -119,12 +60,11 @@ export const submitCharArmors = async (armorList: number[], characterId: number)
         armorId: a.id,
         characterId: characterId,
         baseCost: a.baseCost,
-        material: 'Iron',
+        material: 'Ferro',
         craftTier: 1,
         defense: a.baseDefense,
         weight: a.weight,
         resistanceId: a.resistanceId,
-        trained: isTrained,
 
       })),
       skipDuplicates: false,

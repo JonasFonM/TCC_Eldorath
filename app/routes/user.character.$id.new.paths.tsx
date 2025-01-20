@@ -35,9 +35,6 @@ export const action: ActionFunction = async ({ request, params }) => {
     }
     try {
         await submitCharPaths(selectedPathIds, Number(characterId), Number(pendingPaths))
-        await prisma.charStats?.delete({
-            where: { characterId: Number(characterId) }
-        })
         return redirect(`../../paths`)
     } catch (error) {
         console.error(error);

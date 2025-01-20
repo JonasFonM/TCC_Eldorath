@@ -61,7 +61,6 @@ model character {
   pendingLineages  Int @default(2)
   pendingPath      Int @default(1)
   pendingSkills    Int @default(2)
-  pendingTrainings Int @default(1)
 
   agility Int
   body    Int
@@ -70,11 +69,13 @@ model character {
   vitality     Int @default(1)
   vigor        Int @default(1)
   power        Int @default(1)
-  poise        Int @default(1)
+
+  defense      Int @default(1)
   initiative   Int @default(1)
+  
   trueSize     Int @default(1)
   relativeSize Int @default(1)
-
+  
   baseWeight Int @default(10)
   carryCap   Int @default(10)
   liftCap    Int @default(15)
@@ -290,7 +291,6 @@ model character_weapon {
   cost        Int      @default(0)
   wielding    Boolean  @default(false)
   twoHanding  Boolean  @default(false)
-  trained     Boolean  @default(false)
 
   character character @relation(fields: [characterId], references: [id])
   weapon    weapon    @relation(fields: [weaponId], references: [id])
@@ -320,10 +320,10 @@ enum weaponType {
 
 model attack {
   id           Int               @id @default(autoincrement())
-  charWeaponId Int
+  charWeaponId Int?
   name         String
   hitMod       Int               @default(0)
-  critOnPoise  Int               @default(1)
+  critChance   Int               @default(6)
   critMult     Float             @default(2)
   reach        Int               @default(1)
   vigorCost    Int               @default(1)
@@ -366,7 +366,7 @@ enum material {
   Madeira
   Bronze
   Ferro
-  Aço
+  Aco
   Prata
   Ouro
   Adamante
@@ -376,7 +376,6 @@ enum material {
 model armor {
   id           Int               @id @default(autoincrement())
   resistanceId Int               @default(1)
-  trainingId   Int
   name         String
   description  String
   baseDefense  Int               @default(1)
@@ -396,7 +395,6 @@ model character_armor {
   weight       Int       @default(0)
   baseCost     Int       @default(0)
   equipped     Boolean   @default(false)
-  trained      Boolean   @default(false)
   character    character @relation(fields: [characterId], references: [id])
   armor        armor     @relation(fields: [armorId], references: [id])
 }

@@ -2,11 +2,18 @@
 import type { CharacterForm } from './types.server'
 import { prisma } from './prisma.server'
 import { json } from '@remix-run/node'
-import { character, path, skill } from '@prisma/client'
-import { checkArmorTrainings, checkWeaponTrainings } from './inventory.server'
 
 //BASIC
 export const createCharacter = async (character: CharacterForm) => {
+  const vitality = character.body + character.tier + 1;
+  const vigor = character.level + character.body + character.mind;
+  const power = character.tier + character.mind;
+  const carryCap = 15 + (5 * character.body);
+  const liftCap = 20 + (10 * character.body);
+  const weight = 10 + (2 * character.body)
+  const initiative = character.agility;
+  const defense = character.agility;
+
   const newcharacter = await prisma.character.create({
     data: {
       name: character.name,
@@ -15,13 +22,46 @@ export const createCharacter = async (character: CharacterForm) => {
       agility: character.agility,
       body: character.body,
       mind: character.mind,
-      authorId: character.authorId
+      authorId: character.authorId,
+      vitality: vitality,
+      vigor: vigor,
+      power: power,
+      carryCap: carryCap,
+      liftCap: liftCap,
+      baseWeight: weight,
+      initiative: initiative,
+      defense: defense
     },
   })
-  return { id: newcharacter.id, name: character.name, tier: character.tier, agility: character.agility, body: character.body, mind: character.mind, authorId: character.authorId }
+  return {
+    id: newcharacter.id, name: character.name,
+    tier: character.tier,
+    agility: character.agility,
+    body: character.body,
+    mind: character.mind,
+    vitality: vitality,
+    vigor: vigor,
+    power: power,
+    carryCap: carryCap,
+    liftCap: liftCap,
+    baseWeight: weight,
+    initiative: initiative,
+    defense: defense,
+    authorId: character.authorId
+  }
 }
 
 export const updateCharacter = async (character: CharacterForm, characterId: number) => {
+  const vitality = character.body + character.tier + 1;
+  const vigor = character.level + character.body + character.mind;
+  const power = character.tier + character.mind;
+  const carryCap = 15 + (5 * character.body);
+  const liftCap = 20 + (10 * character.body);
+  const weight = 10 + (2 * character.body)
+  const initiative = character.agility;
+  const defense = character.agility;
+
+
   const updatedCharacter = await prisma.character.update({
     where: {
       id: characterId
@@ -34,9 +74,34 @@ export const updateCharacter = async (character: CharacterForm, characterId: num
       agility: character.agility,
       body: character.body,
       mind: character.mind,
+      vitality: vitality,
+      vigor: vigor,
+      power: power,
+      carryCap: carryCap,
+      liftCap: liftCap,
+      baseWeight: weight,
+      initiative: initiative,
+      defense: defense
+
     },
   })
-  return { id: updatedCharacter.id, name: character.name, tier: character.tier, agility: character.agility, body: character.body, mind: character.mind, authorId: character.authorId }
+  return {
+    id: updatedCharacter.id,
+    name: character.name,
+    tier: character.tier,
+    agility: character.agility,
+    body: character.body,
+    mind: character.mind,
+    vitality: vitality,
+    vigor: vigor,
+    power: power,
+    carryCap: carryCap,
+    liftCap: liftCap,
+    baseWeight: weight,
+    initiative: initiative,
+    defense: defense,
+    authorId: character.authorId
+  }
 }
 
 export async function submitCharacter(character: CharacterForm) {
@@ -63,66 +128,6 @@ export const getCharactersFromUser = async (userId: number) => {
     }
   })
 }
-
-//STATS
-export const createStats = async (char: { skills: skill[], character: character, paths: path[] }) => {
-  const { body, tier, level, mind, agility, id } = char.character;
-  const skillTrueSizes = char.skills.map(skill => skill.increaseTrueSize);
-  const skillTrueSize = skillTrueSizes.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
-  const skillRelativeSizes = char.skills.map(skill => skill.increaseRelativeSize);
-  const skillRelativeSize = skillRelativeSizes.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
-  let pathsVit = 0
-  char.paths.forEach(path => { pathsVit += path.vitality });
-  let pathsPow = 0
-  char.paths.forEach(path => { pathsPow += path.power });
-
-  const vitality = body + tier + 1 + pathsVit;
-  const vigor = body + level + mind;
-  const power = mind + pathsPow;
-  const speed = agility;
-  const defense = agility;
-  const initiative = agility;
-  const trueSize = 1 + skillTrueSize;
-  const relativeSize = 1 + skillRelativeSize;
-  const baseWeight = (5 * body) + 10;
-  const carryCap = 5 + 10 + (5 * body);
-  const liftCap = 10 + 10 + (10 * body);
-
-  const newcharacterstat = await prisma.charStats.upsert({
-    create: {
-      vitality: vitality,
-      vigor: vigor,
-      power: power,
-      speed: speed,
-      defense: defense,
-      initiative: initiative,
-      trueSize: trueSize,
-      relativeSize: relativeSize,
-      baseWeight: baseWeight,
-      carryCap: carryCap,
-      liftCap: liftCap,
-      characterId: id,
-    },
-    update: {
-      vitality: vitality,
-      vigor: vigor,
-      power: power,
-      speed: speed,
-      defense: defense,
-      initiative: initiative,
-      trueSize: trueSize,
-      relativeSize: relativeSize,
-      baseWeight: baseWeight,
-      carryCap: carryCap,
-      liftCap: liftCap,
-    },
-    where: {
-      characterId: char.character.id
-    }
-  });
-
-  return newcharacterstat;
-};
 
 export function tierByLevel(level: any) {
   if (level < 5) {
@@ -245,67 +250,4 @@ export const submitCharPaths = async (pathList: number[], characterId: number, p
   }
 
   return;
-};
-
-//TRAININGS
-
-export const submitCharTrainings = async (trainingList: number[], characterId: number, pendingTrainings: number) => {
-  const existingTrainings = await prisma.character_training.findMany({
-    where: {
-      trainingId: { in: trainingList },
-      characterId: characterId,
-    },
-  });
-
-  const weapons = await prisma.character_weapon.findMany({
-    where: {
-      characterId: characterId
-    },
-    include: { weapon: true },
-  });
-
-  const armors = await prisma.character_armor.findMany({
-    where: {
-      characterId: characterId
-    },
-    include: { armor: true },
-  });
-
-
-  const existingTrainingIds = existingTrainings.map(ct => ct.trainingId);
-
-  const newTrainings = trainingList.filter(trainingId => !existingTrainingIds.includes(trainingId));
-
-  const weaponTrainingIds = weapons.map(w => w.weapon.trainingId);
-
-  const weaponUpdateList = weaponTrainingIds.filter(id => newTrainings.includes(id) || (existingTrainingIds.includes(id)))
-
-  const armorTrainingIds = armors.map(a => a.armor.trainingId);
-
-  const armorUpdateList = armorTrainingIds.filter(id => newTrainings.includes(id) || (existingTrainingIds.includes(id)))
-
-  const newPendingTrainings = pendingTrainings - newTrainings.length;
-
-
-  if (newTrainings.length > 0) {
-    await prisma.character_training.createMany({
-      data: newTrainings.map(trainingId => ({
-        characterId: characterId,
-        trainingId: trainingId,
-      })),
-      skipDuplicates: true,
-    });
-
-    await checkWeaponTrainings(weaponUpdateList, characterId)
-    await checkArmorTrainings(armorUpdateList, characterId)
-
-    await prisma.character.update({
-      where: { id: characterId },
-      data: {
-        pendingTrainings: newPendingTrainings
-      }
-    })
-  }
-  return;
-
-};
+}

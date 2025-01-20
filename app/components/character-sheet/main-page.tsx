@@ -1,37 +1,20 @@
-import { character, resistances } from "@prisma/client";
+import { character } from "@prisma/client";
 import { NavLink } from "@remix-run/react";
 
 interface Props {
-    character: character,
-    resistances: resistances;
-    stats: {
-        id: number;
-        createdAt: string;
-        resistanceId: number;
-        vitality: number;
-        vigor: number;
-        power: number;
-        speed: number;
-        defense: number;
-        initiative: number;
-        trueSize: number;
-        relativeSize: number;
-        baseWeight: number;
-        carryCap: number;
-        liftCap: number;
-        characterId: number;
-    },
+    character: character
+
 }
 
 
-export function StatsAndRes({ character, resistances, stats }: Props) {
+export function CharacterSheet({ character }: Props) {
 
     return (
         <>
 
 
             <div className="title-container">
-                <NavLink style={{marginTop: '0', marginBottom: '0', padding: '0'}} to={`/user/character/update/${String(character.id)}/basic`}> <h1 style={{marginTop: '0', marginBottom: '0', padding: '0'}}> Atributos </h1></NavLink>
+                <NavLink style={{ marginTop: '0', marginBottom: '0', padding: '0' }} to={`/user/character/update/${String(character.id)}/basic`}> <h1 style={{ marginTop: '0', marginBottom: '0', padding: '0' }}> Atributos </h1></NavLink>
                 <NavLink className="question-button" to={`/user/home/atr/`}>?</NavLink>
             </div>
 
@@ -48,53 +31,58 @@ export function StatsAndRes({ character, resistances, stats }: Props) {
 
             <div className="container">
 
-                <div className="block"><h1>{stats.vitality}</h1>Vitalidade</div>
-                <div className="block"><h1>{stats.vigor}</h1>Vigor</div>
-                <div className="block"><h1>{stats.power}</h1>Poder</div>
+                <div className="block"><h1>{character.vitality}</h1>Vitalidade</div>
+                <div className="block"><h1>{character.vigor}</h1>Vigor</div>
+                <div className="block"><h1>{character.power}</h1>Poder</div>
             </div>
             <h2>Combate</h2>
 
             <div className="container">
 
-                <div className="block"><h1>{stats.defense}</h1>Defesa</div>
-                <div className="block"><h1>{stats.initiative}</h1>Iniciativa</div>
-                <div className="block"><h1>{stats.speed}</h1>Velocidade</div>
+                <div className="block"><h1>{character.defense}</h1>Defesa</div>
+                <div className="block"><h1>{character.initiative}</h1>Iniciativa</div>
+                <div className="block"><h1>{character.trueSize}</h1>Tamanho Real</div>
+                <div className="block"><h1>{character.relativeSize}</h1>Tamanho Relativo</div>
 
             </div>
             <h2>Carga</h2>
 
             <div className="container">
 
-                <div className="block"><h1>{stats.baseWeight}</h1>Peso</div>
-                <div className="block"><h1>{stats.carryCap}</h1>Capacidade de Carga</div>
-                <div className="block"><h1>{stats.liftCap}</h1>Capacidade de Levantamento</div>
+                <div className="block"><h1>{character.baseWeight}</h1>Peso</div>
+                <div className="block"><h1>{character.carryCap}</h1>Capacidade de Carga</div>
+                <div className="block"><h1>{character.liftCap}</h1>Capacidade de Levantamento</div>
 
             </div>
 
 
             <h1>Resistências</h1>
 
+            <h3>Resistência Total</h3>
+            <div className="container">
+                <div className="block">Total: {character.fullRes}</div>
+            </div>
+
             <h3>Resistências Físicas</h3>
 
             <div className="container">
-                <div className="block">Impacto: {resistances.impactRes}</div>
-                <div className="block">Perfuração: {resistances.pierceRes}</div>
-                <div className="block">Corte: {resistances.slashRes}</div>
+                <div className="block">Impacto: {character.impactRes}</div>
+                <div className="block">Perfuração: {character.pierceRes}</div>
+                <div className="block">Corte: {character.slashRes}</div>
             </div>
 
             <h3>Resistências Mágicas</h3>
 
             <div className="container">
-                <div className="block">Ácida: {resistances.acidRes}</div>
-                <div className="block">Gélida: {resistances.coldRes}</div>
-                <div className="block">Flamejante: {resistances.fireRes}</div>
-                <div className="block">Elétrica: {resistances.lightningRes}</div>
-                <div className="block">Arcana: {resistances.arcaneRes}</div>
-                <div className="block">Cósmica: {resistances.cosmicRes}</div>
-                <div className="block">Psíquica: {resistances.psychicRes}</div>
-                <div className="block">Maligna: {resistances.occultRes}</div>
-                <div className="block">Profana: {resistances.profaneRes}</div>
-                <div className="block">Sagrada: {resistances.sacredRes}</div>
+                <div className="block">Ácida: {character.acidRes}</div>
+                <div className="block">Gélida: {character.coldRes}</div>
+                <div className="block">Flamejante: {character.fireRes}</div>
+                <div className="block">Elétrica: {character.lightningRes}</div>
+                <div className="block">Arcana: {character.arcaneRes}</div>
+                <div className="block">Cósmica: {character.cosmicRes}</div>
+                <div className="block">Psíquica: {character.psychicRes}</div>
+                <div className="block">Profana: {character.profaneRes}</div>
+                <div className="block">Sagrada: {character.sacredRes}</div>
             </div>
         </>
 

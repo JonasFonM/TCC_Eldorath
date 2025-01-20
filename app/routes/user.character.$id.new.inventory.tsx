@@ -1,4 +1,4 @@
-import { character } from "@prisma/client";
+import { armor, character, weapon } from "@prisma/client";
 import { ActionFunction, json, LoaderFunction, redirect } from "@remix-run/node";
 import { NavLink, useLoaderData } from "@remix-run/react";
 import { useState } from "react";
@@ -7,7 +7,6 @@ import { ArmorCircle } from "~/components/armor-circle";
 import { requireUserId } from "~/utils/auth.server";
 import { submitCharWeapons, submitCharArmors } from "~/utils/inventory.server";
 import { prisma } from "~/utils/prisma.server";
-import { armorWithTraining, weaponWithTraining } from "~/utils/types.server";
 
 export const loader: LoaderFunction = async ({ request, params }) => {
     const userId = await requireUserId(request)
@@ -22,14 +21,12 @@ export const loader: LoaderFunction = async ({ request, params }) => {
         where: {
             baseCost: { lte: 500 }
         },
-        include: { training: true }
     })
 
     const armors = await prisma.armor.findMany({
         where: {
             baseCost: { lte: 500 }
         },
-        include: { training: true }
     })
 
 
@@ -47,9 +44,6 @@ export const action: ActionFunction = async ({ request, params }) => {
     try {
         await submitCharWeapons(selectedWeaponIds, Number(characterId))
         await submitCharArmors(selectedArmorIds, Number(characterId))
-        await prisma.charStats.delete({
-            where: { characterId: Number(characterId) }
-        })
         return redirect(`/user/character/${characterId}/inventory`)
     } catch (error) {
         console.error(error);
@@ -59,7 +53,7 @@ export const action: ActionFunction = async ({ request, params }) => {
 }
 
 export default function WeaponSelection() {
-    const { weapons, armors, character, characterId } = useLoaderData<{ weapons: weaponWithTraining; armors: armorWithTraining; character: character, characterId: string }>();
+    const { weapons, armors, character, characterId } = useLoaderData<{ weapons: weapon[]; armors: armor[]; character: character, characterId: string }>();
     const [selectedWeapons, setSelectedWeapons] = useState<number[]>([]);
     const [selectedArmors, setSelectedArmors] = useState<number[]>([]);
     const [selectedCost, setSelectedCost] = useState<number>(0);

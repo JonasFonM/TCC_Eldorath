@@ -10,7 +10,7 @@ export const loader: LoaderFunction = async ({ params, request }) => {
     });
 
     if (!character) {
-        throw new Response("Character not found", { status: 404 });
+        throw new Response("Personagem não encontrado", { status: 404 });
     }
 
     await prisma.character.updateMany({
@@ -25,7 +25,6 @@ export const loader: LoaderFunction = async ({ params, request }) => {
             pendingLineages: 2,
             pendingPath: 1,
             pendingSkills: 2,
-            pendingTrainings: 1
         }
     });
 
@@ -41,13 +40,7 @@ export const loader: LoaderFunction = async ({ params, request }) => {
     await prisma.character_skill.deleteMany({
         where: { characterId: characterId },
     });
-    await prisma.character_training.deleteMany({
-        where: { characterId: characterId },
-    });
     await prisma.character_path.deleteMany({
-        where: { characterId: characterId },
-    });
-    await prisma.charStats.deleteMany({
         where: { characterId: characterId },
     });
     

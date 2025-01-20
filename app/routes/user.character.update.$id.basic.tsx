@@ -38,10 +38,6 @@ export const action: ActionFunction = async ({ params, request }) => {
     try {
         const character = await updateCharacter({ name, level, tier, agility, body, mind, authorId }, Number(params.id));
 
-        await prisma.charStats.delete({
-            where: { characterId: character.id }
-        })
-
         return (
             redirect(`/user/character/${String(character.id)}/stats`)
         );

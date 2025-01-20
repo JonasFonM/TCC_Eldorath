@@ -25,17 +25,11 @@ export const loader: LoaderFunction = async ({ params }) => {
     await prisma.character_skill.deleteMany({
         where: { characterId: characterId },
     });
-    await prisma.character_training.deleteMany({
-        where: { characterId: characterId },
-    });
     await prisma.character_path.deleteMany({
         where: { characterId: characterId },
     });
-    await prisma.charStats.deleteMany({
-        where: { characterId: characterId },
-    });
-    
 
+    
     await prisma.character.delete({
         where: { id: characterId },
     });

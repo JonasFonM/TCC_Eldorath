@@ -44,7 +44,7 @@ export const action: ActionFunction = async ({ request, params }) => {
 }
 
 export default function LineageSelection() {
-    const { lineages, maxSelectable, characterId } = useLoaderData<{ lineages: lineage[], maxSelectable: number, characterId: string }>();
+    const { lineages, maxSelectable } = useLoaderData<{ lineages: lineage[], maxSelectable: number}>();
     const [selectedLineages, setSelectedLineages] = useState<number[]>([]);
     const [error, setError] = useState<string | null>(null);
     const [isPure, setPure] = useState<boolean>(true);

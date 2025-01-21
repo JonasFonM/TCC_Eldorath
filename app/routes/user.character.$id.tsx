@@ -6,7 +6,9 @@ import { prisma } from "~/utils/prisma.server";
 import { LSrelations } from "~/utils/types.server";
 import { armor, character, character_armor, character_weapon, lineage, path, skill, weapon } from "@prisma/client";
 import { ResetConfirm } from "~/components/character-sheet/reset-confirm";
-import { useState } from "react";
+import React, { useState } from "react";
+import { CharacterWeaponCircle } from "~/components/c-weapon-circle";
+import { CharacterWeaponExplain } from "~/components/explanations/weapon-explain";
 
 
 export const loader: LoaderFunction = async ({ params }) => {
@@ -131,8 +133,20 @@ export default function CharacterRoute() {
     });
   };
 
-  const [childData, setChildData] = useState([]);
+  const [showWeapon, setShowWeapon] = useState<number>();
 
+  const explainWeapon = (id: number) => {
+    showWeapon != id ?
+      setShowWeapon(() => {
+        return id;
+      })
+      :
+      setShowWeapon(() => {
+        return 0;
+      })
+  }
+
+  const [selectInv, setInv] = useState<number>(0);
 
   const isAllOpen = selectHeader === 0 && selectTemp === 0
   const isHeaderOpen = selectHeader === 0 && selectTemp != 0
@@ -165,12 +179,11 @@ export default function CharacterRoute() {
           </tr>
         </table>
 
-        <ul className="skillnav">
+        <ul style={{zIndex: '900'}} className="skillnav">
           <li><NavLink to={`/user/character/${characterId}/stats/`}>Personagem</NavLink></li>
           <li><NavLink to={`/user/character/${characterId}/lineages/`}>Linhagens</NavLink></li>
           <li><NavLink to={`/user/character/${characterId}/paths/`}>Caminhos</NavLink></li>
           <li><NavLink to={`/user/character/${characterId}/skills/`}>Talentos</NavLink></li>
-          <li><NavLink to={`/user/character/${characterId}/inventory/`}>Inventário</NavLink></li>
           <ResetConfirm name={character.name} isHidden={selectReset === 0} onShow={showReset} onCancel={cancelReset} id={String(character.id)} />
         </ul>
 
@@ -179,17 +192,37 @@ export default function CharacterRoute() {
 
       <div className="temp" style={selectTemp === 0 ? {} : { transform: 'translate(200px)' }}>
 
-        <h1>Extras</h1>
-        <p>{childData.length > 0 ? 'Lista:' : 'Nada selecionado'}</p>
+        <h1><NavLink to={`/user/character/${characterId}/new/inventory/`}>Inventário</NavLink></h1>
+        <p>Auramares: {character.gold}</p>
+        <p>Peso Carregado: {weapons.map(weapons => weapons.weight).reduce((accumulator, currentValue) => accumulator + currentValue, 0)}/{character.carryCap}</p>
 
         <ul>
-          {childData.map(data => (
-            <>
-              <li><a>{data}</a></li>
+          <li><button style={selectInv <= 1 ? { display: 'inherit' } : { display: 'none' }} onClick={() => selectInv === 0 ? setInv(1) : setInv(0)}>Armas</button></li>
 
-            </>
-          )
-          )}
+
+          {selectInv === 1 ? weapons.map(weapon => (
+            <React.Fragment key={weapon.id}>
+              <CharacterWeaponCircle
+                weapon={weapon}
+                isSelected={false}
+                onClick={() => explainWeapon(weapon.id)}
+              />
+              <CharacterWeaponExplain
+                style={'linear-gradient(to bottom right, gold, goldenrod)'}
+                character_weapon={weapon}
+                isHidden={showWeapon != weapon.id}
+                onCancel={() => setShowWeapon(0)}
+              />
+            </React.Fragment>
+
+          )) : ''}
+
+
+
+          <li><button style={selectInv === 2 || selectInv === 0 ? { display: 'inherit' } : { display: 'none' }} onClick={() => selectInv <= 1 ? setInv(2) : setInv(0)}>Armaduras</button></li>
+
+          <li><button style={selectInv === 3 || selectInv === 0 ? { display: 'inherit' } : { display: 'none' }} onClick={() => selectInv <= 1 ? setInv(3) : setInv(0)}>Gerais</button></li>
+
         </ul>
       </div>
 
@@ -197,7 +230,7 @@ export default function CharacterRoute() {
 
 
       <div className="character-sheet" style={isAllOpen ? { marginLeft: '200px', marginRight: '200px' } : isHeaderOpen ? { marginLeft: '200px' } : isTempOpen ? { marginRight: '200px' } : {}}>
-        <Outlet context={{ character, skills, paths, lineages, pureLineageSkills, nonPureLineageSkills, isPure, weapons, armors, setChildData }} />
+        <Outlet context={{ character, skills, paths, lineages, pureLineageSkills, nonPureLineageSkills, isPure, weapons, armors }} />
       </div >
     </>
   );

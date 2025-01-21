@@ -13,7 +13,7 @@ interface Props {
 
 
 
-export function CharacterWeaponCircle({ weapon, isSelected, onClick }: Props) {
+export function CharacterWeaponCircle({ weapon, onClick }: Props) {
 
   const [selectedDelete, setSelectedDelete] = useState<number>(0);
 
@@ -31,27 +31,14 @@ export function CharacterWeaponCircle({ weapon, isSelected, onClick }: Props) {
 
   return (
     <>
-      <div onClick={onClick} className='grid-item' style={{ border: isSelected ? '2px solid green' : '1px solid gray', padding: '5%', borderRadius: '2%' }}>
-
-        <div>
-          <h3>{weapon.weapon.name}</h3>
-
-          <p>{weapon.weapon.description}</p>
-
-        </div>
-        <div className='dropdown-content'>
-          <DeleteConfirm name={ weapon.weapon.name + ' de ' + weapon.material} isHidden={selectedDelete === 0} onShow={showDelete} onCancel={cancelDelete} entity='weapon' id={String(weapon.id)} />
-
-          <p>Cost:{weapon.cost}</p>
-          <p>Weight:{weapon.weight}</p>
-          <p>Crafting Tier:{weapon.craftTier}</p>
-          <p>Material:{weapon.material}</p>
-          <p>Reach:{weapon.reach}</p>
-
-        </div>
-
+      <li>
+        <button onClick={onClick}>
+          {weapon.weapon.name + ' de ' + weapon.material}
+        </button>
+      </li>
+      <div>
+        <DeleteConfirm name={weapon.weapon.name + ' de ' + weapon.material} isHidden={selectedDelete === 0} onShow={showDelete} onCancel={cancelDelete} entity='weapon' id={String(weapon.id)} />
       </div>
-
     </>
   );
 }

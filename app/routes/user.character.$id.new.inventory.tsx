@@ -11,6 +11,9 @@ import { prisma } from "~/utils/prisma.server";
 export const loader: LoaderFunction = async ({ request, params }) => {
     const userId = await requireUserId(request)
 
+    const referer = request.headers.get("Referer") || "/";
+
+
     const characterId = Number(params.id)
 
     const character = await prisma.character.findUnique({
@@ -30,7 +33,7 @@ export const loader: LoaderFunction = async ({ request, params }) => {
     })
 
 
-    return json({ userId, weapons, armors, character, characterId });
+    return json({ userId, weapons, armors, character, characterId, referer });
 }
 
 export const action: ActionFunction = async ({ request, params }) => {
@@ -41,10 +44,13 @@ export const action: ActionFunction = async ({ request, params }) => {
     const selectedArmorIds = selectedArmors.map(id => parseInt(id))
     const characterId = params.id
 
+
     try {
         await submitCharWeapons(selectedWeaponIds, Number(characterId))
         await submitCharArmors(selectedArmorIds, Number(characterId))
-        return redirect(`/user/character/${characterId}/inventory`)
+
+        return redirect(`/user/character/${characterId}/stats`);
+
     } catch (error) {
         console.error(error);
         return json({ error: "Failed to save items." }, { status: 500 });
@@ -53,7 +59,7 @@ export const action: ActionFunction = async ({ request, params }) => {
 }
 
 export default function WeaponSelection() {
-    const { weapons, armors, character, characterId } = useLoaderData<{ weapons: weapon[]; armors: armor[]; character: character, characterId: string }>();
+    const { weapons, armors, character, referer } = useLoaderData<{ weapons: weapon[]; armors: armor[]; character: character, referer: string }>();
     const [selectedWeapons, setSelectedWeapons] = useState<number[]>([]);
     const [selectedArmors, setSelectedArmors] = useState<number[]>([]);
     const [selectedCost, setSelectedCost] = useState<number>(0);
@@ -121,7 +127,7 @@ export default function WeaponSelection() {
 
     return (
         <form method="post">
-            <h1 className="title-container">Inventário<NavLink style={{ color: 'red' }} className={'question-button'} to={`../../../${characterId}/inventory/`}>X</NavLink></h1>
+            <h1 className="title-container">Inventário<NavLink style={{ color: 'red' }} className={'question-button'} to={referer}>X</NavLink></h1>
             <h1>Armas</h1>
             <div className="weapons-grid">
                 {weapons.map(weapon => (

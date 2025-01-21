@@ -140,6 +140,11 @@ ul {
   background-color: #bbb;
 }
 
+.temp .question-button {
+  background: none;
+  border-radius: 0;
+}
+
 .topnav {
   position: fixed;
   top: 0;
@@ -182,6 +187,17 @@ ul {
   width: 100%;
 }
 
+.temp h1 a {
+  text-decoration: none;
+  font-family: 'Times New Roman', Times, serif;
+  color: gold;
+}
+
+.temp h1 a:hover {
+  color: white;
+  transition: color 0.3s ease;
+}
+
 .header p,
 .temp p {
   text-align: center;
@@ -189,7 +205,6 @@ ul {
   font-family: serif;
   font-size: 1.25rem;
   width: 100%;
-
 }
 
 .header ul li,
@@ -325,9 +340,27 @@ li a {
   cursor: pointer;
 }
 
-li a:hover {
-  color: gold;
+.temp li button {
+  width: 100%;
+  display: block;
+  color: white;
+  text-align: center;
+  padding: 19px 19px;
+  text-decoration: none;
+  background: none;
+  color: inherit;
+  border: inherit;
+  font: inherit;
+  cursor: pointer;
+}
 
+li a:hover,
+li button:hover {
+  color: gold;
+  cursor: pointer;
+  background-color: rgb(0, 0, 0);
+  box-shadow: 1px 1px 8px 1px gold;
+  transition: 0.3s;
 }
 
 .logout:hover {
@@ -401,7 +434,7 @@ li a:hover {
   transition: 0.3s ease;
 }
 
-.grid-item:hover .dropdown-content {
+.drop:hover .dropdown-content {
   display: block;
 }
 
@@ -520,7 +553,7 @@ td:last-child {
   justify-content: center;
   align-items: center;
   overflow: auto;
-  z-index: 1000;
+  z-index: 900;
 }
 
 .modal-content {
@@ -531,7 +564,6 @@ td:last-child {
   max-width: 500px;
   width: 100%;
   text-align: center;
-
 }
 
 .modal-buttons {

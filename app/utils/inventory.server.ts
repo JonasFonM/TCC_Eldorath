@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { prisma } from "./prisma.server";
 
 
@@ -9,13 +10,23 @@ export const submitCharWeapons = async (weaponList: number[], characterId: numbe
     },
   });
 
+  const materialMapping: { [key: string]: any } = {
+    Bow: 'Madeira',
+    Club: 'Madeira',
+    Whip: 'Couro'
+  };
+
+
+
   if (weaponList.length > 0) {
+
     await prisma.character_weapon.createMany({
-      data: selectedWeapons.map(w => ({
+      data: selectedWeapons.map(w => (
+        {
         weaponId: w.id,
         characterId: characterId,
         cost: w.baseCost,
-        material: 'Ferro',
+        material: materialMapping[w.type] || 'Ferro',
         craftTier: 1,
         weight: w.baseWeight,
         reach: w.baseReach,

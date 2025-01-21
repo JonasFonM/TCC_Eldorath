@@ -42,7 +42,6 @@ export function CharacterWeaponCircle({ weapon, isSelected, onClick }: Props) {
         <div className='dropdown-content'>
           <DeleteConfirm name={ weapon.weapon.name + ' de ' + weapon.material} isHidden={selectedDelete === 0} onShow={showDelete} onCancel={cancelDelete} entity='weapon' id={String(weapon.id)} />
 
-          <p style={{ color: weapon.trained ? 'green' : 'red' }}>{weapon.trained ? 'Trained' : 'Not Trained'}</p>
           <p>Cost:{weapon.cost}</p>
           <p>Weight:{weapon.weight}</p>
           <p>Crafting Tier:{weapon.craftTier}</p>

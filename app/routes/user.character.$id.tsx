@@ -97,11 +97,17 @@ export default function CharacterRoute() {
     setReset(() => {
       return character.id;
     });
+    setTemp(() => {
+      return character.id;
+    });
   };
 
   const cancelReset = () => {
     setReset(() => {
       return 0
+    });
+    setTemp(() => {
+      return 0;
     });
   };
 
@@ -179,7 +185,7 @@ export default function CharacterRoute() {
           </tr>
         </table>
 
-        <ul style={{zIndex: '900'}} className="skillnav">
+        <ul style={{ zIndex: '900' }} className="skillnav">
           <li><NavLink to={`/user/character/${characterId}/stats/`}>Personagem</NavLink></li>
           <li><NavLink to={`/user/character/${characterId}/lineages/`}>Linhagens</NavLink></li>
           <li><NavLink to={`/user/character/${characterId}/paths/`}>Caminhos</NavLink></li>

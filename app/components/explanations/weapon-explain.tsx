@@ -23,8 +23,6 @@ export function CharacterWeaponExplain({ character_weapon, isHidden, onCancel, s
 
                     <p style={{ color: "black" }}>{character_weapon.weapon.description}</p>
 
-
-
                 </div>
 
             </div>

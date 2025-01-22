@@ -20,7 +20,6 @@ body {
   color: #ffffff;
   line-height: 1.6;
   overflow-x: hidden;
-
 }
 
 .user {
@@ -88,6 +87,21 @@ h3 {
   font-size: 1.2rem;
   color: #FFFFFF;
   margin-bottom: 0.5rem;
+}
+
+button.lineBtn {
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  font: inherit;
+  color: gold;
+  text-align: inherit;
+  cursor: pointer
+}
+
+button.lineBtn:hover {
+  color: #FFFFFF
 }
 
 ul {
@@ -163,6 +177,13 @@ ul {
 
 .character-sheet {
   transition: 0.3s ease-in-out;
+}
+
+.Atr {
+  color: #FFFFFF;
+  font-family: serif;
+  font-size: 1.35rem;
+  font-weight: bolder
 }
 
 .header {

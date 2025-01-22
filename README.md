@@ -1,3 +1,8 @@
+Cores para modo Acessibilidade: 
+#ec4010
+#07bc5d
+#1004e7
+
 Level up Trigger:
 
 CREATE DEFINER=`root`@`localhost` TRIGGER `lvl_up` BEFORE UPDATE ON `character` FOR EACH ROW BEGIN

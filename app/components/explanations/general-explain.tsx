@@ -17,9 +17,9 @@ export function GeneralExplain({ title, description, isHidden, onCancel, style, 
                 <div className="modal-content" style={{ backgroundImage: style, zIndex: '2' }}>
 
                     <h1 style={{ color: 'black' }}> {title}</h1>
-                    <p style={{ color: color }}>{description}</p>
+                    <p style={{ color: color, textAlign: 'center', fontVariant: 'small-caps', fontFamily: 'serif', fontSize: '1.25rem', width: '100%' }}>{description}</p>
                 </div>
-            </div>
+            </div >
         </>
     )
 }

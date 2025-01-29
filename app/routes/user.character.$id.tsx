@@ -112,10 +112,10 @@ export default function CharacterRoute() {
       return 0
     });
     prevTemp == 0 ?
-    setTemp(() => {
-      return 0;
-    }) :
-    ''
+      setTemp(() => {
+        return 0;
+      }) :
+      ''
   };
 
 
@@ -205,9 +205,10 @@ export default function CharacterRoute() {
 
       <div className="temp" style={selectTemp === 0 ? {} : { transform: 'translate(200px)' }}>
 
-        <h1><NavLink to={`/user/character/${characterId}/new/inventory/`}>Inventário</NavLink></h1>
+        <h1>Inventário</h1>
+        <h1 className="title-container"><NavLink className="question-button" to={`/user/character/${characterId}/new/inventory/`}>+</NavLink></h1>
         <p>Auramares: {character.gold}</p>
-        <p>Peso Carregado: {weapons.map(weapons => weapons.weight).reduce((accumulator, currentValue) => accumulator + currentValue, 0)}/{character.carryCap}</p>
+        <p>Cargas: {weapons.map(weapons => weapons.weight).reduce((accumulator, currentValue) => accumulator + currentValue, 0)}/{character.carryCap}</p>
 
         <ul>
           <li><button style={selectInv <= 1 ? { display: 'inherit' } : { display: 'none' }} onClick={() => selectInv === 0 ? setInv(1) : setInv(0)}>Armas</button></li>

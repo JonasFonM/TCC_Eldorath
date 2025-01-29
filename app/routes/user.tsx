@@ -12,8 +12,8 @@ export default function UserRoute() {
   return (
     <>
     <ul className="topnav">
-          <li><NavLink to={`/user/home`}>Home</NavLink></li>
-          <li><NavLink to={`/user/character/`}>Characters</NavLink></li>
+          <li><NavLink to={`/user/home`}>Introdução</NavLink></li>
+          <li><NavLink to={`/user/character/`}>Personagens</NavLink></li>
           <li style={{ float: 'right' }}><NavLink className={'logout'} to={`/logout`}>Logout</NavLink></li>
         </ul>
       <div className="user">

@@ -459,7 +459,8 @@ li button:hover {
   transition: 0.3s ease;
 }
 
-.drop:hover .dropdown-content {
+.drop:hover .dropdown-content,
+.grid-item:hover .dropdown-content {
   display: block;
 }
 

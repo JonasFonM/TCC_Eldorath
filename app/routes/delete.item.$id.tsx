@@ -1,15 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import {  redirect, LoaderFunction } from "@remix-run/node";
-import { prisma } from "~/utils/prisma.server";
+import { deleteItemById } from "~/utils/inventory.server";
 
 export const loader: LoaderFunction = async ({ params, request }) => {
-    const character_weaponId = Number(params.id);
+    const character_itemId = Number(params.id);
   
-    await prisma.character_weapon.deleteMany({
-        where: { id: character_weaponId },
-    });
+    await deleteItemById(character_itemId);
    
-
     const referer = request.headers.get("Referer") || "/"; // Fallback to "/" if no referer
 
     return redirect(referer);

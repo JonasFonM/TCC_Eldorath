@@ -55,27 +55,27 @@ model character {
   createdAt DateTime @default(now()) @db.Timestamp(0)
   name      String   @db.Text
 
-  level            Int @default(1)
-  experience       Int @default(0)
-  tier             Int @default(1)
-  pendingLineages  Int @default(2)
-  pendingPath      Int @default(1)
-  pendingSkills    Int @default(2)
+  level           Int @default(1)
+  experience      Int @default(0)
+  tier            Int @default(1)
+  pendingLineages Int @default(2)
+  pendingPath     Int @default(1)
+  pendingSkills   Int @default(2)
 
   agility Int
   body    Int
   mind    Int
 
-  vitality     Int @default(1)
-  vigor        Int @default(1)
-  power        Int @default(1)
+  vitality Int @default(1)
+  vigor    Int @default(1)
+  power    Int @default(1)
 
-  defense      Int @default(1)
-  initiative   Int @default(1)
-  
+  defense    Int @default(1)
+  initiative Int @default(1)
+
   trueSize     Int @default(1)
   relativeSize Int @default(1)
-  
+
   baseWeight Int @default(10)
   carryCap   Int @default(10)
   liftCap    Int @default(15)
@@ -289,8 +289,11 @@ model character_weapon {
   reach       Int      @default(1)
   weight      Int      @default(0)
   cost        Int      @default(0)
-  wielding    Boolean  @default(false)
-  twoHanding  Boolean  @default(false)
+
+  slotType slotType @default(slotWeapon)
+
+  wielding   Boolean @default(false)
+  twoHanding Boolean @default(false)
 
   character character @relation(fields: [characterId], references: [id])
   weapon    weapon    @relation(fields: [weaponId], references: [id])
@@ -374,29 +377,76 @@ enum material {
 }
 
 model armor {
-  id           Int               @id @default(autoincrement())
-  resistanceId Int               @default(1)
-  name         String
-  description  String
-  baseDefense  Int               @default(1)
-  weight       Int               @default(0)
-  baseCost     Int               @default(0)
-  characters   character_armor[] @relation
+  id          Int    @id @default(autoincrement())
+  name        String
+  description String
+  baseDefense Int    @default(1)
+  weight      Int    @default(0)
+  baseCost    Int    @default(0)
+
+  slotType slotType @default(slotCuirass)
+
+  impactRes    Int @default(1)
+  pierceRes    Int @default(1)
+  slashRes     Int @default(1)
+  acidRes      Int @default(0)
+  coldRes      Int @default(0)
+  fireRes      Int @default(0)
+  lightningRes Int @default(0)
+  arcaneRes    Int @default(0)
+  cosmicRes    Int @default(0)
+  psychicRes   Int @default(0)
+  profaneRes   Int @default(0)
+  sacredRes    Int @default(0)
+  fullRes      Int @default(0)
+
+  characters character_armor[] @relation
+}
+
+enum slotType {
+  slotWeapon
+  slotHelm
+  slotPauldron
+  slotGauntlet
+  slotCuirass
+  slotTassets
+  slotGreaves
+  slotCloak
+  slotAmulet
+  slotBelt
+  slotRings
+  slotEarings
 }
 
 model character_armor {
-  id           Int       @id @default(autoincrement())
-  characterId  Int
-  armorId      Int
-  resistanceId Int       @default(1)
-  material     material
-  craftTier    Int       @default(1)
-  defense      Int       @default(1)
-  weight       Int       @default(0)
-  baseCost     Int       @default(0)
-  equipped     Boolean   @default(false)
-  character    character @relation(fields: [characterId], references: [id])
-  armor        armor     @relation(fields: [armorId], references: [id])
+  id          Int      @id @default(autoincrement())
+  characterId Int
+  armorId     Int
+  material    material
+  craftTier   Int      @default(1)
+  defense     Int      @default(1)
+  weight      Int      @default(0)
+  baseCost    Int      @default(0)
+
+  slotType slotType @default(slotCuirass)
+
+  impactRes    Int @default(1)
+  pierceRes    Int @default(1)
+  slashRes     Int @default(1)
+  acidRes      Int @default(0)
+  coldRes      Int @default(0)
+  fireRes      Int @default(0)
+  lightningRes Int @default(0)
+  arcaneRes    Int @default(0)
+  cosmicRes    Int @default(0)
+  psychicRes   Int @default(0)
+  profaneRes   Int @default(0)
+  sacredRes    Int @default(0)
+  fullRes      Int @default(0)
+
+  equipped  Boolean   @default(false)
+  character character @relation(fields: [characterId], references: [id])
+  armor     armor     @relation(fields: [armorId], references: [id])
 }
 
 model user {

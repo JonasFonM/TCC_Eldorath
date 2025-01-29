@@ -276,9 +276,9 @@ model item {
   baseWeight  Int        @default(1)
   baseCost    Int        @default(10)
 
-  baseReach   Int        @default(0)
+  baseReach?   Int?
 
-  baseDefense  Int               @default(0)
+  baseDefense?  Int?
 
   //flex values for Damage Dies and Damage Resistances
   impact    Int @default(0)
@@ -337,6 +337,7 @@ enum itemType {
   slotRings
   slotUpperLegs
   slotWeapon
+  consumable
 }
 
 enum itemSubtype {
@@ -364,7 +365,12 @@ enum itemSubtype {
   lShield
   mShield
   hShield
-}
+  Catalyst
+  Focus
+  Potion
+  Oil
+  Bomb
+  }
 
 enum damageType {
   Impact
@@ -395,6 +401,7 @@ enum material {
   Ouro
   Adamante
   Draconico
+  Alquimico
 }
 
 model user {

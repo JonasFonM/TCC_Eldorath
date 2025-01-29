@@ -2,34 +2,48 @@
 import { prisma } from "./prisma.server";
 
 
-export const submitCharWeapons = async (weaponList: number[], characterId: number) => {
+export const submitStartingCharItems = async (itemList: number[], characterId: number) => {
 
-  const selectedWeapons = await prisma.weapon.findMany({
+  const selectedItems = await prisma.item.findMany({
     where: {
-      id: { in: weaponList },
+      id: { in: itemList },
     },
   });
 
   const materialMapping: { [key: string]: any } = {
     Bow: 'Madeira',
     Club: 'Madeira',
-    Whip: 'Couro'
+    Whip: 'Couro',
+    Catalyst: 'Madeira',
+    Potion: 'Alquimico',
+    Oil: 'Alquimico',
+    Bomb: 'Alquimico'
   };
 
+  const weaponMapping: { [key: string]: any} = {
+    slotWeapon: 0  
+  }
 
+  if (itemList.length > 0) {
 
-  if (weaponList.length > 0) {
-
-    await prisma.character_weapon.createMany({
-      data: selectedWeapons.map(w => (
+    await prisma.character_item.createMany({
+      data: selectedItems.map(i => (
         {
-        weaponId: w.id,
         characterId: characterId,
-        cost: w.baseCost,
-        material: materialMapping[w.type] || 'Ferro',
+        itemId: i.id,
         craftTier: 1,
-        weight: w.baseWeight,
-        reach: w.baseReach,
+        material: materialMapping[i.itemSubtype] || 'Ferro',
+        weight: i.baseWeight,
+        cost: i.baseCost,        
+
+        reach: i.baseReach || null,
+        hitMod: weaponMapping[i.itemType] || null,
+
+        defense: i.baseDefense || null,
+        
+        impact: i.impact,
+        pierce: i.pierce,
+        slash: i.slash
 
       })),
       skipDuplicates: false,
@@ -40,7 +54,7 @@ export const submitCharWeapons = async (weaponList: number[], characterId: numbe
         id: characterId
       },
       data: {
-        gold: { decrement: selectedWeapons.map(w => w.baseCost).reduce((accumulator, currentValue) => accumulator + currentValue, 0) }
+        gold: { decrement: selectedItems.map(i => i.baseCost).reduce((accumulator, currentValue) => accumulator + currentValue, 0) }
       }
     })
   }
@@ -48,49 +62,8 @@ export const submitCharWeapons = async (weaponList: number[], characterId: numbe
   return;
 };
 
-export const deleteWeaponById = async (id: number) => {
-  await prisma.character_weapon.delete({
+export const deleteItemById = async (id: number) => {
+  await prisma.character_item.delete({
     where: { id: id }
   })
-};
-
-
-
-export const submitCharArmors = async (armorList: number[], characterId: number) => {
-  const selectedArmors = await prisma.armor.findMany({
-    where: {
-      id: { in: armorList },
-    },
-  });
-
-
-
-  if (armorList.length > 0) {
-    await prisma.character_armor.createMany({
-      data: selectedArmors.map(a => ({
-        armorId: a.id,
-        characterId: characterId,
-        baseCost: a.baseCost,
-        material: 'Ferro',
-        craftTier: 1,
-        defense: a.baseDefense,
-        weight: a.weight,
-        resistanceId: a.resistanceId,
-
-      })),
-      skipDuplicates: false,
-    });
-
-    await prisma.character.update({
-      where: {
-        id: characterId
-      },
-      data: {
-        gold: { decrement: selectedArmors.map(a => a.baseCost).reduce((accumulator, currentValue) => accumulator + currentValue, 0) }
-      }
-    })
-
-  }
-
-  return;
 };

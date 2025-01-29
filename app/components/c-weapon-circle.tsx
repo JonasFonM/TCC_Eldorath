@@ -1,25 +1,25 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { weapon, character_weapon } from '@prisma/client';
+import { item, character_item } from '@prisma/client';
 import { DeleteConfirm } from './delete-confirmation';
 import { useState } from 'react';
 
 interface Props {
-  weapon: character_weapon & { weapon: weapon };
+  item: character_item & { item: item };
   isSelected: boolean;
   onClick: () => void;
 }
 
 
 
-export function CharacterWeaponCircle({ weapon, onClick }: Props) {
+export function CharacterItemCircle({ item, onClick }: Props) {
 
   const [selectedDelete, setSelectedDelete] = useState<number>(0);
 
   const showDelete = () => {
     setSelectedDelete(() => {
-      return weapon.id;
+      return item.id;
     });
   };
 
@@ -33,11 +33,11 @@ export function CharacterWeaponCircle({ weapon, onClick }: Props) {
     <>
       <li>
         <button onClick={onClick}>
-          {weapon.weapon.name + ' de ' + weapon.material}
+          {item.item.name + ' de ' + item.material}
         </button>
       </li>
       <div>
-        <DeleteConfirm name={weapon.weapon.name + ' de ' + weapon.material} isHidden={selectedDelete === 0} onShow={showDelete} onCancel={cancelDelete} entity='weapon' id={String(weapon.id)} />
+        <DeleteConfirm name={item.item.name + ' de ' + item.material} isHidden={selectedDelete === 0} onShow={showDelete} onCancel={cancelDelete} entity='item' id={String(item.id)} />
       </div>
     </>
   );

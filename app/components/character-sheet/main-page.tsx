@@ -17,15 +17,10 @@ export function CharacterSheet({ character }: Props) {
 
     return (
         <>
-            <div className="title-container">
-                <h1 style={{ marginTop: '0', marginBottom: '0', padding: '0' }}><button onClick={() => setShowAtr(1)} className="lineBtn">Atributos</button></h1>
-                <GeneralExplain style={'linear-gradient(to bottom, white, gold)'} color={'black'} title={'Atributos'} description="Atributos são os valores que representam seus limites e capacidades." isHidden={showAtr != 1} onCancel={() => setShowAtr(0)} />
+            <h1 className="title-container"><NavLink to={`/user/character/update/${String(character.id)}/basic`} className={'lineBtn'}>Atributos</NavLink><button onClick={() => setShowAtr(1)} className="question-button">?</button></h1>
+            <GeneralExplain style={'linear-gradient(to bottom, white, gold)'} color={'black'} title={'Atributos'} description="Atributos são os valores que representam seus limites e capacidades." isHidden={showAtr != 1} onCancel={() => setShowAtr(0)} />
 
-
-                <NavLink className="question-button" to={`/user/character/update/${String(character.id)}/basic`}>R</NavLink>
-            </div>
-
-            <h1><button onClick={() => setShowAtr(2)} className="lineBtn">Básicos</button></h1>
+            <h1 className="title-container">Básicos<button onClick={() => setShowAtr(2)} className="question-button">?</button></h1>
             <GeneralExplain style={'linear-gradient(to bottom, white, grey)'} color={'black'} title={'Básicos'} description="Atributos Básicos são os valores principais para determinar as suas aptidões. Eles afetam seus Atributos Derivados e cada um tem funções especiais." isHidden={showAtr != 2} onCancel={() => setShowAtr(0)} />
 
 
@@ -43,12 +38,12 @@ export function CharacterSheet({ character }: Props) {
             </div>
 
 
-            <h1><button onClick={() => setShowAtr(6)} className="lineBtn">Derivados</button></h1>
+            <h1 className="title-container">Derivados<button onClick={() => setShowAtr(6)} className="question-button">?</button></h1>
             <GeneralExplain style={'linear-gradient(to bottom, white, grey)'} color={'black'} title={'Derivados'} description="Atributos Derivados são valores secundários. Eles são calculados a partir dos seus Atributos Básicos e podem ser afetados por outros fatores." isHidden={showAtr != 6} onCancel={() => setShowAtr(0)} />
 
 
 
-            <h2><button onClick={() => setShowAtr(7)} className="lineBtn">Recursos</button></h2>
+            <h2 className="title-container">Recursos<button onClick={() => setShowAtr(7)} className="question-button">?</button></h2>
             <GeneralExplain style={'linear-gradient(to bottom, white, gold)'} color={'black'} title={'Recursos'} description="Atributos Derivados são valores secundários. Eles são calculados a partir dos seus Atributos Básicos e podem ser afetados por outros fatores." isHidden={showAtr != 7} onCancel={() => setShowAtr(0)} />
 
 
@@ -65,8 +60,8 @@ export function CharacterSheet({ character }: Props) {
 
             </div>
 
-            <h2><button onClick={() => setShowAtr(11)} className="lineBtn">Combate</button></h2>
-            <GeneralExplain style={'linear-gradient(to bottom, white, gold)'} color={'black'} title={'Combate'} description="Atributos de Combate." isHidden={showAtr != 11} onCancel={() => setShowAtr(0)} />
+            <h2 className="title-container">Combate<button onClick={() => setShowAtr(11)} className="question-button">?</button></h2>
+            <GeneralExplain style={'linear-gradient(to bottom, white, #ec4010)'} color={'black'} title={'Combate'} description="Atributos usados principalmente em Combate." isHidden={showAtr != 11} onCancel={() => setShowAtr(0)} />
 
 
             <div className="container">
@@ -85,35 +80,30 @@ export function CharacterSheet({ character }: Props) {
 
             </div>
 
-            <h2>Carga</h2>
+            <h1 className="title-container">Carga<button className="question-button" onClick={() => setShowAtr(16)}>?</button></h1>
+
+            <GeneralExplain style={'linear-gradient(to bottom, white, #ec4010)'} color={'black'} title={'Carga'} description="Cargas são unidades arbitrárias que representam uma combinação de volume e peso, a fim de simplificar o uso do Inventário." isHidden={showAtr != 16} onCancel={() => setShowAtr(0)} />
 
             <div className="container">
 
-                <button onClick={() => setShowAtr(16)} className="block"><h1>{character.baseWeight}</h1><p className="Atr">PE</p></button>
-                <GeneralExplain style={'linear-gradient(to bottom, white, #ec4010)'} color={'black'} title={'Peso'} description="Peso representa quantas Cargas você ocupa caso alguém tente Carregar ou Levantar você. Cargas são unidades arbitrárias e não se traduzem diretamente em Kg ou Lbs." isHidden={showAtr != 16} onCancel={() => setShowAtr(0)} />
+                <button onClick={() => setShowAtr(17)} className="block"><h1>{character.baseWeight}</h1><p className="Atr">PE</p></button>
+                <GeneralExplain style={'linear-gradient(to bottom, white, #ec4010)'} color={'black'} title={'Peso'} description="Peso representa quantas Cargas você ocupa em um Inventário caso alguém tente Carregar ou Levantar você." isHidden={showAtr != 17} onCancel={() => setShowAtr(0)} />
 
-                <button onClick={() => setShowAtr(17)} className="block"><h1>{character.carryCap}</h1><p className="Atr">CC</p></button>
-                <GeneralExplain style={'linear-gradient(to bottom, white, #ec4010)'} color={'black'} title={'Capacidade de Carga'} description="Capacidade de Carga representa quantas Cargas você consegue ter passivamente no seu inventário antes de sofrer penalidades. Isso envolve itens vestidos, guardados em uma mochila, presos no cinto, entre outros." isHidden={showAtr != 17} onCancel={() => setShowAtr(0)} />
+                <button onClick={() => setShowAtr(18)} className="block"><h1>{character.carryCap}</h1><p className="Atr">CC</p></button>
+                <GeneralExplain style={'linear-gradient(to bottom, white, #ec4010)'} color={'black'} title={'Capacidade de Carga'} description="Capacidade de Carga representa quantas Cargas você consegue ter passivamente no seu inventário antes de sofrer penalidades. Isso envolve itens vestidos, guardados em uma mochila, presos no cinto, entre outros." isHidden={showAtr != 18} onCancel={() => setShowAtr(0)} />
 
-                <button onClick={() => setShowAtr(18)} className="block"><h1>{character.liftCap}</h1><p className="Atr">CL</p></button>
-                <GeneralExplain style={'linear-gradient(to bottom, white, #ec4010)'} color={'black'} title={'Capacidade de Levantamento'} description="Capacidade de Levantamento representa quanto peso em Cargas você consegue manter ativamente acima do solo. Isso envolve remover uma pedra grande do seu caminho ou segurar um inimigo dramáticamente pelo pescoço." isHidden={showAtr != 18} onCancel={() => setShowAtr(0)} />
+                <button onClick={() => setShowAtr(19)} className="block"><h1>{character.liftCap}</h1><p className="Atr">CL</p></button>
+                <GeneralExplain style={'linear-gradient(to bottom, white, #ec4010)'} color={'black'} title={'Capacidade de Levantamento'} description="Capacidade de Levantamento representa quanto peso em Cargas você consegue manter ativamente acima do solo. Isso envolve remover uma pedra grande do seu caminho ou segurar um inimigo dramáticamente pelo pescoço." isHidden={showAtr != 19} onCancel={() => setShowAtr(0)} />
 
             </div>
 
 
-            <h1><button className="lineBtn" onClick={() => setShowAtr(19)}>Defesas</button></h1>
+            <h1 className="title-container">Defesas<button className="question-button" onClick={() => setShowAtr(20)}>?</button></h1>
 
-            <GeneralExplain style={'linear-gradient(to bottom, white, white)'} color={'black'} title={'Defesas'} description="Defesas reduzem o Dano que você recebe em um valor fixo. Cada Defesa é aplicada para o seu Tipo de Dano específico." isHidden={showAtr != 19} onCancel={() => setShowAtr(0)} />
+            <GeneralExplain style={'linear-gradient(to bottom, white, white)'} color={'black'} title={'Defesas'} description="Defesas reduzem o Dano que você recebe em um valor fixo. Cada Defesa é aplicada para o seu Tipo de Dano específico." isHidden={showAtr != 20} onCancel={() => setShowAtr(0)} />
 
-            <h3><button className="lineBtn" onClick={() => setShowAtr(20)}>Total</button></h3>
-            <GeneralExplain style={'linear-gradient(to bottom, white, gold)'} color={'black'} title={'Defesa Total'} description="Defesa Total é aplicada em cada Tipo de Dano que você sofrer, além da Defesa específica. Isto significa que um Ataque com dois tipos de Dano será reduzido pela sua Defesa Total 2 vezes!" isHidden={showAtr != 20} onCancel={() => setShowAtr(0)} />
 
-            <div className="container">
-                <div className="block">Total: {character.fullRes}</div>
-            </div>
-
-            <h3><button className="lineBtn" onClick={() => setShowAtr(21)}>Físicas</button></h3>
-            <GeneralExplain style={'linear-gradient(to bottom, white, grey)'} color={'black'} title={'Defesas Físicas'} description="Defesas Físicas reduzem os tipos de Dano mais comuns que você deve encontrar e podem ser adquiridas facilmente ao equipar peças de Armadura." isHidden={showAtr != 16} onCancel={() => setShowAtr(0)} />
+            <h3>Físicas</h3>
 
             <div className="container">
                 <div className="block">Impacto: {character.impactRes}</div>
@@ -133,6 +123,13 @@ export function CharacterSheet({ character }: Props) {
                 <div className="block">Psíquica: {character.psychicRes}</div>
                 <div className="block">Profana: {character.profaneRes}</div>
                 <div className="block">Sagrada: {character.sacredRes}</div>
+            </div>
+
+            <h3 className="title-container">Total<button className="question-button" onClick={() => setShowAtr(21)}>?</button></h3>
+            <GeneralExplain style={'linear-gradient(to bottom, white, gold)'} color={'black'} title={'Defesa Total'} description="Defesa Total é aplicada em cada Tipo de Dano que você sofrer, além da Defesa específica. Isto significa que um Ataque com dois tipos de Dano será reduzido pela sua Defesa Total 2 vezes!" isHidden={showAtr != 21} onCancel={() => setShowAtr(0)} />
+
+            <div className="container">
+                <div className="block">Total: {character.fullRes}</div>
             </div>
         </>
 

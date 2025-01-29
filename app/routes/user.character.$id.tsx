@@ -93,10 +93,15 @@ export default function CharacterRoute() {
 
   const [selectReset, setReset] = useState<number>(0);
 
+  const [prevTemp, setPrevTemp] = useState<number>(0);
+
   const showReset = () => {
     setReset(() => {
       return character.id;
     });
+
+    setPrevTemp(() => selectTemp);
+
     setTemp(() => {
       return character.id;
     });
@@ -106,9 +111,11 @@ export default function CharacterRoute() {
     setReset(() => {
       return 0
     });
+    prevTemp == 0 ?
     setTemp(() => {
       return 0;
-    });
+    }) :
+    ''
   };
 
 

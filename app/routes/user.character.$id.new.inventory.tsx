@@ -1,11 +1,10 @@
-import { armor, character, weapon } from "@prisma/client";
+import { character, item } from "@prisma/client";
 import { ActionFunction, json, LoaderFunction, redirect } from "@remix-run/node";
 import { NavLink, useLoaderData } from "@remix-run/react";
 import { useState } from "react";
-import { WeaponCircle } from "~/components/weapon-circle";
-import { ArmorCircle } from "~/components/armor-circle";
+import { ItemCircle } from "~/components/item-circle";
 import { requireUserId } from "~/utils/auth.server";
-import { submitCharWeapons, submitCharArmors } from "~/utils/inventory.server";
+import { submitStartingCharItems } from "~/utils/inventory.server";
 import { prisma } from "~/utils/prisma.server";
 
 export const loader: LoaderFunction = async ({ request, params }) => {
@@ -13,42 +12,31 @@ export const loader: LoaderFunction = async ({ request, params }) => {
 
     const referer = request.headers.get("Referer") || "/";
 
-
     const characterId = Number(params.id)
 
     const character = await prisma.character.findUnique({
         where: { id: characterId },
     })
 
-    const weapons = await prisma.weapon.findMany({
-        where: {
-            baseCost: { lte: 500 }
-        },
-    })
-
-    const armors = await prisma.armor.findMany({
+    const items = await prisma.item.findMany({
         where: {
             baseCost: { lte: 500 }
         },
     })
 
 
-    return json({ userId, weapons, armors, character, characterId, referer });
+    return json({ userId, items, character, characterId, referer });
 }
 
 export const action: ActionFunction = async ({ request, params }) => {
     const form = await request.formData();
-    const selectedWeapons = form.getAll('weapons') as string[];
-    const selectedWeaponIds = selectedWeapons.map(id => parseInt(id))
-    const selectedArmors = form.getAll('armors') as string[];
-    const selectedArmorIds = selectedArmors.map(id => parseInt(id))
+    const selectedItems = form.getAll('items') as string[];
+    const selectedItemIds = selectedItems.map(id => parseInt(id))
     const characterId = params.id
 
 
     try {
-        await submitCharWeapons(selectedWeaponIds, Number(characterId))
-        await submitCharArmors(selectedArmorIds, Number(characterId))
-
+        await submitStartingCharItems(selectedItemIds, Number(characterId))
         return redirect(`/user/character/${characterId}/stats`);
 
     } catch (error) {
@@ -58,10 +46,9 @@ export const action: ActionFunction = async ({ request, params }) => {
 
 }
 
-export default function WeaponSelection() {
-    const { weapons, armors, character, referer } = useLoaderData<{ weapons: weapon[]; armors: armor[]; character: character, referer: string }>();
-    const [selectedWeapons, setSelectedWeapons] = useState<number[]>([]);
-    const [selectedArmors, setSelectedArmors] = useState<number[]>([]);
+export default function ItemSelection() {
+    const { items, character, referer } = useLoaderData<{ items: item[]; character: character, referer: string }>();
+    const [selectedItems, setSelectedItems] = useState<number[]>([]);
     const [selectedCost, setSelectedCost] = useState<number>(0);
     const [error, setError] = useState<string | null>(null);
     const maxCost = character.gold;
@@ -70,54 +57,28 @@ export default function WeaponSelection() {
     const isMaxSelected = selectedCost >= maxCost;
 
 
-    const handleWeaponClick = (weaponId: number, cost: number) => {
-        setSelectedWeapons((prevWeapons) => {
-            const isSelected = prevWeapons.includes(weaponId);
+    const handleItemClick = (itemId: number, cost: number) => {
+        setSelectedItems((prevItems) => {
+            const isSelected = prevItems.includes(itemId);
             let newCost = selectedCost;
 
             if (isSelected) {
 
                 newCost -= cost;
                 setSelectedCost(newCost);
-                return prevWeapons.filter(id => id !== weaponId);
+                return prevItems.filter(id => id !== itemId);
 
             } else {
 
                 if (newCost + cost > maxCost) {
                     setError("Você não pode pagar este item.");
-                    return prevWeapons;
+                    return prevItems;
 
                 } else {
                     newCost += cost;
                     setSelectedCost(newCost);
                     setError(null);
-                    return [...prevWeapons, weaponId];
-                }
-            }
-        });
-    };
-
-    const handleArmorClick = (armorId: number, cost: number) => {
-        setSelectedArmors((prevArmors) => {
-            const isSelected = prevArmors.includes(armorId);
-            let newCost = selectedCost;
-
-            if (isSelected) {
-                newCost -= cost;
-                setSelectedCost(newCost);
-                return prevArmors.filter(id => id !== armorId);
-
-            } else {
-
-                if (newCost + cost > maxCost) {
-                    setError("Você não pode pagar este item.");
-                    return prevArmors;
-
-                } else {
-                    newCost += cost;
-                    setSelectedCost(newCost);
-                    setError(null);
-                    return [...prevArmors, armorId];
+                    return [...prevItems, itemId];
                 }
             }
         });
@@ -129,33 +90,33 @@ export default function WeaponSelection() {
         <form method="post">
             <h1 className="title-container">Inventário<NavLink style={{ color: 'red' }} className={'question-button'} to={referer}>X</NavLink></h1>
             <h1>Armas</h1>
-            <div className="weapons-grid">
-                {weapons.map(weapon => (
-                    <WeaponCircle
-                        key={weapon.id}
-                        weapon={weapon}
-                        isSelected={selectedWeapons.includes(weapon.id)}
-                        onClick={() => !isMaxSelected || selectedWeapons.includes(weapon.id) ? handleWeaponClick(weapon.id, weapon.baseCost) : null}
+            <div className="items-grid">
+                {items.map(item => (
+                    <ItemCircle
+                        key={item.id}
+                        item={item}
+                        isSelected={selectedItems.includes(item.id)}
+                        onClick={() => !isMaxSelected || selectedItems.includes(item.id) ? handleItemClick(item.id, item.baseCost) : null}
                     />
                 ))}
             </div>
-            {selectedWeapons.map(weaponId => (
-                <input type="hidden" key={weaponId} name="weapons" value={weaponId} />
+            {selectedItems.map(itemId => (
+                <input type="hidden" key={itemId} name="items" value={itemId} />
             ))}
 
             <h1>Armaduras</h1>
-            <div className="armors-grid">
-                {armors.map(armor => (
-                    <ArmorCircle
-                        key={armor.id}
-                        armor={armor}
-                        isSelected={selectedArmors.includes(armor.id)}
-                        onClick={() => !isMaxSelected || selectedArmors.includes(armor.id) ? handleArmorClick(armor.id, armor.baseCost) : null}
+            <div className="items-grid">
+                {items.map(item => (
+                    <ItemCircle
+                        key={item.id}
+                        item={item}
+                        isSelected={selectedItems.includes(item.id)}
+                        onClick={() => !isMaxSelected || selectedItems.includes(item.id) ? handleItemClick(item.id, item.baseCost) : null}
                     />
                 ))}
             </div>
-            {selectedArmors.map(armorId => (
-                <input type="hidden" key={armorId} name="armors" value={armorId} />
+            {selectedItems.map(itemId => (
+                <input type="hidden" key={itemId} name="items" value={itemId} />
             ))}
             <div className="dice-box">
                 <h2>Auramares: {character.gold - selectedCost}</h2>

@@ -4,11 +4,11 @@ import { json, LoaderFunction, } from "@remix-run/node";
 import { NavLink, Outlet, useLoaderData } from "@remix-run/react";
 import { prisma } from "~/utils/prisma.server";
 import { LSrelations } from "~/utils/types.server";
-import { armor, character, character_armor, character_weapon, lineage, path, skill, weapon } from "@prisma/client";
+import { character, character_item, lineage, path, skill, item } from "@prisma/client";
 import { ResetConfirm } from "~/components/character-sheet/reset-confirm";
 import React, { useState } from "react";
-import { CharacterWeaponCircle } from "~/components/c-weapon-circle";
-import { CharacterWeaponExplain } from "~/components/explanations/weapon-explain";
+import { CharacterItemCircle } from "~/components/c-item-circle";
+import { CharacterItemExplain } from "~/components/explanations/item-explain";
 
 
 export const loader: LoaderFunction = async ({ params }) => {
@@ -67,28 +67,21 @@ export const loader: LoaderFunction = async ({ params }) => {
   });
 
 
-  const weapons = await prisma.character_weapon.findMany({
+  const items = await prisma.character_item.findMany({
     where: {
       characterId: characterId
     },
-    include: { weapon: true }
+    include: { item: true }
   })
 
-  const armors = await prisma.character_armor.findMany({
-    where: {
-      characterId: characterId
-    },
-    include: { armor: true }
-  })
-
-  return json({ skills, pureLineageSkills, nonPureLineageSkills, character, characterId, lineages, isPure, paths, weapons, armors });
+  return json({ skills, pureLineageSkills, nonPureLineageSkills, character, characterId, lineages, isPure, paths, items });
 };
 
 export default function CharacterRoute() {
   const { character, characterId } = useLoaderData<{ character: character, characterId: string }>()
   const { skills, pureLineageSkills, nonPureLineageSkills } = useLoaderData<{ skills: skill[], pureLineageSkills: LSrelations, nonPureLineageSkills: LSrelations }>();
   const { lineages, isPure } = useLoaderData<{ lineages: lineage[], isPure: boolean }>();
-  const { weapons, armors } = useLoaderData<{ weapons: (character_weapon & { weapon: weapon })[], armors: (character_armor & { armor: armor })[] }>();
+  const { items } = useLoaderData<{ items: (character_item & { item: item })[] }>();
   const { paths } = useLoaderData<{ paths: path[] }>();
 
   const [selectReset, setReset] = useState<number>(0);
@@ -146,15 +139,15 @@ export default function CharacterRoute() {
     });
   };
 
-  const [showWeapon, setShowWeapon] = useState<number>();
+  const [showItem, setShowItem] = useState<number>();
 
-  const explainWeapon = (id: number) => {
-    showWeapon != id ?
-      setShowWeapon(() => {
+  const explainItem = (id: number) => {
+    showItem != id ?
+      setShowItem(() => {
         return id;
       })
       :
-      setShowWeapon(() => {
+      setShowItem(() => {
         return 0;
       })
   }
@@ -208,24 +201,24 @@ export default function CharacterRoute() {
         <h1>Inventário</h1>
         <h1 className="title-container"><NavLink className="question-button" to={`/user/character/${characterId}/new/inventory/`}>+</NavLink></h1>
         <p>Auramares: {character.gold}</p>
-        <p>Cargas: {weapons.map(weapons => weapons.weight).reduce((accumulator, currentValue) => accumulator + currentValue, 0)}/{character.carryCap}</p>
+        <p>Cargas: {items.map(items => items.weight).reduce((accumulator, currentValue) => accumulator + currentValue, 0)}/{character.carryCap}</p>
 
         <ul>
           <li><button style={selectInv <= 1 ? { display: 'inherit' } : { display: 'none' }} onClick={() => selectInv === 0 ? setInv(1) : setInv(0)}>Armas</button></li>
 
 
-          {selectInv === 1 ? weapons.map(weapon => (
-            <React.Fragment key={weapon.id}>
-              <CharacterWeaponCircle
-                weapon={weapon}
+          {selectInv === 1 ? items.map(item => (
+            <React.Fragment key={item.id}>
+              <CharacterItemCircle
+                item={item}
                 isSelected={false}
-                onClick={() => explainWeapon(weapon.id)}
+                onClick={() => explainItem(item.id)}
               />
-              <CharacterWeaponExplain
+              <CharacterItemExplain
                 style={'linear-gradient(to bottom right, gold, goldenrod)'}
-                character_weapon={weapon}
-                isHidden={showWeapon != weapon.id}
-                onCancel={() => setShowWeapon(0)}
+                character_item={item}
+                isHidden={showItem != item.id}
+                onCancel={() => setShowItem(0)}
               />
             </React.Fragment>
 
@@ -244,7 +237,7 @@ export default function CharacterRoute() {
 
 
       <div className="character-sheet" style={isAllOpen ? { marginLeft: '200px', marginRight: '200px' } : isHeaderOpen ? { marginLeft: '200px' } : isTempOpen ? { marginRight: '200px' } : {}}>
-        <Outlet context={{ character, skills, paths, lineages, pureLineageSkills, nonPureLineageSkills, isPure, weapons, armors }} />
+        <Outlet context={{ character, skills, paths, lineages, pureLineageSkills, nonPureLineageSkills, isPure, items }} />
       </div >
     </>
   );

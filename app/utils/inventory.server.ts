@@ -32,12 +32,12 @@ export const submitStartingCharItems = async (itemList: number[], characterId: n
         characterId: characterId,
         itemId: i.id,
         craftTier: 1,
-        material: materialMapping[i.itemSubtype] || 'Ferro',
+        material: materialMapping[i.subType] || 'Ferro',
         weight: i.baseWeight,
         cost: i.baseCost,        
 
         reach: i.baseReach || null,
-        hitMod: weaponMapping[i.itemType] || null,
+        hitMod: weaponMapping[i.type] || null,
 
         defense: i.baseDefense || null,
         

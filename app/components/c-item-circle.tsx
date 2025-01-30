@@ -13,8 +13,7 @@ interface Props {
 
 
 
-export function CharacterItemCircle({ item, onClick }: Props) {
-
+export function CharacterItemCircle({ item, isSelected, onClick }: Props) {
   const [selectedDelete, setSelectedDelete] = useState<number>(0);
 
   const showDelete = () => {
@@ -30,6 +29,7 @@ export function CharacterItemCircle({ item, onClick }: Props) {
   };
 
   return (
+
     <>
       <li>
         <button onClick={onClick}>
@@ -40,5 +40,6 @@ export function CharacterItemCircle({ item, onClick }: Props) {
         <DeleteConfirm name={item.item.name + ' de ' + item.material} isHidden={selectedDelete === 0} onShow={showDelete} onCancel={cancelDelete} entity='item' id={String(item.id)} />
       </div>
     </>
+
   );
 }

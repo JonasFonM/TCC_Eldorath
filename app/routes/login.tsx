@@ -42,7 +42,7 @@ export const action: ActionFunction = async ({ request }) => {
       return await register({ email, password, username })
     }
     default:
-      return json({ error: `Invalid Form Data` }, { status: 400 });
+      return json({ error: `Dados inválidos` }, { status: 400 });
   }
 }
 
@@ -112,12 +112,12 @@ export default function Login() {
         <div>
           <button className='button'
             onClick={() => setAction(action == 'login' ? 'register' : 'login')}>
-            {action === 'login' ? 'Sign Up' : 'Log In'}
+            {action === 'login' ? 'Cadastrar' : 'Entrar'}
           </button>
           {/* ... */}
         </div>
         <h2>
-          {action === 'login' ? 'Log In' : 'Sign Up'}
+          {action === 'login' ? 'Entrar' : 'Cadastrar'}
         </h2>
         <form method="POST" onSubmit={handleSubmit}>
           <div>{formError}</div>
@@ -154,7 +154,7 @@ export default function Login() {
           <div className='block'>
             <button type="submit" name="_action" value={action} className="login-button">
               {
-                action === 'login' ? "Sign In" : "Sign Up"
+                action === 'login' ? "Entrar" : "Cadastrar"
               }
             </button>
           </div>

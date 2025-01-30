@@ -5,11 +5,9 @@ import "~/styles.css";
 export function CharacterPanel({ characters }: { characters: character[] }) {
     return (
         <div>
-            <div>
                 {characters.map(character => (
                     <CharacterCircle key={character.id} character={character} />
                 ))}
-            </div>
         </div>
     )
 }

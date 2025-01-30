@@ -96,18 +96,18 @@ model character {
 
   gold Int @default(500)
 
-  slotWeapon   Int @default(2)
-  slotHelm     Int @default(1)
-  slotPauldron Int @default(2)
-  slotGauntlet Int @default(2)
-  slotCuirass  Int @default(1)
-  slotTassets  Int @default(1)
-  slotGreaves  Int @default(2)
-  slotCloak    Int @default(1)
-  slotAmulet   Int @default(1)
-  slotBelt     Int @default(1)
-  slotRings    Int @default(10)
-  slotEarings  Int @default(2)
+  slotWeapon    Int @default(2)
+  slotHelm      Int @default(1)
+  slotPauldron  Int @default(2)
+  slotGauntlet  Int @default(2)
+  slotCuirass   Int @default(1)
+  slotUpperLegs Int @default(1)
+  slotGreaves   Int @default(2)
+  slotCloak     Int @default(1)
+  slotAmulet    Int @default(1)
+  slotBelt      Int @default(1)
+  slotRings     Int @default(10)
+  slotEarings   Int @default(2)
 
   public   Boolean @default(false)
   authorId Int
@@ -116,8 +116,7 @@ model character {
   skills   character_skill[]   @relation
   lineages character_lineage[] @relation
   paths    character_path[]    @relation
-  weapons  character_weapon[]  @relation
-  armors   character_armor[]   @relation
+  items    character_item[]    @relation
 
   @@index([authorId], map: "authorId")
 }
@@ -268,39 +267,80 @@ model lineage_skill {
   @@unique([lineageId, skillId])
 }
 
-model weapon {
-  id          Int        @id @default(autoincrement())
+model item {
+  id          Int         @id @default(autoincrement())
   name        String
   description String
-  type        weaponType
-  baseWeight  Int        @default(0)
-  baseCost    Int        @default(0)
-  baseReach   Int        @default(1)
+  type        itemType    @default(slotWeapon)
+  subType     itemSubtype @default(Bow)
+  baseWeight  Int         @default(1)
+  baseCost    Int         @default(10)
 
-  characters character_weapon[] @relation
+  baseReach Int?
+
+  baseDefense Int?
+
+  //flex values for Damage Dies and Damage Resistances
+  impact Int @default(0)
+  pierce Int @default(0)
+  slash  Int @default(0)
+
+  characters character_item[] @relation
 }
 
-model character_weapon {
+model character_item {
   id          Int      @id @default(autoincrement())
   characterId Int
-  weaponId    Int
+  itemId      Int
   craftTier   Int      @default(1)
-  material    material
-  reach       Int      @default(1)
+  material    material @default(Ferro)
   weight      Int      @default(0)
   cost        Int      @default(0)
+  equipped    Boolean  @default(false)
 
-  slotType slotType @default(slotWeapon)
+  reach  Int?
+  hitMod Int?
 
-  wielding   Boolean @default(false)
-  twoHanding Boolean @default(false)
+  defense Int?
+
+  //flex values for Damage Dies and Damage Resistances
+  impact        Int @default(0)
+  pierce        Int @default(0)
+  slash         Int @default(0)
+  acid          Int @default(0)
+  cold          Int @default(0)
+  fire          Int @default(0)
+  lightning     Int @default(0)
+  arcane        Int @default(0)
+  cosmic        Int @default(0)
+  psychic       Int @default(0)
+  profane       Int @default(0)
+  sacred        Int @default(0)
+  full          Int @default(0)
+  critDmgMod    Int @default(0)
+  critChanceMod Int @default(0)
 
   character character @relation(fields: [characterId], references: [id])
-  weapon    weapon    @relation(fields: [weaponId], references: [id])
-  attacks   attack[]
+  item      item      @relation(fields: [itemId], references: [id])
 }
 
-enum weaponType {
+enum itemType {
+  slotAmulet
+  slotBelt
+  slotCloak
+  slotCuirass
+  slotEarings
+  slotGauntlet
+  slotGreaves
+  slotHelm
+  slotPauldron
+  slotRings
+  slotUpperLegs
+  slotWeapon
+  consumable
+}
+
+enum itemSubtype {
   Bow
   Discreet
   Thrown
@@ -319,30 +359,17 @@ enum weaponType {
   Lance
   Axe
   Hammer
-}
-
-model attack {
-  id           Int               @id @default(autoincrement())
-  charWeaponId Int?
-  name         String
-  hitMod       Int               @default(0)
-  critChance   Int               @default(6)
-  critMult     Float             @default(2)
-  reach        Int               @default(1)
-  vigorCost    Int               @default(1)
-  damages      atkDamage[]       @relation
-  charWeapon   character_weapon? @relation(fields: [charWeaponId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "a_ibfk_1")
-}
-
-model atkDamage {
-  id         Int        @id @default(autoincrement())
-  attackId   Int        @unique
-  damageType damageType
-  baseDie    Int        @default(1)
-  agiScale   Float      @default(0)
-  strScale   Float      @default(0)
-  mndScale   Float      @default(0)
-  attack     attack     @relation(fields: [attackId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "dmg_ibfk_1")
+  lArmor
+  mArmor
+  hArmor
+  lShield
+  mShield
+  hShield
+  Catalyst
+  Focus
+  Potion
+  Oil
+  Bomb
 }
 
 enum damageType {
@@ -374,79 +401,7 @@ enum material {
   Ouro
   Adamante
   Draconico
-}
-
-model armor {
-  id          Int    @id @default(autoincrement())
-  name        String
-  description String
-  baseDefense Int    @default(1)
-  weight      Int    @default(0)
-  baseCost    Int    @default(0)
-
-  slotType slotType @default(slotCuirass)
-
-  impactRes    Int @default(1)
-  pierceRes    Int @default(1)
-  slashRes     Int @default(1)
-  acidRes      Int @default(0)
-  coldRes      Int @default(0)
-  fireRes      Int @default(0)
-  lightningRes Int @default(0)
-  arcaneRes    Int @default(0)
-  cosmicRes    Int @default(0)
-  psychicRes   Int @default(0)
-  profaneRes   Int @default(0)
-  sacredRes    Int @default(0)
-  fullRes      Int @default(0)
-
-  characters character_armor[] @relation
-}
-
-enum slotType {
-  slotWeapon
-  slotHelm
-  slotPauldron
-  slotGauntlet
-  slotCuirass
-  slotTassets
-  slotGreaves
-  slotCloak
-  slotAmulet
-  slotBelt
-  slotRings
-  slotEarings
-}
-
-model character_armor {
-  id          Int      @id @default(autoincrement())
-  characterId Int
-  armorId     Int
-  material    material
-  craftTier   Int      @default(1)
-  defense     Int      @default(1)
-  weight      Int      @default(0)
-  baseCost    Int      @default(0)
-
-  slotType slotType @default(slotCuirass)
-
-  impactRes    Int @default(1)
-  pierceRes    Int @default(1)
-  slashRes     Int @default(1)
-  acidRes      Int @default(0)
-  coldRes      Int @default(0)
-  fireRes      Int @default(0)
-  lightningRes Int @default(0)
-  arcaneRes    Int @default(0)
-  cosmicRes    Int @default(0)
-  psychicRes   Int @default(0)
-  profaneRes   Int @default(0)
-  sacredRes    Int @default(0)
-  fullRes      Int @default(0)
-
-  equipped  Boolean   @default(false)
-  character character @relation(fields: [characterId], references: [id])
-  armor     armor     @relation(fields: [armorId], references: [id])
+  Alquimico
 }
 
 model user {

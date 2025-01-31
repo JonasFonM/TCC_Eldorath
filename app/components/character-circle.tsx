@@ -30,11 +30,11 @@ export function CharacterCircle({ character }: props) {
   };
 
   return (
-    <div>
-       
-        <NavLink className='title-container' style={{textDecoration: 'none', color: 'white'}} to={`/user/character/${character.id}/stats/`}><h1 style={{fontSize: '1.7rem'}}>{character.name}</h1></NavLink>
+    <div className='title-container'>
 
-        <DeleteConfirm name={character.name} isHidden={selectedDelete === 0} onShow={showDelete} onCancel={cancelDelete} entity={"character"} id={String(character.id)} />
+      <NavLink style={{ textDecoration: 'none', color: 'white' }} to={`/user/character/${character.id}/stats/`}><h1 style={{ fontSize: '1.7rem' }}>{character.name}</h1></NavLink>
+
+      <DeleteConfirm name={character.name} isHidden={selectedDelete === 0} onShow={showDelete} onCancel={cancelDelete} entity={"character"} id={String(character.id)} />
 
     </div>
   )

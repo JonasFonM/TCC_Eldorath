@@ -66,7 +66,7 @@ export default function PathSelection() {
             })
     }
 
-    const handlePathClick = (pathId: number) => {
+    const handlePathClick = (pathId: number, pathTier: number) => {
         setSelectedPaths((prevPaths) => {
             const isSelected = prevPaths.includes(pathId);
 
@@ -74,8 +74,8 @@ export default function PathSelection() {
                 ? prevPaths.filter(id => id !== pathId)
                 : [...prevPaths, pathId];
 
-            if (newSelectedPaths.length > maxSelectable) {
-                setError("Você só pode selecionar 1 caminho por Categoria.");
+            if (newSelectedPaths.length * pathTier > maxSelectable) {
+                setError("Você selecionou o máximo de caminhos.");
                 return prevPaths;
             } else {
                 setError(null);
@@ -106,7 +106,7 @@ export default function PathSelection() {
                                         key={p.id}
                                         path={p}
                                         show={show === (p.pathTier)}
-                                        onClick={() => handlePathClick(p.id)}
+                                        onClick={() => handlePathClick(p.id, 1)}
                                         selected={selectedPaths.includes(p.id)}
 
                                     />
@@ -130,7 +130,7 @@ export default function PathSelection() {
                                                 key={p.id}
                                                 path={p}
                                                 show={show === (p.pathTier)}
-                                                onClick={() => handlePathClick(p.id)}
+                                                onClick={() => handlePathClick(p.id, 2)}
                                                 selected={selectedPaths.includes(p.id)}
 
                                             />
@@ -157,7 +157,7 @@ export default function PathSelection() {
                                                 key={p.id}
                                                 path={p}
                                                 show={show === (p.pathTier)}
-                                                onClick={() => handlePathClick(p.id)}
+                                                onClick={() => handlePathClick(p.id, 3)}
                                                 selected={selectedPaths.includes(p.id)}
                                             />
                                         </>
@@ -181,7 +181,7 @@ export default function PathSelection() {
                                                 key={p.id}
                                                 path={p}
                                                 show={show === (p.pathTier)}
-                                                onClick={() => handlePathClick(p.id)}
+                                                onClick={() => handlePathClick(p.id, 4)}
                                                 selected={selectedPaths.includes(p.id)}
 
                                             />

@@ -28,10 +28,8 @@ export const loader: LoaderFunction = async ({ params, request }) => {
         }
     });
 
-    await prisma.character_armor.deleteMany({
-        where: { characterId: characterId },
-    });
-    await prisma.character_weapon.deleteMany({
+
+    await prisma.character_item.deleteMany({
         where: { characterId: characterId },
     });
     await prisma.character_lineage.deleteMany({

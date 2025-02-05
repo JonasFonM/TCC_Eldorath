@@ -2,11 +2,9 @@ import { NavLink, useOutletContext } from "@remix-run/react";
 import { path } from "@prisma/client";
 import { LoaderFunction } from "@remix-run/node";
 import { PathExplain } from "~/components/explanations/path-explain";
-import { TableData } from "~/components/character-sheet/general-table-data";
-import { TableHead } from "~/components/character-sheet/general-table";
-import { useState } from "react";
-import { PathTableHead } from "~/components/character-sheet/path-table";
 import { PathTableData } from "~/components/character-sheet/path-table-data";
+import { PathTableHead } from "~/components/character-sheet/path-table";
+import { useState } from "react";
 
 export const loader: LoaderFunction = async ({ params }) => {
   const characterId = params.id;
@@ -45,9 +43,6 @@ export default function PathsRoute() {
         return 0;
       })
   }
-
-  const tableTitles = ["Caminho", "Vit", "Pod", "Tec", "Man", "Jur", "Tru", "Mag"]
-
   return (
     <>
 
@@ -64,11 +59,11 @@ export default function PathsRoute() {
 
           <table >
 
-            <TableHead tableTitles={tableTitles} onClick={() => showRow(p.pathTier)} />
+            <PathTableHead onClick={() => showRow(p.pathTier)} />
 
-            <TableData
+            <PathTableData
               key={p.id}
-              tableData={[p.name, String(p.vitality), String(p.power), String(p.addTechniques), String(p.addManeuvers), String(p.addOaths), String(p.addTricks), String(p.addMagics)]}
+              path={p}
               show={show === (p.pathTier)}
               onClick={() => explainPath(p.id)}
               selected={false}
@@ -88,19 +83,17 @@ export default function PathsRoute() {
           <h2 style={{ fontVariant: 'small-caps' }}>Caminhos Veteranos</h2>
 
           <table >
+            <PathTableHead onClick={() => showRow(p.pathTier)} />
 
-            <TableHead tableTitles={tableTitles} onClick={() => showRow(p.pathTier)} />
-
-            <TableData
+            <PathTableData
               key={p.id}
-              tableData={[p.name, String(p.vitality), String(p.power), String(p.addTechniques), String(p.addManeuvers), String(p.addOaths), String(p.addTricks), String(p.addMagics)]}
+              path={p}
               show={show === (p.pathTier)}
               onClick={() => explainPath(p.id)}
               selected={false}
 
             />
             <PathExplain style={'linear-gradient(to bottom right, gold, goldenrod)'} path={p} isHidden={showPath != p.id} onCancel={() => setShowPath(0)} />
-
           </table>
         </>
 
@@ -112,18 +105,17 @@ export default function PathsRoute() {
 
           <table >
 
-            <TableHead tableTitles={tableTitles} onClick={() => showRow(p.pathTier)} />
+            <PathTableHead onClick={() => showRow(p.pathTier)} />
 
-            <TableData
+            <PathTableData
               key={p.id}
-              tableData={[p.name, String(p.vitality), String(p.power), String(p.addTechniques), String(p.addManeuvers), String(p.addOaths), String(p.addTricks), String(p.addMagics)]}
+              path={p}
               show={show === (p.pathTier)}
               onClick={() => explainPath(p.id)}
               selected={false}
 
             />
             <PathExplain style={'linear-gradient(to bottom right, gold, goldenrod)'} path={p} isHidden={showPath != p.id} onCancel={() => setShowPath(0)} />
-
           </table>
 
         </>
@@ -136,18 +128,17 @@ export default function PathsRoute() {
 
           <table >
 
-            <TableHead tableTitles={tableTitles} onClick={() => showRow(p.pathTier)} />
+            <PathTableHead onClick={() => showRow(p.pathTier)} />
 
-            <TableData
+            <PathTableData
               key={p.id}
-              tableData={[p.name, String(p.vitality), String(p.power), String(p.addTechniques), String(p.addManeuvers), String(p.addOaths), String(p.addTricks), String(p.addMagics)]}
+              path={p}
               show={show === (p.pathTier)}
               onClick={() => explainPath(p.id)}
               selected={false}
 
             />
             <PathExplain style={'linear-gradient(to bottom right, gold, goldenrod)'} path={p} isHidden={showPath != p.id} onCancel={() => setShowPath(0)} />
-
           </table>
 
         </>

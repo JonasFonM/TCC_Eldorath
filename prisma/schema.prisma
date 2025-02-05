@@ -11,36 +11,50 @@ datasource db {
 model campaign {
   id         Int       @id @default(autoincrement())
   createdAt  DateTime  @default(now()) @db.Timestamp(0)
+  masterId   Int
+  user       user      @relation(fields: [masterId], references: [id], map: "campaign_gmfk_1")
+  public     Boolean   @default(false)
+
   title      String    @db.Text
-  daysPassed Int
+  weekDay    weekDay   @default(Aeteri)
   month      monthName @default(Vivenerius)
-  weekDay    weekDay
+  monthDay   Int
   timeOfDay  timeOfDay
+  
+}
+//Adicionar characters e effects para o Modelo campaign
+
+model scene {
+  id         Int       @id @default(autoincrement())
+  campaignId Int       
+  campaign   campaign    @relation(fields: [campaignId], references: [id], map: "campaign_scfk_1")
+
+  createdAt  DateTime  @default(now()) @db.Timestamp(0)
+  title      String    @db.Text
 }
 
 enum monthName {
-  Vivenerius //Summer - Month of Life
-  Iudelo //Summer - Month of Light and Justice
-  Auramo //Summer - Month of Prosperity
-  Taxidinas // Autumn - Month of Journeys
-  Ipnas // Autumn - Month of Slumber
-  Malkan // Autumn - Moth of Mourning
-  Fengarinas //Winter - Month of the Moon
-  Belliurus //Winter - Month of Battles
-  Hermicus //Winter - Month of Magic
-  Artemino // Spring - Month of Nature
-  Irinias // Spring - Month of Peace
-  Krona // Spring - Month of Thoughtfulness
+  Aetera // Verao - Mes de Aeter, o Aeterno
+  Luxar  // Verao - Mes da Primeira Luz e Justicar
+  Vita     // Verao - Month of Life
+   // Outono - Month of Journeys
+  Malkar   // Outono - Mes de Malkas
+  Lual     // Outono - Mes de Silveran
+  Magika   // Inverno - Mes da Magia
+  Kronica  // Inverno - Mes 
+  Exora    // Inverno Mes do Êxodo
+  Natura   // Spring - Month of Nature
+  Fortuna  // Primavera - Month of Prosperity and Luck
+    // Spring - Month of Thoughtfulness
 }
 
 enum weekDay {
-  Aeteri //Dia de Aeter, o Aeterno
-  Silveri // Dia da Lua de Prata
-  Ulri // Dia de Ulrometh, o Guerreiro
-  Auramari //Dia de Auramar, o Dourado
-  Viveri // Dia de Viven, a Progenitora
-  Justari //Dia de Justicar, a Luz da Justiça
-  Exori // Dia do Êxodo
+  Descanso
+  Preparo
+  Jornada
+  Batalha
+  Luto
+  Paz
 }
 
 enum timeOfDay {
@@ -412,4 +426,6 @@ model user {
   username   String
   password   String
   characters character[] @relation()
+
+  //Adicionar uma auto-relation 'friends' ou semelhante
 }

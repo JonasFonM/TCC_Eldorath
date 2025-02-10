@@ -9,43 +9,60 @@ datasource db {
 }
 
 model campaign {
-  id         Int       @id @default(autoincrement())
-  createdAt  DateTime  @default(now()) @db.Timestamp(0)
-  masterId   Int
-  user       user      @relation(fields: [masterId], references: [id], map: "campaign_gmfk_1")
-  public     Boolean   @default(false)
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now()) @db.Timestamp(0)
+  masterId  Int
+  user      user     @relation(fields: [masterId], references: [id], map: "campaign_gmfk_1")
+  public    Boolean  @default(false)
 
-  title      String    @db.Text
-  weekDay    weekDay   @default(Aeteri)
-  month      monthName @default(Vivenerius)
-  monthDay   Int
-  timeOfDay  timeOfDay
-  
+  title     String    @db.Text
+  era       String    @default("7AE")
+  weekDay   weekDay   @default(Preparo)
+  month     monthName @default(Aeterna)
+  monthDay  Int
+  timeOfDay timeOfDay
+
+  scenes     scene[]     @relation()
+  characters character[] @relation()
 }
-//Adicionar characters e effects para o Modelo campaign
 
 model scene {
-  id         Int       @id @default(autoincrement())
-  campaignId Int       
+  id         Int         @id @default(autoincrement())
+  campaignId Int
   campaign   campaign    @relation(fields: [campaignId], references: [id], map: "campaign_scfk_1")
+  createdAt  DateTime    @default(now()) @db.Timestamp(0)
+  title      String      @db.Text
+  logs       log[]       @relation()
+  characters character[] @relation()
+}
 
-  createdAt  DateTime  @default(now()) @db.Timestamp(0)
-  title      String    @db.Text
+model log {
+  id      Int   @id @default(autoincrement())
+  sceneId Int
+  scene   scene @relation(fields: [sceneId], references: [id], map: "scene_scfk_1")
+
+  action       String
+  actorName    String
+  targetNames  String
+  effects      String
+  hit          Boolean?
+  criticalHit  Boolean?
+  damageCaused Int?
 }
 
 enum monthName {
-  Aetera // Verao - Mes de Aeter, o Aeterno
-  Luxar  // Verao - Mes da Primeira Luz e Justicar
-  Vita     // Verao - Month of Life
-   // Outono - Month of Journeys
-  Malkar   // Outono - Mes de Malkas
-  Lual     // Outono - Mes de Silveran
-  Magika   // Inverno - Mes da Magia
-  Kronica  // Inverno - Mes 
-  Exora    // Inverno Mes do Êxodo
-  Natura   // Spring - Month of Nature
-  Fortuna  // Primavera - Month of Prosperity and Luck
-    // Spring - Month of Thoughtfulness
+  Aeterna // Verao - Mes de Aeter e da Criação
+  Luxar // Verao - Mes da Primeira Luz e Justicar
+  Vita // Verao - Month of Life
+  Lual // Outono - Mes de Silveran
+  Agnus // Outono - Mes do Sacrifício
+  Malkar // Outono - Mes das Despedidas
+  Magika // Inverno - Mes da Magia
+  Kronica // Inverno - Mes dos Ciclos
+  Exora // Inverno Mes do Êxodo
+  Natura // Primavera - Mes da Natureza
+  Fortuna // Primavera - Mes da Prosperidade
+  Harmonia // Primavera - Mes da Paz
 }
 
 enum weekDay {
@@ -54,7 +71,7 @@ enum weekDay {
   Jornada
   Batalha
   Luto
-  Paz
+  Partilha
 }
 
 enum timeOfDay {
@@ -131,6 +148,12 @@ model character {
   lineages character_lineage[] @relation
   paths    character_path[]    @relation
   items    character_item[]    @relation
+
+  campaign   campaign? @relation(fields: [campaignId], references: [id])
+  campaignId Int?
+
+  scene   scene? @relation(fields: [sceneId], references: [id])
+  sceneId Int?
 
   @@index([authorId], map: "authorId")
 }
@@ -426,6 +449,7 @@ model user {
   username   String
   password   String
   characters character[] @relation()
+  campaigns  campaign[]  @relation()
 
   //Adicionar uma auto-relation 'friends' ou semelhante
 }

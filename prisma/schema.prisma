@@ -165,9 +165,10 @@ model action {
   vigorCost Int @default(0)
   powerCost Int @default(0)
 
-  attack   Boolean @default(false)
-  useItem  Boolean @default(false) //Determines if an Item might be used with the action
-  reaction Boolean @default(false)
+  attack       Boolean @default(false)
+  requiresTest Boolean @default(false) //Determines if a D6 must be rolled to determine Success of the action
+  useItem      Boolean @default(false) //Determines if an Item is used as a part of the action
+  reaction     Boolean @default(false)
 
   baseDice     actionDie[]
   baseRange    Int         @default(1) //Determines range for movements and attacks 
@@ -591,14 +592,35 @@ enum material {
 }
 
 model user {
-  id         Int         @id @default(autoincrement())
-  createdAt  DateTime    @default(now())
-  updatedAt  DateTime    @updatedAt
-  email      String      @unique
-  username   String
-  password   String
-  characters character[] @relation()
-  campaigns  campaign[]  @relation()
+  id               Int          @id @default(autoincrement())
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
+  email            String       @unique
+  username         String
+  password         String
+  characters       character[]  @relation()
+  campaigns        campaign[]   @relation()
+  sentRequests     Friendship[] @relation("FriendshipUser1")
+  receivedRequests Friendship[] @relation("FriendshipUser2")
+}
 
-  //Adicionar uma auto-relation 'friends' ou semelhante
+model Friendship {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+
+  user1   user @relation("FriendshipUser1", fields: [user1Id], references: [id])
+  user1Id Int
+
+  user2   user @relation("FriendshipUser2", fields: [user2Id], references: [id])
+  user2Id Int
+
+  status FriendshipStatus @default(PENDING)
+
+  @@unique([user1Id, user2Id])
+}
+
+enum FriendshipStatus {
+  PENDING
+  ACCEPTED
+  BLOCKED
 }

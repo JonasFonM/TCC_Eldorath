@@ -33,10 +33,19 @@ model scene {
   createdAt  DateTime @default(now()) @db.Timestamp(0)
   title      String   @db.Text
   roundCount Int
-  playerPrep Boolean
+  playerTurn Boolean
 
-  logs       log[]       @relation()
-  characters character[] @relation()
+  logs       log[]            @relation()
+  characters characterScene[]
+}
+
+model characterScene {
+  id          Int       @id @default(autoincrement())
+  characterId Int
+  character   character @relation(fields: [characterId], references: [id])
+
+  sceneId Int
+  scene   scene @relation(fields: [sceneId], references: [id])
 }
 
 model log {
@@ -44,14 +53,162 @@ model log {
   sceneId Int
   scene   scene @relation(fields: [sceneId], references: [id], map: "scene_scfk_1")
 
-  round        Int
-  actorName    String
-  action       String
-  targetNames  String
-  effects      String
-  hit          Boolean?
-  criticalHit  Boolean?
-  damageCaused Int?
+  round    Int
+  turnType String @default("player")
+
+  actorId Int
+  actor   character @relation(fields: [actorId], references: [id])
+
+  actions   logAction[]
+  targetIds String
+  effects   logEffect[]
+
+  createdAt DateTime    @default(now()) @db.Timestamp(0)
+  damageLog damageLog[]
+}
+
+model logAction {
+  id Int @id @default(autoincrement())
+
+  logId Int
+  log   log @relation(fields: [logId], references: [id])
+
+  actionId Int
+  action   action @relation(fields: [actionId], references: [id])
+}
+
+model logEffect {
+  id    Int @id @default(autoincrement())
+  logId Int
+  log   log @relation(fields: [logId], references: [id])
+
+  effectId Int
+  effect   effect @relation(fields: [effectId], references: [id])
+
+  targetId   Int
+  targetType effectTarget
+
+  previousValue Float
+  effectValue   Float
+}
+
+model effect {
+  id          Int    @id @default(autoincrement())
+  name        String
+  description String
+
+  targetModel effectTarget
+  operator    operator
+  logs        logEffect[]
+
+  applications effectApplication[]
+  characters   characterEffect[]
+}
+
+enum effectTarget {
+  character
+  weapon
+  armor
+}
+
+enum operator {
+  Sum
+  Sub
+  Mult
+  Div
+}
+
+model effectApplication {
+  id       Int    @id @default(autoincrement())
+  effectId Int
+  effect   effect @relation(fields: [effectId], references: [id])
+
+  targetField String
+}
+
+model characterEffect {
+  id          Int       @id @default(autoincrement())
+  characterId Int
+  character   character @relation(fields: [characterId], references: [id])
+
+  effectId Int
+  effect   effect @relation(fields: [effectId], references: [id])
+
+  duration    Int? // Optional: duration in rounds
+  isPermanent Boolean @default(false)
+}
+
+model damageLog {
+  id    Int @id @default(autoincrement())
+  logId Int
+  log   log @relation(fields: [logId], references: [id])
+
+  actorId Int
+  actor   character @relation(fields: [actorId], references: [id], name: "actor")
+
+  targetId Int
+  target   character @relation(fields: [targetId], references: [id], name: "target")
+
+  type   damageType
+  amount Int
+
+  critical  Boolean
+  mitigated Boolean
+}
+
+model action {
+  id          Int        @id @default(autoincrement())
+  name        String
+  description String
+  actionType  actionType
+
+  vigorCost Int @default(0)
+  powerCost Int @default(0)
+
+  attack   Boolean @default(false)
+  useItem  Boolean @default(false) //Determines if an Item might be used with the action
+  reaction Boolean @default(false)
+
+  baseDice     actionDie[]
+  baseRange    Int         @default(1) //Determines range for movements and attacks 
+  baseAoERange Int         @default(0) //Determines secondary range for AoE 
+
+  skillId Int?
+  skill   skill? @relation(fields: [skillId], references: [id])
+
+  logs          logAction[]
+  actionUpgrade actionUpgrade[]
+}
+
+model actionDie {
+  id              Int            @id @default(autoincrement())
+  actionId        Int
+  action          action         @relation(fields: [actionId], references: [id])
+  dieType         Int            @default(2)
+  count           Int            @default(1)
+  actionUpgrade   actionUpgrade? @relation(fields: [actionUpgradeId], references: [id])
+  actionUpgradeId Int?
+}
+
+model actionUpgrade {
+  id              Int         @id @default(autoincrement())
+  actionId        Int
+  action          action      @relation(fields: [actionId], references: [id])
+  vigorCost       Int?
+  powerCost       Int?
+  newBaseRange    Int?
+  newBaseAoERange Int?
+  newDice         actionDie[]
+}
+
+enum actionType {
+  UnarmedATK
+  PhysicalMeleeATK
+  PhysicalRangedATK
+  MagicMeleeATK
+  MagicRangedATK
+  Movement
+  Interaction
 }
 
 enum monthName {
@@ -89,6 +246,8 @@ model character {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now()) @db.Timestamp(0)
   name      String   @db.Text
+  npc       Boolean  @default(false)
+  boss      Boolean  @default(false)
 
   level           Int @default(1)
   experience      Int @default(0)
@@ -101,9 +260,13 @@ model character {
   body    Int
   mind    Int
 
-  vitality Int @default(1)
-  vigor    Int @default(1)
-  power    Int @default(1)
+  vitality        Int @default(1)
+  currentVitality Int @default(1)
+  barrier         Int @default(0)
+  vigor           Int @default(1)
+  currentVigor    Int @default(1)
+  power           Int @default(1)
+  currentPower    Int @default(1)
 
   defense    Int @default(1)
   initiative Int @default(1)
@@ -156,8 +319,11 @@ model character {
   campaign   campaign? @relation(fields: [campaignId], references: [id])
   campaignId Int?
 
-  scene   scene? @relation(fields: [sceneId], references: [id])
-  sceneId Int?
+  scenes          characterScene[]  @relation()
+  logs            log[]             @relation()
+  effects         characterEffect[]
+  actorDamageLog  damageLog[]       @relation(name: "actor")
+  targetDamageLog damageLog[]       @relation(name: "target")
 
   @@index([authorId], map: "authorId")
 }
@@ -245,9 +411,10 @@ model skill {
   upgrade              skill?            @relation("PreRequisite")
   type                 skillType         @default(CHARACTERISTIC)
   techniqueSubtype     techniqueSubtype?
-  characters           character_skill[] @relation
-  lineages             lineage_skill[]   @relation
-  paths                path_skill[]      @relation
+  characters           character_skill[]
+  lineages             lineage_skill[]
+  paths                path_skill[]
+  actions              action[]
 }
 
 enum skillType {
@@ -260,28 +427,6 @@ enum techniqueSubtype {
   MANEUVER
   OATH
   TRICK
-}
-
-model effect {
-  id          Int          @id @default(autoincrement())
-  targetId    Int
-  targetModel effectTarget
-  targetField String
-  effectValue Float
-  operator    operator
-}
-
-enum effectTarget {
-  character
-  weapon
-  armor
-}
-
-enum operator {
-  Sum
-  Sub
-  Mult
-  Div
 }
 
 model character_skill {

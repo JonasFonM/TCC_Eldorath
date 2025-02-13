@@ -1,24 +1,37 @@
 import { lineage_skill, skill } from "@prisma/client"
 
 export type RegisterForm = {
-    email: string
-    password: string
-    username: string
-  }
+  email: string
+  password: string
+  username: string
+}
 
-  export type LoginForm = {
-    email: string
-    password: string
-  }
+export type LoginForm = {
+  email: string
+  password: string
+}
 
-  export type CharacterForm = {
-    name: string
-    level: number
-    tier: number
-    agility: number
-    body: number
-    mind: number
-    authorId: number
-  }
+export type CharacterForm = {
+  name: string
+  level: number
+  tier: number
+  agility: number
+  body: number
+  mind: number
+  authorId: number
+}
 
-  export type LSrelations = (lineage_skill & { skill: skill })[];
+export type CampaignForm = {
+  title: string
+  snippet: string,
+  theme: string,
+  masterId: number,
+  era: string,
+  month: any,
+  monthDay: number,
+  weekDay: any,
+  timeOfDay: any,
+  public: boolean,
+}
+
+export type LSrelations = (lineage_skill & { skill: skill })[];

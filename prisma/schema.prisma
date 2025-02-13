@@ -58,9 +58,10 @@ model characterScene {
 }
 
 model log {
-  id      Int   @id @default(autoincrement())
-  sceneId Int
-  scene   scene @relation(fields: [sceneId], references: [id], map: "scene_scfk_1")
+  id        Int      @id @default(autoincrement())
+  sceneId   Int
+  scene     scene    @relation(fields: [sceneId], references: [id], map: "scene_scfk_1")
+  createdAt DateTime @default(now()) @db.Timestamp(0)
 
   round    Int
   turnType String @default("player")
@@ -68,11 +69,9 @@ model log {
   actorId Int
   actor   character @relation(fields: [actorId], references: [id])
 
-  actions   logAction[]
   targetIds String
+  actions   logAction[]
   effects   logEffect[]
-
-  createdAt DateTime    @default(now()) @db.Timestamp(0)
   damageLog damageLog[]
 }
 
@@ -94,11 +93,8 @@ model logEffect {
   effectId Int
   effect   effect @relation(fields: [effectId], references: [id])
 
-  targetId   Int
+  targetIds  String
   targetType effectTarget
-
-  previousValue Float
-  effectValue   Float
 }
 
 model effect {
@@ -106,18 +102,14 @@ model effect {
   name        String
   description String
 
-  targetModel effectTarget
-  operator    operator
-  logs        logEffect[]
-
   applications effectApplication[]
   characters   characterEffect[]
+  logs         logEffect[]
 }
 
 enum effectTarget {
   character
-  weapon
-  armor
+  item
 }
 
 enum operator {
@@ -132,7 +124,9 @@ model effectApplication {
   effectId Int
   effect   effect @relation(fields: [effectId], references: [id])
 
+  targetModel effectTarget
   targetField String
+  operator    operator
 }
 
 model characterEffect {
@@ -143,8 +137,10 @@ model characterEffect {
   effectId Int
   effect   effect @relation(fields: [effectId], references: [id])
 
-  duration    Int? // Optional: duration in rounds
-  isPermanent Boolean @default(false)
+  magnitude    Int
+  roundApplied Int
+  duration     Int? // Optional: duration in rounds
+  isPermanent  Boolean @default(false)
 }
 
 model damageLog {
@@ -184,7 +180,7 @@ model action {
   baseAoERange Int         @default(0) //Determines secondary range for AoE 
 
   skillId Int?
-  skill   skill? @relation(fields: [skillId], references: [id])
+  skill   skill? @relation(fields: [skillId], references: [id], onDelete: SetNull)
 
   logs          logAction[]
   actionUpgrade actionUpgrade[]
@@ -196,7 +192,7 @@ model actionDie {
   action          action         @relation(fields: [actionId], references: [id])
   dieType         Int            @default(2)
   count           Int            @default(1)
-  actionUpgrade   actionUpgrade? @relation(fields: [actionUpgradeId], references: [id])
+  actionUpgrade   actionUpgrade? @relation(fields: [actionUpgradeId], references: [id], onDelete: SetNull)
   actionUpgradeId Int?
 }
 
@@ -326,7 +322,7 @@ model character {
   paths    character_path[]    @relation
   items    character_item[]    @relation
 
-  campaign   campaign? @relation(fields: [campaignId], references: [id])
+  campaign   campaign? @relation(fields: [campaignId], references: [id], onDelete: SetNull)
   campaignId Int?
 
   scenes          characterScene[]  @relation()

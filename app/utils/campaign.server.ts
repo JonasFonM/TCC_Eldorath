@@ -109,9 +109,6 @@ export const createScene = async (campaign: CampaignForm, campaignId: number, ti
       timeOfDay: campaign.timeOfDay,
       roundCount: 0,
       playerTurn: false
-
-
-
     },
   })
   return {
@@ -125,76 +122,111 @@ export const createScene = async (campaign: CampaignForm, campaignId: number, ti
     timeOfDay: campaign.timeOfDay,
     roundCount: 0,
     playerTurn: false
-
   }
-  return;
 };
 
-//LINEAGES
-export const submitCharLineages = async (lineageList: number[], campaignId: number, pure: boolean) => {
-  const existingLineages = await prisma.campaign_lineage.findMany({
+//PLAYERS
+export const addPlayerstoCampaign = async (partyMemberList: number[], campaignId: number) => {
+  const existingPartyMembers = await prisma.partyMembers.findMany({
     where: {
-      lineageId: { in: lineageList },
+      userId: { in: partyMemberList },
       campaignId: campaignId,
     },
   });
 
-  const existingSceneIds = existingLineages.map(cs => cs.lineageId);
+  const existingPartyIds = existingPartyMembers.map(cs => cs.userId);
 
-  const newLineages = lineageList.filter(lineageId => !existingSceneIds.includes(lineageId));
+  const newPartyMembers = partyMemberList.filter(partyMemberId => !existingPartyIds.includes(partyMemberId));
 
-  if (newLineages.length > 0) {
-    await prisma.campaign_lineage.createMany({
-      data: newLineages.map(lineageId => ({
-        lineageId: lineageId,
+  if (newPartyMembers.length > 0) {
+    await prisma.partyMembers.createMany({
+      data: newPartyMembers.map(partyMemberId => ({
+        userId: partyMemberId,
         campaignId: campaignId,
-        pure: pure
       })),
       skipDuplicates: true,
     });
-    await prisma.campaign.update({
-      where: { id: campaignId },
-      data: {
-        pendingLineages: 0
-      }
-    })
   }
-
   return;
 };
 
-//PATHS
+export const removePlayersFromCampaign = async (partyMemberList: number[], campaignId: number) => {
 
-export const submitCharPaths = async (pathList: number[], campaignId: number, pendingPaths: number) => {
-  const existingPaths = await prisma.campaign_path.findMany({
+  if (partyMemberList) {
+    await prisma.partyMembers.deleteMany({
+      where: {
+        userId: { in: partyMemberList },
+        campaignId: campaignId
+      }
+    })
+  }
+  return;
+};
+
+
+//CHARACTERS
+export const addCharacterToCampaign = async (characterList: number[], campaignId: number) => {
+  const existingCharacters = await prisma.character.findMany({
     where: {
-      pathId: { in: pathList },
+      id: { in: characterList },
       campaignId: campaignId,
     },
   });
 
-  const existingSceneIds = existingPaths.map(cs => cs.pathId);
+  const existingCharacterIds = existingCharacters.map(cc => cc.id);
 
-  const newPaths = pathList.filter(pathId => !existingSceneIds.includes(pathId));
+  const newCharacterIds = characterList.filter(id => !existingCharacterIds.includes(id));
 
-  const newPendingPaths = pendingPaths - newPaths.length;
-
-
-  if (newPaths.length > 0) {
-    await prisma.campaign_path.createMany({
-      data: newPaths.map(pathId => ({
-        pathId: pathId,
-        campaignId: campaignId,
-      })),
-      skipDuplicates: true,
-    });
-    await prisma.campaign.update({
-      where: { id: campaignId },
+  if (newCharacterIds.length > 0) {
+    await prisma.character.updateMany({
+      where: {
+        id: { in: newCharacterIds }
+      },
       data: {
-        pendingPath: newPendingPaths
-      }
-    })
+        campaignId: campaignId,
+      },
+    });
   }
-
   return;
-}
+};
+
+export const removeCharacterFromCampaign = async (characterId: number) => {
+  return await prisma.character.update({
+    where: { id: characterId },
+    data: { campaignId: null },
+  });
+};
+
+//LOGS
+export const createLog = async (characterId: number, sceneId: number, round: number, turnType: string, targetIds: string) => {
+  return await prisma.log.create({
+    data: {
+      sceneId: sceneId,
+      actorId: characterId,
+      round: round,
+      turnType: turnType,
+      targetIds: targetIds
+    },
+  });
+
+};
+
+export const createLogAction = async (logId: number, actionId: number) => {
+  return await prisma.logAction.create({
+    data: {
+      logId: logId,
+      actionId: actionId,
+    },
+  });
+};
+
+export const createLogEffect = async (logId: number, effectId: number, targetIds: string, targetType: any) => {
+  return await prisma.logEffect.create({
+    data: {
+      logId: logId,
+      effectId: effectId,
+      targetIds: targetIds,
+      targetType: targetType,
+    },
+  });
+};

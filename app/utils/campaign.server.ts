@@ -230,3 +230,15 @@ export const createLogEffect = async (logId: number, effectId: number, targetIds
     },
   });
 };
+
+export const createDamageLogs = async (logId: number, actorId: number, targetIds: string, preMitigationDamage: number, critical: boolean) => {
+  return await prisma.damageLog.create({
+    data: {
+      logId: logId,
+      actorId: actorId,
+      targetIds: targetIds,
+      preMitigationDamage: preMitigationDamage,
+      critical: critical
+    },
+  });
+};

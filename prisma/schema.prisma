@@ -151,14 +151,10 @@ model damageLog {
   actorId Int
   actor   character @relation(fields: [actorId], references: [id], name: "actor")
 
-  targetId Int
-  target   character @relation(fields: [targetId], references: [id], name: "target")
+  targetIds           String
+  preMitigationDamage Int
 
-  type   damageType
-  amount Int
-
-  critical  Boolean
-  mitigated Boolean
+  critical Boolean
 }
 
 model action {
@@ -325,11 +321,10 @@ model character {
   campaign   campaign? @relation(fields: [campaignId], references: [id], onDelete: SetNull)
   campaignId Int?
 
-  scenes          characterScene[]  @relation()
-  logs            log[]             @relation()
-  effects         characterEffect[]
-  actorDamageLog  damageLog[]       @relation(name: "actor")
-  targetDamageLog damageLog[]       @relation(name: "target")
+  scenes         characterScene[]  @relation()
+  logs           log[]             @relation()
+  effects        characterEffect[]
+  actorDamageLog damageLog[]       @relation(name: "actor")
 
   @@index([authorId], map: "authorId")
 }

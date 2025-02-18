@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE `campaign` ADD COLUMN `year` INTEGER NOT NULL DEFAULT 1,
+    MODIFY `monthDay` INTEGER NOT NULL DEFAULT 1;

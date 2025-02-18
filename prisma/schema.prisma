@@ -14,7 +14,7 @@ model campaign {
   masterId  Int
   master    user           @relation(fields: [masterId], references: [id])
   public    Boolean        @default(false)
-  players   partyMembers[] @relation()
+  players   partyMembers[]
 
   title     String @db.Text
   snippet   String @db.Text
@@ -22,12 +22,12 @@ model campaign {
   era       Int    @default(1)
   year      Int    @default(1)
   month     Int    @default(1)
-  monthDay  Int
+  monthDay  Int    @default(1)
   weekDay   Int    @default(1)
   timeOfDay Int    @default(1)
 
-  scenes     scene[]     @relation()
-  characters character[] @relation()
+  scenes     scene[]
+  characters character[]
 }
 
 /**

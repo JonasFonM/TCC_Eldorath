@@ -74,12 +74,12 @@ export default function ItemSelection() {
                     setError("Você não pode pagar este item.");
                     return prevItems;
 
-                } else {
-                    newCost += cost;
-                    setSelectedCost(newCost);
-                    setError(null);
-                    return [...prevItems, itemId];
                 }
+                newCost += cost;
+                setSelectedCost(newCost);
+                setError(null);
+                return [...prevItems, itemId];
+
             }
         });
     };

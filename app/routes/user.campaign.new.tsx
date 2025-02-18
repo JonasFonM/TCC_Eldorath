@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { ActionFunction, json, LoaderFunction, redirect } from "@remix-run/node"
-import { NavLink, useActionData } from "@remix-run/react"
+import { useActionData } from "@remix-run/react"
 import { useEffect, useRef, useState } from "react"
 import { getUserIdFromSession, requireUserId } from '~/utils/auth.server'
 import { submitCampaign } from "~/utils/campaign.server"
@@ -20,35 +20,35 @@ export const action: ActionFunction = async ({ request }) => {
   const month = parseInt(form.get('month') as string, 10);
   const monthDay = parseInt(form.get('monthDay') as string, 10);
   const weekDay = parseInt(form.get('weekDay') as string, 10);
-  const timeOfDay = parseInt(form.get('timeOfDay') as string, 10);
   const masterId = await getUserIdFromSession(request);
 
+  console.log(form)
+  console.log(masterId)
 
   if (!masterId) {
-    return json({ error: "Unauthorized" }, { status: 401 });
+    return json({ error: "Unauthorized" }, { status: 401 });;
   }
 
-  if (!title || !(snippet) || !(theme) || isNaN(era) || isNaN(year) || isNaN(month) || isNaN(monthDay) || isNaN(weekDay) || isNaN(timeOfDay)) {
-    return json({ error: "All fields are required and must be valid numbers" }, { status: 400 });
+  if (!title || !(snippet) || !(theme) || isNaN(era) || isNaN(year) || isNaN(month) || isNaN(monthDay) || isNaN(weekDay)) {
+    return json({ error: "All fields are required" }, { status: 400 });
   }
 
   try {
-    const campaign = await submitCampaign({ title, snippet, theme, masterId, era, year, month, monthDay, weekDay, timeOfDay });
-
+    const campaign = await submitCampaign({ title, snippet, theme, masterId, era, year, month, monthDay, weekDay });
+    console.log(masterId)
     return (
       json({ campaign }, { status: 201 }),
       redirect(`/user/campaign/${campaign}`)
     );
   } catch (error) {
     console.error(error);
-    return json({ error: "Failed to create campaign" }, { status: 500 });
+    return json({ error: "Failed to create campaign" }, { status: 500 });;
   }
-
 }
 
 export default function NewCampaignRoute() {
   const actionData = useActionData<ActionFunction>();
-  const [limit, setLimit] = useState(100);
+  const [limit, setLimit] = useState(5000);
 
   const firstLoad = useRef(true);
   const [formData, setFormData] = useState({
@@ -60,7 +60,6 @@ export default function NewCampaignRoute() {
     month: 1,
     monthDay: 1,
     weekDay: 1,
-    timeOfDay: 1
   });
   const [errors, setErrors] = useState({
     title: '',
@@ -71,7 +70,6 @@ export default function NewCampaignRoute() {
     month: '',
     monthDay: '',
     weekDay: '',
-    timeOfDay: ''
   });
   const [formError, setFormError] = useState('');
 
@@ -86,7 +84,6 @@ export default function NewCampaignRoute() {
         month: '',
         monthDay: '',
         weekDay: '',
-        timeOfDay: ''
       });
       setFormError(actionData.error || '');
     }
@@ -103,16 +100,13 @@ export default function NewCampaignRoute() {
   }, []);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { title, value } = event.target;
-    setFormData((prev) => ({ ...prev, [title]: value }));
+    const { name, value } = event.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
+
   const handleSelect = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const { title, value } = event.target;
-    setFormData((prev) => ({ ...prev, [title]: value }));
-  };
-  const handleTextArea = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const { title, value } = event.target;
-    setFormData((prev) => ({ ...prev, [title]: value }));
+    const { name, value } = event.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const weekDays = [
@@ -146,21 +140,20 @@ export default function NewCampaignRoute() {
   };
 
   const handleSubmit = async (event: React.FormEvent) => {
-    if (!formData.title || !(formData.snippet) || !(formData.theme) || isNaN(formData.era) || isNaN(formData.year) || isNaN(formData.month) || isNaN(formData.monthDay) || isNaN(formData.weekDay) || isNaN(formData.timeOfDay)) {
+    console.log({ formData })
+    if (!formData.title || !(formData.snippet) || !(formData.theme) || isNaN(formData.era) || isNaN(formData.year) || isNaN(formData.month) || isNaN(formData.monthDay) || isNaN(formData.weekDay)) {
       event.preventDefault();
       setErrors({
         title: !formData.title ? 'É necessário informar um Título' : '',
         snippet: !formData.snippet ? 'É necessário informar uma Descrição' : '',
         theme: !formData.theme ? 'É necessário informar um Tema' : '',
-        era: !formData.era ? 'É necessário informar uma ' : '',
+        era: !formData.era ? 'É necessário informar uma Æra' : '',
         year: !formData.era ? 'É necessário informar um Ano' : '',
         month: !formData.month ? 'É necessário informar um Mês' : '',
         monthDay: !formData.monthDay ? 'É necessário informar um Dia do Mês' : '',
         weekDay: !formData.weekDay ? 'É necessário informar um Dia da Semana' : '',
-        timeOfDay: !formData.timeOfDay ? 'monthDay is required' : '',
       });
       setFormError('Please fill in all required fields.');
-
       return;
     }
   };
@@ -171,7 +164,7 @@ export default function NewCampaignRoute() {
       <input
         className="title-input"
         type="text"
-        title="title"
+        name="title"
         placeholder="Título"
         value={formData.title}
         onChange={handleChange}
@@ -180,25 +173,25 @@ export default function NewCampaignRoute() {
 
       <input
         type="text"
-        title="theme"
+        name="theme"
         placeholder="Tema"
         value={formData.theme}
         onChange={handleChange}
       />
-      {errors.title && <p className="error">{errors.title}</p>}
+      {errors.theme && <p className="error">{errors.theme}</p>}
 
       <div className="calendar-container">
 
         {/* Left Side - Description */}
         <div className="calendar-description">
           <label><h2>Descrição</h2></label>
-          <textarea
+          <input
             className="text-area"
-            rows={10}
-            cols={30}
-            title="snippet"
+            type="text"
+            name="snippet"
+            placeholder="Descrição Curta"
             value={formData.snippet}
-            onChange={handleTextArea}
+            onChange={handleChange}
           />
           {errors.snippet && <p className="error">{errors.snippet}</p>}
         </div>
@@ -209,6 +202,7 @@ export default function NewCampaignRoute() {
           {/* Era Selection */}
           <div className="calendar-field">
             <label>Æra: {formData.era}</label>
+            <input hidden type="number" name="era" value={formData.era} onChange={handleChange} />
             <div className="calendar-buttons">
               <button type="button" onClick={() => adjustAttribute('era', 1)}>+</button>
               <button type="button" onClick={() => adjustAttribute('era', -1)}>-</button>
@@ -222,17 +216,18 @@ export default function NewCampaignRoute() {
             {/* Year Selection */}
             <div className="calendar-field">
               <label>Ano: {formData.year}</label>
+              <input hidden type="number" name="year" value={formData.year} onChange={handleChange} />
               <div className="calendar-buttons">
                 <button type="button" onClick={() => adjustAttribute('year', 1)}>+</button>
                 <button type="button" onClick={() => adjustAttribute('year', -1)}>-</button>
               </div>
             </div>
-            {errors.era && <p className="error">{errors.era}</p>}
+            {errors.era && <p className="error">{errors.year}</p>}
 
             {/* Month Selection */}
             <div className="calendar-field">
               <label>Mês</label>
-              <select title="month" value={formData.month} onChange={handleSelect}>
+              <select title="month" name="month" value={formData.month} onChange={handleSelect}>
                 <optgroup label="Verão">
                   <option value="1">Æterna</option>
                   <option value="2">Luxar</option>
@@ -260,7 +255,7 @@ export default function NewCampaignRoute() {
             <label>
               Dia do Mês: {formData.monthDay}
               <br />
-              <select value={formData.monthDay} onChange={handleMonthDayChange}>
+              <select name="monthDay" value={formData.monthDay} onChange={handleMonthDayChange}>
                 {[...Array(30)].map((_, i) => (
                   <option key={i + 1} value={i + 1}>
                     {i + 1}
@@ -272,7 +267,7 @@ export default function NewCampaignRoute() {
             <label>
               Dia da Semana: {weekDays[formData.weekDay - 1]}
               <br />
-              <select hidden value={formData.weekDay} disabled>
+              <select hidden name="weekDay" value={formData.weekDay} onChange={()=>null}>
                 {weekDays.map((name, index) => (
                   <option key={index + 1} value={index + 1}>
                     {name}

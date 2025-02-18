@@ -9,19 +9,19 @@ export const createCampaign = async (campaign: CampaignForm) => {
   const newcampaign = await prisma.campaign.create({
     data: {
       title: campaign.title,
+      masterId: campaign.masterId,
       snippet: campaign.snippet,
       theme: campaign.theme,
-      masterId: campaign.masterId,
       era: campaign.era,
       year: campaign.year,
       month: campaign.month,
       monthDay: campaign.monthDay,
       weekDay: campaign.weekDay,
-      timeOfDay: campaign.timeOfDay,
     },
   })
   return {
-    id: newcampaign.id, title: campaign.title,
+    id: newcampaign.id,
+    title: campaign.title,
     masterId: campaign.masterId,
     snippet: campaign.snippet,
     theme: campaign.theme,
@@ -30,7 +30,6 @@ export const createCampaign = async (campaign: CampaignForm) => {
     month: campaign.month,
     monthDay: campaign.monthDay,
     weekDay: campaign.weekDay,
-    timeOfDay: campaign.timeOfDay,
   }
 }
 
@@ -49,7 +48,6 @@ export const updateCampaign = async (campaign: CampaignForm, campaignId: number)
       month: campaign.month,
       monthDay: campaign.monthDay,
       weekDay: campaign.weekDay,
-      timeOfDay: campaign.timeOfDay,
       snippet: campaign.snippet,
       theme: campaign.theme,
 
@@ -64,7 +62,6 @@ export const updateCampaign = async (campaign: CampaignForm, campaignId: number)
     month: campaign.month,
     monthDay: campaign.monthDay,
     weekDay: campaign.weekDay,
-    timeOfDay: campaign.timeOfDay,
     snippet: campaign.snippet,
     theme: campaign.theme,
   }
@@ -80,7 +77,9 @@ export async function togglePublicCampaign(campaignId: number, isPublic: boolean
         public: !isPublic
       }
     }
+
   )
+  return (togglePublic)
 }
 
 export async function submitCampaign(campaign: CampaignForm) {
@@ -90,12 +89,14 @@ export async function submitCampaign(campaign: CampaignForm) {
     return json(
       {
         error: `Something went wrong trying to create a new campaign.`,
-        fields: { title: campaign.title, month: campaign.month, monthDay: campaign.monthDay, weekDay: campaign.weekDay, timeOfDay: campaign.timeOfDay, masterId: campaign.masterId },
+        fields: { title: campaign.title, era: campaign.era, year: campaign.year, month: campaign.month, monthDay: campaign.monthDay, weekDay: campaign.weekDay, masterId: campaign.masterId },
       },
       { status: 400 },
     )
   }
-  return (String(newcampaign.id))
+
+  console.log("Campanha criada com sucesso.")
+  return (newcampaign.id)
 }
 
 export const getCampaignsFromMaster = async (userId: number) => {
@@ -119,7 +120,6 @@ export const createScene = async (campaign: CampaignForm, campaignId: number, ti
       month: campaign.month,
       monthDay: campaign.monthDay,
       weekDay: campaign.weekDay,
-      timeOfDay: campaign.timeOfDay,
       roundCount: 0,
       playerTurn: false
     },
@@ -132,7 +132,6 @@ export const createScene = async (campaign: CampaignForm, campaignId: number, ti
     month: campaign.month,
     monthDay: campaign.monthDay,
     weekDay: campaign.weekDay,
-    timeOfDay: campaign.timeOfDay,
     roundCount: 0,
     playerTurn: false
   }

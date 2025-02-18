@@ -99,7 +99,7 @@ export async function submitCampaign(campaign: CampaignForm) {
   return (newcampaign.id)
 }
 
-export const getCampaignsFromMaster = async (userId: number) => {
+export const getCampaignsFromUser = async (userId: number) => {
   return prisma.campaign.findMany({
     where: { masterId: userId },
     select: { id: true, title: true, masterId: true },

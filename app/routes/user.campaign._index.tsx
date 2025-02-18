@@ -1,26 +1,22 @@
-import { NavLink } from "@remix-run/react";
-import { LoaderFunction } from '@remix-run/node'
+import { NavLink, useLoaderData } from "@remix-run/react";
+import { json, LoaderFunction } from '@remix-run/node'
 import { requireUserId } from '~/utils/auth.server'
+import { CampaignPanel } from "~/components/campaign-panel";
+import { getCampaignsFromUser } from "~/utils/campaign.server";
 
 export const loader: LoaderFunction = async ({ request }) => {
-    await requireUserId(request)
-    return null
+    const userId = await requireUserId(request)
+    const campaigns = await getCampaignsFromUser(userId)
+    return json({ campaigns })
 }
-export default function CampaignsIndexRoute() {
-    return (<>
-        <h1>Suas Campanhas</h1>
 
+export default function CampaignsIndexRoute() {
+    const { campaigns } = useLoaderData<any>()
+
+    return (<>
+        <h1 className="title-container" style={{ fontSize: '2rem' }}>Suas Campanhas<NavLink style={{ color: 'blue' }} className="question-button" to={`new`}>+</NavLink></h1>
         <div className="container">
-            <div className="block">
-                <h2>New</h2>
-                <p></p>
-                <NavLink to={`new`}><button className="button"></button></NavLink>
-            </div>
-            <div className="block">
-                <h2>Find</h2>
-                <p></p>
-                <NavLink to={`find`}><button className="button"></button></NavLink>
-            </div>
+            <CampaignPanel campaigns={campaigns} />
         </div>
     </>);
 }

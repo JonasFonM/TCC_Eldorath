@@ -16,18 +16,50 @@ model campaign {
   public    Boolean        @default(false)
   players   partyMembers[] @relation()
 
-  title     String    @db.Text
-  snippet   String    @db.Text
-  theme     String    @db.Text
-  era       String    @default("7AE")
-  month     monthName @default(Aeterna)
+  title     String @db.Text
+  snippet   String @db.Text
+  theme     String @db.Text
+  era       Int    @default(1)
+  year      Int    @default(1)
+  month     Int    @default(1)
   monthDay  Int
-  weekDay   weekDay   @default(Preparo)
-  timeOfDay timeOfDay
+  weekDay   Int    @default(1)
+  timeOfDay Int    @default(1)
 
   scenes     scene[]     @relation()
   characters character[] @relation()
 }
+
+/**
+ * enum monthName {
+ * Aeterna // Verao - Mes de Aeter e da Criação
+ * Luxar // Verao - Mes da Primeira Luz e Justicar
+ * Vita // Verao - Month of Life
+ * Lual // Outono - Mes de Silveran
+ * Agnus // Outono - Mes do Sacrifício
+ * Malkar // Outono - Mes das Despedidas
+ * Magika // Inverno - Mes da Magia
+ * Kronica // Inverno - Mes dos Ciclos
+ * Exora // Inverno Mes do Êxodo
+ * Natura // Primavera - Mes da Natureza
+ * Fortuna // Primavera - Mes da Prosperidade
+ * Harmonia // Primavera - Mes da Paz
+ * }
+ * enum weekDay {
+ * Descanso
+ * Preparo
+ * Jornada
+ * Batalha
+ * Luto
+ * Partilha
+ * }
+ * enum timeOfDay {
+ * Dawn
+ * Day
+ * Night
+ * Dusk
+ * }
+ */
 
 model scene {
   id         Int      @id @default(autoincrement())
@@ -38,11 +70,11 @@ model scene {
   roundCount Int
   playerTurn Boolean
 
-  era       String    @default("7AE")
-  month     monthName @default(Aeterna)
+  era       Int @default(7)
+  month     Int @default(1)
   monthDay  Int
-  weekDay   weekDay   @default(Preparo)
-  timeOfDay timeOfDay
+  weekDay   Int @default(1)
+  timeOfDay Int @default(1)
 
   logs       log[]            @relation()
   characters characterScene[]
@@ -211,37 +243,6 @@ enum actionType {
   MagicRangedATK
   Movement
   Interaction
-}
-
-enum monthName {
-  Aeterna // Verao - Mes de Aeter e da Criação
-  Luxar // Verao - Mes da Primeira Luz e Justicar
-  Vita // Verao - Month of Life
-  Lual // Outono - Mes de Silveran
-  Agnus // Outono - Mes do Sacrifício
-  Malkar // Outono - Mes das Despedidas
-  Magika // Inverno - Mes da Magia
-  Kronica // Inverno - Mes dos Ciclos
-  Exora // Inverno Mes do Êxodo
-  Natura // Primavera - Mes da Natureza
-  Fortuna // Primavera - Mes da Prosperidade
-  Harmonia // Primavera - Mes da Paz
-}
-
-enum weekDay {
-  Descanso
-  Preparo
-  Jornada
-  Batalha
-  Luto
-  Partilha
-}
-
-enum timeOfDay {
-  Dawn
-  Day
-  Night
-  Dusk
 }
 
 model character {

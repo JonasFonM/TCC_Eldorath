@@ -26,12 +26,12 @@ export type CampaignForm = {
   snippet: string,
   theme: string,
   masterId: number,
-  era: string,
-  month: any,
+  era: number,
+  year: number,
+  month: number,
   monthDay: number,
-  weekDay: any,
-  timeOfDay: any,
-  public: boolean,
+  weekDay: number,
+  timeOfDay: number,
 }
 
 export type LSrelations = (lineage_skill & { skill: skill })[];

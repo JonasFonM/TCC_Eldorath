@@ -13,8 +13,8 @@ import "~/styles.css";
 
 export const meta: MetaFunction = () => {
   return [
-    { title: "AEternida" },
-    { name: "description", content: "Welcome to AEternida!" },
+    { title: "Æternida" },
+    { name: "description", content: "Bem vindo a Æternida!" },
   ];
 };
 

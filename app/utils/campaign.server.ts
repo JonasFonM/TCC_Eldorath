@@ -9,29 +9,28 @@ export const createCampaign = async (campaign: CampaignForm) => {
   const newcampaign = await prisma.campaign.create({
     data: {
       title: campaign.title,
+      snippet: campaign.snippet,
+      theme: campaign.theme,
       masterId: campaign.masterId,
       era: campaign.era,
+      year: campaign.year,
       month: campaign.month,
       monthDay: campaign.monthDay,
       weekDay: campaign.weekDay,
       timeOfDay: campaign.timeOfDay,
-      snippet: campaign.snippet,
-      theme: campaign.theme,
-      public: campaign.public
-
     },
   })
   return {
     id: newcampaign.id, title: campaign.title,
     masterId: campaign.masterId,
+    snippet: campaign.snippet,
+    theme: campaign.theme,
     era: campaign.era,
+    year: campaign.year,
     month: campaign.month,
     monthDay: campaign.monthDay,
     weekDay: campaign.weekDay,
     timeOfDay: campaign.timeOfDay,
-    snippet: campaign.snippet,
-    theme: campaign.theme,
-    public: campaign.public
   }
 }
 
@@ -46,28 +45,42 @@ export const updateCampaign = async (campaign: CampaignForm, campaignId: number)
       title: campaign.title,
       masterId: campaign.masterId,
       era: campaign.era,
+      year: campaign.year,
       month: campaign.month,
       monthDay: campaign.monthDay,
       weekDay: campaign.weekDay,
       timeOfDay: campaign.timeOfDay,
       snippet: campaign.snippet,
       theme: campaign.theme,
-      public: campaign.public
 
     },
   })
   return {
+    id: updatedCampaign.id,
     title: campaign.title,
     masterId: campaign.masterId,
     era: campaign.era,
+    year: campaign.year,
     month: campaign.month,
     monthDay: campaign.monthDay,
     weekDay: campaign.weekDay,
     timeOfDay: campaign.timeOfDay,
     snippet: campaign.snippet,
     theme: campaign.theme,
-    public: campaign.public
   }
+}
+
+export async function togglePublicCampaign(campaignId: number, isPublic: boolean) {
+  const togglePublic = await prisma.campaign.update(
+    {
+      where: {
+        id: campaignId
+      },
+      data: {
+        public: !isPublic
+      }
+    }
+  )
 }
 
 export async function submitCampaign(campaign: CampaignForm) {

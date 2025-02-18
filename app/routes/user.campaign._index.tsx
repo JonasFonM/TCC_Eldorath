@@ -8,6 +8,8 @@ export const loader: LoaderFunction = async ({ request }) => {
 }
 export default function CampaignsIndexRoute() {
     return (<>
+        <h1>Suas Campanhas</h1>
+
         <div className="container">
             <div className="block">
                 <h2>New</h2>

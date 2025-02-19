@@ -1,6 +1,6 @@
 import { user } from "@prisma/client";
 import { LoaderFunction } from "@remix-run/node";
-import { NavLink, Outlet, useLoaderData } from "@remix-run/react";
+import { NavLink, Outlet, useLoaderData, useLocation } from "@remix-run/react";
 import { useState } from "react";
 import { UserPanel } from "~/components/user-panel";
 import { getUserIdFromSession, requireUserId } from "~/utils/auth.server";
@@ -41,6 +41,10 @@ export default function UserRoute() {
   const { userId, user, friends } = useLoaderData<{ userId: number, user: user, friends: user[] }>()
 
   const [selectHeader, setHeader] = useState<number>(0);
+
+  const location = useLocation();
+  const isCharacterRoute = location.pathname.includes("character");
+  const isCampaignRoute = location.pathname.includes("campaign");
 
   const showHeader = () => {
     setHeader(() => {
@@ -83,42 +87,47 @@ export default function UserRoute() {
         <li style={{ float: 'right' }}><NavLink className={'logout'} to={`/logout`}>Logout</NavLink></li>
       </ul>
 
+      {isCharacterRoute || isCampaignRoute ?
+        <div className="user">
+          <Outlet />
+        </div>
+        :
+        <>
+          <div className="header" style={selectHeader === 0 ? {} : { transform: 'translate(-200px)' }}>
 
-      <div className="header" style={selectHeader === 0 ? {} : { transform: 'translate(-200px)' }}>
+            <h1 >{user.username}</h1>
 
-        <h1 >{user.username}</h1>
+            <ul style={{ zIndex: '5' }} className="skillnav">
+            </ul>
 
-        <ul style={{ zIndex: '900' }} className="skillnav">
-        </ul>
+          </div>
+          <button className="toggle-menu" style={selectHeader === 0 ? {} : { transform: 'translate(-200px)' }}
+            onClick={selectHeader === 0 ? showHeader : cancelHeader}></button>
 
-      </div>
-      <button className="toggle-menu" style={selectHeader === 0 ? {} : { transform: 'translate(-200px)' }}
-        onClick={selectHeader === 0 ? showHeader : cancelHeader}></button>
+          <div className="temp" style={selectTemp === 0 ? {} : { transform: 'translate(200px)' }}>
 
-      <div className="temp" style={selectTemp === 0 ? {} : { transform: 'translate(200px)' }}>
+            <ul>
+              <li><button style={selectAmg <= 1 ? { display: 'inherit' } : { display: 'none' }}
+                onClick={() => selectAmg === 0 ? setAmg(1) : setAmg(0)}>Amigos</button></li>
 
-        <ul>
-          <li><button style={selectAmg <= 1 ? { display: 'inherit' } : { display: 'none' }}
-            onClick={() => selectAmg === 0 ? setAmg(1) : setAmg(0)}>Amigos</button></li>
+              {selectAmg === 1 ?
+                <UserPanel
+                  users={friends}
+                />
+                : ''}
+            </ul>
 
-          {selectAmg === 1 ?
-            <UserPanel
-              users={friends}
-            />
-            : ''}
-        </ul>
+          </div>
 
-      </div>
+          <button className="toggle-temp" style={selectTemp === 0 ? {} : { transform: 'translate(200px)' }}
+            onClick={selectTemp === 0 ? showTemp : cancelTemp}></button>
 
-      <button className="toggle-temp" style={selectTemp === 0 ? {} : { transform: 'translate(200px)' }}
-        onClick={selectTemp === 0 ? showTemp : cancelTemp}></button>
-
-
-      <div className="user" style={isAllOpen ? { marginLeft: '200px', marginRight: '200px' } : isHeaderOpen ?
-        { marginLeft: '200px' } : isTempOpen ? { marginRight: '200px' } : {}}>
-        <Outlet />
-      </div >
-
+          <div className="user" style={isAllOpen ? { marginLeft: '200px', marginRight: '200px' } : isHeaderOpen ?
+            { marginLeft: '200px' } : isTempOpen ? { marginRight: '200px' } : {}}>
+            <Outlet />
+          </div >
+        </>
+      }
     </>
   );
 }

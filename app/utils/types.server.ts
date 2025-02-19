@@ -23,8 +23,7 @@ export type CharacterForm = {
 
 export type CampaignForm = {
   title: string
-  snippet: string,
-  theme: string,
+  description: string,
   masterId: number,
   era: number,
   year: number,

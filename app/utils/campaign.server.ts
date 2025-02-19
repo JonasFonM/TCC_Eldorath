@@ -10,8 +10,7 @@ export const createCampaign = async (campaign: CampaignForm) => {
     data: {
       title: campaign.title,
       masterId: campaign.masterId,
-      snippet: campaign.snippet,
-      theme: campaign.theme,
+      description: campaign.description,
       era: campaign.era,
       year: campaign.year,
       month: campaign.month,
@@ -23,8 +22,7 @@ export const createCampaign = async (campaign: CampaignForm) => {
     id: newcampaign.id,
     title: campaign.title,
     masterId: campaign.masterId,
-    snippet: campaign.snippet,
-    theme: campaign.theme,
+    description: campaign.description,
     era: campaign.era,
     year: campaign.year,
     month: campaign.month,
@@ -48,8 +46,7 @@ export const updateCampaign = async (campaign: CampaignForm, campaignId: number)
       month: campaign.month,
       monthDay: campaign.monthDay,
       weekDay: campaign.weekDay,
-      snippet: campaign.snippet,
-      theme: campaign.theme,
+      description: campaign.description,
 
     },
   })
@@ -62,8 +59,7 @@ export const updateCampaign = async (campaign: CampaignForm, campaignId: number)
     month: campaign.month,
     monthDay: campaign.monthDay,
     weekDay: campaign.weekDay,
-    snippet: campaign.snippet,
-    theme: campaign.theme,
+    description: campaign.description,
   }
 }
 

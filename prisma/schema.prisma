@@ -16,15 +16,14 @@ model campaign {
   public    Boolean        @default(false)
   players   partyMembers[]
 
-  title     String @db.Text
-  snippet   String @db.Text
-  theme     String @db.Text
-  era       Int    @default(1)
-  year      Int    @default(1)
-  month     Int    @default(1)
-  monthDay  Int    @default(1)
-  weekDay   Int    @default(1)
-  timeOfDay Int    @default(1)
+  title       String @db.Text
+  description String @db.Text
+  era         Int    @default(1)
+  year        Int    @default(1)
+  month       Int    @default(1)
+  monthDay    Int    @default(1)
+  weekDay     Int    @default(1)
+  timeOfDay   Int    @default(1)
 
   scenes     scene[]
   characters character[]

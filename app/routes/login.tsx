@@ -119,7 +119,7 @@ export default function Login() {
         <h2>
           {action === 'login' ? 'Entrar' : 'Cadastrar'}
         </h2>
-        <form method="POST" onSubmit={handleSubmit}>
+        <form method="POST" autoComplete="off" onSubmit={handleSubmit}>
           <div>{formError}</div>
           <FormField
             htmlFor="email"

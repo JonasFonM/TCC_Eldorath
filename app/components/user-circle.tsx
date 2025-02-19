@@ -4,15 +4,15 @@
 import { user } from '@prisma/client'
 
 interface props {
-user: user
+  user: user
 }
 
 export function UserCircle({ user }: props) {
   return (
-    <div className='user'>
-      <p>
-        {user.username.charAt(0).toUpperCase()}
-      </p>
-    </div>
+    <li>
+      <h1>
+        {user.username}
+      </h1>
+    </li>
   )
 }

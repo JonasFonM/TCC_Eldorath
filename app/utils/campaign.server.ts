@@ -162,17 +162,12 @@ export const addPlayerstoCampaign = async (partyMemberList: number[], campaignId
   return;
 };
 
-export const removePlayersFromCampaign = async (partyMemberList: number[], campaignId: number) => {
-
-  if (partyMemberList) {
-    await prisma.partyMembers.deleteMany({
-      where: {
-        userId: { in: partyMemberList },
-        campaignId: campaignId
-      }
-    })
-  }
-  return;
+export const removeAllPlayersFromCampaign = async (campaignId: number) => {
+  return await prisma.partyMembers.deleteMany({
+    where: {
+      campaignId: campaignId
+    }
+  })
 };
 
 
@@ -205,6 +200,13 @@ export const addCharacterToCampaign = async (characterList: number[], campaignId
 export const removeCharacterFromCampaign = async (characterId: number) => {
   return await prisma.character.update({
     where: { id: characterId },
+    data: { campaignId: null },
+  });
+};
+
+export const removeAllCharactersFromCampaign = async (campaignId: number) => {
+  return await prisma.character.updateMany({
+    where: { campaignId: campaignId },
     data: { campaignId: null },
   });
 };

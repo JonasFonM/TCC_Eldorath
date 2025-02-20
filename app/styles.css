@@ -40,7 +40,6 @@ body {
 }
 
 .title-screen {
-  margin-right: 2px;
   color: gold;
   font-weight: 900;
   font-size: 56px;
@@ -752,35 +751,25 @@ td:last-child {
   box-shadow: 1px 1px 4px 1px gold;
 }
 
-.calendar-container {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  width: 100%;
-  margin-top: 20px;
-}
-
 .calendar-description {
   flex: auto;
 }
 
-.calendar-section {
-  flex: auto;
-  padding: 10px;
-}
-
 .calendar-box {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  margin: 10px;
   background-color: #090809;
   padding: 15px;
   border-radius: 10px;
   box-shadow: 1px 0px 8px 1px gold;
+  width: 100%;
 }
 
 .calendar-field {
   display: flex;
+  margin: auto;
+  width: 60%;
   flex-direction: column;
   align-items: center;
   color: gold;
@@ -795,9 +784,20 @@ select {
   text-align: center;
 }
 
+*:focus {
+  outline-color: rgb(255, 228, 74);
+}
+
 .calendar-buttons {
   display: flex;
   gap: 5px;
+}
+
+textarea {
+  background-color: #090809;
+  color: white;
+  min-height: 64px;
+  min-width: 400px;
 }
 
 button {

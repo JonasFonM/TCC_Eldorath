@@ -2,6 +2,7 @@
 import { ActionFunction, json, LoaderFunction, redirect } from "@remix-run/node"
 import { NavLink, useActionData } from "@remix-run/react"
 import { useEffect, useRef, useState } from "react"
+import { GeneralExplain } from "~/components/explanations/general-explain"
 import { getUserIdFromSession, requireUserId } from '~/utils/auth.server'
 import { submitCharacter, tierByLevel } from "~/utils/character.server"
 
@@ -46,6 +47,7 @@ export const action: ActionFunction = async ({ request }) => {
 export default function NewCharacterRoute() {
   const actionData = useActionData<ActionFunction>();
   const [limit, setLimit] = useState(7);
+  const [showAtr, setShowAtr] = useState<number>();
 
   const firstLoad = useRef(true);
   const [formData, setFormData] = useState({
@@ -106,23 +108,24 @@ export default function NewCharacterRoute() {
   const handleSubmit = async (event: React.FormEvent) => {
     if (limit > 0) {
       event.preventDefault();
-      setFormError(`Please allocate all available points. ${limit} points left.`);
+      setFormError(`Você precisa usar todos os pontos. ${limit} pontos não foram gastos.`);
       return;
     }
 
     if (!formData.name || !formData.level || !formData.agility || !formData.body || !formData.mind) {
       event.preventDefault();
       setErrors({
-        name: !formData.name ? 'Name is required' : '',
-        level: !formData.level ? 'Level is required' : '',
-        agility: !formData.agility ? 'Agility is required' : '',
-        body: !formData.body ? 'Body is required' : '',
-        mind: !formData.mind ? 'Mind is required' : '',
+        name: !formData.name ? 'Você precisa informar um nome' : '',
+        level: '',
+        agility: !formData.agility ? 'Agilidade tem valor mínimo 1' : '',
+        body: !formData.body ? 'Corpo tem valor mínimo 1' : '',
+        mind: !formData.mind ? 'Mente tem valor mínimo 1' : '',
       });
-      setFormError('Please fill in all required fields.');
+      setFormError('Preencha todos os campos. O valor mínimo dos Atributos é 1');
       return;
     }
   };
+
 
   return (
     <form method="post" onSubmit={handleSubmit}>
@@ -132,19 +135,21 @@ export default function NewCharacterRoute() {
         {errors.name && <p style={{ width: '100%' }} className="error">{errors.name}</p>}
       </div>
 
-      <input hidden type="number" name="level" value={formData.level} onChange={handleChange} />
-      {errors.level && <h3>{errors.level}</h3>}
-
-      <div className="title-container">
-        <h1>Atributos<NavLink to={'../../../user/home'} className='question-button'>?</NavLink></h1>
+      <div>
+        <input hidden type="number" name="level" value={formData.level} onChange={handleChange} />
+        {errors.level && <h3>{errors.level}</h3>}
       </div>
+
+      <h1 className="title-container">Atributos<button type="button" onClick={() => setShowAtr(1)} className="question-button">?</button></h1>
+      <GeneralExplain style={'linear-gradient(to bottom, white, gold)'} color={'black'} title={'Atributos'} description="Atributos são os valores que representam seus limites e capacidades." isHidden={showAtr != 1} onCancel={() => setShowAtr(0)} />
+
 
       <h3>Pontos: {limit}</h3>
 
       <div className="container">
         <div className="block">
           <label>
-          Agilidade: {formData.agility}
+            Agilidade: {formData.agility}
             <input hidden type="number" name="agility" value={formData.agility} onChange={handleChange} />
             <div className="col-12">
               <button className="col-6 button" type="button" onClick={() => adjustAttribute('agility', 1)}>+</button>
@@ -181,7 +186,7 @@ export default function NewCharacterRoute() {
 
       {formError && <p style={{ textAlign: 'center', margin: 'auto', width: '100%' }} className="error">{formError}</p>}
       <div className="container">
-        <button className="button" type="submit">Confirmar</button>
+        <button id='submit' className="button" type="submit">Confirmar</button>
       </div>
     </form>
   );

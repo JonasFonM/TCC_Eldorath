@@ -4,6 +4,7 @@ import { useActionData } from "@remix-run/react"
 import { useEffect, useRef, useState } from "react"
 import { getUserIdFromSession, requireUserId } from '~/utils/auth.server'
 import { submitCampaign } from "~/utils/campaign.server"
+import { weekDays, translateWeekDays } from "./user.campaign"
 
 export const loader: LoaderFunction = async ({ request }) => {
   const userId = await requireUserId(request)
@@ -95,19 +96,15 @@ export default function NewCampaignRoute() {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSelect = (event: React.ChangeEvent<HTMLSelectElement>) => {
+  const handleTextArea = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     const { name, value } = event.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const weekDays = [
-    "Partilha",
-    "Vigília",
-    "Jornada",
-    "Batalha",
-    "Luto",
-    "Descanso",
-  ];
+  const handleSelect = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const { name, value } = event.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
 
   const handleMonthDayChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedDay = parseInt(e.target.value, 10);
@@ -170,15 +167,62 @@ export default function NewCampaignRoute() {
       />
       {errors.title && <p className="error">{errors.title}</p>}
 
+      <div className="container">
 
-      {/* Right Side - Date Selection */}
-      <div className="calendar-section">
-        {errors.era && <p className="error">{errors.year}</p>}
-        {/* Calendar Box */}
         <div className="calendar-box">
 
-          {/* Month Selection */}
           <div className="calendar-field">
+
+            <label>Æra: {formData.era}</label>
+            <input style={{ accentColor: "gold" }} type="range" name="era" value={formData.era} min="0" max="50" onChange={handleChange}></input>
+            <div className="calendar-buttons">
+              <button type="button" onClick={() => adjustEra(-10)}>-10</button>
+              <button type="button" onClick={() => adjustEra(-5)}>-5</button>
+              <button type="button" onClick={() => adjustEra(-1)}>-</button>
+              <button type="button" onClick={() => adjustEra(1)}>+</button>
+              <button type="button" onClick={() => adjustEra(5)}>+5</button>
+              <button type="button" onClick={() => adjustEra(10)}>+10</button>
+            </div>
+          </div>
+
+          <div className="calendar-field">
+
+            <label>Ano: {formData.year}</label>
+            <input style={{ accentColor: "gold" }} type="range" name="year" value={formData.year} min="0" max="3000" onChange={handleChange}></input>
+            <div className="calendar-buttons">
+              <button type="button" onClick={() => adjustYear(-250)}>-250</button>
+              <button type="button" onClick={() => adjustYear(-50)}>-50</button>
+              <button type="button" onClick={() => adjustYear(-1)}>-</button>
+              <button type="button" onClick={() => adjustYear(1)}>+</button>
+              <button type="button" onClick={() => adjustYear(50)}>+50</button>
+              <button type="button" onClick={() => adjustYear(250)}>+250</button>
+            </div>
+
+          </div>
+
+
+          <div className="calendar-field">
+
+            <label>Dia</label>
+            <select name="monthDay" value={formData.monthDay} onChange={handleMonthDayChange}>
+              {[...Array(30)].map((_, i) => (
+                <option key={i + 1} value={i + 1}>
+                  {i + 1}  -  {translateWeekDays(i)}
+                </option>
+              ))}
+            </select>
+            <select hidden name="weekDay" value={formData.weekDay} onChange={() => null}>
+              {weekDays.map((name, index) => (
+                <option key={index + 1} value={index + 1}>
+                  {name}
+                </option>
+              ))}
+            </select>
+
+          </div>
+
+          <div className="calendar-field">
+
             <label>Mês</label>
             <select title="month" name="month" value={formData.month} onChange={handleSelect}>
               <optgroup label="Verão">
@@ -202,91 +246,31 @@ export default function NewCampaignRoute() {
                 <option value="12">Harmonia</option>
               </optgroup>
             </select>
-          </div>
-          {errors.month && <p className="error">{errors.month}</p>}
-          <div className="calendar-field">
 
-            <label>
-              Dia do Mês
-              <br />
-              <select name="monthDay" value={formData.monthDay} onChange={handleMonthDayChange}>
-                {[...Array(30)].map((_, i) => (
-                  <option key={i + 1} value={i + 1}>
-                    {i + 1}
-                  </option>
-                ))}
-              </select>
-            </label>
           </div>
 
-          <div className="calendar-field">
-            <label>
-              Dia da Semana: {weekDays[formData.weekDay - 1]}
-              <br />
-              <select hidden name="weekDay" value={formData.weekDay} onChange={() => null}>
-                {weekDays.map((name, index) => (
-                  <option key={index + 1} value={index + 1}>
-                    {name}
-                  </option>
-                ))}
-              </select>
-            </label>
-          </div>
         </div>
       </div>
 
-      {/* Era Selection */}
-      <div className="calendar-field">
-        <label><h1>Æra: {formData.era}</h1></label>
-        <input style={{ accentColor: "gold" }} type="range" name="era" value={formData.era} min="0" max="50" onChange={handleChange}></input>
-        <div className="calendar-buttons">
-          <button type="button" onClick={() => adjustEra(-10)}>-10</button>
-          <button type="button" onClick={() => adjustEra(-5)}>-5</button>
-          <button type="button" onClick={() => adjustEra(-1)}>-</button>
-          <button type="button" onClick={() => adjustEra(1)}>+</button>
-          <button type="button" onClick={() => adjustEra(5)}>+5</button>
-          <button type="button" onClick={() => adjustEra(10)}>+10</button>
-        </div>
-      </div>
-      {errors.era && <p className="error">{errors.era}</p>}
+      <div className="container">
 
-      {/* Year Selection */}
-      <div className="calendar-field">
-        <label><h1>Ano: {formData.year}</h1></label>
-        <input style={{ accentColor: "gold" }} type="range" name="year" value={formData.year} min="0" max="3000" onChange={handleChange}></input>
-        <div className="calendar-buttons">
-          <button type="button" onClick={() => adjustYear(-50)}>-50</button>
-          <button type="button" onClick={() => adjustYear(-1)}>-</button>
-          <button type="button" onClick={() => adjustYear(1)}>+</button>
-          <button type="button" onClick={() => adjustYear(50)}>+50</button>
-          <button type="button" onClick={() => adjustYear(250)}>+250</button>
-        </div>
-      </div>
-
-
-      <div className="calendar-container">
-
-        {/* Left Side - Description */}
         <div>
           <label><h1>Descrição</h1></label>
-          <input
+          <textarea
             className="text-area"
-            type="text"
             name="description"
-            placeholder="Descrição Curta"
+            placeholder="Descreva os pontos básicos da sua Campanha.
+Você pode alterar essa descrição mais tarde!"
             value={formData.description}
-            onChange={handleChange}
+            onChange={handleTextArea}
           />
           {errors.description && <p className="error">{errors.description}</p>}
         </div>
 
       </div>
 
-      {/* Form Errors */}
-      {formError && <p className="error form-error">{formError}</p>}
-
-      {/* Submit Button */}
       <button className="button" type="submit">Confirmar</button>
+
     </form>
   );
 }

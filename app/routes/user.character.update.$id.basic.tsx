@@ -3,6 +3,7 @@ import { character } from "@prisma/client"
 import { ActionFunction, json, LoaderFunction, redirect } from "@remix-run/node"
 import { NavLink, useActionData, useLoaderData } from "@remix-run/react"
 import { useEffect, useRef, useState } from "react"
+import { GeneralExplain } from "~/components/explanations/general-explain"
 import { getUserIdFromSession, requireUserId } from '~/utils/auth.server'
 import { tierByLevel, updateCharacter } from "~/utils/character.server"
 import { prisma } from "~/utils/prisma.server"
@@ -52,6 +53,7 @@ export default function NewCharacterRoute() {
     const actionData = useActionData<ActionFunction>();
     const { character } = useLoaderData<{ character: character }>();
     const [limit, setLimit] = useState(0);
+    const [showAtr, setShowAtr] = useState<number>();
 
     const firstLoad = useRef(true);
     const [formData, setFormData] = useState({
@@ -155,9 +157,8 @@ export default function NewCharacterRoute() {
             <input hidden type="number" name="level" value={formData.level} onChange={handleChange} />
             {errors.level && <p>{errors.level}</p>}
 
-            <div className="title-container">
-                <h1>Atributos<NavLink to={'../../../user/home/atr'} className='question-button'>?</NavLink></h1>
-            </div>
+            <h1 className="title-container">Atributos<button type="button" onClick={() => setShowAtr(1)} className="question-button">?</button></h1>
+            <GeneralExplain style={'linear-gradient(to bottom, white, gold)'} color={'black'} title={'Atributos'} description="Atributos são os valores que representam seus limites e capacidades." isHidden={showAtr != 1} onCancel={() => setShowAtr(0)} />
 
             <h3>Points remaining: {limit}</h3>
             {formError && <p className="error">{formError}</p>}

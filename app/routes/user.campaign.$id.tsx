@@ -3,6 +3,8 @@ import { LoaderFunction } from "@remix-run/node";
 import { Outlet, useLoaderData } from "@remix-run/react";
 import { prisma } from "~/utils/prisma.server";
 import { translateWeekDays } from "./user.campaign";
+import { useState } from "react";
+import { SideBars } from "~/components/side-bars";
 
 export const loader: LoaderFunction = async ({ params }) => {
     const campaignId = Number(params.id);
@@ -18,13 +20,21 @@ export const loader: LoaderFunction = async ({ params }) => {
 export default function CampaignRoute() {
     const { campaign } = useLoaderData<{ campaign: campaign }>()
 
+
+
     return (
-        <div>
-            <h1>{campaign.title}</h1>
-            <h2>{campaign.era}, {translateWeekDays(campaign.weekDay)} {campaign.monthDay}/{campaign.month}/{campaign.year} </h2>
-            <p>{campaign.description}</p>
+        <>
+
+            <SideBars entity={campaign} title={campaign.title} tableHeaders={["Æra", "Ano", "Mês", "Dia"]} tableDatas={[campaign.era, campaign.year, campaign.month, campaign.monthDay]} />
+
+
+            <div className="character-sheet">
+                <div className="container">
+                    <p>{campaign.description}</p>
+                </div>
+            </div>
             <Outlet />
-        </div>
+        </>
     );
 }
 

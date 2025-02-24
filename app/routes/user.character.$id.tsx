@@ -9,6 +9,8 @@ import { ResetConfirm } from "~/components/character-sheet/reset-confirm";
 import React, { useState } from "react";
 import { CharacterItemCircle } from "~/components/c-item-circle";
 import { CharacterItemExplain } from "~/components/explanations/item-explain";
+import { SideBars } from "~/components/side-bars/side-bars";
+import { useSidebar } from "~/components/side-bars/side-bar-context";
 
 
 export const loader: LoaderFunction = async ({ params }) => {
@@ -83,61 +85,8 @@ export default function CharacterRoute() {
   const { lineages, isPure } = useLoaderData<{ lineages: lineage[], isPure: boolean }>();
   const { items } = useLoaderData<{ items: (character_item & { item: item })[] }>();
   const { paths } = useLoaderData<{ paths: path[] }>();
+  const { isAllOpen, isHeaderOpen, isTempOpen } = useSidebar();
 
-  const [selectReset, setReset] = useState<number>(0);
-
-  const [prevTemp, setPrevTemp] = useState<number>(0);
-
-  const showReset = () => {
-    setReset(() => {
-      return character.id;
-    });
-
-    setPrevTemp(() => selectTemp);
-
-    setTemp(() => {
-      return character.id;
-    });
-  };
-
-  const cancelReset = () => {
-    setReset(() => {
-      return 0
-    });
-    prevTemp == 0 ?
-      setTemp(() => {
-        return 0;
-      }) :
-      ''
-  };
-
-
-  const [selectHeader, setHeader] = useState<number>(0);
-
-  const showHeader = () => {
-    setHeader(() => {
-      return character.id;
-    });
-  };
-
-  const cancelHeader = () => {
-    setHeader(() => {
-      return 0
-    });
-  };
-  const [selectTemp, setTemp] = useState<number>(0);
-
-  const showTemp = () => {
-    setTemp(() => {
-      return character.id;
-    });
-  };
-
-  const cancelTemp = () => {
-    setTemp(() => {
-      return 0
-    });
-  };
 
   const [showItem, setShowItem] = useState<number>();
 
@@ -152,106 +101,87 @@ export default function CharacterRoute() {
       })
   }
 
-  const [selectInv, setInv] = useState<number>(0);
+  const subtitle = paths.length > 0 ? String(paths.map(p => p.name)) : "Sem Caminho"
 
-  const isAllOpen = selectHeader === 0 && selectTemp === 0
-  const isHeaderOpen = selectHeader === 0 && selectTemp != 0
-  const isTempOpen = selectTemp === 0 && selectHeader != 0
+  const [selectInv, setInv] = useState<number>(0);
 
   return (
     <>
+      <SideBars
+        entity={character} title={character.name}
+        subtitle={subtitle}
+        tableHeaders={["NV", "CT", "XP"]}
+        tableDatas={[character.level, character.tier, character.experience]}
+        tableExplain={[
+          "Seu Nível é um indicador geral de quão poderoso você é no momento. Você sobe de nível conforme ganha Experiência.",
+          "Sua Categoria representa em qual patamar da sua jornada você está. Você pode ser Iniciante, Profissional, Mestre ou Lendário.",
+          "Seus Pontos de Experiência determinam quando você pode subir de nível. Você pode receber Experiência de várias formas, como derrotar inimigos, ou passar por um treinamento árduo.",
+        ]}
+        links={[
+          `/user/character/${characterId}/stats/`,
+          `/user/character/${characterId}/lineages/`,
+          `/user/character/${characterId}/paths/`,
+          `/user/character/${characterId}/skills/`
+        ]}
+        linkNames={[
+          'Personagem',
+          'Linhagens',
+          'Caminhos',
+          'Talentos'
+        ]}
+        temp={
+          <>
+            <h1>Inventário</h1>
+            <h1 className="title-container"><NavLink className="question-button" to={`/user/character/${characterId}/new/inventory/`}>+</NavLink></h1>
 
-      <div className="header" style={selectHeader === 0 ? {} : { transform: 'translate(-200px)' }}>
+            <table>
+              <tbody>
+                <tr>
+                  <th>AU</th>
+                  <td>{character.gold}</td>
+                </tr>
+              </tbody>
+            </table>
 
-        <h1 >{character.name}</h1>
-        <p>{paths && paths.length > 0 ? (paths.map(path => path.name)) : ("Sem Caminho")} </p>
+            <table>
+              <tbody>
+                <tr>
+                  <th>CA</th>
+                  <td>{items.map(items => items.weight).reduce((accumulator, currentValue) => accumulator + currentValue, 0)}/{character.carryCap}</td>
+                </tr>
+              </tbody>
+            </table>
 
-        <table>
-          <tr>
-            <th>NV</th>
-            <td>{character.level}</td>
-          </tr>
-        </table>
-        <table>
-          <tr>
-            <th>CT</th>
-            <td>{character.tier}</td>
-          </tr>
-        </table>
-        <table>
-          <tr>
-            <th>XP</th>
-            <td>{character.experience}/{(character.level + 1) * 4 * character.tier}</td>
-          </tr>
-        </table>
+            <ul>
+              <li><button style={selectInv <= 1 ? { display: 'inherit' } : { display: 'none' }} onClick={() => selectInv === 0 ? setInv(1) : setInv(0)}>Itens</button></li>
 
-        <ul style={{ zIndex: '900' }} className="skillnav">
-          <li><NavLink to={`/user/character/${characterId}/stats/`}>Personagem</NavLink></li>
-          <li><NavLink to={`/user/character/${characterId}/lineages/`}>Linhagens</NavLink></li>
-          <li><NavLink to={`/user/character/${characterId}/paths/`}>Caminhos</NavLink></li>
-          <li><NavLink to={`/user/character/${characterId}/skills/`}>Talentos</NavLink></li>
-          <ResetConfirm name={character.name} isHidden={selectReset === 0} onShow={showReset} onCancel={cancelReset} id={String(character.id)} />
-        </ul>
+              {selectInv === 1 ? items.map(item => (
+                <React.Fragment key={item.id}>
+                  <CharacterItemCircle
+                    item={item}
+                    isSelected={false}
+                    onClick={() => explainItem(item.id)}
+                  />
+                  <CharacterItemExplain
+                    style={'linear-gradient(to bottom right, gold, goldenrod)'}
+                    character_item={item}
+                    isHidden={showItem != item.id}
+                    onCancel={() => setShowItem(0)}
+                  />
+                </React.Fragment>
 
-      </div>
-      <button className="toggle-menu" style={selectHeader === 0 ? {} : { transform: 'translate(-200px)' }} onClick={selectHeader === 0 ? showHeader : cancelHeader}></button>
+              )) : ''}
+            </ul>
+          </>
+        }
 
-      <div className="temp" style={selectTemp === 0 ? {} : { transform: 'translate(200px)' }}>
-
-        <h1>Inventário</h1>
-        <h1 className="title-container"><NavLink className="question-button" to={`/user/character/${characterId}/new/inventory/`}>+</NavLink></h1>
-
-        <table>
-          <tr>
-            <th>AU</th>
-            <td>{character.gold}</td>
-          </tr>
-        </table>
-
-        <table>
-          <tr>
-            <th>CA</th>
-            <td>{items.map(items => items.weight).reduce((accumulator, currentValue) => accumulator + currentValue, 0)}/{character.carryCap}</td>
-          </tr>
-        </table>
-
-        <ul>
-          <li><button style={selectInv <= 1 ? { display: 'inherit' } : { display: 'none' }} onClick={() => selectInv === 0 ? setInv(1) : setInv(0)}>Armas</button></li>
-
-
-          {selectInv === 1 ? items.map(item => (
-            <React.Fragment key={item.id}>
-              <CharacterItemCircle
-                item={item}
-                isSelected={false}
-                onClick={() => explainItem(item.id)}
-              />
-              <CharacterItemExplain
-                style={'linear-gradient(to bottom right, gold, goldenrod)'}
-                character_item={item}
-                isHidden={showItem != item.id}
-                onCancel={() => setShowItem(0)}
-              />
-            </React.Fragment>
-
-          )) : ''}
-
-
-
-          <li><button style={selectInv === 2 || selectInv === 0 ? { display: 'inherit' } : { display: 'none' }} onClick={() => selectInv <= 1 ? setInv(2) : setInv(0)}>Armaduras</button></li>
-
-          <li><button style={selectInv === 3 || selectInv === 0 ? { display: 'inherit' } : { display: 'none' }} onClick={() => selectInv <= 1 ? setInv(3) : setInv(0)}>Gerais</button></li>
-
-        </ul>
-      </div>
-
-      <button className="toggle-temp" style={selectTemp === 0 ? {} : { transform: 'translate(200px)' }} onClick={selectTemp === 0 ? showTemp : cancelTemp}></button>
-
+      />
 
       <div className="character-sheet" style={isAllOpen ? { marginLeft: '200px', marginRight: '200px' } : isHeaderOpen ? { marginLeft: '200px' } : isTempOpen ? { marginRight: '200px' } : {}}>
         <Outlet context={{ character, skills, paths, lineages, pureLineageSkills, nonPureLineageSkills, isPure, items }} />
       </div >
     </>
+
   );
 
 }

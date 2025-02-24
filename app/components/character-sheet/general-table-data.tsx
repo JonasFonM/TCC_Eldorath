@@ -10,7 +10,7 @@ interface Props {
 export function TableData({ tableData, show, onClick, selected }: Props) {
 
     return (
-        <>
+        <tbody>
             {
                 <tr className={selected ? 'selected' : ''} onClick={onClick} style={show ? { display: 'table-row' } : { display: 'none' }}>
                     {tableData.map(td => (
@@ -18,6 +18,5 @@ export function TableData({ tableData, show, onClick, selected }: Props) {
                     ))
                     }
                 </tr>}
-        </>
-    )
+        </tbody>)
 }

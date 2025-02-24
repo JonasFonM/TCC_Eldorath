@@ -16,22 +16,22 @@ export function ResetConfirm({ name, isHidden, onShow, onCancel, id }: props) {
 
   return (
     <>
-      <li id="reset"><button onClick={onShow}>Resetar</button></li>
+      <button id="reset" onClick={onShow} className="question-button">R</button>
 
       <div className="modal-overlay" style={{ display: isHidden ? 'none' : 'flex' }}>
         <div className="modal-content">
-          <h2 style={{ color: "black" }}>Tem certeza que quer resetar {name}?</h2>
+          <h2 style={{ color: "black", fontSize: "1.4rem" }}>Tem certeza que quer resetar {name}?</h2>
 
-          <p style={{ color: 'black' }}>Este processo vai retornar o personagem ao nível 1 e excluir todas as suas Capacidades</p>
+          <p style={{ color: 'black', fontSize: "1rem" }}>Este processo vai retornar o personagem ao nível 1 além de excluir todos os seus Caminhos, Linhagens, Talentos e Itens</p>
 
           <div className="modal-buttons">
-          
+
             <input placeholder="Digite RESETAR" value={confirmText} onChange={(e) => setConfirmText(e.target.value)}></input>
-          
+
             <NavLink to={`/user/character/${id}/reset/`}> <button onClick={onCancel} className="btn-delete" disabled={!isConfirmed}>RESETAR</button></NavLink>
-          
+
             <button onClick={onCancel} className="btn-cancel">CANCELAR</button>
-          
+
           </div>
         </div>
       </div>

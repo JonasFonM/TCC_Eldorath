@@ -1,34 +1,81 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { json, LoaderFunction } from '@remix-run/node'
-import { requireUserId } from '~/utils/auth.server'
-import { getCharactersFromUser } from "~/utils/character.server";
+import { user } from "@prisma/client";
+import { LoaderFunction } from "@remix-run/node";
+import { NavLink, Outlet, useLoaderData } from "@remix-run/react";
+import { useSidebar } from "~/components/side-bars/side-bar-context";
+import { SideBars } from "~/components/side-bars/side-bars";
+import { UserPanel } from "~/components/user-panel";
+import { getUserIdFromSession, requireUserId } from "~/utils/auth.server";
+import { prisma } from "~/utils/prisma.server";
 
 export const loader: LoaderFunction = async ({ request }) => {
-    const userId = await requireUserId(request)
-    const characters = await getCharactersFromUser(userId)
-    return json({ characters })
+    await requireUserId(request)
+    const userId = await getUserIdFromSession(request)
+
+    const user = await prisma.user.findUnique({
+        where: { id: Number(userId) }
+    })
+
+    const friendships = await prisma.friendship.findMany({
+        where: {
+            OR: [
+                { user1Id: Number(userId) },
+                { user2Id: Number(userId) }
+            ],
+        }
+    })
+
+    const friendshipIds = friendships.map(fr => fr.user1Id).concat(friendships.map(fr => fr.user2Id))
+
+    const friends = await prisma.user.findMany({
+        where: {
+            id: { in: friendshipIds },
+            NOT: [
+                { id: Number(userId) }
+            ]
+        }
+    })
+
+    return ({ userId, user, friends })
 }
 
+export default function UserRoute() {
+    const { user, friends } = useLoaderData<{ userId: number, user: user, friends: user[] }>()
+    const { isAllOpen, isHeaderOpen, isTempOpen } = useSidebar();
 
-export default function CharactersIndexRoute() {
     return (
         <>
-            <h1>O que é Æternida?</h1>
+            <ul className="topnav">
+                <li><NavLink to={`/user/home`}>Introdução</NavLink></li>
+                <li><NavLink to={`/user/character/`}>Personagens</NavLink></li>
+                <li><NavLink to={`/user/campaign/`}>Campanhas</NavLink></li>
+                <li style={{ float: 'right' }}><NavLink className={'logout'} to={`/logout`}>Logout</NavLink></li>
+            </ul>
 
-            <div className='container'>
-                <div className='col-2'>
-                    <p>Teste</p>
+            <>
+                <SideBars entity={user}
+                    title={user.username}
+                    subtitle={''}
+                    tableHeaders={[]}
+                    tableDatas={[]}
+                    tableExplain={[]}
+                    links={[]}
+                    linkNames={[]}
+                    temp={<UserPanel users={friends} />}
+                />
 
-                </div>
+                <div className="user" style={isAllOpen ? { marginLeft: '200px', marginRight: '200px' } : isHeaderOpen ?
+                    { marginLeft: '200px' } : isTempOpen ? { marginRight: '200px' } : {}}>
 
-                <div className='col-6'>
-                </div>
+                    <div className="container">
+                        <div className="col-3">
+                            <p>Olá</p>
+                            <Outlet />
+                        </div>
+                    </div>
 
-                <div className='col-4'>
+                </div >
 
-                </div>
-            </div>
+            </>
         </>
     );
 }
-

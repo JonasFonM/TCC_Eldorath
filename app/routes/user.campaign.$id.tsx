@@ -2,9 +2,9 @@ import { campaign } from "@prisma/client";
 import { LoaderFunction } from "@remix-run/node";
 import { Outlet, useLoaderData } from "@remix-run/react";
 import { prisma } from "~/utils/prisma.server";
-import { translateWeekDays } from "./user.campaign";
 import { useState } from "react";
-import { SideBars } from "~/components/side-bars";
+import { SideBars } from "~/components/side-bars/side-bars";
+import { useSidebar } from "~/components/side-bars/side-bar-context";
 
 export const loader: LoaderFunction = async ({ params }) => {
     const campaignId = Number(params.id);
@@ -19,12 +19,14 @@ export const loader: LoaderFunction = async ({ params }) => {
 
 export default function CampaignRoute() {
     const { campaign } = useLoaderData<{ campaign: campaign }>()
-
+    const { isAllOpen, isHeaderOpen, isTempOpen } = useSidebar();
 
 
     return (
         <>
-            <SideBars entity={campaign} title={campaign.title}
+            <SideBars entity={campaign}
+                title={campaign.title}
+                subtitle=""
                 tableHeaders={["Æra", "Ano", "Mês", "Dia"]}
                 tableDatas={[campaign.era, campaign.year, campaign.month, campaign.monthDay]}
                 tableExplain={[
@@ -34,20 +36,22 @@ export default function CampaignRoute() {
                     "Os Dias em Æternida são divididos em quatro Fases de 6 horas para questões de jogabilidade. Cada semana tem 6 Dias exatos, e os nomes deles são uma representação da rotina do povo Æternidense."
                 ]}
                 links={[]}
-                linkNames={[]
-
-                }
-
+                linkNames={[]}
+                temp={''}
 
             />
 
+            <div className="user" style={isAllOpen ? { marginLeft: '200px', marginRight: '200px' } : isHeaderOpen ?
+                { marginLeft: '200px' } : isTempOpen ? { marginRight: '200px' } : {}}>
 
-            <div className="character-sheet">
                 <div className="container">
-                    <p>{campaign.description}</p>
+                    <div className="col-3">
+                        <p>{campaign.description}</p>
+                        <Outlet />
+                    </div>
                 </div>
-            </div>
-            <Outlet />
+
+            </div >
         </>
     );
 }

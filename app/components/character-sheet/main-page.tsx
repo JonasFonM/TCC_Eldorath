@@ -2,6 +2,7 @@ import { character } from "@prisma/client";
 import { NavLink } from "@remix-run/react";
 import { GeneralExplain } from "../explanations/general-explain";
 import { useState } from "react";
+import { ResetConfirm } from "./reset-confirm";
 
 interface Props {
     character: character
@@ -10,12 +11,27 @@ interface Props {
 
 
 export function CharacterSheet({ character }: Props) {
-
     const [showAtr, setShowAtr] = useState<number>();
+    const [selectReset, setReset] = useState<number>(0);
+
+    const showReset = () => {
+        setReset(() => {
+            return character.id;
+        });
+    };
+
+    const cancelReset = () => {
+        setReset(() => {
+            return 0
+        });
+    };
 
     return (
         <>
-            <h1 className="title-container"><NavLink to={`/user/character/update/${String(character.id)}/basic`} className={'lineBtn'}>Atributos</NavLink><button onClick={() => setShowAtr(1)} className="question-button">?</button></h1>
+            <h1 className="title-container"><NavLink to={`/user/character/update/${String(character.id)}/basic`} className={'lineBtn'}>Atributos</NavLink>
+                <button onClick={() => setShowAtr(1)} className="question-button">?</button>
+                <ResetConfirm name={character.name} isHidden={selectReset === 0} onShow={showReset} onCancel={cancelReset} id={String(character.id)} />
+            </h1>
             <GeneralExplain style={'linear-gradient(to bottom, white, gold)'} color={'black'} title={'Atributos'} description="Atributos são os valores que representam seus limites e capacidades." isHidden={showAtr != 1} onCancel={() => setShowAtr(0)} />
 
             <h1 className="title-container">Básicos<button onClick={() => setShowAtr(2)} className="question-button">?</button></h1>

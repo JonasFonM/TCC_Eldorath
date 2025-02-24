@@ -13,8 +13,6 @@ export function CharacterSheet({ character }: Props) {
 
     const [showAtr, setShowAtr] = useState<number>();
 
-
-
     return (
         <>
             <h1 className="title-container"><NavLink to={`/user/character/update/${String(character.id)}/basic`} className={'lineBtn'}>Atributos</NavLink><button onClick={() => setShowAtr(1)} className="question-button">?</button></h1>

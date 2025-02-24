@@ -1,16 +1,21 @@
-import { Outlet } from "@remix-run/react";
+import { NavLink, Outlet } from "@remix-run/react";
 import { useState } from "react";
+import { GeneralExplain } from "./explanations/general-explain";
 
 interface Props {
     title: string;
     tableHeaders: string[];
     tableDatas: number[];
+    tableExplain: string[];
+    links: string[];
+    linkNames: string[];
     entity: any
 
 }
 
-export function SideBars({ title, tableHeaders, tableDatas, entity }: Props) {
+export function SideBars({ title, tableHeaders, tableDatas, tableExplain, links, linkNames, entity }: Props) {
     const [selectHeader, setHeader] = useState<number>(0);
+    const [showExplain, setShowExplain] = useState<number>();
 
     const showHeader = () => {
         setHeader(() => {
@@ -45,35 +50,57 @@ export function SideBars({ title, tableHeaders, tableDatas, entity }: Props) {
 
     return (
         <>
-            <div className="header" style={selectHeader === 0 ? {} : { transform: 'translate(-200px)' }}>
+            <div>
+                <div className="header" style={selectHeader === 0 ? {} : { transform: 'translate(-200px)' }}>
 
-                <h1 >{title}</h1>
+                    <h1 >{title}</h1>
 
-                <ul style={{ zIndex: '5' }} className="skillnav">
+                    <ul style={{ zIndex: '5' }} className="skillnav">
 
-                    {tableHeaders.map((th, index) => (
-                        <table>
-                            <tr>
-                                <th>{th}</th>
-                                <td>{tableDatas[index]}</td>
-                            </tr>
-                        </table>
-                    ))
-                    }
-                </ul>
+                        {tableHeaders.map((th, index) => (
+                            <>
 
+                                <table key={th}>
+
+                                    <tr>
+
+                                        <button style={{ display: "hidden" }} type="button" onClick={() => setShowExplain(index + 1)}>
+                                            <th>{th}</th>
+                                        </button>
+
+                                        <td>{tableDatas[index]}</td>
+
+
+                                    </tr>
+
+                                </table>
+                                <GeneralExplain style={'linear-gradient(to bottom, white, gold)'} color={'black'} title={th} description={tableExplain[index]} isHidden={showExplain != (index + 1)} onCancel={() => setShowExplain(0)} />
+                            </>
+
+
+                        ))
+                        }
+
+
+                        {links.map((lk, index) => (
+                            <li key={lk}><NavLink to={lk}>{linkNames[index]}</NavLink></li>
+                        ))}
+
+                    </ul>
+
+                </div>
+                <button className="toggle-menu" style={selectHeader === 0 ? {} : { transform: 'translate(-200px)' }}
+                    onClick={selectHeader === 0 ? showHeader : cancelHeader}></button>
+
+                <div className="temp" style={selectTemp === 0 ? {} : { transform: 'translate(200px)' }}>
+
+
+                    <ul>
+
+                    </ul>
+
+                </div>
             </div>
-            <button className="toggle-menu" style={selectHeader === 0 ? {} : { transform: 'translate(-200px)' }}
-                onClick={selectHeader === 0 ? showHeader : cancelHeader}></button>
-
-            <div className="temp" style={selectTemp === 0 ? {} : { transform: 'translate(200px)' }}>
-
-                <ul>
-
-                </ul>
-
-            </div>
-
             <button className="toggle-temp" style={selectTemp === 0 ? {} : { transform: 'translate(200px)' }}
                 onClick={selectTemp === 0 ? showTemp : cancelTemp}></button>
 

@@ -200,8 +200,20 @@ export default function CharacterRoute() {
 
         <h1>Inventário</h1>
         <h1 className="title-container"><NavLink className="question-button" to={`/user/character/${characterId}/new/inventory/`}>+</NavLink></h1>
-        <p>Auramares: {character.gold}</p>
-        <p>Cargas: {items.map(items => items.weight).reduce((accumulator, currentValue) => accumulator + currentValue, 0)}/{character.carryCap}</p>
+
+        <table>
+          <tr>
+            <th>AU</th>
+            <td>{character.gold}</td>
+          </tr>
+        </table>
+
+        <table>
+          <tr>
+            <th>CA</th>
+            <td>{items.map(items => items.weight).reduce((accumulator, currentValue) => accumulator + currentValue, 0)}/{character.carryCap}</td>
+          </tr>
+        </table>
 
         <ul>
           <li><button style={selectInv <= 1 ? { display: 'inherit' } : { display: 'none' }} onClick={() => selectInv === 0 ? setInv(1) : setInv(0)}>Armas</button></li>

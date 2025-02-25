@@ -198,7 +198,7 @@ ul {
   padding: 0;
   background-color: #090809;
   box-shadow: 1px 0px 8px 1px gold;
-  z-index: 6;
+  z-index: 5;
 }
 
 .header h1,
@@ -578,14 +578,12 @@ td:last-child {
 
 .modal-overlay {
   background-color: rgba(0, 0, 0, 0.7);
-
   animation: fadeIn 0.2s ease-in-out;
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  display: flex;
   justify-content: center;
   align-items: center;
   overflow: auto;

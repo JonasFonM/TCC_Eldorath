@@ -26,57 +26,54 @@ export function SideBars({ title, subtitle, tableHeaders, tableDatas, tableExpla
     const [showExplain, setShowExplain] = useState<number>();
 
     return (
-        <>
-            <div>
-                <div className="header" style={selectHeader === 0 ? {} : { transform: 'translate(-200px)' }}>
+        <div id="side-bars">
+            <div className="header" style={selectHeader === 0 ? {} : { transform: 'translate(-200px)' }}>
 
-                    <h1 >{title}</h1>
-                    <h3>{subtitle}</h3>
+                <h1 >{title}</h1>
+                <h3>{subtitle}</h3>
 
-                    <ul className="skillnav">
+                <ul className="skillnav">
 
-                        {tableHeaders.map((th, index) => (
-                            <>
+                    {tableHeaders.map((th, index) => (
+                        <>
+                            <table key={th}>
+                                <tbody>
+                                    <tr onClick={() => setShowExplain(index + 1)}>
+                                        <th>{th}</th>
+                                        <td>{tableDatas[index]}</td>
 
-                                <table key={th}>
-                                    <tbody>
-                                        <tr onClick={() => setShowExplain(index + 1)}>
-                                            <th>{th}</th>
-                                            <td>{tableDatas[index]}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <GeneralExplain style={'linear-gradient(to bottom, white, gold)'} color={'black'} title={th} description={tableExplain[index]} isHidden={showExplain != (index + 1)} onCancel={() => setShowExplain(0)} />
+                        </>
+                    ))
+                    }
 
-                                        </tr>
-                                    </tbody>
-                                </table>
-                                <GeneralExplain style={'linear-gradient(to bottom, white, gold)'} color={'black'} title={th} description={tableExplain[index]} isHidden={showExplain != (index + 1)} onCancel={() => setShowExplain(0)} />
-                            </>
-                        ))
-                        }
+                    {links.map((lk, index) => (
+                        <li key={lk}><NavLink to={lk}>{linkNames[index]}</NavLink></li>
+                    ))}
 
-                        {links.map((lk, index) => (
-                            <li key={lk}><NavLink to={lk}>{linkNames[index]}</NavLink></li>
-                        ))}
+                </ul>
 
-                    </ul>
-
-                </div>
-
-                <button className="toggle-menu" style={selectHeader === 0 ? {} : { transform: 'translate(-200px)' }}
-                    onClick={selectHeader === 0 ? () => setHeader(Number(entity.id)) : () => setHeader(0)}>
-                </button>
-
-                <div className="temp" style={selectTemp === 0 ? {} : { transform: 'translate(200px)' }}>
-
-                    <ul>
-                        {temp}
-                    </ul>
-
-                </div>
-
-                <button className="toggle-temp" style={selectTemp === 0 ? {} : { transform: 'translate(200px)' }}
-                    onClick={selectTemp === 0 ? () => setTemp(Number(entity.id)) : () => setTemp(0)}>
-                </button>
             </div>
-        </>
+
+            <button className="toggle-menu" style={selectHeader === 0 ? {} : { transform: 'translate(-200px)' }}
+                onClick={selectHeader === 0 ? () => setHeader(Number(entity.id)) : () => setHeader(0)}>
+            </button>
+
+            <div className="temp" style={{ zIndex: showExplain === 0 ? '5' : '4', transform: selectTemp === 0 ? '' : 'translate(200px)' }}>
+
+                <ul>
+                    {temp}
+                </ul>
+
+            </div>
+
+            <button className="toggle-temp" style={selectTemp === 0 ? {} : { transform: 'translate(200px)' }}
+                onClick={selectTemp === 0 ? () => setTemp(Number(entity.id)) : () => setTemp(0)}>
+            </button>
+        </div>
 
     );
 }

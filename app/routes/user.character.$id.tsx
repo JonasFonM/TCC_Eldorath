@@ -11,6 +11,7 @@ import { CharacterItemCircle } from "~/components/c-item-circle";
 import { CharacterItemExplain } from "~/components/explanations/item-explain";
 import { SideBars } from "~/components/side-bars/side-bars";
 import { useSidebar } from "~/components/side-bars/side-bar-context";
+import { GeneralExplain } from "~/components/explanations/general-explain";
 
 
 export const loader: LoaderFunction = async ({ params }) => {
@@ -89,6 +90,7 @@ export default function CharacterRoute() {
 
 
   const [showItem, setShowItem] = useState<number>();
+  const [showInv, setShowInv] = useState<number>(0);
 
   const explainItem = (id: number) => {
     showItem != id ?
@@ -130,27 +132,29 @@ export default function CharacterRoute() {
           'Talentos'
         ]}
         temp={
-          <>
+          <React.Fragment>
             <h1>Inventário</h1>
             <h1 className="title-container"><NavLink className="question-button" to={`/user/character/${characterId}/new/inventory/`}>+</NavLink></h1>
 
             <table>
               <tbody>
-                <tr>
+                <tr onClick={() => setShowInv(1)}>
                   <th>AU</th>
                   <td>{character.gold}</td>
                 </tr>
               </tbody>
             </table>
+            <GeneralExplain style={'linear-gradient(to bottom, white, gold)'} color={'black'} title={'Auramares'} description="Auramares são a moeda corrente principal em Æternida. Cunhadas em ouro, elas simbolizam a paz e a harmonia." isHidden={showInv != 1} onCancel={() => setShowInv(0)} />
 
             <table>
               <tbody>
-                <tr>
+                <tr onClick={() => setShowInv(2)}>
                   <th>CA</th>
                   <td>{items.map(items => items.weight).reduce((accumulator, currentValue) => accumulator + currentValue, 0)}/{character.carryCap}</td>
                 </tr>
               </tbody>
             </table>
+            <GeneralExplain style={'linear-gradient(to bottom, white, gold)'} color={'black'} title={'Carga Atual'} description="Indica quantas Cargas estão ocupadas no seu Inventário. Se sua Carga Atual for maior que a sua Capacidade de Carga, você fica Sobrecarregado." isHidden={showInv != 2} onCancel={() => setShowInv(0)} />
 
             <ul>
               <li><button style={selectInv <= 1 ? { display: 'inherit' } : { display: 'none' }} onClick={() => selectInv === 0 ? setInv(1) : setInv(0)}>Itens</button></li>
@@ -172,7 +176,7 @@ export default function CharacterRoute() {
 
               )) : ''}
             </ul>
-          </>
+          </React.Fragment>
         }
 
       />

@@ -131,7 +131,13 @@ export default function NewCharacterRoute() {
     <form method="post" onSubmit={handleSubmit}>
 
       <div className="container">
-        <input className="block" style={{ fontFamily: 'serif', fontSize: '2rem', color: "gold", textAlign: 'center' }} type="text" name="name" placeholder="Name" value={formData.name} onChange={handleChange} />
+        <input className="title-input"
+          style={{ fontFamily: 'serif', fontSize: '2rem', color: "gold", textAlign: 'center' }}
+          type="text"
+          name="name"
+          placeholder="Name"
+          value={formData.name}
+          onChange={handleChange} />
         {errors.name && <p style={{ width: '100%' }} className="error">{errors.name}</p>}
       </div>
 

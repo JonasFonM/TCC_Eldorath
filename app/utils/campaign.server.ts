@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import type { CampaignForm } from './types.server'
+import type { CampaignForm, SceneForm } from './types.server'
 import { prisma } from './prisma.server'
 import { json } from '@remix-run/node'
 
@@ -107,7 +107,7 @@ export const getCampaignsFromUser = async (userId: number) => {
 
 
 //SCENES
-export const createScene = async (campaign: CampaignForm, campaignId: number, title: string) => {
+export const createScene = async (campaign: SceneForm, campaignId: number, title: string) => {
   const newscene = await prisma.scene.create({
     data: {
       title: title,

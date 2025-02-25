@@ -5,7 +5,6 @@ import { prisma } from "~/utils/prisma.server";
 import { useState } from "react";
 import { SideBars } from "~/components/side-bars/side-bars";
 import { useSidebar } from "~/components/side-bars/side-bar-context";
-import { SceneCreator } from "~/components/campaign/scene-creator";
 
 export const loader: LoaderFunction = async ({ params }) => {
     const campaignId = Number(params.id);
@@ -21,7 +20,6 @@ export const loader: LoaderFunction = async ({ params }) => {
 export default function CampaignRoute() {
     const { campaign } = useLoaderData<{ campaign: campaign }>()
     const { isAllOpen, isHeaderOpen, isTempOpen } = useSidebar();
-    const [showCreator, setShowCreator] = useState(0);
 
     return (
         <>
@@ -41,12 +39,7 @@ export default function CampaignRoute() {
                 linkNames={[]}
                 temp={
                     <>
-                        <table>
-                            <tr onClick={() => setShowCreator(1)}>
-                                <th>Criar</th>
-                                <td>Cena</td>
-                            </tr>
-                        </table>
+
                     </>
                 }
 
@@ -56,7 +49,6 @@ export default function CampaignRoute() {
                 { marginLeft: '200px' } : isTempOpen ? { marginRight: '200px' } : {}}>
 
                 <h1>{campaign.title}</h1>
-                <SceneCreator isHidden={showCreator === 0} onCancel={() => setShowCreator(0)} campaignId={String(campaign.id)} />
 
                 <div className="container" style={{ margin: '5%' }}>
                     <p style={{ textAlign: 'justify' }}>{campaign.description}</p>

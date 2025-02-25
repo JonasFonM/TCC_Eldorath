@@ -117,10 +117,6 @@ ul {
   gap: 8px;
 }
 
-.title-screen .question-button {
-  padding-left: 6.5px;
-}
-
 .question-button,
 .upgrade-button {
   display: inline;
@@ -485,7 +481,6 @@ li button:hover {
   font-size: 1rem;
   text-align: center;
   align-items: center;
-  padding-left: auto;
   line-height: auto;
   border-radius: 0;
   cursor: pointer;
@@ -663,6 +658,7 @@ td:last-child {
 
 [class*="col-"] {
   float: left;
+  overflow: scroll;
 }
 
 .col-1 {

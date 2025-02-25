@@ -30,6 +30,14 @@ export type CampaignForm = {
   month: number,
   monthDay: number,
   weekDay: number,
+
+}
+export type SceneForm = {
+  era: number,
+  year: number,
+  month: number,
+  monthDay: number,
+  weekDay: number,
 }
 
 export type LSrelations = (lineage_skill & { skill: skill })[];

@@ -106,19 +106,16 @@ export default function Login() {
   return (
     <>
       <div className='title-container'>
-        <div className='title-screen'><h1 id='first'>Æternida<NavLink to={"../intro"} className='question-button'>?</NavLink></h1></div>
+        <div className='title-screen'><h1 id='first'>Æternida</h1></div>
       </div>
       <div className='login'>
-        <div>
-          <button className='button'
+        <h1>
+          <button className='lineBtn'
             onClick={() => setAction(action == 'login' ? 'register' : 'login')}>
-            {action === 'login' ? 'Cadastrar' : 'Entrar'}
+            {action === 'login' ? 'Entrar' : 'Cadastrar'}
           </button>
-          {/* ... */}
-        </div>
-        <h2>
-          {action === 'login' ? 'Entrar' : 'Cadastrar'}
-        </h2>
+        </h1>
+
         <form method="POST" autoComplete="off" onSubmit={handleSubmit}>
           <div>{formError}</div>
           <FormField
@@ -131,7 +128,7 @@ export default function Login() {
           <FormField
             htmlFor="password"
             type="password"
-            label="Password"
+            label="Senha"
             value={formData.password}
             onChange={e => handleInputChange(e, 'password')}
             error={errors?.password}
@@ -141,23 +138,20 @@ export default function Login() {
             <>
               <FormField
                 htmlFor="username"
-                label="Username"
+                label="Nome de Usuário"
                 onChange={e => handleInputChange(e, 'username')}
                 value={formData.username}
                 error={errors?.username}
               />
 
-
             </>
           )}
 
-          <div className='block'>
-            <button type="submit" name="_action" value={action} className="login-button">
-              {
-                action === 'login' ? "Entrar" : "Cadastrar"
-              }
-            </button>
-          </div>
+          <button type="submit" name="_action" value={action} className="button">
+            {
+              action === 'login' ? "Entrar" : "Cadastrar"
+            }
+          </button>
         </form>
       </div>
     </>

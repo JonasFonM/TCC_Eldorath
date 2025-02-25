@@ -156,7 +156,6 @@ export default function NewCampaignRoute() {
 
   return (
     <form method="post" onSubmit={handleSubmit}>
-
       <input
         className="title-input"
         type="text"
@@ -199,7 +198,6 @@ export default function NewCampaignRoute() {
             </div>
 
           </div>
-
 
           <div className="calendar-field">
 

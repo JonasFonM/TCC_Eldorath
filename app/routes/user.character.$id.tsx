@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { json, LoaderFunction, } from "@remix-run/node";
+import { LoaderFunction, } from "@remix-run/node";
 import { NavLink, Outlet, useLoaderData } from "@remix-run/react";
 import { prisma } from "~/utils/prisma.server";
 import { LSrelations } from "~/utils/types.server";
@@ -31,7 +31,7 @@ export const loader: LoaderFunction = async ({ params }) => {
 
 
   if (!character) {
-    return json({ skills: [], lineages: [] });
+    return ({ skills: [], lineages: [] });
   }
 
   const skills = await prisma.skill.findMany({
@@ -77,7 +77,7 @@ export const loader: LoaderFunction = async ({ params }) => {
     include: { item: true }
   })
 
-  return json({ skills, pureLineageSkills, nonPureLineageSkills, character, characterId, lineages, isPure, paths, items });
+  return ({ skills, pureLineageSkills, nonPureLineageSkills, character, characterId, lineages, isPure, paths, items });
 };
 
 export default function CharacterRoute() {
@@ -157,13 +157,12 @@ export default function CharacterRoute() {
             <GeneralExplain style={'linear-gradient(to bottom, white, gold)'} color={'black'} title={'Carga Atual'} description="Indica quantas Cargas estão ocupadas no seu Inventário. Se sua Carga Atual for maior que a sua Capacidade de Carga, você fica Sobrecarregado." isHidden={showInv != 2} onCancel={() => setShowInv(0)} />
 
             <ul>
-              <li><button style={selectInv <= 1 ? { display: 'inherit' } : { display: 'none' }} onClick={() => selectInv === 0 ? setInv(1) : setInv(0)}>Itens</button></li>
+              <li key={0}><button style={selectInv <= 1 ? { display: 'inherit' } : { display: 'none' }} onClick={() => selectInv === 0 ? setInv(1) : setInv(0)}>Itens</button></li>
 
               {selectInv === 1 ? items.map(item => (
                 <React.Fragment key={item.id}>
                   <CharacterItemCircle
                     item={item}
-                    isSelected={false}
                     onClick={() => explainItem(item.id)}
                   />
                   <CharacterItemExplain

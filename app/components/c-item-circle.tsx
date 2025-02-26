@@ -7,13 +7,12 @@ import { useState } from 'react';
 
 interface Props {
   item: character_item & { item: item };
-  isSelected: boolean;
   onClick: () => void;
 }
 
 
 
-export function CharacterItemCircle({ item, isSelected, onClick }: Props) {
+export function CharacterItemCircle({ item,  onClick }: Props) {
   const [selectedDelete, setSelectedDelete] = useState<number>(0);
 
   const showDelete = () => {
@@ -31,7 +30,7 @@ export function CharacterItemCircle({ item, isSelected, onClick }: Props) {
   return (
 
     <>
-      <li>
+      <li key={item.id}>
         <button onClick={onClick}>
           {item.item.name + ' de ' + item.material}
         </button>

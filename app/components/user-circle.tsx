@@ -9,7 +9,7 @@ interface props {
 
 export function UserCircle({ user }: props) {
   return (
-    <li>
+    <li key={user.id}>
       <h1>
         {user.username}
       </h1>

@@ -1,5 +1,5 @@
 import { NavLink, Outlet } from "@remix-run/react";
-import { useState } from "react";
+import React, { useState } from "react";
 import { GeneralExplain } from "../explanations/general-explain";
 import { useSidebar } from "./side-bar-context";
 
@@ -25,33 +25,37 @@ export function SideBars({ title, subtitle, tableHeaders, tableDatas, tableExpla
 
     const [showExplain, setShowExplain] = useState<number>();
 
+    const tempStyle = {
+        zIndex: showExplain === 0 ? 5 : 4,
+        ...(selectTemp !== 0 && { transform: "translate(200px)" })
+    };
+
     return (
         <div id="side-bars">
             <div className="header" style={selectHeader === 0 ? {} : { transform: 'translate(-200px)' }}>
 
-                <h1 >{title}</h1>
+                <h1>{title}</h1>
                 <h3>{subtitle}</h3>
 
+                {tableHeaders.map((th, index) => (
+                    <React.Fragment key={th}>
+                        <table>
+                            <tbody>
+                                <tr onClick={() => setShowExplain(index + 1)}>
+                                    <th>{th}</th>
+                                    <td>{tableDatas[index]}</td>
+
+                                </tr>
+                            </tbody>
+                        </table>
+                        <GeneralExplain style={'linear-gradient(to bottom, white, gold)'} color={'black'} title={th} description={tableExplain[index]} isHidden={showExplain != (index + 1)} onCancel={() => setShowExplain(0)} />
+                    </React.Fragment>
+                ))
+                }
                 <ul className="skillnav">
 
-                    {tableHeaders.map((th, index) => (
-                        <>
-                            <table key={th}>
-                                <tbody>
-                                    <tr onClick={() => setShowExplain(index + 1)}>
-                                        <th>{th}</th>
-                                        <td>{tableDatas[index]}</td>
-
-                                    </tr>
-                                </tbody>
-                            </table>
-                            <GeneralExplain style={'linear-gradient(to bottom, white, gold)'} color={'black'} title={th} description={tableExplain[index]} isHidden={showExplain != (index + 1)} onCancel={() => setShowExplain(0)} />
-                        </>
-                    ))
-                    }
-
                     {links.map((lk, index) => (
-                        <li key={lk}><NavLink to={lk}>{linkNames[index]}</NavLink></li>
+                        <li key={linkNames[index]}><NavLink to={lk}>{linkNames[index]}</NavLink></li>
                     ))}
 
                 </ul>
@@ -62,18 +66,16 @@ export function SideBars({ title, subtitle, tableHeaders, tableDatas, tableExpla
                 onClick={selectHeader === 0 ? () => setHeader(Number(entity.id)) : () => setHeader(0)}>
             </button>
 
-            <div className="temp" style={{ zIndex: showExplain === 0 ? '5' : '4', transform: selectTemp === 0 ? '' : 'translate(200px)' }}>
+            <div className="temp" style={tempStyle}>
 
-                <ul>
-                    {temp}
-                </ul>
+                {temp}
 
             </div>
 
             <button className="toggle-temp" style={selectTemp === 0 ? {} : { transform: 'translate(200px)' }}
                 onClick={selectTemp === 0 ? () => setTemp(Number(entity.id)) : () => setTemp(0)}>
             </button>
-        </div>
+        </div >
 
     );
 }

@@ -1,8 +1,8 @@
-import { campaign } from "@prisma/client";
+import { campaign, character, scene, user } from "@prisma/client";
 import { LoaderFunction } from "@remix-run/node";
-import { Outlet, useLoaderData } from "@remix-run/react";
+import { NavLink, Outlet, useLoaderData, useLocation } from "@remix-run/react";
 import { prisma } from "~/utils/prisma.server";
-import { useState } from "react";
+import React, { useState } from "react";
 import { SideBars } from "~/components/side-bars/side-bars";
 import { useSidebar } from "~/components/side-bars/side-bar-context";
 import { SceneCreator } from "~/components/campaign/scene-creator";
@@ -19,9 +19,12 @@ export const loader: LoaderFunction = async ({ params }) => {
 }
 
 export default function CampaignRoute() {
-    const { campaign } = useLoaderData<{ campaign: campaign }>()
+    const { campaign } = useLoaderData<{ campaign: (campaign & { scenes: scene[], characters: character[], players: user[] }) }>()
     const { isAllOpen, isHeaderOpen, isTempOpen } = useSidebar();
+    const [showScenes, setShowScenes] = useState(0);
     const [showCreator, setShowCreator] = useState(0);
+    const location = useLocation()
+    const campaignId = String(campaign.id)
 
     return (
         <>
@@ -40,14 +43,36 @@ export default function CampaignRoute() {
                 links={[]}
                 linkNames={[]}
                 temp={
-                    <>
+                    <React.Fragment>
                         <table>
-                            <tr onClick={() => setShowCreator(1)}>
-                                <th>Criar</th>
-                                <td>Cena</td>
-                            </tr>
+                            <tbody>
+                                <tr onClick={() => showScenes === 0 ? setShowScenes(1) : setShowScenes(0)}>
+                                    <th>Listar</th>
+                                    <td>Cenas</td>
+                                </tr>
+                            </tbody>
                         </table>
-                    </>
+
+                        <ul style={showScenes === 0 ? { display: 'none' } : {}}>
+                            {campaign.scenes.map(sc =>
+                                <li key={sc.id}>
+                                    <NavLink to={`/user/campaign/${campaignId}/scene/${sc.id}`}>
+                                        {sc.title}
+                                    </NavLink>
+                                </li>
+                            )}
+
+                        </ul>
+
+                        <table>
+                            <tbody>
+                                <tr onClick={() => setShowCreator(1)}>
+                                    <th>Criar</th>
+                                    <td>Cena</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </React.Fragment>
                 }
 
             />
@@ -56,10 +81,10 @@ export default function CampaignRoute() {
                 { marginLeft: '200px' } : isTempOpen ? { marginRight: '200px' } : {}}>
 
                 <h1>{campaign.title}</h1>
-                <SceneCreator isHidden={showCreator === 0} onCancel={() => setShowCreator(0)} campaignId={String(campaign.id)} />
+                <SceneCreator isHidden={showCreator === 0} onCancel={() => setShowCreator(0)} campaignId={campaignId} />
 
                 <div className="container" style={{ margin: '5%' }}>
-                    <p style={{ textAlign: 'justify' }}>{campaign.description}</p>
+                    <p style={{ textAlign: 'justify', display: location.pathname === `/user/campaign/${campaignId}` ? 'inherit' : 'none' }}>{campaign.description}</p>
                     <Outlet />
                 </div>
 

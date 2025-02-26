@@ -5,8 +5,6 @@ import { PathExplain } from "~/components/explanations/path-explain";
 import { TableData } from "~/components/character-sheet/general-table-data";
 import { TableHead } from "~/components/character-sheet/general-table";
 import { useState } from "react";
-import { PathTableHead } from "~/components/character-sheet/path-table";
-import { PathTableData } from "~/components/character-sheet/path-table-data";
 
 export const loader: LoaderFunction = async ({ params }) => {
   const characterId = params.id;
@@ -50,33 +48,34 @@ export default function PathsRoute() {
 
   return (
     <>
-
       <div className="title-container">
         <NavLink to={`../new/paths/`}> <h1 style={{ marginTop: '0', marginBottom: '0', padding: '0' }}>Caminhos</h1></NavLink>
         <NavLink className="question-button" to={`/user/home/atr/`}>?</NavLink>
       </div>
-
-
 
       {tier1.map(p => (
         <>
           <h2 style={{ fontVariant: 'small-caps' }}>Caminhos Iniciantes</h2>
 
           <table >
+            <tbody>
 
-            <TableHead tableTitles={tableTitles} onClick={() => showRow(p.pathTier)} />
+              <TableHead tableTitles={tableTitles} onClick={() => showRow(p.pathTier)} />
 
-            <TableData
-              key={p.id}
-              tableData={[p.name, String(p.vitality), String(p.power), String(p.addTechniques), String(p.addManeuvers), String(p.addOaths), String(p.addTricks), String(p.addMagics)]}
-              show={show === (p.pathTier)}
-              onClick={() => explainPath(p.id)}
-              selected={false}
+              <TableData
+                key={p.id}
+                tableData={[p.name, String(p.vitality), String(p.power), String(p.addTechniques), String(p.addManeuvers), String(p.addOaths), String(p.addTricks), String(p.addMagics)]}
+                show={show === (p.pathTier)}
+                onClick={() => explainPath(p.id)}
+                selected={false}
 
-            />
-            <PathExplain style={'linear-gradient(to bottom right, gold, goldenrod)'} path={p} isHidden={showPath != p.id} onCancel={() => setShowPath(0)} />
+              />
+            </tbody>
+
 
           </table>
+          <PathExplain style={'linear-gradient(to bottom right, gold, goldenrod)'} path={p} isHidden={showPath != p.id} onCancel={() => setShowPath(0)} />
+
         </>
 
       ))}
@@ -99,9 +98,10 @@ export default function PathsRoute() {
               selected={false}
 
             />
-            <PathExplain style={'linear-gradient(to bottom right, gold, goldenrod)'} path={p} isHidden={showPath != p.id} onCancel={() => setShowPath(0)} />
 
           </table>
+          <PathExplain style={'linear-gradient(to bottom right, gold, goldenrod)'} path={p} isHidden={showPath != p.id} onCancel={() => setShowPath(0)} />
+
         </>
 
       ))}
@@ -122,9 +122,9 @@ export default function PathsRoute() {
               selected={false}
 
             />
-            <PathExplain style={'linear-gradient(to bottom right, gold, goldenrod)'} path={p} isHidden={showPath != p.id} onCancel={() => setShowPath(0)} />
 
           </table>
+          <PathExplain style={'linear-gradient(to bottom right, gold, goldenrod)'} path={p} isHidden={showPath != p.id} onCancel={() => setShowPath(0)} />
 
         </>
 
@@ -146,9 +146,9 @@ export default function PathsRoute() {
               selected={false}
 
             />
-            <PathExplain style={'linear-gradient(to bottom right, gold, goldenrod)'} path={p} isHidden={showPath != p.id} onCancel={() => setShowPath(0)} />
 
           </table>
+          <PathExplain style={'linear-gradient(to bottom right, gold, goldenrod)'} path={p} isHidden={showPath != p.id} onCancel={() => setShowPath(0)} />
 
         </>
 

@@ -18,10 +18,10 @@ export default function UserRoute() {
   return (
     <>
       <ul className="topnav">
-        <li><NavLink to={`/user/home`}>Introdução</NavLink></li>
-        <li><NavLink to={`/user/character/`}>Personagens</NavLink></li>
-        <li><NavLink to={`/user/campaign/`}>Campanhas</NavLink></li>
-        <li style={{ float: 'right' }}><NavLink className={'logout'} to={`/logout`}>Logout</NavLink></li>
+        <li key={0}><NavLink to={`/user/home`}>Introdução</NavLink></li>
+        <li key={1}><NavLink to={`/user/character/`}>Personagens</NavLink></li>
+        <li key={2}><NavLink to={`/user/campaign/`}>Campanhas</NavLink></li>
+        <li key={9} style={{ float: 'right' }}><NavLink className={'logout'} to={`/logout`}>Logout</NavLink></li>
       </ul>
 
       <SidebarProvider>

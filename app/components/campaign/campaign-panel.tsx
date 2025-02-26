@@ -1,5 +1,5 @@
 import { campaign } from '@prisma/client'
-import { CampaignCircle } from '~/components/campaign-circle'
+import { CampaignCircle } from '~/components/campaign/campaign-circle'
 import "~/styles.css";
 
 export function CampaignPanel({ campaigns }: { campaigns: campaign[] }) {

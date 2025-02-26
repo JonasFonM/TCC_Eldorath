@@ -2,8 +2,8 @@ import { character, path } from "@prisma/client";
 import { ActionFunction, json, LoaderFunction, redirect } from "@remix-run/node";
 import { NavLink, useLoaderData } from "@remix-run/react";
 import { useState } from "react";
-import { PathTableHead } from "~/components/character-sheet/path-table";
-import { PathTableData } from "~/components/character-sheet/path-table-data";
+import { TableHead } from "~/components/character-sheet/general-table";
+import { TableData } from "~/components/character-sheet/general-table-data";
 import { requireUserId } from "~/utils/auth.server";
 import { submitCharPaths } from "~/utils/character.server";
 import { prisma } from "~/utils/prisma.server";
@@ -85,6 +85,8 @@ export default function PathSelection() {
         });
     };
 
+    const tableTitles = ["Caminho", "Vit", "Pod", "Tec", "Man", "Jur", "Tru", "Mag"]
+
     return (
         <>
 
@@ -98,13 +100,13 @@ export default function PathSelection() {
 
                         <table>
 
-                            <PathTableHead onClick={() => showRow(1)} />
+                            <TableHead tableTitles={tableTitles} onClick={() => showRow(1)} />
 
                             {tier1.map(p => (
                                 <>
-                                    <PathTableData
+                                    <TableData
                                         key={p.id}
-                                        path={p}
+                                        tableData={[p.name, String(p.vitality), String(p.power), String(p.addTechniques), String(p.addManeuvers), String(p.addOaths), String(p.addTricks), String(p.addMagics)]}
                                         show={show === (p.pathTier)}
                                         onClick={() => handlePathClick(p.id, 1)}
                                         selected={selectedPaths.includes(p.id)}
@@ -123,12 +125,12 @@ export default function PathSelection() {
                                 <h2 style={{ fontVariant: 'small-caps' }}>Caminhos Veteranos</h2>
 
                                 <table>
-                                    <PathTableHead onClick={() => showRow(2)} />
+                                    <TableHead tableTitles={tableTitles} onClick={() => showRow(2)} />
                                     {tier2.map(p => (
                                         <>
-                                            <PathTableData
+                                            <TableData
                                                 key={p.id}
-                                                path={p}
+                                                tableData={[p.name, String(p.vitality), String(p.power), String(p.addTechniques), String(p.addManeuvers), String(p.addOaths), String(p.addTricks), String(p.addMagics)]}
                                                 show={show === (p.pathTier)}
                                                 onClick={() => handlePathClick(p.id, 2)}
                                                 selected={selectedPaths.includes(p.id)}
@@ -149,13 +151,13 @@ export default function PathSelection() {
 
                                 <table>
 
-                                    <PathTableHead onClick={() => showRow(3)} />
+                                    <TableHead tableTitles={tableTitles} onClick={() => showRow(3)} />
 
                                     {tier3.map(p => (
                                         <>
-                                            <PathTableData
+                                            <TableData
                                                 key={p.id}
-                                                path={p}
+                                                tableData={[p.name, String(p.vitality), String(p.power), String(p.addTechniques), String(p.addManeuvers), String(p.addOaths), String(p.addTricks), String(p.addMagics)]}
                                                 show={show === (p.pathTier)}
                                                 onClick={() => handlePathClick(p.id, 3)}
                                                 selected={selectedPaths.includes(p.id)}
@@ -173,13 +175,13 @@ export default function PathSelection() {
 
                                 <table>
 
-                                    <PathTableHead onClick={() => showRow(4)} />
+                                    <TableHead tableTitles={tableTitles} onClick={() => showRow(4)} />
 
                                     {tier4.map(p => (
                                         <>
-                                            <PathTableData
+                                            <TableData
                                                 key={p.id}
-                                                path={p}
+                                                tableData={[p.name, String(p.vitality), String(p.power), String(p.addTechniques), String(p.addManeuvers), String(p.addOaths), String(p.addTricks), String(p.addMagics)]}
                                                 show={show === (p.pathTier)}
                                                 onClick={() => handlePathClick(p.id, 4)}
                                                 selected={selectedPaths.includes(p.id)}

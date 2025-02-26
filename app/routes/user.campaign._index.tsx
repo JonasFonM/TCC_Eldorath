@@ -1,13 +1,13 @@
 import { NavLink, useLoaderData } from "@remix-run/react";
 import { json, LoaderFunction } from '@remix-run/node'
 import { requireUserId } from '~/utils/auth.server'
-import { CampaignPanel } from "~/components/campaign-panel";
+import { CampaignPanel } from "~/components/campaign/campaign-panel";
 import { getCampaignsFromUser } from "~/utils/campaign.server";
 
 export const loader: LoaderFunction = async ({ request }) => {
     const userId = await requireUserId(request)
     const campaigns = await getCampaignsFromUser(userId)
-    return json({ campaigns })
+    return ({ campaigns })
 }
 
 export default function CampaignsIndexRoute() {

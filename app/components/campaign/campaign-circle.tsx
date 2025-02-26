@@ -3,7 +3,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { campaign } from '@prisma/client'
 import { NavLink, } from '@remix-run/react'
-import { DeleteConfirm } from './delete-confirmation'
+import { DeleteConfirm } from '../delete-confirmation'
 import { useState } from 'react'
 
 

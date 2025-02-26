@@ -409,13 +409,3 @@ export default function SkillSelectionRoute() {
 
   );
 }
-
-/*<ul className="skillnav">
-            <li><NavLink to={`/user/character/${characterId}`}>Todos</NavLink></li>
-            <li><NavLink to={`/user/character/new/${characterId}/skills`}>Características</NavLink></li>
-            <li><NavLink to={`/user/character/new/${characterId}/lineages`}>Técnicas</NavLink></li>
-            <li><NavLink to={`/user/character/new/${characterId}/paths`}>Manobras</NavLink></li>
-            <li><NavLink to={`/user/character/new/${characterId}/inventory`}>Trapaças</NavLink></li>
-            <li><NavLink to={`/user/character/new/${characterId}/inventory`}>Mágicas</NavLink></li>
-          </ul>
-*/

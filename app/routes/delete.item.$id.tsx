@@ -7,7 +7,7 @@ export const loader: LoaderFunction = async ({ params, request }) => {
   
     await deleteItemById(character_itemId);
    
-    const referer = request.headers.get("Referer") || "/"; // Fallback to "/" if no referer
+    const referer = request.headers.get("Referer") || "/";
 
     return redirect(referer);
 };

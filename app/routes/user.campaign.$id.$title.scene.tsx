@@ -4,10 +4,12 @@ import { createScene } from "~/utils/campaign.server";
 import { prisma } from "~/utils/prisma.server";
 import { SceneForm } from "~/utils/types.server";
 
-export const loader: LoaderFunction = async ({ params }) => {
+export const loader: LoaderFunction = async ({ params, request }) => {
 
     //FETCHING DATA
     const campaignId = Number(params.id);
+
+    const referer = request.headers.get("Referer") || `/user/campaign/${String(campaignId)}`;
 
     const title = String(params.title);
 
@@ -28,15 +30,6 @@ export const loader: LoaderFunction = async ({ params }) => {
         weekDay: campaign.weekDay,
     }
 
-    const partyMembers = await prisma.character.findMany({
-        where: { campaignId: campaignId }
-    })
-
-    const partyIdList = partyMembers.map(pm => pm.id)
-
-    //
-
     createScene(campForm, campaignId, title)
-
-    return redirect(`/user/campaign/${String(campaignId)}`);
+    return redirect(referer);
 };

@@ -14,19 +14,3 @@ export default function NewCharacterRoute() {
         <Outlet />
     );
 }
-
-/*
-
-
-
-    const { characterId } = useLoaderData<{ characterId: string }>()
-
-
-<ul className="charnav">
-                <li><NavLink to={`/user/character/${characterId}`}>Character</NavLink></li>
-                <li><NavLink to={`/user/character/new/${characterId}/skills`}>Skills</NavLink></li>
-                <li><NavLink to={`/user/character/new/${characterId}/lineages`}>Lineages</NavLink></li>
-                <li><NavLink to={`/user/character/new/${characterId}/paths`}>Paths</NavLink></li>
-                <li><NavLink to={`/user/character/new/${characterId}/trainings`}>Trainings</NavLink></li>
-                <li><NavLink to={`/user/character/new/${characterId}/inventory`}>Items</NavLink></li>
-            </ul>*/

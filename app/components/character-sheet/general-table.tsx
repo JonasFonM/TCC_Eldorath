@@ -8,11 +8,10 @@ interface Props {
 export function TableHead({ onClick, tableTitles }: Props) {
 
     return (
-        <tbody>
-            <tr style={{ display: 'table-row' }} onClick={onClick}>
-                {tableTitles.map(tt => (
-                    <th>{tt}</th>
-                ))}
-            </tr>
-        </tbody>)
+        <tr style={{ display: 'table-row' }} onClick={onClick}>
+            {tableTitles.map(tt => (
+                <th>{tt}</th>
+            ))}
+        </tr>
+    )
 }

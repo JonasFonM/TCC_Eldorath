@@ -62,10 +62,7 @@ export default function UserRoute() {
                 { marginLeft: '200px' } : isTempOpen ? { marginRight: '200px' } : {}}>
 
                 <div className="container">
-                    <div className="col-3">
-                        <p>Olá</p>
-                        <Outlet />
-                    </div>
+                    <Outlet />
                 </div>
 
             </div >

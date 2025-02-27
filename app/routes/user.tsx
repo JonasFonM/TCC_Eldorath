@@ -1,5 +1,6 @@
+import { user } from "@prisma/client";
 import { LoaderFunction } from "@remix-run/node";
-import { NavLink, Outlet } from "@remix-run/react";
+import { NavLink, Outlet, useLoaderData } from "@remix-run/react";
 import { SidebarProvider } from "~/components/side-bars/side-bar-context";
 import { getUserIdFromSession, requireUserId } from "~/utils/auth.server";
 import { prisma } from "~/utils/prisma.server";
@@ -11,10 +12,12 @@ export const loader: LoaderFunction = async ({ request }) => {
   const user = await prisma.user.findUnique({
     where: { id: Number(userId) }
   })
-  return ({ userId })
+  return ({ userId, user })
 }
 
 export default function UserRoute() {
+  const { userId, user } = useLoaderData<{ userId: number, user: user }>()
+
   return (
     <>
       <ul className="topnav">
@@ -26,7 +29,7 @@ export default function UserRoute() {
 
       <SidebarProvider>
         <div className="user">
-          <Outlet />
+          <Outlet context={{ userId, user }} />
         </div>
       </SidebarProvider>
     </>

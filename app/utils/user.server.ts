@@ -24,3 +24,53 @@ export const getOtherUsers = async (userId: number) => {
     },
   })
 }
+
+export async function checkFriendshipExistance(userId: number, friendId: number) {
+  const friendship = await prisma.friendship.findMany({
+    where: {
+      OR: [
+        { user1Id: userId, user2Id: friendId },
+        { user2Id: userId, user1Id: friendId }
+      ],
+    }
+  })
+
+  const alreadyFriend = friendship.length > 0
+
+  return (alreadyFriend)
+}
+
+export async function sendFriendshipInvite(userId: number, friendId: number) {
+
+  return prisma.friendship.create({
+    data: {
+      user1Id: userId,
+      user2Id: friendId,
+      status: 'PENDING'
+    }
+  })
+}
+
+export async function acceptFriendshipInvite(friendshipId: number) {
+
+  return prisma.friendship.update({
+    where: {
+      id: friendshipId
+    },
+    data: {
+      status: 'ACCEPTED'
+    }
+  })
+}
+
+export async function blockFriendship(friendshipId: number) {
+
+  return prisma.friendship.update({
+    where: {
+      id: friendshipId
+    },
+    data: {
+      status: 'BLOCKED'
+    }
+  })
+}

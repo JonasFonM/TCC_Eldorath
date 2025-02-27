@@ -12,15 +12,20 @@ import { CharacterItemExplain } from "~/components/explanations/item-explain";
 import { SideBars } from "~/components/side-bars/side-bars";
 import { useSidebar } from "~/components/side-bars/side-bar-context";
 import { GeneralExplain } from "~/components/explanations/general-explain";
+import { getUserIdFromSession } from "~/utils/auth.server";
 
 
-export const loader: LoaderFunction = async ({ params }) => {
+export const loader: LoaderFunction = async ({ params, request }) => {
   const characterId = Number(params.id);
+  const userId = Number(getUserIdFromSession(request))
+
 
   const character = await prisma.character.findUnique({
     where: { id: characterId },
     include: { skills: true, lineages: true, paths: true },
   });
+
+  const isAuthor = userId === character?.authorId
 
   const character_lineages = await prisma.character_lineage.findMany({
     where: { characterId },
@@ -77,11 +82,11 @@ export const loader: LoaderFunction = async ({ params }) => {
     include: { item: true }
   })
 
-  return ({ skills, pureLineageSkills, nonPureLineageSkills, character, characterId, lineages, isPure, paths, items });
+  return ({ isAuthor, skills, pureLineageSkills, nonPureLineageSkills, character, characterId, lineages, isPure, paths, items });
 };
 
 export default function CharacterRoute() {
-  const { character, characterId } = useLoaderData<{ character: character, characterId: string }>()
+  const { isAuthor, character, characterId } = useLoaderData<{ isAuthor: boolean, character: character, characterId: string }>()
   const { skills, pureLineageSkills, nonPureLineageSkills } = useLoaderData<{ skills: skill[], pureLineageSkills: LSrelations, nonPureLineageSkills: LSrelations }>();
   const { lineages, isPure } = useLoaderData<{ lineages: lineage[], isPure: boolean }>();
   const { items } = useLoaderData<{ items: (character_item & { item: item })[] }>();
@@ -134,7 +139,9 @@ export default function CharacterRoute() {
         temp={
           <React.Fragment>
             <h1>Inventário</h1>
-            <h1 className="title-container"><NavLink className="question-button" to={`/user/character/${characterId}/new/inventory/`}>+</NavLink></h1>
+            {isAuthor ?
+              <h1 className="title-container"><NavLink className="question-button" to={`/user/character/${characterId}/new/inventory/`}>+</NavLink></h1>
+              : ''}
 
             <table>
               <tbody>
@@ -181,7 +188,7 @@ export default function CharacterRoute() {
       />
 
       <div className="character-sheet" style={isAllOpen ? { marginLeft: '200px', marginRight: '200px' } : isHeaderOpen ? { marginLeft: '200px' } : isTempOpen ? { marginRight: '200px' } : {}}>
-        <Outlet context={{ character, skills, paths, lineages, pureLineageSkills, nonPureLineageSkills, isPure, items }} />
+        <Outlet context={{ isAuthor, character, skills, paths, lineages, pureLineageSkills, nonPureLineageSkills, isPure, items }} />
       </div >
     </>
 

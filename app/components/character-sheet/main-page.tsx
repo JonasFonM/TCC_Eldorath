@@ -5,12 +5,11 @@ import { useState } from "react";
 import { ResetConfirm } from "./reset-confirm";
 
 interface Props {
-    character: character
-
+    character: character,
+    isAuthor: boolean
 }
 
-
-export function CharacterSheet({ character }: Props) {
+export function CharacterSheet({ character, isAuthor }: Props) {
     const [showAtr, setShowAtr] = useState<number>();
     const [selectReset, setReset] = useState<number>(0);
 
@@ -28,15 +27,26 @@ export function CharacterSheet({ character }: Props) {
 
     return (
         <>
-            <h1 className="title-container"><NavLink to={`/user/character/update/${String(character.id)}/basic`} className={'lineBtn'}>Atributos</NavLink>
+            <h1 className="title-container">
+                {isAuthor ?
+                    <NavLink to={`/user/character/update/${String(character.id)}/basic`} className={'lineBtn'}>Atributos</NavLink>
+                    :
+                    'Atributos'
+                }
+
                 <button onClick={() => setShowAtr(1)} className="question-button">?</button>
-                <ResetConfirm name={character.name} isHidden={selectReset === 0} onShow={showReset} onCancel={cancelReset} id={String(character.id)} />
+
+                {isAuthor ?
+                    <ResetConfirm name={character.name} isHidden={selectReset === 0} onShow={showReset} onCancel={cancelReset} id={String(character.id)} />
+                    :
+                    ''
+                }
             </h1>
+
             <GeneralExplain style={'linear-gradient(to bottom, white, gold)'} color={'black'} title={'Atributos'} description="Atributos são os valores que representam seus limites e capacidades." isHidden={showAtr != 1} onCancel={() => setShowAtr(0)} />
 
             <h1 className="title-container">Básicos<button onClick={() => setShowAtr(2)} className="question-button">?</button></h1>
             <GeneralExplain style={'linear-gradient(to bottom, white, grey)'} color={'black'} title={'Básicos'} description="Atributos Básicos são os valores principais para determinar as suas aptidões. Eles afetam seus Atributos Derivados e cada um tem funções especiais." isHidden={showAtr != 2} onCancel={() => setShowAtr(0)} />
-
 
             <div className="container">
                 <button onClick={() => setShowAtr(3)} className="block"><h1>{character.agility}</h1><p className="Atr">AGI</p></button>
@@ -47,7 +57,6 @@ export function CharacterSheet({ character }: Props) {
 
                 <button onClick={() => setShowAtr(5)} className="block"><h1>{character.mind}</h1><p className="Atr">MEN</p></button>
                 <GeneralExplain style={'linear-gradient(to bottom, white, #1004e7)'} color={'white'} title={'Mente'} description="Mente é usada para Acertar Ataques Mágicos, além de ser uma base do seu Vigor e do seu Poder" isHidden={showAtr != 5} onCancel={() => setShowAtr(0)} />
-
 
             </div>
 

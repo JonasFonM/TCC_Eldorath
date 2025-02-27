@@ -1,6 +1,6 @@
 import { lineage } from "@prisma/client";
 import { ActionFunction, json, LoaderFunction, redirect } from "@remix-run/node";
-import { NavLink, useLoaderData } from "@remix-run/react";
+import { NavLink, useLoaderData, useOutletContext } from "@remix-run/react";
 import { useState } from "react";
 import { LineageCircle } from "~/components/lineage-circle";
 import { requireUserId } from "~/utils/auth.server";
@@ -20,7 +20,9 @@ export const loader: LoaderFunction = async ({ request, params }) => {
 
     const maxSelectable = character?.pendingLineages;
 
-    return json({ userId, lineages, maxSelectable, characterId });
+    const isAuthor = userId === character?.authorId
+    return isAuthor ? ({ userId, lineages, maxSelectable, characterId })
+        : redirect(`/user/character/${characterId}/lineages/`);
 }
 
 export const action: ActionFunction = async ({ request, params }) => {
@@ -44,7 +46,7 @@ export const action: ActionFunction = async ({ request, params }) => {
 }
 
 export default function LineageSelection() {
-    const { lineages, maxSelectable } = useLoaderData<{ lineages: lineage[], maxSelectable: number}>();
+    const { lineages, maxSelectable } = useLoaderData<{ lineages: lineage[], maxSelectable: number }>();
     const [selectedLineages, setSelectedLineages] = useState<number[]>([]);
     const [error, setError] = useState<string | null>(null);
     const [isPure, setPure] = useState<boolean>(true);
@@ -82,8 +84,6 @@ export default function LineageSelection() {
         return;
     }
 
-
-
     return (
         <>
             {maxSelectable > 0 ?
@@ -97,7 +97,7 @@ export default function LineageSelection() {
                                 <LineageCircle
                                     key={lineage.id}
                                     lineage={lineage}
-                                    isPure={selectedLineages.length <=1}
+                                    isPure={selectedLineages.length <= 1}
                                     isSelected={selectedLineages.includes(lineage.id)}
                                     onClick={() => !isMaxSelected || selectedLineages.includes(lineage.id) ? handleLineageClick(lineage.id) : null}
                                 />

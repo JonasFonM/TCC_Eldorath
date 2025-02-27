@@ -10,6 +10,7 @@ import { prisma } from "~/utils/prisma.server";
 export const loader: LoaderFunction = async ({ request, params }) => {
     const userId = await requireUserId(request)
 
+
     const referer = request.headers.get("Referer") || "/";
 
     const characterId = Number(params.id)
@@ -24,8 +25,9 @@ export const loader: LoaderFunction = async ({ request, params }) => {
         },
     })
 
-
-    return json({ userId, items, character, characterId, referer });
+    const isAuthor = userId === character?.authorId;
+    return isAuthor ? ({ userId, items, character, characterId, referer }) :
+        redirect(`/user/character/${characterId}/stats`);
 }
 
 export const action: ActionFunction = async ({ request, params }) => {
@@ -37,7 +39,7 @@ export const action: ActionFunction = async ({ request, params }) => {
 
     try {
         await submitStartingCharItems(selectedItemIds, Number(characterId))
-        return redirect(`/user/character/${characterId}/stats`);
+        return redirect(`/user/character/${characterId}/stats/`);
 
     } catch (error) {
         console.error(error);

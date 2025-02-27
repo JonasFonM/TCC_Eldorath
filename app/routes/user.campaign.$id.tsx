@@ -6,20 +6,23 @@ import React, { useState } from "react";
 import { SideBars } from "~/components/side-bars/side-bars";
 import { useSidebar } from "~/components/side-bars/side-bar-context";
 import { SceneCreator } from "~/components/campaign/scene-creator";
+import { getUserIdFromSession } from "~/utils/auth.server";
 
-export const loader: LoaderFunction = async ({ params }) => {
+export const loader: LoaderFunction = async ({ params, request }) => {
     const campaignId = Number(params.id);
-
+    const userId = Number(getUserIdFromSession(request))
     const campaign = await prisma.campaign.findUnique({
         where: { id: campaignId },
         include: { scenes: true, characters: true, players: true },
     });
+    const masterId = Number(campaign?.masterId)
+    const isMaster = masterId === userId
 
-    return ({ campaignId, campaign })
+    return ({ isMaster, campaignId, campaign })
 }
 
 export default function CampaignRoute() {
-    const { campaign } = useLoaderData<{ campaign: (campaign & { scenes: scene[], characters: character[], players: user[] }) }>()
+    const { isMaster, campaign } = useLoaderData<{ isMaster: boolean, campaign: (campaign & { scenes: scene[], characters: character[], players: user[] }) }>()
     const { isAllOpen, isHeaderOpen, isTempOpen } = useSidebar();
     const [showScenes, setShowScenes] = useState(0);
     const [showCreator, setShowCreator] = useState(0);
@@ -43,36 +46,48 @@ export default function CampaignRoute() {
                 links={[]}
                 linkNames={[]}
                 temp={
-                    <React.Fragment>
-                        <table>
-                            <tbody>
-                                <tr onClick={() => showScenes === 0 ? setShowScenes(1) : setShowScenes(0)}>
-                                    <th>Listar</th>
-                                    <td>Cenas</td>
-                                </tr>
-                            </tbody>
-                        </table>
+                    isMaster ?
+                        <React.Fragment>
+                            <table>
+                                <tbody>
+                                    <tr onClick={() => showScenes === 0 ? setShowScenes(1) : setShowScenes(0)}>
+                                        <th>Listar</th>
+                                        <td>Cenas</td>
+                                    </tr>
+                                </tbody>
+                            </table>
 
-                        <ul style={showScenes === 0 ? { display: 'none' } : {}}>
-                            {campaign.scenes.map(sc =>
-                                <li key={sc.id}>
-                                    <NavLink to={`/user/campaign/${campaignId}/scene/${sc.id}`}>
-                                        {sc.title}
+                            <ul style={showScenes === 0 ? { display: 'none' } : {}}>
+                                {campaign.scenes.map(sc =>
+                                    <li key={sc.id}>
+                                        <NavLink to={`/user/campaign/${campaignId}/scene/${sc.id}`}>
+                                            {sc.title}
+                                        </NavLink>
+                                    </li>
+                                )}
+
+                            </ul>
+
+                            <table>
+                                <tbody>
+                                    <tr onClick={() => setShowCreator(1)}>
+                                        <th>Criar</th>
+                                        <td>Cena</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                        </React.Fragment>
+                        :
+                        <React.Fragment>
+                            <ul>
+                                <li key={1}>
+                                    <NavLink to={`/user/campaign/${campaignId}/join/`}>
+                                        Juntar-se
                                     </NavLink>
                                 </li>
-                            )}
-
-                        </ul>
-
-                        <table>
-                            <tbody>
-                                <tr onClick={() => setShowCreator(1)}>
-                                    <th>Criar</th>
-                                    <td>Cena</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </React.Fragment>
+                            </ul>
+                        </React.Fragment>
                 }
 
             />

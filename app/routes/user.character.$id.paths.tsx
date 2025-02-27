@@ -12,7 +12,7 @@ export const loader: LoaderFunction = async ({ params }) => {
 }
 
 export default function PathsRoute() {
-  const { paths } = useOutletContext<{ paths: path[] }>();
+  const { paths, isAuthor } = useOutletContext<{ paths: path[], isAuthor: boolean }>();
   const [show, setShow] = useState<number>();
 
   const tier1 = paths.filter(p => p.pathTier == 1);
@@ -49,7 +49,11 @@ export default function PathsRoute() {
   return (
     <>
       <div className="title-container">
-        <NavLink to={`../new/paths/`}> <h1 style={{ marginTop: '0', marginBottom: '0', padding: '0' }}>Caminhos</h1></NavLink>
+        {isAuthor ?
+          <NavLink to={`../new/paths/`}> <h1 style={{ marginTop: '0', marginBottom: '0', padding: '0' }}>Caminhos</h1></NavLink>
+          :
+          <h1 style={{ marginTop: '0', marginBottom: '0', padding: '0' }}>Caminhos</h1>
+        }
         <NavLink className="question-button" to={`/user/home/atr/`}>?</NavLink>
       </div>
 

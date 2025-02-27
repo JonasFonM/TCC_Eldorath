@@ -1,6 +1,6 @@
 import { character, path } from "@prisma/client";
 import { ActionFunction, json, LoaderFunction, redirect } from "@remix-run/node";
-import { NavLink, useLoaderData } from "@remix-run/react";
+import { NavLink, useLoaderData, useOutletContext } from "@remix-run/react";
 import { useState } from "react";
 import { TableHead } from "~/components/character-sheet/general-table";
 import { TableData } from "~/components/character-sheet/general-table-data";
@@ -20,7 +20,11 @@ export const loader: LoaderFunction = async ({ request, params }) => {
 
     const maxSelectable = character?.pendingPath
 
-    return json({ userId, paths, maxSelectable, characterId, character });
+
+    const isAuthor = userId === character?.authorId
+
+    return isAuthor ? ({ userId, paths, maxSelectable, characterId, character })
+        : redirect(`/user/character/${characterId}/paths/`);
 }
 
 export const action: ActionFunction = async ({ request, params }) => {

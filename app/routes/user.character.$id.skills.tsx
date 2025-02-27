@@ -14,10 +14,9 @@ export const loader: LoaderFunction = async ({ params }) => {
 }
 
 export default function SkillsRoute() {
-  const { skills, pureLineageSkills, nonPureLineageSkills } = useOutletContext<{ skills: skill[], pureLineageSkills: LSrelations, nonPureLineageSkills: LSrelations, paths: path[], lineages: lineage[], isPure: boolean }>();
+  const { isAuthor, skills, pureLineageSkills, nonPureLineageSkills } = useOutletContext<{ isAuthor: boolean, skills: skill[], pureLineageSkills: LSrelations, nonPureLineageSkills: LSrelations, paths: path[], lineages: lineage[], isPure: boolean }>();
   const [show, setShow] = useState<number>();
-
-
+  const [showSkill, setShowSkill] = useState<number>();
 
   const showRow = () => {
     show != 1 ?
@@ -29,7 +28,6 @@ export default function SkillsRoute() {
         return 0;
       })
   }
-  const [showSkill, setShowSkill] = useState<number>();
 
   const explainSkill = (id: number) => {
     showSkill != id ?
@@ -44,9 +42,13 @@ export default function SkillsRoute() {
 
   return (
     <>
-
       <div className="title-container">
-        <NavLink to={`../new/skills/`}> <h1 style={{ marginTop: '0', marginBottom: '0', padding: '0' }}>Talentos</h1></NavLink>
+        {
+          isAuthor ?
+            <NavLink to={`../new/skills/`}> <h1 style={{ marginTop: '0', marginBottom: '0', padding: '0' }}>Talentos</h1></NavLink>
+            :
+            <h1 style={{ marginTop: '0', marginBottom: '0', padding: '0' }}>Talentos</h1>
+        }
         <NavLink className="question-button" to={`/user/home/atr/`}>?</NavLink>
       </div>
 

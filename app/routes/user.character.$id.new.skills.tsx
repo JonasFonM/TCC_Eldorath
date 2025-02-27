@@ -1,6 +1,6 @@
 import { skill } from "@prisma/client";
 import { ActionFunction, json, LoaderFunction, redirect } from "@remix-run/node";
-import { NavLink, useLoaderData } from "@remix-run/react";
+import { NavLink, useLoaderData, useOutletContext } from "@remix-run/react";
 import { useState } from "react";
 import { SkillTableHead } from "~/components/character-sheet/skill-table";
 import { SkillTableData } from "~/components/character-sheet/skill-table-data";
@@ -119,11 +119,17 @@ export const loader: LoaderFunction = async ({ request, params }) => {
     include: { skill: true },
   });
 
-  return json({
+
+  const isAuthor = userId === character?.authorId
+
+  return isAuthor ? ({
     userId, maxSelectable, maxMagics, maxTechniques, maxManeuvers, maxOaths, maxTricks,
     characteristics, magics, techniques, oaths, maneuvers, tricks,
     pureLineageSkills, nonPureLineageSkills, isPure, characterId
-  });
+  })
+    :
+    redirect(`/user/character/${characterId}/skills/`);
+  ;
 }
 
 

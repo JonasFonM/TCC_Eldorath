@@ -4,7 +4,7 @@ import { NavLink, Outlet, useLoaderData } from "@remix-run/react";
 import React from "react";
 import { getUserIdFromSession, requireUserId } from "~/utils/auth.server";
 import { prisma } from "~/utils/prisma.server";
-import { checkFriendshipExistance, sendFriendshipInvite } from "~/utils/user.server";
+import { checkFriendshipExistance, checkFriendshipStatus, checkPendingFriendInvite, sendFriendshipInvite } from "~/utils/user.server";
 
 export const loader: LoaderFunction = async ({ params, request }) => {
     await requireUserId(request)
@@ -21,11 +21,15 @@ export const loader: LoaderFunction = async ({ params, request }) => {
 
     const isFriend = await checkFriendshipExistance(Number(userId), Number(profileUserId))
 
-    return ({ user, profileUser, isFriend })
+    const friendStatus = await checkFriendshipStatus(Number(userId), Number(profileUserId))
+
+    const isPendingInvite = await checkPendingFriendInvite(Number(userId), Number(profileUserId))
+
+    return ({ user, profileUser, isFriend, friendStatus, isPendingInvite })
 }
 
 export default function UserRoute() {
-    const { user, profileUser, isFriend } = useLoaderData<{ user: user, profileUser: user, isFriend: boolean }>()
+    const { user, profileUser, isFriend, friendStatus, isPendingInvite } = useLoaderData<{ user: user, profileUser: user, isFriend: boolean, friendStatus: string, isPendingInvite: boolean }>()
 
     return (
 
@@ -34,8 +38,17 @@ export default function UserRoute() {
             <table>
                 <thead>
                     <tr>{isFriend ?
-                        <th><NavLink to={`/user/friend/invite/${String(profileUser.id)}`} className="lineBtn">Bloquear Amizade</NavLink></th>
+
+                        isPendingInvite ?
+
+                            <th><NavLink to={`/user/friend/accept/${String(profileUser.id)}`} className="lineBtn">Aceitar Amizade</NavLink></th>
+
+                            :
+
+                            <th><NavLink to={`/user/friend/block/${String(profileUser.id)}`} className="lineBtn">Bloquear Amizade</NavLink></th>
+
                         :
+
                         <th><NavLink to={`/user/friend/invite/${String(profileUser.id)}`} className="lineBtn">Solicitar Amizade</NavLink></th>
 
                     }
@@ -43,6 +56,6 @@ export default function UserRoute() {
                 </thead>
             </table>
             <Outlet />
-        </React.Fragment>
+        </React.Fragment >
     );
 }

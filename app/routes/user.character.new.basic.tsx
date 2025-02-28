@@ -135,7 +135,7 @@ export default function NewCharacterRoute() {
           style={{ fontFamily: 'serif', fontSize: '2rem', color: "gold", textAlign: 'center' }}
           type="text"
           name="name"
-          placeholder="Name"
+          placeholder="Nome"
           value={formData.name}
           onChange={handleChange} />
         {errors.name && <p style={{ width: '100%' }} className="error">{errors.name}</p>}

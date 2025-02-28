@@ -3,6 +3,7 @@ import { campaign, scene } from "@prisma/client";
 import { LoaderFunction } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import { useState } from "react";
+import { DeleteConfirm } from "~/components/delete-confirmation";
 import { prisma } from "~/utils/prisma.server";
 
 export const loader: LoaderFunction = async ({ params }) => {
@@ -39,26 +40,14 @@ export const loader: LoaderFunction = async ({ params }) => {
 };
 
 export default function SceneRoute() {
-    const { scene, campaign } = useLoaderData<{ scene: scene, campaign: campaign }>();
-    const [show, setShow] = useState<number>();
-
-    const showRow = () => {
-        show != 1 ?
-            setShow(() => {
-                return 1;
-            })
-            :
-            setShow(() => {
-                return 0;
-            })
-    }
-
+    const { scene } = useLoaderData<{ scene: scene, campaign: campaign }>();
+    const [selectedDelete, setSelectedDelete] = useState<number>(0);
 
     return (
         <div>
-            <h1>{scene.title}</h1>
             <div className="title-container">
-
+                <h1>{scene.title}</h1>
+                <DeleteConfirm key={scene.id} id={String(scene.id)} name={scene.title} entity={'scene'} isHidden={selectedDelete != scene.id} onShow={() => setSelectedDelete(scene.id)} onCancel={() => setSelectedDelete(0)} />
             </div>
         </div>
     )

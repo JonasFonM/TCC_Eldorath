@@ -23,7 +23,7 @@ export function GlobalSideBarContext({ }) {
 export function SideBars({ title, subtitle, tableHeaders, tableDatas, tableExplain, links, linkNames, entity, temp }: Props) {
     const { selectHeader, setHeader, selectTemp, setTemp } = useSidebar();
 
-    const [showExplain, setShowExplain] = useState<number>();
+    const [showExplain, setShowExplain] = useState<number>(0);
 
     const tempStyle = {
         zIndex: showExplain === 0 ? 5 : 4,
@@ -44,7 +44,6 @@ export function SideBars({ title, subtitle, tableHeaders, tableDatas, tableExpla
                                 <tr onClick={() => setShowExplain(index + 1)}>
                                     <th>{th}</th>
                                     <td>{tableDatas[index]}</td>
-
                                 </tr>
                             </tbody>
                         </table>

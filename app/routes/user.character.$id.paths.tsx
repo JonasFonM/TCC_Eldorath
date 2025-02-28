@@ -4,7 +4,7 @@ import { LoaderFunction } from "@remix-run/node";
 import { PathExplain } from "~/components/explanations/path-explain";
 import { TableData } from "~/components/character-sheet/general-table-data";
 import { TableHead } from "~/components/character-sheet/general-table";
-import { useState } from "react";
+import React, { useState } from "react";
 
 export const loader: LoaderFunction = async ({ params }) => {
   const characterId = params.id;
@@ -19,17 +19,6 @@ export default function PathsRoute() {
   const tier2 = paths.filter(p => p.pathTier == 2);
   const tier3 = paths.filter(p => p.pathTier == 3);
   const tier4 = paths.filter(p => p.pathTier == 4);
-
-  const showRow = (tier: number) => {
-    show != tier ?
-      setShow(() => {
-        return tier;
-      })
-      :
-      setShow(() => {
-        return 0;
-      })
-  }
 
   const [showPath, setShowPath] = useState<number>();
 
@@ -47,7 +36,7 @@ export default function PathsRoute() {
   const tableTitles = ["Caminho", "Vit", "Pod", "Tec", "Man", "Jur", "Tru", "Mag"]
 
   return (
-    <>
+    <React.Fragment>
       <div className="title-container">
         {isAuthor ?
           <NavLink to={`../new/paths/`}> <h1 style={{ marginTop: '0', marginBottom: '0', padding: '0' }}>Caminhos</h1></NavLink>
@@ -57,14 +46,15 @@ export default function PathsRoute() {
         <NavLink className="question-button" to={`/user/home/atr/`}>?</NavLink>
       </div>
 
-      {tier1.map(p => (
-        <>
-          <h2 style={{ fontVariant: 'small-caps' }}>Caminhos Iniciantes</h2>
 
-          <table >
-            <tbody>
+      <h2 style={{ fontVariant: 'small-caps' }}>Caminhos Iniciantes</h2>
+      <table>
+        <tbody>
+          <TableHead tableTitles={tableTitles} onClick={show != 1 ? () => setShow(1) : () => setShow(0)} />
 
-              <TableHead tableTitles={tableTitles} onClick={() => showRow(p.pathTier)} />
+          {tier1.map(p => (
+            <React.Fragment key={p.id}>
+
 
               <TableData
                 key={p.id}
@@ -74,89 +64,95 @@ export default function PathsRoute() {
                 selected={false}
 
               />
-            </tbody>
+
+              <PathExplain style={'linear-gradient(to bottom right, gold, goldenrod)'} path={p} isHidden={showPath != p.id} onCancel={() => setShowPath(0)} />
+
+            </React.Fragment>
+
+          ))}
+        </tbody>
+      </table>
 
 
-          </table>
-          <PathExplain style={'linear-gradient(to bottom right, gold, goldenrod)'} path={p} isHidden={showPath != p.id} onCancel={() => setShowPath(0)} />
 
-        </>
+      <h2 style={{ fontVariant: 'small-caps' }}>Caminhos Veteranos</h2>
+      <table>
+        <tbody>
+          <TableHead tableTitles={tableTitles} onClick={show != 2 ? () => setShow(2) : () => setShow(0)} />
 
-      ))}
+          {tier2.map(p => (
+            <React.Fragment key={p.id}>
 
 
+              <TableData
+                key={p.id}
+                tableData={[p.name, String(p.vitality), String(p.power), String(p.addTechniques), String(p.addManeuvers), String(p.addOaths), String(p.addTricks), String(p.addMagics)]}
+                show={show === (p.pathTier)}
+                onClick={() => explainPath(p.id)}
+                selected={false}
 
-      {tier2.map(p => (
-        <>
-          <h2 style={{ fontVariant: 'small-caps' }}>Caminhos Veteranos</h2>
+              />
 
-          <table >
+              <PathExplain style={'linear-gradient(to bottom right, gold, goldenrod)'} path={p} isHidden={showPath != p.id} onCancel={() => setShowPath(0)} />
 
-            <TableHead tableTitles={tableTitles} onClick={() => showRow(p.pathTier)} />
+            </React.Fragment>
 
-            <TableData
-              key={p.id}
-              tableData={[p.name, String(p.vitality), String(p.power), String(p.addTechniques), String(p.addManeuvers), String(p.addOaths), String(p.addTricks), String(p.addMagics)]}
-              show={show === (p.pathTier)}
-              onClick={() => explainPath(p.id)}
-              selected={false}
+          ))}
+        </tbody>
+      </table>
 
-            />
+      <h2 style={{ fontVariant: 'small-caps' }}>Caminhos Mestres</h2>
+      <table>
+        <tbody>
+          <TableHead tableTitles={tableTitles} onClick={show != 3 ? () => setShow(3) : () => setShow(0)} />
 
-          </table>
-          <PathExplain style={'linear-gradient(to bottom right, gold, goldenrod)'} path={p} isHidden={showPath != p.id} onCancel={() => setShowPath(0)} />
+          {tier3.map(p => (
+            <React.Fragment key={p.id}>
 
-        </>
 
-      ))}
+              <TableData
+                key={p.id}
+                tableData={[p.name, String(p.vitality), String(p.power), String(p.addTechniques), String(p.addManeuvers), String(p.addOaths), String(p.addTricks), String(p.addMagics)]}
+                show={show === (p.pathTier)}
+                onClick={() => explainPath(p.id)}
+                selected={false}
 
-      {tier3.map(p => (
-        <>
-          <h2 style={{ fontVariant: 'small-caps' }}>Caminhos Mestres</h2>
+              />
 
-          <table >
+              <PathExplain style={'linear-gradient(to bottom right, gold, goldenrod)'} path={p} isHidden={showPath != p.id} onCancel={() => setShowPath(0)} />
 
-            <TableHead tableTitles={tableTitles} onClick={() => showRow(p.pathTier)} />
+            </React.Fragment>
 
-            <TableData
-              key={p.id}
-              tableData={[p.name, String(p.vitality), String(p.power), String(p.addTechniques), String(p.addManeuvers), String(p.addOaths), String(p.addTricks), String(p.addMagics)]}
-              show={show === (p.pathTier)}
-              onClick={() => explainPath(p.id)}
-              selected={false}
+          ))}
+        </tbody>
+      </table>
 
-            />
+      <h2 style={{ fontVariant: 'small-caps' }}>Caminhos Lendários</h2>
+      <table>
+        <tbody>
+          <TableHead tableTitles={tableTitles} onClick={show != 4 ? () => setShow(4) : () => setShow(0)} />
 
-          </table>
-          <PathExplain style={'linear-gradient(to bottom right, gold, goldenrod)'} path={p} isHidden={showPath != p.id} onCancel={() => setShowPath(0)} />
+          {tier4.map(p => (
+            <React.Fragment key={p.id}>
 
-        </>
 
-      ))}
+              <TableData
+                key={p.id}
+                tableData={[p.name, String(p.vitality), String(p.power), String(p.addTechniques), String(p.addManeuvers), String(p.addOaths), String(p.addTricks), String(p.addMagics)]}
+                show={show === (p.pathTier)}
+                onClick={() => explainPath(p.id)}
+                selected={false}
 
-      {tier4.map(p => (
-        <>
-          <h2 style={{ fontVariant: 'small-caps' }}>Caminhos Lendários</h2>
+              />
 
-          <table >
+              <PathExplain style={'linear-gradient(to bottom right, gold, goldenrod)'} path={p} isHidden={showPath != p.id} onCancel={() => setShowPath(0)} />
 
-            <TableHead tableTitles={tableTitles} onClick={() => showRow(p.pathTier)} />
+            </React.Fragment>
 
-            <TableData
-              key={p.id}
-              tableData={[p.name, String(p.vitality), String(p.power), String(p.addTechniques), String(p.addManeuvers), String(p.addOaths), String(p.addTricks), String(p.addMagics)]}
-              show={show === (p.pathTier)}
-              onClick={() => explainPath(p.id)}
-              selected={false}
+          ))}
+        </tbody>
+      </table>
 
-            />
-
-          </table>
-          <PathExplain style={'linear-gradient(to bottom right, gold, goldenrod)'} path={p} isHidden={showPath != p.id} onCancel={() => setShowPath(0)} />
-
-        </>
-
-      ))}
-    </>
+    </React.Fragment>
   )
 }

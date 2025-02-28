@@ -94,20 +94,18 @@ export default function Login() {
     if (!formData.email || !formData.password || (action === 'register' && !formData.username)) {
       event.preventDefault();
       setErrors({
-        email: !formData.email ? 'Email is required' : undefined,
-        password: !formData.password ? 'Password is required' : undefined,
-        username: action === 'register' && !formData.username ? 'Username is required' : undefined,
+        email: !formData.email ? 'Email necessário' : undefined,
+        password: !formData.password ? 'Senha necessária' : undefined,
+        username: action === 'register' && !formData.username ? 'Nome de Usuário necessário' : undefined,
       });
-      setFormError('Please fill in all required fields.');
+      setFormError('É necessário preencher todos os campos.');
       return;
     }
   };
 
   return (
     <>
-      <div className='title-container'>
-        <div className='title-screen'><h1 id='first'>Æternida</h1></div>
-      </div>
+      <div className='title-screen'><h1 id='first'>Æternida</h1></div>
       <div className='login'>
         <h1>
           <button className='lineBtn'
@@ -117,7 +115,7 @@ export default function Login() {
         </h1>
 
         <form method="POST" autoComplete="off" onSubmit={handleSubmit}>
-          <div>{formError}</div>
+          <div className='container'>{formError}</div>
           <FormField
             htmlFor="email"
             label="Email"

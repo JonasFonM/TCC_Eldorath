@@ -23,8 +23,8 @@ export function FormField({ htmlFor, label, type = 'text', value, onChange = () 
         onChange(e)
         setErrorText('')
       }} type={type} id={htmlFor} name={htmlFor} placeholder={label} style={{ fontFamily: 'serif', fontSize: '2rem', color: "gold", textAlign: 'center' }} value={value} />
-      <div>
-        {errorText || ''}
+      <div className="container">
+        <p>{errorText || ''}</p>
       </div>
     </>
   )

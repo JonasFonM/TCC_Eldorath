@@ -31,6 +31,7 @@ export const loader: LoaderFunction = async ({ params, request }) => {
 export default function UserRoute() {
     const { user, profileUser, isFriend, friendStatus, isPendingInvite } = useLoaderData<{ user: user, profileUser: user, isFriend: boolean, friendStatus: string, isPendingInvite: boolean }>()
 
+
     return (
 
         <React.Fragment>

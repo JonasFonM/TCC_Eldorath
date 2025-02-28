@@ -17,15 +17,14 @@ import { getUserIdFromSession } from "~/utils/auth.server";
 
 export const loader: LoaderFunction = async ({ params, request }) => {
   const characterId = Number(params.id);
-  const userId = Number(getUserIdFromSession(request))
-
+  const userId = await getUserIdFromSession(request)
 
   const character = await prisma.character.findUnique({
     where: { id: characterId },
     include: { skills: true, lineages: true, paths: true },
   });
 
-  const isAuthor = userId === character?.authorId
+  const isAuthor = Number(userId) === Number(character?.authorId)
 
   const character_lineages = await prisma.character_lineage.findMany({
     where: { characterId },
@@ -82,7 +81,7 @@ export const loader: LoaderFunction = async ({ params, request }) => {
     include: { item: true }
   })
 
-  return ({ isAuthor, skills, pureLineageSkills, nonPureLineageSkills, character, characterId, lineages, isPure, paths, items });
+  return ({ userId, isAuthor, skills, pureLineageSkills, nonPureLineageSkills, character, characterId, lineages, isPure, paths, items });
 };
 
 export default function CharacterRoute() {
@@ -91,6 +90,7 @@ export default function CharacterRoute() {
   const { lineages, isPure } = useLoaderData<{ lineages: lineage[], isPure: boolean }>();
   const { items } = useLoaderData<{ items: (character_item & { item: item })[] }>();
   const { paths } = useLoaderData<{ paths: path[] }>();
+  const { userId } = useLoaderData<{ userId: number }>();
   const { isAllOpen, isHeaderOpen, isTempOpen } = useSidebar();
 
 
@@ -111,6 +111,9 @@ export default function CharacterRoute() {
   const subtitle = paths.length > 0 ? String(paths.map(p => p.name)) : "Sem Caminho"
 
   const [selectInv, setInv] = useState<number>(0);
+  console.log(isAuthor)
+  console.log(character.authorId)
+  console.log(userId)
 
   return (
     <>

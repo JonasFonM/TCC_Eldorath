@@ -1,36 +1,25 @@
-import { user } from "@prisma/client";
-import { ActionFunction, LoaderFunction, redirect } from "@remix-run/node";
-import { NavLink, Outlet, useLoaderData } from "@remix-run/react";
-import React from "react";
-import { getUserIdFromSession, requireUserId } from "~/utils/auth.server";
-import { prisma } from "~/utils/prisma.server";
-import { checkFriendshipExistance, checkFriendshipStatus, checkPendingFriendInvite, sendFriendshipInvite } from "~/utils/user.server";
+import { campaign, character, user } from "@prisma/client";
+import { NavLink, useOutletContext } from "@remix-run/react";
+import React, { useState } from "react";
+import { CampaignPanel } from "~/components/campaign/campaign-panel";
+import { CharacterPanel } from "~/components/character-panel";
 
-export const loader: LoaderFunction = async ({ params, request }) => {
-    await requireUserId(request)
-    const userId = await getUserIdFromSession(request)
-    const profileUserId = params.id
 
-    const user = await prisma.user.findUnique({
-        where: { id: Number(userId) }
-    })
+export default function UserProfileRoute() {
+    const { user, profileUser, isFriend, friendStatus, profileCampaigns, profileCharacters, isPendingInvite } = useOutletContext<{ user: user, profileUser: user, isFriend: boolean, friendStatus: string, isPendingInvite: boolean, profileCampaigns: campaign[], profileCharacters: character[] }>()
+    const isOwnProfile = user.id === profileUser.id
+    const [showCreations, setShowCreations] = useState<number>(0)
 
-    const profileUser = await prisma.user.findUnique({
-        where: { id: Number(profileUserId) }
-    })
-
-    const isFriend = await checkFriendshipExistance(Number(userId), Number(profileUserId))
-
-    const friendStatus = await checkFriendshipStatus(Number(userId), Number(profileUserId))
-
-    const isPendingInvite = await checkPendingFriendInvite(Number(userId), Number(profileUserId))
-
-    return ({ user, profileUser, isFriend, friendStatus, isPendingInvite })
-}
-
-export default function UserRoute() {
-    const { user, profileUser, isFriend, friendStatus, isPendingInvite } = useLoaderData<{ user: user, profileUser: user, isFriend: boolean, friendStatus: string, isPendingInvite: boolean }>()
-
+    const getFriendAction = () => {
+        if (isOwnProfile) return null;
+        if (isFriend) {
+            if (isPendingInvite) {
+                return <NavLink to={`/user/friend/accept/${profileUser.id}`} className="lineBtn">Aceitar Amizade</NavLink>;
+            }
+            return <NavLink to={`/user/friend/block/${profileUser.id}`} className="lineBtn">Bloquear Amizade</NavLink>;
+        }
+        return <NavLink to={`/user/friend/invite/${profileUser.id}`} className="lineBtn">Solicitar Amizade</NavLink>;
+    };
 
     return (
 
@@ -38,25 +27,20 @@ export default function UserRoute() {
             <h1>{profileUser.username}</h1>
             <table>
                 <thead>
-                    <tr>{isFriend ?
-
-                        isPendingInvite ?
-
-                            <th><NavLink to={`/user/friend/accept/${String(profileUser.id)}`} className="lineBtn">Aceitar Amizade</NavLink></th>
-
-                            :
-
-                            <th><NavLink to={`/user/friend/block/${String(profileUser.id)}`} className="lineBtn">Bloquear Amizade</NavLink></th>
-
-                        :
-
-                        <th><NavLink to={`/user/friend/invite/${String(profileUser.id)}`} className="lineBtn">Solicitar Amizade</NavLink></th>
-
-                    }
-                    </tr>
+                    <tr>{getFriendAction() && <th>{getFriendAction()}</th>}</tr>
                 </thead>
             </table>
-            <Outlet />
+            <h1 className="title-input"><button className="lineBtn" onClick={showCreations != 1 ? () => setShowCreations(1) : () => setShowCreations(0)}>Personagens de {profileUser.username}</button></h1>
+
+            <div className="container" style={showCreations != 1 ? { display: 'none' } : {}}>
+                <CharacterPanel isAuthor={isOwnProfile} characters={profileCharacters} />
+            </div>
+
+            <h1 className="title-input"><button className="lineBtn" onClick={showCreations != 2 ? () => setShowCreations(2) : () => setShowCreations(0)}>Campanhas de {profileUser.username}</button></h1>
+
+            <div className="container" style={showCreations != 2 ? { display: 'none' } : {}}>
+                <CampaignPanel isAuthor={isOwnProfile} campaigns={profileCampaigns} />
+            </div>
         </React.Fragment >
     );
 }

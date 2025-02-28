@@ -745,11 +745,13 @@ td:last-child {
   text-align: center;
   width: 100%;
   border-bottom: 2px solid goldenrod;
+  border-top: 2px solid goldenrod;
   background: transparent;
   padding: 10px;
   border-radius: 5px;
   outline: none;
   transition: 0.3s;
+  margin: 0;
 }
 
 .title-input:focus {

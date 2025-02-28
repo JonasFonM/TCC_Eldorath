@@ -1,5 +1,5 @@
 import { NavLink } from "@remix-run/react";
-import { useState } from "react";
+import React, { useState } from "react";
 
 interface props {
   name: string;
@@ -16,7 +16,7 @@ export function DeleteConfirm({ name, isHidden, onShow, onCancel, entity, id }: 
   const isConfirmed = confirmText === "DELETAR";
 
   return (
-    <>
+    <React.Fragment key={id}>
       <button style={{ color: 'red', border: 0 }} className="question-button" onClick={onShow}>X</button>
       <div className="modal-overlay" style={{ display: isHidden ? 'none' : 'flex' }}>
 
@@ -36,6 +36,6 @@ export function DeleteConfirm({ name, isHidden, onShow, onCancel, entity, id }: 
         </div>
 
       </div>
-    </>
+    </React.Fragment>
   )
 }

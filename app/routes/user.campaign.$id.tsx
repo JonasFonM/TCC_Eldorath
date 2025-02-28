@@ -10,13 +10,13 @@ import { getUserIdFromSession } from "~/utils/auth.server";
 
 export const loader: LoaderFunction = async ({ params, request }) => {
     const campaignId = Number(params.id);
-    const userId = Number(getUserIdFromSession(request))
+    const userId = await getUserIdFromSession(request)
+
     const campaign = await prisma.campaign.findUnique({
         where: { id: campaignId },
         include: { scenes: true, characters: true, players: true },
     });
-    const masterId = Number(campaign?.masterId)
-    const isMaster = masterId === userId
+    const isMaster = Number(userId) === Number(campaign?.masterId)
 
     return ({ isMaster, campaignId, campaign })
 }
@@ -64,6 +64,7 @@ export default function CampaignRoute() {
                                             {sc.title}
                                         </NavLink>
                                     </li>
+
                                 )}
 
                             </ul>
@@ -95,7 +96,7 @@ export default function CampaignRoute() {
             <div className="user" style={isAllOpen ? { marginLeft: '200px', marginRight: '200px' } : isHeaderOpen ?
                 { marginLeft: '200px' } : isTempOpen ? { marginRight: '200px' } : {}}>
 
-                <h1>{campaign.title}</h1>
+                <h1><NavLink className={'lineBtn'} to={`/user/campaign/${campaignId}`}>{campaign.title}</NavLink></h1>
                 <SceneCreator isHidden={showCreator === 0} onCancel={() => setShowCreator(0)} campaignId={campaignId} />
 
                 <div className="container" style={{ margin: '5%' }}>

@@ -58,7 +58,7 @@ export async function login({ email, password }: LoginForm) {
   })
   if (!user || !(await bcrypt.compare(password, user.password)))
     return json({ error: `Incorrect login` }, { status: 400 })
-  return createUserSession(user.id, "/user/home");
+  return createUserSession(user.id, "/user/home/profile");
 }
 
 export async function requireUserId(request: Request, redirectTo: string = new URL(request.url).pathname) {

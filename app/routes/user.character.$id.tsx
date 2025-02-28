@@ -111,10 +111,6 @@ export default function CharacterRoute() {
   const subtitle = paths.length > 0 ? String(paths.map(p => p.name)) : "Sem Caminho"
 
   const [selectInv, setInv] = useState<number>(0);
-  console.log(isAuthor)
-  console.log(character.authorId)
-  console.log(userId)
-
   return (
     <>
       <SideBars

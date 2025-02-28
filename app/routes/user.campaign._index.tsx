@@ -16,7 +16,7 @@ export default function CampaignsIndexRoute() {
     return (<>
         <h1 className="title-container" style={{ fontSize: '2rem' }}>Suas Campanhas<NavLink style={{ color: 'blue' }} className="question-button" to={`new`}>+</NavLink></h1>
         <div className="container">
-            <CampaignPanel campaigns={campaigns} />
+            <CampaignPanel isAuthor={true} campaigns={campaigns} />
         </div>
     </>);
 }

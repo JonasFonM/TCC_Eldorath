@@ -17,7 +17,7 @@ body {
   height: 100%;
   margin: 0;
   background-color: #121212;
-  color: #ffffff;
+  color: white;
   line-height: 1.6;
   overflow-x: hidden;
 }
@@ -40,10 +40,8 @@ body {
 }
 
 .title-screen {
-  color: gold;
   font-weight: 900;
   font-size: 56px;
-  font-variant: small-caps;
   margin-bottom: 4rem;
   letter-spacing: 0.5rem;
   line-height: 4rem;
@@ -63,26 +61,21 @@ body {
 }
 
 h1 {
-  font-family: Georgia;
-  font-variant: small-caps;
   color: gold;
 }
 
 h1,
-h2 {
+h2,
+h3 {
+  font-family: Georgia;
+  font-variant: small-caps;
   text-align: center;
   margin-bottom: 1rem;
 }
 
-h2 {
-  color: #FFFFFF;
-}
-
+h2,
 h3 {
-  text-align: center;
-  font-size: 1.2rem;
   color: #FFFFFF;
-  margin-bottom: 0.5rem;
 }
 
 button.lineBtn,
@@ -205,7 +198,6 @@ ul {
 }
 
 .temp h1 a {
-  text-decoration: none;
   font-family: 'Times New Roman', Times, serif;
   color: gold;
 }
@@ -229,7 +221,6 @@ ul {
   width: 100%;
   box-shadow: 1px 0px 4px 1px gold;
 }
-
 
 .header table,
 .temp table {
@@ -259,7 +250,7 @@ ul {
   border: 0;
   top: 62px;
   height: calc(100% + 900px);
-  width: 16px;
+  width: 10px;
   background-color: gold;
   opacity: 0;
   margin-left: 196px;
@@ -295,10 +286,10 @@ ul {
   top: 62px;
   right: 0;
   height: calc(100% + 64px);
-  width: 16;
+  width: 10px;
   background-color: gold;
   opacity: 0;
-  margin-right: 200px;
+  margin-right: 196px;
   transition: 0.3s ease-in-out;
   z-index: 4;
   box-shadow: 1px 0px 4px 1px gold;
@@ -336,25 +327,21 @@ li {
   margin-right: 16px;
 }
 
-li a {
-  display: block;
-  color: white;
-  text-align: center;
-  padding: 19px 19px;
-  text-decoration: none;
-}
-
-.header li button {
+li a,
+li button {
   width: 100%;
   display: block;
   color: white;
   text-align: center;
-  padding: 19px 19px;
+  padding: 16px 16px;
   text-decoration: none;
-  background: none;
-  border: inherit;
-  font: inherit;
+  font-weight: bold;
+  font-family: serif;
+  font-variant: small-caps;
+  font-size: 1.2rem;
   cursor: pointer;
+  background: none;
+
 }
 
 .header table button {
@@ -367,20 +354,6 @@ li a {
   cursor: pointer;
   width: 100%;
   height: 100%;
-}
-
-.temp li button {
-  width: 100%;
-  display: block;
-  color: white;
-  text-align: center;
-  padding: 19px 19px;
-  text-decoration: none;
-  background: none;
-  color: inherit;
-  border: inherit;
-  font: inherit;
-  cursor: pointer;
 }
 
 li a:hover,
@@ -586,7 +559,7 @@ td:last-child {
 }
 
 .modal-content {
-  background-image: linear-gradient(to bottom, white, #ec4010);
+  background-color: goldenrod;
   box-shadow: 0px 0px 16px 1px gold;
   padding: 20px;
   border-radius: 10px;

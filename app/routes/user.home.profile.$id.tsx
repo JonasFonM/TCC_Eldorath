@@ -30,25 +30,25 @@ export default function UserProfileRoute() {
                     <tr>{getFriendAction() && <th>{getFriendAction()}</th>}</tr>
                 </thead>
             </table>
-            <h1 className="title-input">
+
+            <h1 id="Campanhas" className="title-input">
                 <button className="lineBtn" onClick={showCreations != 1 ? () => setShowCreations(1) : () => setShowCreations(0)}>
-                    {isOwnProfile ? 'Seus Personagens' : `Personagens de ${profileUser.username}`}
-                </button>
-            </h1>
-
-            <div className="container" style={showCreations != 1 ? { display: 'none' } : {}}>
-                <CharacterPanel isAuthor={isOwnProfile} characters={profileCharacters} />
-            </div>
-
-
-            <h1 className="title-input">
-                <button className="lineBtn" onClick={showCreations != 2 ? () => setShowCreations(2) : () => setShowCreations(0)}>
                     {isOwnProfile ? 'Suas Campanhas' : `Campanhas de ${profileUser.username}`}
                 </button>
             </h1>
 
-            <div className="container" style={showCreations != 2 ? { display: 'none' } : {}}>
+            <div className="container" style={showCreations != 1 ? { display: 'none' } : {}}>
                 <CampaignPanel isAuthor={isOwnProfile} campaigns={profileCampaigns} />
+            </div>
+
+            <h1 id="Personagens" className="title-input">
+                <button className="lineBtn" onClick={showCreations != 2 ? () => setShowCreations(2) : () => setShowCreations(0)}>
+                    {isOwnProfile ? 'Seus Personagens' : `Personagens de ${profileUser.username}`}
+                </button>
+            </h1>
+
+            <div className="container" style={showCreations != 2 ? { display: 'none' } : {}}>
+                <CharacterPanel isAuthor={isOwnProfile} characters={profileCharacters} />
             </div>
 
         </React.Fragment >

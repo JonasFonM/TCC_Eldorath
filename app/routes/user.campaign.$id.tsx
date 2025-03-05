@@ -18,11 +18,13 @@ export const loader: LoaderFunction = async ({ params, request }) => {
     });
     const isMaster = Number(userId) === Number(campaign?.masterId)
 
-    return ({ isMaster, campaignId, campaign })
+    const isPlayer = campaign?.players.some(player => Number(player.userId) === Number(userId)) ?? false;
+
+    return ({ isMaster, isPlayer, campaignId, campaign })
 }
 
 export default function CampaignRoute() {
-    const { isMaster, campaign } = useLoaderData<{ isMaster: boolean, campaign: (campaign & { scenes: scene[], characters: character[], players: user[] }) }>()
+    const { isMaster, isPlayer, campaign } = useLoaderData<{ isMaster: boolean, isPlayer: boolean, campaign: (campaign & { scenes: scene[], characters: character[], players: user[] }) }>()
     const { isAllOpen, isHeaderOpen, isTempOpen } = useSidebar();
     const [showScenes, setShowScenes] = useState(0);
     const [showCreator, setShowCreator] = useState(0);
@@ -80,15 +82,22 @@ export default function CampaignRoute() {
 
                         </React.Fragment>
                         :
-                        <React.Fragment>
-                            <ul>
-                                <li key={1}>
-                                    <NavLink to={`/user/campaign/${campaignId}/join/`}>
-                                        Juntar-se
-                                    </NavLink>
-                                </li>
-                            </ul>
-                        </React.Fragment>
+
+                        isPlayer ?
+
+                            ''
+
+                            :
+
+                            <React.Fragment>
+                                <ul>
+                                    <li key={1}>
+                                        <NavLink to={`/user/campaign/${campaignId}/join/`}>
+                                            Juntar-se
+                                        </NavLink>
+                                    </li>
+                                </ul>
+                            </React.Fragment>
                 }
 
             />

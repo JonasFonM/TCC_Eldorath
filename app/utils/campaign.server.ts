@@ -134,6 +134,15 @@ export const createScene = async (campaign: SceneForm, campaignId: number, title
 };
 
 //PLAYERS
+export const addSinglePlayertoCampaign = async (playerId: number, campaignId: number) => {
+  return await prisma.partyMembers.create({
+    data: {
+      userId: playerId,
+      campaignId: campaignId,
+    }
+  });
+};
+
 export const addPlayerstoCampaign = async (partyMemberList: number[], campaignId: number) => {
   const existingPartyMembers = await prisma.partyMembers.findMany({
     where: {
@@ -158,6 +167,15 @@ export const addPlayerstoCampaign = async (partyMemberList: number[], campaignId
   return;
 };
 
+export const removeSinglePlayerFromCampaign = async (campaignId: number, playerId: number) => {
+  return await prisma.partyMembers.deleteMany({
+    where: {
+      campaignId: campaignId,
+      userId: playerId
+    }
+  })
+};
+
 export const removeAllPlayersFromCampaign = async (campaignId: number) => {
   return await prisma.partyMembers.deleteMany({
     where: {
@@ -168,7 +186,18 @@ export const removeAllPlayersFromCampaign = async (campaignId: number) => {
 
 
 //CHARACTERS
-export const addCharacterToCampaign = async (characterList: number[], campaignId: number) => {
+export const addSingleCharacterToCampaign = async (characterId: number, campaignId: number) => {
+  return await prisma.character.update({
+    where: {
+      id: characterId
+    },
+    data: {
+      campaignId: campaignId,
+    },
+  });
+};
+
+export const addCharactersToCampaign = async (characterList: number[], campaignId: number) => {
   const existingCharacters = await prisma.character.findMany({
     where: {
       id: { in: characterList },

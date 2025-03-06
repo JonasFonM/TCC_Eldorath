@@ -30,7 +30,7 @@ CREATE DEFINER=`root`@`localhost` TRIGGER `campaign_BEFORE_UPDATE` BEFORE UPDATE
 
     -- Ajusta a contagem do dia da semana com base no dia do mês
 		SET NEW.weekDay = (NEW.monthDay) % 6;
-		IF NEW.weekDay = 0 THEN
+		IF NEW.weekDay <= 0 THEN
 			SET NEW.weekDay = 6;
 		END IF;
 
@@ -38,8 +38,14 @@ CREATE DEFINER=`root`@`localhost` TRIGGER `campaign_BEFORE_UPDATE` BEFORE UPDATE
     WHILE NEW.timeOfDay > 4 DO
         SET NEW.timeOfDay = NEW.timeOfDay - 4;
         SET NEW.monthDay = NEW.monthDay + 1;
+        
     END WHILE;
-
+    
+	IF NEW.timeOfDay <= 0 THEN
+		SET NEW.timeOfDay = 4;
+		SET NEW.monthDay = NEW.monthDay -1;
+	END IF;
+    
     -- Controle dos dias da semana (1-6)
     WHILE NEW.weekDay > 6 DO
         SET NEW.weekDay = NEW.weekDay - 6;
@@ -50,18 +56,36 @@ CREATE DEFINER=`root`@`localhost` TRIGGER `campaign_BEFORE_UPDATE` BEFORE UPDATE
         SET NEW.monthDay = NEW.monthDay - 30;
         SET NEW.month = NEW.month + 1;
     END WHILE;
+    
+    IF NEW.monthDay <= 0 THEN
+		SET NEW.monthDay = 30;
+		SET NEW.month = NEW.month -1;
+	END IF;
 
     -- Controle dos meses (1-12)
     WHILE NEW.month > 12 DO
         SET NEW.month = NEW.month - 12;
         SET NEW.year = NEW.year + 1;
     END WHILE;
+    
+    IF NEW.month <= 0 THEN
+		SET NEW.month = 12;
+		SET NEW.year = NEW.year -1;
+	END IF;
 
     -- Controle dos anos (Máximo 3000)
     WHILE NEW.year > 3000 DO
         SET NEW.year = NEW.year - 3000;
         SET NEW.era = NEW.era + 1;
     END WHILE;
+    
+    IF NEW.year <= 0 THEN
+		SET NEW.year = 3000;
+		SET NEW.era = NEW.era -1;
+	END IF;
+     
+     IF NEW.era <= -1 THEN
+		SET NEW.era = -1;
+    END IF;
 
-END
 END

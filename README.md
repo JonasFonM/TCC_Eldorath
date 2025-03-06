@@ -4,7 +4,7 @@ Cores para modo Acessibilidade:
 #1004e7
 
 Level up Trigger:
-/*
+
 CREATE DEFINER=`root`@`localhost` TRIGGER `lvl_up` BEFORE UPDATE ON `character` FOR EACH ROW BEGIN
     DECLARE level_threshold INT;
         SET level_threshold = (NEW.level + 1) * 4 * NEW.tier;
@@ -21,11 +21,11 @@ CREATE DEFINER=`root`@`localhost` TRIGGER `lvl_up` BEFORE UPDATE ON `character` 
         
     END WHILE;
 END
-*/
+
 
 
 Triggers do Calendário
-/*
+
 CREATE DEFINER = CURRENT_USER TRIGGER `test`.`campaign_BEFORE_UPDATE` BEFORE UPDATE ON `campaign` FOR EACH ROW
 BEGIN
     IF NEW.timeOfDay > 4 THEN
@@ -53,5 +53,3 @@ BEGIN
     END IF;
     
 END
-
-*/

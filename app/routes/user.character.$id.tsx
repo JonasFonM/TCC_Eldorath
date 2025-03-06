@@ -127,10 +127,7 @@ export default function CharacterRoute() {
           `/user/character/${characterId}/lineages/`,
           `/user/character/${characterId}/paths/`,
           `/user/character/${characterId}/skills/`,
-          character.campaignId ?
-            `/user/campaign/${character.campaignId}/`
-            :
-            `/user/home/profile`
+
         ]}
 
         linkNames={[
@@ -138,10 +135,22 @@ export default function CharacterRoute() {
           'Linhagens',
           'Caminhos',
           'Talentos',
-          'Campanha'
         ]}
         temp={
           <React.Fragment>
+
+            <ul>
+              <li key={1}>
+                <NavLink to={
+                  character.campaignId ?
+                    `/user/campaign/${character.campaignId}/`
+                    :
+                    `/user/home/profile`}
+                >Campanha</NavLink>
+              </li>
+
+            </ul>
+
             <h1>Inventário</h1>
             {isAuthor ?
               <h1 className="title-container"><NavLink className="question-button" to={`/user/character/${characterId}/new/inventory/`}>+</NavLink></h1>

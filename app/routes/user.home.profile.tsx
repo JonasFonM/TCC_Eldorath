@@ -2,6 +2,7 @@ import { campaign, character, user } from "@prisma/client";
 import { LoaderFunction, redirect } from "@remix-run/node";
 import { Outlet, useLoaderData, useOutletContext } from "@remix-run/react";
 import { getUserIdFromSession } from "~/utils/auth.server";
+import { getCharactersFromUser } from "~/utils/character.server";
 import { prisma } from "~/utils/prisma.server";
 import { checkFriendshipExistance, checkFriendshipStatus, checkPendingFriendInvite } from "~/utils/user.server";
 
@@ -26,11 +27,7 @@ export const loader: LoaderFunction = async ({ params, request }) => {
         }
     })
 
-    const profileCharacters = await prisma.character.findMany({
-        where: {
-            authorId: profileUserId
-        }
-    })
+    const profileCharacters =  await getCharactersFromUser(profileUserId)
 
     const isFriend = await checkFriendshipExistance(Number(userId), profileUserId)
 

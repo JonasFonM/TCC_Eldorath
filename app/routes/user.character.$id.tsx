@@ -90,7 +90,6 @@ export default function CharacterRoute() {
   const { lineages, isPure } = useLoaderData<{ lineages: lineage[], isPure: boolean }>();
   const { items } = useLoaderData<{ items: (character_item & { item: item })[] }>();
   const { paths } = useLoaderData<{ paths: path[] }>();
-  const { userId } = useLoaderData<{ userId: number }>();
   const { isAllOpen, isHeaderOpen, isTempOpen } = useSidebar();
 
 

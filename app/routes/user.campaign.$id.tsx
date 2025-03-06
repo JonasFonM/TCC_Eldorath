@@ -76,39 +76,44 @@ export default function CampaignRoute() {
             if (campaignCharacter) {
                 return (
                     <React.Fragment>
-
                         <ul>
                             <li key={1}>
                                 <NavLink to={`/user/character/${campaignCharacter.id}/stats`}>
                                     {campaignCharacter.name}
                                 </NavLink>
                             </li>
+                            <table>
+                                <tbody>
+                                    <tr>
+                                        <th>NV</th>
+                                        <td>{campaignCharacter.level}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <table>
+                                <tbody>
+                                    <tr>
+                                        <th>VIT</th>
+                                        <td>{campaignCharacter.currentVitality}/{campaignCharacter.vitality}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <table>
+                                <tbody>
+                                    <tr>
+                                        <th>POD</th>
+                                        <td>{campaignCharacter.currentPower}/{campaignCharacter.power}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <li key={2}>
+                                <NavLink className='logout' to={`/user/campaign/${campaignId}/remove/${campaignCharacter.id}`}>
+                                    Remover
+                                </NavLink>
+                            </li>
                         </ul>
 
-                        <table>
-                            <tbody>
-                                <tr>
-                                    <th>NV</th>
-                                    <td>{campaignCharacter.level}</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                        <table>
-                            <tbody>
-                                <tr>
-                                    <th>VIT</th>
-                                    <td>{campaignCharacter.currentVitality}/{campaignCharacter.vitality}</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                        <table>
-                            <tbody>
-                                <tr>
-                                    <th>POD</th>
-                                    <td>{campaignCharacter.currentPower}/{campaignCharacter.power}</td>
-                                </tr>
-                            </tbody>
-                        </table>
+
 
                     </React.Fragment>
                 );

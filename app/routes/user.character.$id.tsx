@@ -126,13 +126,19 @@ export default function CharacterRoute() {
           `/user/character/${characterId}/stats/`,
           `/user/character/${characterId}/lineages/`,
           `/user/character/${characterId}/paths/`,
-          `/user/character/${characterId}/skills/`
+          `/user/character/${characterId}/skills/`,
+          character.campaignId ?
+            `/user/campaign/${character.campaignId}/`
+            :
+            `/user/home/profile`
         ]}
+
         linkNames={[
           'Personagem',
           'Linhagens',
           'Caminhos',
-          'Talentos'
+          'Talentos',
+          'Campanha'
         ]}
         temp={
           <React.Fragment>

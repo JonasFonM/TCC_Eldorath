@@ -164,8 +164,9 @@ export default function CampaignRoute() {
                     "Uma semana em Æternida tem 6 Dias e os nomes deles são uma representação da rotina dos povos originários Æternidenses.",
                     "Um Dia em Æternida é separado em Fases: A Madrugada que se inicia à meia-noite, a Alvorada, às 6 horas da manhã, a Tarde, ao meio-dia e a Noite, às 18 horas."
                 ]}
-                links={[]}
-                linkNames={[]}
+
+                links={isMaster ? [`/user/campaign/${campaignId}/adv/timeOfDay`,`/user/campaign/${campaignId}/adv/monthDay`, `/user/campaign/${campaignId}/adv/month`, `/user/campaign/${campaignId}/adv/year`, `/user/campaign/${campaignId}/adv/era`] : []}
+                linkNames={isMaster ? [`Avançar Fase`, `Avançar Dia`, `Avançar Mês`, `Avançar Ano`, `Avançar Æra`] : []}
                 temp={
                     getCampaignAction()
                 }

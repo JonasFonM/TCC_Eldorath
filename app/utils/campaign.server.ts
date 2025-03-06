@@ -105,6 +105,43 @@ export const getCampaignsFromUser = async (userId: number) => {
   })
 }
 
+//TIME CONTROL
+
+export const advCampaignTimeOfDay = async (campaignId: number) => {
+  return prisma.campaign.update({
+    where: { id: campaignId },
+    data: { timeOfDay: { increment: 1 } }
+  })
+}
+
+export const advCampaignDay = async (campaignId: number) => {
+  return prisma.campaign.update({
+    where: { id: campaignId },
+    data: { monthDay: { increment: 1 } }
+  })
+}
+
+export const advCampaignMonth = async (campaignId: number) => {
+  return prisma.campaign.update({
+    where: { id: campaignId },
+    data: { month: { increment: 1 } }
+  })
+}
+
+export const advCampaignYear = async (campaignId: number) => {
+  return prisma.campaign.update({
+    where: { id: campaignId },
+    data: { year: { increment: 1 } }
+  })
+}
+
+export const advCampaignEra = async (campaignId: number) => {
+  return prisma.campaign.update({
+    where: { id: campaignId },
+    data: { era: { increment: 1 } }
+  })
+}
+
 
 //SCENES
 export const createScene = async (campaign: SceneForm, campaignId: number, title: string) => {

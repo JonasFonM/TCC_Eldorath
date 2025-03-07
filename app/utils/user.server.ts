@@ -25,6 +25,18 @@ export const getOtherUsers = async (userId: number) => {
   })
 }
 
+export const searchUsers = async (query: string) => {
+  return prisma.user.findMany({
+    where: {
+      OR: [
+        { username: { contains: query } },
+        { email: { contains: query } },
+      ],
+    },
+    take: 10,
+  });
+};
+
 export async function checkFriendshipExistance(userId: number, friendId: number) {
   const friendship = await prisma.friendship.findMany({
     where: {

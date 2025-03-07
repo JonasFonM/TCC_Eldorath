@@ -716,18 +716,18 @@ td:last-child {
   font-size: 2rem;
   color: gold;
   text-align: center;
-  width: 100%;
+  width: 101%;
   border-bottom: 2px solid goldenrod;
   border-top: 2px solid goldenrod;
   background: transparent;
   padding: 10px;
-  border-radius: 5px;
   outline: none;
   transition: 0.3s;
   margin: 0;
 }
 
-.title-input:focus {
+.title-input:focus,
+.title-input:hover {
   scale: 1.1;
   border-bottom: 2px solid gold;
   box-shadow: 1px 1px 4px 1px gold;

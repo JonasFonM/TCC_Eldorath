@@ -4,11 +4,10 @@ import React, { useState } from "react";
 import { CampaignPanel } from "~/components/campaign/campaign-panel";
 import { CharacterPanel } from "~/components/character-panel";
 
-
 export default function UserProfileRoute() {
-    const { user, profileUser, isFriend, friendStatus, profileCampaigns, profileCharacters, isPendingInvite } = useOutletContext<{ user: user, profileUser: user, isFriend: boolean, friendStatus: string, isPendingInvite: boolean, profileCampaigns: campaign[], profileCharacters: character[] }>()
-    const isOwnProfile = user.id === profileUser.id
-    const [showCreations, setShowCreations] = useState<number>(0)
+    const { user, profileUser, isFriend, friendStatus, profileCampaigns, profileCharacters, isPendingInvite } = useOutletContext<{ user: user, profileUser: user, isFriend: boolean, friendStatus: string, isPendingInvite: boolean, profileCampaigns: campaign[], profileCharacters: character[] }>();
+    const isOwnProfile = user.id === profileUser.id;
+    const [showCreations, setShowCreations] = useState<number>(0);
 
     const getFriendAction = () => {
         if (isOwnProfile) return null;
@@ -22,7 +21,6 @@ export default function UserProfileRoute() {
     };
 
     return (
-
         <React.Fragment>
             <h1>{profileUser.username}</h1>
             <table>
@@ -32,25 +30,28 @@ export default function UserProfileRoute() {
             </table>
 
             <h1 id="Campanhas" className="title-input">
-                <button className="lineBtn" onClick={showCreations != 1 ? () => setShowCreations(1) : () => setShowCreations(0)}>
+                <button className="lineBtn" onClick={() => setShowCreations(showCreations !== 1 ? 1 : 0)}>
                     {isOwnProfile ? 'Suas Campanhas' : `Campanhas de ${profileUser.username}`}
                 </button>
             </h1>
 
-            <div className="container" style={showCreations != 1 ? { display: 'none' } : {}}>
-                <CampaignPanel isAuthor={isOwnProfile} campaigns={profileCampaigns} />
-            </div>
+            {showCreations === 1 && (
+                <div className="container">
+                    <CampaignPanel isAuthor={isOwnProfile} campaigns={profileCampaigns} />
+                </div>
+            )}
 
             <h1 id="Personagens" className="title-input">
-                <button className="lineBtn" onClick={showCreations != 2 ? () => setShowCreations(2) : () => setShowCreations(0)}>
+                <button className="lineBtn" onClick={() => setShowCreations(showCreations !== 2 ? 2 : 0)}>
                     {isOwnProfile ? 'Seus Personagens' : `Personagens de ${profileUser.username}`}
                 </button>
             </h1>
 
-            <div className="container" style={showCreations != 2 ? { display: 'none' } : {}}>
-                <CharacterPanel isAuthor={isOwnProfile} characters={profileCharacters} />
-            </div>
-
-        </React.Fragment >
+            {showCreations === 2 && (
+                <div className="container">
+                    <CharacterPanel isAuthor={isOwnProfile} characters={profileCharacters} />
+                </div>
+            )}
+        </React.Fragment>
     );
 }

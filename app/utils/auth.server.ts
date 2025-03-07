@@ -48,7 +48,7 @@ export async function register(user: RegisterForm) {
     )
   }
   return (
-    createUserSession(newUser.id, '/user/home/'));
+    createUserSession(newUser.id, '/user/home/profile'));
 
 }
 

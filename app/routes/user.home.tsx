@@ -1,37 +1,93 @@
 import { user } from "@prisma/client";
-import { Outlet, useOutletContext } from "@remix-run/react";
+import { json, LoaderFunction } from "@remix-run/node";
+import { Form, Outlet, useLoaderData, useOutletContext, useFetcher } from "@remix-run/react";
+import React, { useEffect } from "react";
 import { useSidebar } from "~/components/side-bars/side-bar-context";
 import { SideBars } from "~/components/side-bars/side-bars";
 import { UserPanel } from "~/components/user-panel";
+import { getUserIdFromSession } from "~/utils/auth.server";
+import { searchUsers } from "~/utils/user.server";
+
+export const loader: LoaderFunction = async ({ request }) => {
+    const url = new URL(request.url);
+    const query = url.searchParams.get("q") || "";
+
+    if (!query) {
+        return json({ users: [], query });
+    }
+
+    const users = await searchUsers(query);
+    return json({ users, query });
+};
 
 export default function UserRoute() {
-    const { userId, user, friends } = useOutletContext<{ userId: number, user: user, friends: user[] }>()
+    const { userId, user, friends } = useOutletContext<{ userId: number; user: user; friends: user[] }>();
     const { isAllOpen, isHeaderOpen, isTempOpen } = useSidebar();
+    const fetcher = useFetcher<{ users: user[]; query: string }>();
+    const users = fetcher.data?.users ?? [];
+    const query = fetcher.data?.query ?? "";
+
+    useEffect(() => {
+        const searchField = document.getElementById("q");
+        if (searchField instanceof HTMLInputElement) {
+            searchField.value = query;
+            const handleInput = (e: Event) => {
+                if (e.currentTarget instanceof HTMLInputElement) {
+                    fetcher.submit(e.currentTarget.form);
+                }
+            };
+
+            searchField.addEventListener("input", handleInput);
+
+            return () => {
+                searchField.removeEventListener("input", handleInput);
+            };
+        }
+    }, [query, fetcher]);
 
     return (
         <>
-            <SideBars entity={user}
+            <SideBars
+                entity={user}
                 title={user.username}
-                subtitle={''}
+                subtitle={""}
                 tableHeaders={[]}
                 tableDatas={[]}
                 tableExplain={[]}
-                links={[]}
-                linkNames={[]}
+                links={[`/user/home/profile/${String(userId)}`].concat(friends.map((fr) => `/user/home/profile/${String(fr.id)}`))}
+                linkNames={["Meu Perfil"].concat(friends.map((fr) => String(fr.username)))}
                 temp={
-                    <UserPanel users={friends} />
-
+                    <React.Fragment>
+                        <fetcher.Form id="search-form" role="search">
+                            <input
+                                className="title-input"
+                                aria-label="Pesquisar usuários"
+                                defaultValue={query}
+                                id="q"
+                                name="q"
+                                placeholder="Buscar usuário..."
+                                type="search"
+                            />
+                        </fetcher.Form>
+                        <UserPanel users={users} />
+                    </React.Fragment>
                 }
             />
 
-            <div className="user" style={isAllOpen ? { marginLeft: '200px', marginRight: '200px' } : isHeaderOpen ?
-                { marginLeft: '200px' } : isTempOpen ? { marginRight: '200px' } : {}}>
-
+            <div
+                className="user"
+                style={
+                    isAllOpen
+                        ? { marginLeft: "200px", marginRight: "200px" }
+                        : isHeaderOpen
+                            ? { marginLeft: "200px" }
+                            : isTempOpen
+                                ? { marginRight: "200px" }
+                                : {}
+                }
+            >
                 <Outlet context={{ userId, user, friends }} />
-
-            </div >
-
+            </div>
         </>
-
     );
 }

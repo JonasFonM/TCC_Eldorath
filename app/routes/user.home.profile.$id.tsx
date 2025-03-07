@@ -13,17 +13,28 @@ export default function UserProfileRoute() {
 
     const getFriendAction = () => {
         if (isOwnProfile) return null;
+
+        if (isPendingInvite) return <NavLink to={`/user/friend/accept/${profileUser.id}`} className="lineBtn">Aceitar Amizade</NavLink>;
+
+        if (friendStatus === 'BLOCKED') return <NavLink to={`/user/friend/accept/${profileUser.id}`} className="lineBtn">Desbloquear Amizade</NavLink>;
+
+        if (friendStatus === 'PENDING') return <React.Fragment>Solicitação Enviada</React.Fragment>;
+
         if (isFriend) {
-            if (isPendingInvite) {
-                return <NavLink to={`/user/friend/accept/${profileUser.id}`} className="lineBtn">Aceitar Amizade</NavLink>;
-            }
-            if (friendStatus == 'BLOCKED') {
-                return <NavLink to={`/user/friend/accept/${profileUser.id}`} className="lineBtn">Desbloquear Amizade</NavLink>;
-            }
-            return <BlockConfirm name={profileUser.username} isHidden={blockConfirm != 1} onShow={() => setBlockConfirm(1)} onCancel={() => setBlockConfirm(0)} userId={String(profileUser.id)} />;
+            return (
+                <BlockConfirm
+                    name={profileUser.username}
+                    isHidden={blockConfirm !== 1}
+                    onShow={() => setBlockConfirm(1)}
+                    onCancel={() => setBlockConfirm(0)}
+                    userId={String(profileUser.id)}
+                />
+            );
         }
+
         return <NavLink to={`/user/friend/invite/${profileUser.id}`} className="lineBtn">Solicitar Amizade</NavLink>;
     };
+
 
     return (
         <React.Fragment>

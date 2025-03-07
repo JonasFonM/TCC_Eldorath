@@ -15,6 +15,7 @@ export const loader: LoaderFunction = async ({ request }) => {
 
   const friendships = await prisma.friendship.findMany({
     where: {
+      status: 'ACCEPTED',
       OR: [
         { user1Id: Number(userId) },
         { user2Id: Number(userId) }

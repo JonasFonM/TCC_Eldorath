@@ -555,23 +555,26 @@ td:last-child {
   justify-content: center;
   align-items: center;
   overflow: auto;
-  z-index: 900;
+  z-index: 15;
 }
 
 .modal-content {
-  background-color: goldenrod;
+  background-color: black;
   box-shadow: 0px 0px 16px 1px gold;
+  color: gold;
   padding: 20px;
   border-radius: 10px;
   max-width: 500px;
   width: 100%;
   text-align: center;
+  cursor: initial;
+  z-index: 20;
 }
 
 .modal-buttons {
   display: flex;
   justify-content: space-around;
-  margin-top: 20px;
+  margin-top: 30px;
 }
 
 .btn-delete {

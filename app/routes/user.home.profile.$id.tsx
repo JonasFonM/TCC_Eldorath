@@ -3,11 +3,13 @@ import { NavLink, useOutletContext } from "@remix-run/react";
 import React, { useState } from "react";
 import { CampaignPanel } from "~/components/campaign/campaign-panel";
 import { CharacterPanel } from "~/components/character-panel";
+import { BlockConfirm } from "~/components/profiles/block-confirm";
 
 export default function UserProfileRoute() {
     const { user, profileUser, isFriend, friendStatus, profileCampaigns, profileCharacters, isPendingInvite } = useOutletContext<{ user: user, profileUser: user, isFriend: boolean, friendStatus: string, isPendingInvite: boolean, profileCampaigns: campaign[], profileCharacters: character[] }>();
     const isOwnProfile = user.id === profileUser.id;
     const [showCreations, setShowCreations] = useState<number>(0);
+    const [blockConfirm, setBlockConfirm] = useState<number>(0);
 
     const getFriendAction = () => {
         if (isOwnProfile) return null;
@@ -15,7 +17,10 @@ export default function UserProfileRoute() {
             if (isPendingInvite) {
                 return <NavLink to={`/user/friend/accept/${profileUser.id}`} className="lineBtn">Aceitar Amizade</NavLink>;
             }
-            return <NavLink to={`/user/friend/block/${profileUser.id}`} className="lineBtn">Bloquear Amizade</NavLink>;
+            if (friendStatus == 'BLOCKED') {
+                return <NavLink to={`/user/friend/accept/${profileUser.id}`} className="lineBtn">Desbloquear Amizade</NavLink>;
+            }
+            return <BlockConfirm name={profileUser.username} isHidden={blockConfirm != 1} onShow={() => setBlockConfirm(1)} onCancel={() => setBlockConfirm(0)} userId={String(profileUser.id)} />;
         }
         return <NavLink to={`/user/friend/invite/${profileUser.id}`} className="lineBtn">Solicitar Amizade</NavLink>;
     };

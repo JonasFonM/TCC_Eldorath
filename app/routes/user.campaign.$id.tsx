@@ -24,7 +24,7 @@ export const loader: LoaderFunction = async ({ params, request }) => {
 
     const isPlayer = campaign?.players.some(player => Number(player.userId) === Number(userId)) ?? false;
 
-    const campaignCharacter = campaign?.characters.find(cc => cc.campaignId == campaign.id)
+    const campaignCharacter = campaign?.characters.find(cc => cc.campaignId == campaign.id && cc.authorId == userId)
 
     return ({ isMaster, isPlayer, campaignCharacter, characters, campaignId, campaign })
 }
@@ -122,7 +122,7 @@ export default function CampaignRoute() {
                 <React.Fragment>
                     <ul>
                         <li key={-1}>
-                            <button onClick={() => showList === 0 ? setShowList(1) : setShowList(0)}>Personagens</button>
+                            <button onClick={() => showList === 0 ? setShowList(1) : setShowList(0)}>Vincular Personagem</button>
                         </li>
                     </ul>
 

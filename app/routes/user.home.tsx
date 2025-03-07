@@ -60,12 +60,23 @@ export default function UserRoute() {
                     <React.Fragment>
                         <fetcher.Form id="search-form" role="search">
                             <input
-                                className="title-input"
-                                aria-label="Pesquisar usuários"
+                                style={{
+                                    fontFamily: 'serif',
+                                    fontSize: '1.2rem',
+                                    color: 'gold',
+                                    textAlign: 'center',
+                                    width: '101%',
+                                    borderBottom: '2px solid goldenrod',
+                                    borderTop: '2px solid goldenrod',
+                                    background: 'transparent',
+                                    padding: '10px',
+                                    outline: 'none',
+                                }}
+                                aria-label="Pesquisar perfis"
                                 defaultValue={query}
                                 id="q"
                                 name="q"
-                                placeholder="Buscar usuário..."
+                                placeholder="Buscar perfil..."
                                 type="search"
                             />
                         </fetcher.Form>

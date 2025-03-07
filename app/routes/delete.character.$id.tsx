@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import {  redirect, LoaderFunction } from "@remix-run/node";
+import { redirect, LoaderFunction } from "@remix-run/node";
 import { prisma } from "~/utils/prisma.server";
 
-export const loader: LoaderFunction = async ({ params }) => {
+export const loader: LoaderFunction = async ({ params, request }) => {
     const characterId = Number(params.id);
 
     const character = await prisma.character.findUnique({
@@ -26,10 +26,12 @@ export const loader: LoaderFunction = async ({ params }) => {
         where: { characterId: characterId },
     });
 
-    
+
     await prisma.character.delete({
         where: { id: characterId },
     });
 
-    return redirect('/user/character/');
+    const referer = request.headers.get("Referer") || '/user/character/';
+
+    return redirect(referer);
 };

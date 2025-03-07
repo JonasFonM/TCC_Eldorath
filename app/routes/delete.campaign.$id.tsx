@@ -3,7 +3,7 @@ import { redirect, LoaderFunction } from "@remix-run/node";
 import { removeAllCharactersFromCampaign, removeAllPlayersFromCampaign } from "~/utils/campaign.server";
 import { prisma } from "~/utils/prisma.server";
 
-export const loader: LoaderFunction = async ({ params }) => {
+export const loader: LoaderFunction = async ({ params, request }) => {
 
     //FETCHING DATA
     const campaignId = Number(params.id);
@@ -78,5 +78,7 @@ export const loader: LoaderFunction = async ({ params }) => {
         where: { id: campaignId },
     });
 
-    return redirect('/user/campaign/');
+    const referer = request.headers.get("Referer") || '/user/campaign/';
+
+    return redirect(referer);
 };

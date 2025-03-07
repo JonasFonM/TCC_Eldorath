@@ -22,7 +22,7 @@ export function DeleteConfirm({ name, isHidden, onShow, onCancel, entity, id }: 
 
         <div className="modal-content">
 
-          <h2 style={{ color: "black" }}>Você tem certeza que quer deletar {name}?</h2>
+          <h2 style={{ color: 'gold' }}>Você tem certeza que quer deletar {name}?</h2>
 
           <div className="modal-buttons">
 

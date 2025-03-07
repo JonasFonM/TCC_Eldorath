@@ -51,12 +51,11 @@ export function SideBars({ title, subtitle, tableHeaders, tableDatas, tableExpla
                     </React.Fragment>
                 ))
                 }
-                <ul className="skillnav">
 
+                <ul>
                     {links.map((lk, index) => (
-                        <li key={linkNames[index]}><NavLink to={lk}>{linkNames[index]}</NavLink></li>
+                        <li key={lk[index]}><NavLink to={lk}>{linkNames[index]}</NavLink></li>
                     ))}
-
                 </ul>
 
             </div>

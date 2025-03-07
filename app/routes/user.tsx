@@ -1,4 +1,4 @@
-import { user } from "@prisma/client";
+import { friendship, user } from "@prisma/client";
 import { LoaderFunction } from "@remix-run/node";
 import { NavLink, Outlet, useLoaderData } from "@remix-run/react";
 import { SidebarProvider } from "~/components/side-bars/side-bar-context";
@@ -34,11 +34,30 @@ export const loader: LoaderFunction = async ({ request }) => {
     }
   })
 
-  return ({ userId, user, friends })
+  const pendingInviteFriendships = await prisma.friendship.findMany({
+    where: {
+      status: 'PENDING',
+      user2Id: Number(userId)
+    }
+  })
+
+  const pendingInviteFriendshipIds = pendingInviteFriendships.map(fr => fr.user1Id)
+
+
+  const pendingInvites = await prisma.user.findMany({
+    where: {
+      id: { in: pendingInviteFriendshipIds },
+      NOT: [
+        { id: Number(userId) }
+      ]
+    }
+  })
+
+  return ({ userId, user, friends, pendingInvites })
 }
 
 export default function UserRoute() {
-  const { userId, user, friends } = useLoaderData<{ userId: number, user: user, friends: user[] }>()
+  const { userId, user, friends, pendingInvites } = useLoaderData<{ userId: number, user: user, friends: user[], pendingInvites: friendship[] }>()
 
   return (
     <>
@@ -51,7 +70,7 @@ export default function UserRoute() {
 
       <SidebarProvider>
         <div className="user">
-          <Outlet context={{ userId, user, friends }} />
+          <Outlet context={{ userId, user, friends, pendingInvites }} />
         </div>
       </SidebarProvider>
     </>

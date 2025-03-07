@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useEffect, useState } from "react"
+import React, { useEffect, useState } from "react"
 
 interface FormFieldProps {
   htmlFor: string
@@ -18,14 +18,14 @@ export function FormField({ htmlFor, label, type = 'text', value, onChange = () 
   }, [error])
 
   return (
-    <>
-      <input className="block" onChange={e => {
+    <React.Fragment>
+      <input autoComplete="new-password" className="block" onChange={e => {
         onChange(e)
         setErrorText('')
       }} type={type} id={htmlFor} name={htmlFor} placeholder={label} style={{ fontFamily: 'serif', fontSize: '2rem', color: "gold", textAlign: 'center' }} value={value} />
       <div className="container">
         <p>{errorText || ''}</p>
       </div>
-    </>
+    </React.Fragment>
   )
 }

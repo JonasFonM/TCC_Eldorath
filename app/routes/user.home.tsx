@@ -1,11 +1,10 @@
-import { user } from "@prisma/client";
+import { friendship, user } from "@prisma/client";
 import { json, LoaderFunction } from "@remix-run/node";
-import { Form, Outlet, useLoaderData, useOutletContext, useFetcher } from "@remix-run/react";
+import { Outlet, useOutletContext, useFetcher } from "@remix-run/react";
 import React, { useEffect } from "react";
 import { useSidebar } from "~/components/side-bars/side-bar-context";
 import { SideBars } from "~/components/side-bars/side-bars";
 import { UserPanel } from "~/components/user-panel";
-import { getUserIdFromSession } from "~/utils/auth.server";
 import { searchUsers } from "~/utils/user.server";
 
 export const loader: LoaderFunction = async ({ request }) => {
@@ -21,7 +20,7 @@ export const loader: LoaderFunction = async ({ request }) => {
 };
 
 export default function UserRoute() {
-    const { userId, user, friends } = useOutletContext<{ userId: number; user: user; friends: user[] }>();
+    const { userId, user, friends, pendingInvites } = useOutletContext<{ userId: number; user: user; friends: user[]; pendingInvites: user[] }>();
     const { isAllOpen, isHeaderOpen, isTempOpen } = useSidebar();
     const fetcher = useFetcher<{ users: user[]; query: string }>();
     const users = fetcher.data?.users ?? [];
@@ -54,12 +53,13 @@ export default function UserRoute() {
                 tableHeaders={[]}
                 tableDatas={[]}
                 tableExplain={[]}
-                links={[`/user/home/profile/${String(userId)}`].concat(friends.map((fr) => `/user/home/profile/${String(fr.id)}`))}
-                linkNames={["Meu Perfil"].concat(friends.map((fr) => String(fr.username)))}
+                links={[`/user/home/profile/${String(userId)}`].concat(friends.map((fr) => `/user/home/profile/${String(fr.id)}`)).concat(pendingInvites.map((pi) => `/user/home/profile/${String(pi.id)}`))}
+                linkNames={["Meu Perfil"].concat(friends.map((fr) => String(fr.username))).concat(pendingInvites.map((pi) => '! ' + String(pi.username) + ' !'))}
                 temp={
                     <React.Fragment>
                         <fetcher.Form id="search-form" role="search">
                             <input
+                                autoComplete="off"
                                 style={{
                                     fontFamily: 'serif',
                                     fontSize: '1.2rem',

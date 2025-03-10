@@ -142,6 +142,41 @@ export const advCampaignEra = async (campaignId: number) => {
   })
 }
 
+export const rtnCampaignTimeOfDay = async (campaignId: number) => {
+  return prisma.campaign.update({
+    where: { id: campaignId },
+    data: { timeOfDay: { decrement: 1 } }
+  })
+}
+
+export const rtnCampaignDay = async (campaignId: number) => {
+  return prisma.campaign.update({
+    where: { id: campaignId },
+    data: { monthDay: { decrement: 1 } }
+  })
+}
+
+export const rtnCampaignMonth = async (campaignId: number) => {
+  return prisma.campaign.update({
+    where: { id: campaignId },
+    data: { month: { decrement: 1 } }
+  })
+}
+
+export const rtnCampaignYear = async (campaignId: number) => {
+  return prisma.campaign.update({
+    where: { id: campaignId },
+    data: { year: { decrement: 1 } }
+  })
+}
+
+export const rtnCampaignEra = async (campaignId: number) => {
+  return prisma.campaign.update({
+    where: { id: campaignId },
+    data: { era: { decrement: 1 } }
+  })
+}
+
 
 //SCENES
 export const createScene = async (campaign: SceneForm, campaignId: number, title: string) => {

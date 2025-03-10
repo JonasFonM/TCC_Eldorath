@@ -54,6 +54,10 @@ export default function UserProfileRoute() {
             {showCreations === 1 && (
                 <div className="container">
                     <CampaignPanel isAuthor={isOwnProfile} campaigns={profileCampaigns} />
+                    {isOwnProfile ?
+                        <h1 className="title-input"><NavLink className={'lineBtn'} to={`/user/campaign/new`}>Criar Campanha</NavLink></h1>
+                        :
+                        ''}
                 </div>
             )}
 
@@ -66,6 +70,10 @@ export default function UserProfileRoute() {
             {showCreations === 2 && (
                 <div className="container">
                     <CharacterPanel isAuthor={isOwnProfile} characters={profileCharacters} />
+                    {isOwnProfile ?
+                        <h1 className="title-input"><NavLink className={'lineBtn'} to={`/user/character/new/basic`}>Criar Personagem</NavLink></h1>
+                        :
+                        ''}
                 </div>
             )}
         </React.Fragment>

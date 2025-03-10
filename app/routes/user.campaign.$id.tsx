@@ -136,6 +136,8 @@ export default function CampaignRoute() {
 
                         )}
                     </ul>
+
+
                 </React.Fragment>);
         }
         return (
@@ -165,10 +167,18 @@ export default function CampaignRoute() {
                     "Um Dia em Æternida é separado em Fases: A Madrugada que se inicia à meia-noite, a Alvorada, às 6 horas da manhã, a Tarde, ao meio-dia e a Noite, às 18 horas."
                 ]}
 
-                links={isMaster ? [`/user/campaign/${campaignId}/adv/timeOfDay`,`/user/campaign/${campaignId}/adv/monthDay`, `/user/campaign/${campaignId}/adv/month`, `/user/campaign/${campaignId}/adv/year`, `/user/campaign/${campaignId}/adv/era`] : []}
-                linkNames={isMaster ? [`Avançar Fase`, `Avançar Dia`, `Avançar Mês`, `Avançar Ano`, `Avançar Æra`] : []}
-                temp={
-                    getCampaignAction()
+                links={isMaster ? [`/user/campaign/${campaignId}/rtn/timeOfDay`, `/user/campaign/${campaignId}/rtn/monthDay`, `/user/campaign/${campaignId}/rtn/month`, `/user/campaign/${campaignId}/rtn/year`, `/user/campaign/${campaignId}/rtn/era`] : []}
+                linkNames={isMaster ? [`Voltar Fase`, `Voltar Dia`, `Voltar Mês`, `Voltar Ano`, `Voltar Æra`] : []}
+                temp={<>
+                    {getCampaignAction()}
+                    <ul>
+                        <li key={1}><NavLink to={`/user/campaign/${campaignId}/adv/timeOfDay`}>Avançar Fase</NavLink></li>
+                        <li key={2}><NavLink to={`/user/campaign/${campaignId}/adv/monthDay`}>Avançar Dia</NavLink></li>
+                        <li key={3}><NavLink to={`/user/campaign/${campaignId}/adv/month`}>Avançar Mês</NavLink></li>
+                        <li key={4}><NavLink to={`/user/campaign/${campaignId}/adv/year`}>Avançar Ano</NavLink></li>
+                        <li key={5}><NavLink to={`/user/campaign/${campaignId}/adv/era`}>Avançar Æra</NavLink></li>
+                    </ul>
+                </>
                 }
 
             />

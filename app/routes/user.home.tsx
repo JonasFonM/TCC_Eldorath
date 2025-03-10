@@ -53,8 +53,8 @@ export default function UserRoute() {
                 tableHeaders={[]}
                 tableDatas={[]}
                 tableExplain={[]}
-                links={[`/user/home/profile/${String(userId)}`].concat(friends.map((fr) => `/user/home/profile/${String(fr.id)}`)).concat(pendingInvites.map((pi) => `/user/home/profile/${String(pi.id)}`))}
-                linkNames={["Meu Perfil"].concat(friends.map((fr) => String(fr.username))).concat(pendingInvites.map((pi) => '! ' + String(pi.username) + ' !'))}
+                links={[`/user/home/profile/${String(userId)}`].concat(pendingInvites.map((pi) => `/user/home/profile/${String(pi.id)}`)).concat(friends.map((fr) => `/user/home/profile/${String(fr.id)}`))}
+                linkNames={["Meu Perfil"].concat(pendingInvites.map((pi) => '! ' + String(pi.username) + ' !')).concat(friends.map((fr) => String(fr.username)))}
                 temp={
                     <React.Fragment>
                         <fetcher.Form id="search-form" role="search">
@@ -65,7 +65,7 @@ export default function UserRoute() {
                                     fontSize: '1.2rem',
                                     color: 'gold',
                                     textAlign: 'center',
-                                    width: '101%',
+                                    width: '100%',
                                     borderBottom: '2px solid goldenrod',
                                     borderTop: '2px solid goldenrod',
                                     background: 'transparent',

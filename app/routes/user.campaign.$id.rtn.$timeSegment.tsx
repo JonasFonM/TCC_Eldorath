@@ -30,13 +30,13 @@ export const loader: LoaderFunction = async ({ params, request }) => {
         ['era', rtnCampaignEra],
     ]);
 
-    const rtnanceTime = timeMap.get(timeSegment);
-    if (!rtnanceTime) {
+    const returnTime = timeMap.get(timeSegment);
+    if (!returnTime) {
         throw new Response("Segmento de tempo inválido", { status: 400 });
     }
 
     try {
-        await rtnanceTime(campaignId);
+        await returnTime(campaignId);
     } catch (err) {
         console.error(`Erro ao voltar tempo: ${timeSegment}`, err);
         throw new Response("Erro ao voltar tempo", { status: 500 });

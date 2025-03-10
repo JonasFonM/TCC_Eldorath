@@ -40,6 +40,14 @@ export default function CampaignRoute() {
     const getCampaignAction = () => {
         if (isMaster) return (
             <React.Fragment>
+                <ul>
+                    <li key={1}><NavLink to={`/user/campaign/${campaignId}/adv/timeOfDay`}>Avançar Fase</NavLink></li>
+                    <li key={2}><NavLink to={`/user/campaign/${campaignId}/adv/monthDay`}>Avançar Dia</NavLink></li>
+                    <li key={3}><NavLink to={`/user/campaign/${campaignId}/adv/month`}>Avançar Mês</NavLink></li>
+                    <li key={4}><NavLink to={`/user/campaign/${campaignId}/adv/year`}>Avançar Ano</NavLink></li>
+                    <li key={5}><NavLink to={`/user/campaign/${campaignId}/adv/era`}>Avançar Æra</NavLink></li>
+                </ul>
+                
                 <table>
                     <tbody>
                         <tr onClick={() => showList === 0 ? setShowList(1) : setShowList(0)}>
@@ -169,16 +177,10 @@ export default function CampaignRoute() {
 
                 links={isMaster ? [`/user/campaign/${campaignId}/rtn/timeOfDay`, `/user/campaign/${campaignId}/rtn/monthDay`, `/user/campaign/${campaignId}/rtn/month`, `/user/campaign/${campaignId}/rtn/year`, `/user/campaign/${campaignId}/rtn/era`] : []}
                 linkNames={isMaster ? [`Voltar Fase`, `Voltar Dia`, `Voltar Mês`, `Voltar Ano`, `Voltar Æra`] : []}
-                temp={<>
-                    {getCampaignAction()}
-                    <ul>
-                        <li key={1}><NavLink to={`/user/campaign/${campaignId}/adv/timeOfDay`}>Avançar Fase</NavLink></li>
-                        <li key={2}><NavLink to={`/user/campaign/${campaignId}/adv/monthDay`}>Avançar Dia</NavLink></li>
-                        <li key={3}><NavLink to={`/user/campaign/${campaignId}/adv/month`}>Avançar Mês</NavLink></li>
-                        <li key={4}><NavLink to={`/user/campaign/${campaignId}/adv/year`}>Avançar Ano</NavLink></li>
-                        <li key={5}><NavLink to={`/user/campaign/${campaignId}/adv/era`}>Avançar Æra</NavLink></li>
-                    </ul>
-                </>
+                temp={
+
+                    getCampaignAction()
+
                 }
 
             />

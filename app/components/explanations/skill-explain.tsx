@@ -26,13 +26,11 @@ export function SkillExplain({ skill, isHidden, onCancel, style }: props) {
 
                 <div className="modal-content" style={{ backgroundImage: style, zIndex: '2' }}>
 
-                    <h1 style={{ color: "black" }}>{skill.name}</h1>
-                    {prerequisites.length > 0 && <h3 style={{ color: 'black', marginTop: '0', fontSize: '1rem' }}>Pré requisitos: {prerequisites.join(' | ')}</h3>}
+                    <h1 style={{ color: "gold" }}>{skill.name}</h1>
+                    {prerequisites.length > 0 && <h3 style={{ color: 'white', marginTop: '0', fontSize: '1rem' }}>Pré requisitos: {prerequisites.join(' | ')}</h3>}
 
-                    <p style={{ color: "black" }}>{skill.techniqueSubtype || skill.type}</p>
-                    <p style={{ color: "black" }}>{skill.description}</p>
-
-
+                    <p style={{ color: "gold" }}>{skill.techniqueSubtype || skill.type}</p>
+                    <p style={{ color: "white" }}>{skill.description}</p>
 
                 </div>
 

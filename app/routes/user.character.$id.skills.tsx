@@ -41,7 +41,7 @@ export default function SkillsRoute() {
   }
 
   return (
-    <>
+    <React.Fragment>
       <div className="title-container">
         {
           isAuthor ?
@@ -53,57 +53,85 @@ export default function SkillsRoute() {
       </div>
 
       <table>
+        <tbody>
 
-        <SkillTableHead onClick={() => showRow()} />
-        {pureLineageSkills.map(pls => (
-          <React.Fragment key={pls.skill.id}>
-            <SkillTableData
-              skill={pls.skill}
-              show={show === 1}
-              onClick={() => explainSkill(pls.skill.id)}
-              selected={false}
-            />
-            <SkillExplain
-              style={'linear-gradient(to bottom right, gold, goldenrod)'}
-              skill={pls.skill}
-              isHidden={showSkill != pls.skill.id}
-              onCancel={() => setShowSkill(0)}
-            />
-          </React.Fragment>
-        ))}
+          <SkillTableHead onClick={() => showRow()} />
+          {pureLineageSkills.map(pls => (
+            <React.Fragment key={pls.skill.id}>
+              <SkillTableData
+                skill={pls.skill}
+                show={show === 1}
+                onClick={() => explainSkill(pls.skill.id)}
+                selected={false}
+              />
+
+            </React.Fragment>
+          ))}
 
 
-        {nonPureLineageSkills.map(npls => (
-          <React.Fragment key={npls.skill.id}>
-            <SkillTableData
-              skill={npls.skill}
-              show={show === 1}
-              onClick={() => explainSkill(npls.skill.id)}
-              selected={false}
+          {nonPureLineageSkills.map(npls => (
+            <React.Fragment key={npls.skill.id}>
+              <SkillTableData
+                skill={npls.skill}
+                show={show === 1}
+                onClick={() => explainSkill(npls.skill.id)}
+                selected={false}
 
-            />
-            <SkillExplain style={'linear-gradient(to bottom right, goldenrod, darkgoldenrod)'} skill={npls.skill} isHidden={showSkill != npls.skill.id} onCancel={() => setShowSkill(0)} />
+              />
+            </React.Fragment>
+          ))}
 
-          </React.Fragment>
-        ))}
+          {skills.map(skill => (
+            <React.Fragment key={skill.id}>
+              <SkillTableData
+                skill={skill}
+                show={show === 1}
+                onClick={() => explainSkill(skill.id)}
+                selected={false}
+              />
+            </React.Fragment>
+          ))}
 
-        {skills.map(skill => (
-          <React.Fragment key={skill.id}>
-            <SkillTableData
-              skill={skill}
-              show={show === 1}
-              onClick={() => explainSkill(skill.id)}
-              selected={false}
-            />
-            <SkillExplain style={'linear-gradient(to bottom right, darkgoldenrod, darkyellow )'} skill={skill} isHidden={showSkill != skill.id} onCancel={() => setShowSkill(0)} />
+        </tbody>
 
-          </React.Fragment>
-        ))}
       </table>
 
+      {pureLineageSkills.map(pls => (
+        <React.Fragment key={pls.skill.id}>
+          <SkillExplain
+            style={'linear-gradient(to bottom right, gold, goldenrod)'}
+            skill={pls.skill}
+            isHidden={showSkill != pls.skill.id}
+            onCancel={() => setShowSkill(0)}
+          />
+
+        </React.Fragment>
+      ))}
+
+      {nonPureLineageSkills.map(npls => (
+        <React.Fragment key={npls.skill.id}>
+
+          <SkillExplain style={'linear-gradient(to bottom right, goldenrod, darkgoldenrod)'}
+            skill={npls.skill}
+            isHidden={showSkill != npls.skill.id}
+            onCancel={() => setShowSkill(0)}
+          />
+
+        </React.Fragment>
+      ))}
+
+      {skills.map(skill => (
+        <React.Fragment key={skill.id}>
+          <SkillExplain
+            style={'linear-gradient(to bottom right, darkgoldenrod, darkyellow )'}
+            skill={skill}
+            isHidden={showSkill != skill.id}
+            onCancel={() => setShowSkill(0)} />
+
+        </React.Fragment>
+      ))}
 
 
-
-    </>
+    </React.Fragment>
   )
 }

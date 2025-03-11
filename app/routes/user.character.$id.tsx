@@ -70,7 +70,8 @@ export const loader: LoaderFunction = async ({ params, request }) => {
   const paths = await prisma.path.findMany({
     where: {
       id: { in: character.paths.map(path => path.pathId) },
-    }
+    },
+    orderBy: { pathTier: 'desc' }
   });
 
 

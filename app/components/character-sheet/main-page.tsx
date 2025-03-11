@@ -67,7 +67,7 @@ export function CharacterSheet({ character, isAuthor }: Props) {
 
 
             <h2 className="title-container">Recursos<button onClick={() => setShowAtr(7)} className="question-button">?</button></h2>
-            <GeneralExplain style={'linear-gradient(to bottom, white, gold)'} color={'black'} title={'Recursos'} description="Atributos Derivados são valores secundários. Eles são calculados a partir dos seus Atributos Básicos e podem ser afetados por outros fatores." isHidden={showAtr != 7} onCancel={() => setShowAtr(0)} />
+            <GeneralExplain style={'linear-gradient(to bottom, white, gold)'} color={'black'} title={'Recursos'} description="Recursos são Atributos que: ou você gasta para fazer algumas Ações, ou você perde quando for Alvo de um Ataque ou Efeito." isHidden={showAtr != 7} onCancel={() => setShowAtr(0)} />
 
 
             <div className="container">

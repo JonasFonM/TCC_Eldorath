@@ -274,64 +274,66 @@ export default function SkillSelectionRoute() {
       {maxSelectable > 0 || maxMagics > 0 || maxTechniques > 0 || maxManeuvers > 0 || maxOaths > 0 || maxTricks > 0 ?
         <>
 
-
-
           <form method="post">
 
             <h1 className="title-container">Escolha seus Talentos<NavLink to={`../../skills/`} style={{ color: 'red' }} className="question-button">X</NavLink></h1>
 
             <table>
+              <tbody>
 
-              <SkillTableHead onClick={() => showRow()} />
+                <SkillTableHead onClick={() => showRow()} />
 
-              {characteristics.map(skill => (
-                <SkillTableData
-                  key={skill.id}
-                  skill={skill}
-                  show={show === 1}
-                  selected={selectedSkills.includes(skill.id)}
-                  onClick={() => !isMaxSelected || selectedSkills.includes(skill.id) ? handleSkillClick(skill.id) : alert((`Você já escolheu o seu limite de Características.`))}
-                />
-              ))}
+                {characteristics.map(skill => (
+                  <SkillTableData
+                    key={skill.id}
+                    skill={skill}
+                    show={show === 1}
+                    selected={selectedSkills.includes(skill.id)}
+                    onClick={() => !isMaxSelected || selectedSkills.includes(skill.id) ? handleSkillClick(skill.id) : alert((`Você já escolheu o seu limite de Características.`))}
+                  />
+                ))}
 
-              {maneuvers.map(skill => (
-                <SkillTableData
-                  key={skill.id}
-                  skill={skill}
-                  show={show === 1}
-                  selected={selectedManeuvers.includes(skill.id) || selectedTechniques.includes(skill.id) || selectedSkills.includes(skill.id)}
-                  onClick={() => !isMaxManeuvers || selectedManeuvers.includes(skill.id) ? handleManeuverClick(skill.id) : !isMaxTechniques || selectedTechniques.includes(skill.id) ? handleTechniqueClick(skill.id) : !isMaxSelected || selectedSkills.includes(skill.id) ? handleSkillClick(skill.id) : alert((`Você já escolheu o seu limite de Manobras.`))}
-                />
-              ))}
+                {maneuvers.map(skill => (
+                  <SkillTableData
+                    key={skill.id}
+                    skill={skill}
+                    show={show === 1}
+                    selected={selectedManeuvers.includes(skill.id) || selectedTechniques.includes(skill.id) || selectedSkills.includes(skill.id)}
+                    onClick={() => !isMaxManeuvers || selectedManeuvers.includes(skill.id) ? handleManeuverClick(skill.id) : !isMaxTechniques || selectedTechniques.includes(skill.id) ? handleTechniqueClick(skill.id) : !isMaxSelected || selectedSkills.includes(skill.id) ? handleSkillClick(skill.id) : alert((`Você já escolheu o seu limite de Manobras.`))}
+                  />
+                ))}
 
-              {oaths.map(skill => (
-                <SkillTableData
-                  key={skill.id}
-                  skill={skill}
-                  show={show === 1}
-                  selected={selectedOaths.includes(skill.id) || selectedTechniques.includes(skill.id) || selectedSkills.includes(skill.id)}
-                  onClick={() => !isMaxOaths || selectedOaths.includes(skill.id) ? handleOathClick(skill.id) : !isMaxTechniques || selectedTechniques.includes(skill.id) ? handleTechniqueClick(skill.id) : !isMaxSelected || selectedSkills.includes(skill.id) ? handleSkillClick(skill.id) : alert((`Você já escolheu o seu limite de Juramentos.`))}
-                />
-              ))}
-              {tricks.map(skill => (
-                <SkillTableData
-                  key={skill.id}
-                  skill={skill}
-                  show={show === 1}
-                  selected={selectedTricks.includes(skill.id) || selectedTechniques.includes(skill.id) || selectedSkills.includes(skill.id)}
+                {oaths.map(skill => (
+                  <SkillTableData
+                    key={skill.id}
+                    skill={skill}
+                    show={show === 1}
+                    selected={selectedOaths.includes(skill.id) || selectedTechniques.includes(skill.id) || selectedSkills.includes(skill.id)}
+                    onClick={() => !isMaxOaths || selectedOaths.includes(skill.id) ? handleOathClick(skill.id) : !isMaxTechniques || selectedTechniques.includes(skill.id) ? handleTechniqueClick(skill.id) : !isMaxSelected || selectedSkills.includes(skill.id) ? handleSkillClick(skill.id) : alert((`Você já escolheu o seu limite de Juramentos.`))}
+                  />
+                ))}
+                {tricks.map(skill => (
+                  <SkillTableData
+                    key={skill.id}
+                    skill={skill}
+                    show={show === 1}
+                    selected={selectedTricks.includes(skill.id) || selectedTechniques.includes(skill.id) || selectedSkills.includes(skill.id)}
 
-                  onClick={() => !isMaxTricks || selectedTricks.includes(skill.id) ? handleTrickClick(skill.id) : !isMaxTechniques || selectedTechniques.includes(skill.id) ? handleTechniqueClick(skill.id) : !isMaxSelected || selectedSkills.includes(skill.id) ? handleSkillClick(skill.id) : alert((`Você já escolheu o seu limite de Truques.`))}
-                />
-              ))}
-              {magics.map(skill => (
-                <SkillTableData
-                  key={skill.id}
-                  skill={skill}
-                  show={show === 1}
-                  selected={selectedMagics.includes(skill.id) || selectedSkills.includes(skill.id)}
-                  onClick={() => !isMaxMagics || selectedMagics.includes(skill.id) ? handleMagicClick(skill.id) : !isMaxSelected || selectedSkills.includes(skill.id) ? handleSkillClick(skill.id) : alert((`Você já escolheu o seu limite de Mágicas.`))}
-                />
-              ))}
+                    onClick={() => !isMaxTricks || selectedTricks.includes(skill.id) ? handleTrickClick(skill.id) : !isMaxTechniques || selectedTechniques.includes(skill.id) ? handleTechniqueClick(skill.id) : !isMaxSelected || selectedSkills.includes(skill.id) ? handleSkillClick(skill.id) : alert((`Você já escolheu o seu limite de Truques.`))}
+                  />
+                ))}
+                {magics.map(skill => (
+                  <SkillTableData
+                    key={skill.id}
+                    skill={skill}
+                    show={show === 1}
+                    selected={selectedMagics.includes(skill.id) || selectedSkills.includes(skill.id)}
+                    onClick={() => !isMaxMagics || selectedMagics.includes(skill.id) ? handleMagicClick(skill.id) : !isMaxSelected || selectedSkills.includes(skill.id) ? handleSkillClick(skill.id) : alert((`Você já escolheu o seu limite de Mágicas.`))}
+                  />
+                ))}
+
+              </tbody>
+
             </table>
 
             {nonPureLineageSkills.length > 0 ? <h1>Talento(s) Exclusivos de Linhagem</h1> : ''}

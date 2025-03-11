@@ -1,4 +1,5 @@
 import { path } from "@prisma/client";
+import React from "react";
 
 interface props {
     path: path;
@@ -18,9 +19,8 @@ export function PathExplain({ path, isHidden, onCancel, style }: props) {
     if (path.reqMagics) prerequisites.push(`Mágicas: ${path.reqMagics}`);
 
     return (
-        <>
-            <div className="modal-overlay" style={{ display: isHidden ? 'none' : 'flex' }}>
-            <button onClick={onCancel} style={{ position: 'fixed', left: '0', top: '0', opacity:'0', width: '100%', height: '100%', zIndex: '1' }}></button>
+            <div key={path.id} className="modal-overlay" style={{ display: isHidden ? 'none' : 'flex' }}>
+                <button onClick={onCancel} style={{ position: 'fixed', left: '0', top: '0', opacity: '0', width: '100%', height: '100%', zIndex: '1' }}></button>
 
                 <div className="modal-content" style={{ backgroundImage: style, zIndex: '2' }}>
 
@@ -30,11 +30,9 @@ export function PathExplain({ path, isHidden, onCancel, style }: props) {
                     <p style={{ color: "black" }}>{path.pathTier}</p>
                     <p style={{ color: "black" }}>{path.description}</p>
 
-
-
                 </div>
 
             </div>
-        </>
+
     )
 }

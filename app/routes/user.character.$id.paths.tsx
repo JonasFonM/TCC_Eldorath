@@ -36,7 +36,7 @@ export default function PathsRoute() {
   const tableTitles = ["Caminho", "Vit", "Pod", "Tec", "Man", "Jur", "Tru", "Mag"]
 
   return (
-    <React.Fragment>
+    <React.Fragment key={-1}>
       <div className="title-container">
         {isAuthor ?
           <NavLink to={`../new/paths/`}> <h1 style={{ marginTop: '0', marginBottom: '0', padding: '0' }}>Caminhos</h1></NavLink>
@@ -65,7 +65,6 @@ export default function PathsRoute() {
 
               />
 
-              <PathExplain style={'linear-gradient(to bottom right, gold, goldenrod)'} path={p} isHidden={showPath != p.id} onCancel={() => setShowPath(0)} />
 
             </React.Fragment>
 
@@ -73,6 +72,12 @@ export default function PathsRoute() {
         </tbody>
       </table>
 
+      {tier1.map(p => (
+        <React.Fragment key={p.id}>
+          <PathExplain style={'linear-gradient(to bottom right, gold, goldenrod)'} path={p} isHidden={showPath != p.id} onCancel={() => setShowPath(0)} />
+        </React.Fragment>
+
+      ))};
 
 
       <h2 style={{ fontVariant: 'small-caps' }}>Caminhos Veteranos</h2>
@@ -93,7 +98,6 @@ export default function PathsRoute() {
 
               />
 
-              <PathExplain style={'linear-gradient(to bottom right, gold, goldenrod)'} path={p} isHidden={showPath != p.id} onCancel={() => setShowPath(0)} />
 
             </React.Fragment>
 
@@ -101,6 +105,14 @@ export default function PathsRoute() {
         </tbody>
       </table>
 
+      {tier2.map(p => (
+        <React.Fragment key={p.id}>
+          <PathExplain style={'linear-gradient(to bottom right, gold, goldenrod)'} path={p} isHidden={showPath != p.id} onCancel={() => setShowPath(0)} />
+        </React.Fragment>
+
+      ))};
+      
+      
       <h2 style={{ fontVariant: 'small-caps' }}>Caminhos Mestres</h2>
       <table>
         <tbody>
@@ -119,7 +131,6 @@ export default function PathsRoute() {
 
               />
 
-              <PathExplain style={'linear-gradient(to bottom right, gold, goldenrod)'} path={p} isHidden={showPath != p.id} onCancel={() => setShowPath(0)} />
 
             </React.Fragment>
 
@@ -127,6 +138,14 @@ export default function PathsRoute() {
         </tbody>
       </table>
 
+      {tier3.map(p => (
+        <React.Fragment key={p.id}>
+          <PathExplain style={'linear-gradient(to bottom right, gold, goldenrod)'} path={p} isHidden={showPath != p.id} onCancel={() => setShowPath(0)} />
+        </React.Fragment>
+
+      ))};
+      
+      
       <h2 style={{ fontVariant: 'small-caps' }}>Caminhos Lendários</h2>
       <table>
         <tbody>
@@ -145,13 +164,21 @@ export default function PathsRoute() {
 
               />
 
-              <PathExplain style={'linear-gradient(to bottom right, gold, goldenrod)'} path={p} isHidden={showPath != p.id} onCancel={() => setShowPath(0)} />
 
             </React.Fragment>
 
           ))}
         </tbody>
       </table>
+
+      {tier4.map(p => (
+        <React.Fragment key={p.id}>
+          <PathExplain style={'linear-gradient(to bottom right, gold, goldenrod)'} path={p} isHidden={showPath != p.id} onCancel={() => setShowPath(0)} />
+        </React.Fragment>
+
+      ))};
+
+      
 
     </React.Fragment>
   )

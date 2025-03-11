@@ -8,7 +8,6 @@ export function SkillTableHead({ onClick }: Props) {
 
     return (
         <>
-            
             <tr style={{ display: 'table-row' }} onClick={onClick}>
                 <th>Nome</th>
                 <th>Tipo</th>

@@ -128,10 +128,12 @@ export default function NewCharacterRoute() {
 
 
   return (
-    <form method="post" onSubmit={handleSubmit}>
+    <form method="post" autoComplete="off" onSubmit={handleSubmit}>
 
       <div className="container">
         <input className="title-input"
+          id="Nome"
+          autoComplete="off"
           style={{ fontFamily: 'serif', fontSize: '2rem', color: "gold", textAlign: 'center' }}
           type="text"
           name="name"

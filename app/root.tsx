@@ -11,8 +11,8 @@ import "~/styles.css";
 
 export const meta: MetaFunction = () => {
   return [
-    { title: "Æternida" },
-    { name: "description", content: "Bem vindo a Æternida!" },
+    { title: "Eldorath" },
+    { name: "description", content: "Bem vindo a Eldorath!" },
   ];
 };
 

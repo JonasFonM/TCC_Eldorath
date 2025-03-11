@@ -121,7 +121,7 @@ export default function ItemSelection() {
                 <input type="hidden" key={itemId} name="items" value={itemId} />
             ))}
             <div className="dice-box">
-                <h2>Auramares: {character.gold - selectedCost}</h2>
+                <h2>Drakas : {character.gold - selectedCost}</h2>
                 {error && <p>{error}</p>}
                 <button type="submit" className="button">Confirmar</button>
             </div>

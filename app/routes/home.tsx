@@ -14,10 +14,10 @@ export default function Home() {
         <div className='title-screen'>
           <h1 id='first'>Bem Vindo</h1>
           <h1 id='second'>A</h1>
-          <h1 id='third'>Æternida<button onClick={() => setShowAtr(1)} className="question-button">?</button></h1>
+          <h1 id='third'>Eldorath<button onClick={() => setShowAtr(1)} className="question-button">?</button></h1>
         </div>
       </div>
-      <GeneralExplain style={'linear-gradient(to bottom, white, gold)'} color={'black'} title={'Æternida'} description='Æternida é um RPG "de mesa" completamente digital, centrado em um universo vasto de fantasia (principalmente) medieval inspirado em várias temáticas famosas (ou não) na cultura pop.' isHidden={showAtr != 1} onCancel={() => setShowAtr(0)} />
+      <GeneralExplain style={'linear-gradient(to bottom, white, gold)'} color={'black'} title={'Eldorath'} description='Eldorath é um RPG "de mesa" completamente digital, centrado em um universo vasto de fantasia (principalmente) medieval inspirado em várias temáticas famosas (ou não) na cultura pop.' isHidden={showAtr != 1} onCancel={() => setShowAtr(0)} />
 
       <NavLink to={`../user/home/profile`}><button className="button">Entrar</button></NavLink>
     </React.Fragment>

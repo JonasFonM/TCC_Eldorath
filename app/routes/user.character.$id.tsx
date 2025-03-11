@@ -164,7 +164,7 @@ export default function CharacterRoute() {
                 </tr>
               </tbody>
             </table>
-            <GeneralExplain style={'linear-gradient(to bottom, white, gold)'} color={'black'} title={'Auramares'} description="Auramares são a moeda corrente principal em Æternida. Cunhadas em ouro, elas simbolizam a paz e a harmonia." isHidden={showInv != 1} onCancel={() => setShowInv(0)} />
+            <GeneralExplain style={'linear-gradient(to bottom, white, gold)'} color={'black'} title={'Drakas'} description="Drakas são a moeda corrente principal em Eldorath. Cunhadas a partir de uma liga metálica especial chamada Orivélio, resistente ao desgaste e capaz de manter seu brilho por séculos. O nome vem das antigas tradições do Império de Zarethia, onde os primeiros imperadores usavam escamas de dragão como lastro para suas riquezas." isHidden={showInv != 1} onCancel={() => setShowInv(0)} />
 
             <table>
               <tbody>

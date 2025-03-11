@@ -1,12 +1,12 @@
 import { Outlet } from "@remix-run/react";
 
 export const weekDays = [
-  "Partilha",
-  "Vigília",
-  "Jornada",
-  "Batalha",
-  "Luto",
-  "Descanso"
+  "Aelthis",
+  "Orundis",
+  "Vaelnis",
+  "Zathros",
+  "Nymeris",
+  "Sylthos"
 ];
 
 export function translateWeekDays(i: number) {

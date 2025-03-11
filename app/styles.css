@@ -729,8 +729,7 @@ td:last-child {
   margin: 0;
 }
 
-.title-input:focus,
-.title-input:hover {
+.title-input:focus {
   scale: 1.1;
   border-bottom: 2px solid gold;
   box-shadow: 1px 1px 4px 1px gold;

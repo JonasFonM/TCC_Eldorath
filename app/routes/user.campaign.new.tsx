@@ -143,7 +143,7 @@ export default function NewCampaignRoute() {
       setErrors({
         title: !formData.title ? 'É necessário informar um Título' : '',
         description: !formData.description ? 'É necessário informar uma Descrição' : '',
-        era: !formData.era ? 'É necessário informar uma Æra' : '',
+        era: !formData.era ? 'É necessário informar uma Era' : '',
         year: !formData.era ? 'É necessário informar um Ano' : '',
         month: !formData.month ? 'É necessário informar um Mês' : '',
         monthDay: !formData.monthDay ? 'É necessário informar um Dia do Mês' : '',
@@ -172,7 +172,7 @@ export default function NewCampaignRoute() {
 
           <div className="calendar-field">
 
-            <label>Æra: {formData.era}</label>
+            <label>Era: {formData.era}</label>
             <input style={{ accentColor: "gold" }} type="range" name="era" value={formData.era} min="0" max="50" onChange={handleChange}></input>
             <div className="calendar-buttons">
               <button type="button" onClick={() => adjustEra(-10)}>-10</button>
@@ -224,24 +224,24 @@ export default function NewCampaignRoute() {
             <label>Mês</label>
             <select title="month" name="month" value={formData.month} onChange={handleSelect}>
               <optgroup label="Verão">
-                <option value="1">Æterna</option>
-                <option value="2">Luxar</option>
-                <option value="3">Vita</option>
+                <option value="1">Solmáris</option>
+                <option value="2">Dracorius</option>
+                <option value="3">Aethis</option>
               </optgroup>
               <optgroup label="Outono">
-                <option value="4">Lual</option>
-                <option value="5">Agnus</option>
-                <option value="6">Malkar</option>
+                <option value="4">Sombríel</option>
+                <option value="5">Véltar</option>
+                <option value="6">Nocturnis</option>
               </optgroup>
               <optgroup label="Inverno">
-                <option value="7">Magika</option>
-                <option value="8">Kronica</option>
-                <option value="9">Exora</option>
+                <option value="7">Glacirion</option>
+                <option value="8">Umbraeth</option>
+                <option value="9">Renováris</option>
               </optgroup>
               <optgroup label="Primavera">
-                <option value="10">Natura</option>
-                <option value="11">Fortuna</option>
-                <option value="12">Harmonia</option>
+                <option value="10">Luzális</option>
+                <option value="11">Verthar</option>
+                <option value="12">Floravélis</option>
               </optgroup>
             </select>
 

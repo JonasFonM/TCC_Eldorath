@@ -105,7 +105,7 @@ export default function Login() {
 
   return (
     <>
-      <div className='title-screen'><h1 id='first'>Æternida</h1></div>
+      <div className='title-screen'><h1 id='first'>Eldorath</h1></div>
       <div className='login'>
         <h1>
           <button className='lineBtn'

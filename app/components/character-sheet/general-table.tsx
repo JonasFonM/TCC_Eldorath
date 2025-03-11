@@ -9,8 +9,8 @@ export function TableHead({ onClick, tableTitles }: Props) {
 
     return (
         <tr style={{ display: 'table-row' }} onClick={onClick}>
-            {tableTitles.map(tt => (
-                <th key={tt}>{tt}</th>
+            {tableTitles.map((tt, index) => (
+                <th key={index}>{tt}</th>
             ))}
         </tr>
     )

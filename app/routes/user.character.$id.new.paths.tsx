@@ -1,7 +1,7 @@
 import { character, path } from "@prisma/client";
 import { ActionFunction, json, LoaderFunction, redirect } from "@remix-run/node";
 import { NavLink, useLoaderData, useOutletContext } from "@remix-run/react";
-import { useState } from "react";
+import React, { useState } from "react";
 import { TableHead } from "~/components/character-sheet/general-table";
 import { TableData } from "~/components/character-sheet/general-table-data";
 import { requireUserId } from "~/utils/auth.server";
@@ -103,24 +103,24 @@ export default function PathSelection() {
                         <h2 style={{ fontVariant: 'small-caps' }}>Caminhos Iniciantes</h2>
 
                         <table>
+                            <tbody>
+                                <TableHead tableTitles={tableTitles} onClick={() => showRow(1)} />
 
-                            <TableHead tableTitles={tableTitles} onClick={() => showRow(1)} />
+                                {tier1.map(p => (
+                                    <React.Fragment key={p.id}>
+                                        <TableData
+                                            key={p.id}
+                                            tableData={[p.name, String(p.vitality), String(p.power), String(p.addTechniques), String(p.addManeuvers), String(p.addOaths), String(p.addTricks), String(p.addMagics)]}
+                                            show={show === (p.pathTier)}
+                                            onClick={() => handlePathClick(p.id, 1)}
+                                            selected={selectedPaths.includes(p.id)}
 
-                            {tier1.map(p => (
-                                <>
-                                    <TableData
-                                        key={p.id}
-                                        tableData={[p.name, String(p.vitality), String(p.power), String(p.addTechniques), String(p.addManeuvers), String(p.addOaths), String(p.addTricks), String(p.addMagics)]}
-                                        show={show === (p.pathTier)}
-                                        onClick={() => handlePathClick(p.id, 1)}
-                                        selected={selectedPaths.includes(p.id)}
+                                        />
+                                    </React.Fragment>
 
-                                    />
-                                </>
-
-                            ))
-                            }
-
+                                ))
+                                }
+                            </tbody>
                         </table>
 
 
@@ -129,20 +129,24 @@ export default function PathSelection() {
                                 <h2 style={{ fontVariant: 'small-caps' }}>Caminhos Veteranos</h2>
 
                                 <table>
-                                    <TableHead tableTitles={tableTitles} onClick={() => showRow(2)} />
-                                    {tier2.map(p => (
-                                        <>
-                                            <TableData
-                                                key={p.id}
-                                                tableData={[p.name, String(p.vitality), String(p.power), String(p.addTechniques), String(p.addManeuvers), String(p.addOaths), String(p.addTricks), String(p.addMagics)]}
-                                                show={show === (p.pathTier)}
-                                                onClick={() => handlePathClick(p.id, 2)}
-                                                selected={selectedPaths.includes(p.id)}
+                                    <tbody>
 
-                                            />
-                                        </>
-                                    ))
-                                    }
+                                        <TableHead tableTitles={tableTitles} onClick={() => showRow(2)} />
+                                        {tier2.map(p => (
+                                            <React.Fragment key={p.id}>
+                                                <TableData
+                                                    key={p.id}
+                                                    tableData={[p.name, String(p.vitality), String(p.power), String(p.addTechniques), String(p.addManeuvers), String(p.addOaths), String(p.addTricks), String(p.addMagics)]}
+                                                    show={show === (p.pathTier)}
+                                                    onClick={() => handlePathClick(p.id, 2)}
+                                                    selected={selectedPaths.includes(p.id)}
+
+                                                />
+                                            </React.Fragment>
+                                        ))
+                                        }
+                                    </tbody>
+
                                 </table>
 
                             </>
@@ -154,21 +158,24 @@ export default function PathSelection() {
                                 <h2 style={{ fontVariant: 'small-caps' }}>Caminhos Mestres</h2>
 
                                 <table>
+                                    <tbody>
 
-                                    <TableHead tableTitles={tableTitles} onClick={() => showRow(3)} />
+                                        <TableHead tableTitles={tableTitles} onClick={() => showRow(3)} />
 
-                                    {tier3.map(p => (
-                                        <>
-                                            <TableData
-                                                key={p.id}
-                                                tableData={[p.name, String(p.vitality), String(p.power), String(p.addTechniques), String(p.addManeuvers), String(p.addOaths), String(p.addTricks), String(p.addMagics)]}
-                                                show={show === (p.pathTier)}
-                                                onClick={() => handlePathClick(p.id, 3)}
-                                                selected={selectedPaths.includes(p.id)}
-                                            />
-                                        </>
-                                    ))
-                                    }
+                                        {tier3.map(p => (
+                                            <React.Fragment key={p.id}>
+                                                <TableData
+                                                    key={p.id}
+                                                    tableData={[p.name, String(p.vitality), String(p.power), String(p.addTechniques), String(p.addManeuvers), String(p.addOaths), String(p.addTricks), String(p.addMagics)]}
+                                                    show={show === (p.pathTier)}
+                                                    onClick={() => handlePathClick(p.id, 3)}
+                                                    selected={selectedPaths.includes(p.id)}
+                                                />
+                                            </React.Fragment>
+                                        ))
+                                        }
+                                    </tbody>
+
                                 </table>
                             </>
                             : ''}
@@ -178,22 +185,25 @@ export default function PathSelection() {
                                 <h2 style={{ fontVariant: 'small-caps' }}>Caminhos Lendários</h2>
 
                                 <table>
+                                    <tbody>
 
-                                    <TableHead tableTitles={tableTitles} onClick={() => showRow(4)} />
+                                        <TableHead tableTitles={tableTitles} onClick={() => showRow(4)} />
 
-                                    {tier4.map(p => (
-                                        <>
-                                            <TableData
-                                                key={p.id}
-                                                tableData={[p.name, String(p.vitality), String(p.power), String(p.addTechniques), String(p.addManeuvers), String(p.addOaths), String(p.addTricks), String(p.addMagics)]}
-                                                show={show === (p.pathTier)}
-                                                onClick={() => handlePathClick(p.id, 4)}
-                                                selected={selectedPaths.includes(p.id)}
+                                        {tier4.map(p => (
+                                            <React.Fragment key={p.id}>
+                                                <TableData
+                                                    key={p.id}
+                                                    tableData={[p.name, String(p.vitality), String(p.power), String(p.addTechniques), String(p.addManeuvers), String(p.addOaths), String(p.addTricks), String(p.addMagics)]}
+                                                    show={show === (p.pathTier)}
+                                                    onClick={() => handlePathClick(p.id, 4)}
+                                                    selected={selectedPaths.includes(p.id)}
 
-                                            />
-                                        </>
-                                    ))
-                                    }
+                                                />
+                                            </React.Fragment>
+                                        ))
+                                        }
+                                    </tbody>
+
                                 </table>
                             </>
                             : ''

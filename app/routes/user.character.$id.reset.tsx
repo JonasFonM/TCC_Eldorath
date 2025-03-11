@@ -9,7 +9,7 @@ export const loader: LoaderFunction = async ({ params, request }) => {
     const character = await prisma.character.findUnique({
         where: { id: characterId },
     });
-    const isAuthor = userId === character?.authorId
+    const isAuthor = userId === Number(character?.authorId)
     const referer = request.headers.get("Referer") || "/"; // Fallback to "/" if no referer
 
     if (!character) {

@@ -20,9 +20,9 @@ export function ResetConfirm({ name, isHidden, onShow, onCancel, id }: props) {
 
       <div className="modal-overlay" style={{ display: isHidden ? 'none' : 'flex' }}>
         <div className="modal-content">
-          <h2 style={{ color: "black", fontSize: "1.4rem" }}>Tem certeza que quer resetar {name}?</h2>
+          <h2 style={{ color: "gold", fontSize: "1.4rem" }}>Tem certeza que quer resetar {name}?</h2>
 
-          <p style={{ color: 'black', fontSize: "1rem" }}>Este processo vai retornar o personagem ao nível 1 além de excluir todos os seus Caminhos, Linhagens, Talentos e Itens</p>
+          <p style={{ color: 'white', fontFamily: 'sans-serif', fontSize: "1rem" }}>Este processo vai retornar o personagem ao nível 1 além de excluir todos os seus Caminhos, Linhagens, Talentos e Itens</p>
 
           <div className="modal-buttons">
 

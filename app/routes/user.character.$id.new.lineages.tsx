@@ -1,8 +1,9 @@
 import { lineage } from "@prisma/client";
 import { ActionFunction, json, LoaderFunction, redirect } from "@remix-run/node";
-import { NavLink, useLoaderData, useOutletContext } from "@remix-run/react";
-import { useState } from "react";
-import { LineageCircle } from "~/components/lineage-circle";
+import { NavLink, useLoaderData } from "@remix-run/react";
+import React, { useState } from "react";
+import { TableHead } from "~/components/character-sheet/general-table";
+import { TableData } from "~/components/character-sheet/general-table-data";
 import { requireUserId } from "~/utils/auth.server";
 import { submitCharLineages } from "~/utils/character.server";
 import { prisma } from "~/utils/prisma.server";
@@ -50,6 +51,7 @@ export default function LineageSelection() {
     const [selectedLineages, setSelectedLineages] = useState<number[]>([]);
     const [error, setError] = useState<string | null>(null);
     const [isPure, setPure] = useState<boolean>(true);
+    const [showLineage, setShowLineage] = useState<number>(0);
 
     const isMaxSelected = selectedLineages.length >= maxSelectable;
 
@@ -92,17 +94,27 @@ export default function LineageSelection() {
                         <h1 className="title-container">Escolha até {maxSelectable} Linhagens<NavLink to={`../../lineages`} style={{ color: 'red' }} className="question-button">X</NavLink></h1>
                         <h3>Escolher apenas 1 Linhagem a torna Pura</h3>
 
-                        <div className="lineages-grid">
-                            {lineages.map(lineage => (
-                                <LineageCircle
-                                    key={lineage.id}
-                                    lineage={lineage}
-                                    isPure={selectedLineages.length <= 1}
-                                    isSelected={selectedLineages.includes(lineage.id)}
-                                    onClick={() => !isMaxSelected || selectedLineages.includes(lineage.id) ? handleLineageClick(lineage.id) : null}
-                                />
-                            ))}
-                        </div>
+                        <table>
+                            <tbody>
+
+                                <TableHead tableTitles={['Linhagem']} onClick={showLineage != -2 ? () => setShowLineage(-2) : () => setShowLineage(0)} />
+
+                                {lineages.map(ln => (
+                                    <React.Fragment key={ln.id}>
+                                        <TableData
+                                            key={ln.id}
+                                            tableData={isPure ? [String(ln.name) + ' Pura'] : [String(ln.name)]}
+                                            show={showLineage === (-2)}
+                                            onClick={() => handleLineageClick(Number(ln.id))}
+                                            selected={selectedLineages.includes(ln.id)}
+                                        />
+                                        
+                                    </React.Fragment>
+                                ))}
+
+                            </tbody>
+                        </table >
+
                         {selectedLineages.map(lineageId => (
                             <input type="hidden" key={lineageId} name="lineages" value={lineageId} />
                         ))}

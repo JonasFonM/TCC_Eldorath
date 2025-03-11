@@ -45,7 +45,7 @@ export default function CampaignRoute() {
                     <li key={2}><NavLink to={`/user/campaign/${campaignId}/adv/monthDay`}>Avançar Dia</NavLink></li>
                     <li key={3}><NavLink to={`/user/campaign/${campaignId}/adv/month`}>Avançar Mês</NavLink></li>
                     <li key={4}><NavLink to={`/user/campaign/${campaignId}/adv/year`}>Avançar Ano</NavLink></li>
-                    <li key={5}><NavLink to={`/user/campaign/${campaignId}/adv/era`}>Avançar Æra</NavLink></li>
+                    <li key={5}><NavLink to={`/user/campaign/${campaignId}/adv/era`}>Avançar Era</NavLink></li>
                 </ul>
                 
                 <table>
@@ -165,18 +165,18 @@ export default function CampaignRoute() {
             <SideBars entity={campaign}
                 title={campaign.title}
                 subtitle=""
-                tableHeaders={["Æra", "Ano", "Mês", "Dia", "Fase"]}
+                tableHeaders={["Era", "Ano", "Mês", "Dia", "Fase"]}
                 tableDatas={[campaign.era, campaign.year, campaign.month, campaign.monthDay, campaign.timeOfDay]}
                 tableExplain={[
-                    "Æras são as maiores medidas de tempo usadas pelos Mortais em Æternida. A mudança de uma Æra só ocorre em eventos cataclismicos onde paradigmas importantes são afetados, como a morte de uma Divindade.",
-                    "Os Anos em Æternida se passam a cada 360 dias.",
-                    "Os Meses em Æternida possuem 30 dias exatos. Cada mês foi nomeado em homenagem a uma figura, evento ou símbolo importante na cultura geral do mundo.",
-                    "Uma semana em Æternida tem 6 Dias e os nomes deles são uma representação da rotina dos povos originários Æternidenses.",
-                    "Um Dia em Æternida é separado em Fases: A Madrugada que se inicia à meia-noite, a Alvorada, às 6 horas da manhã, a Tarde, ao meio-dia e a Noite, às 18 horas."
+                    "Eras são as maiores medidas de tempo usadas em Eldorath. A mudança de uma Era só ocorre em eventos cataclismicos onde paradigmas importantes da própria realidade são afetados.",
+                    "Eldorath segue um calendário solar de 360 dias, dividido em 12 meses de 30 dias cada.",
+                    "Cada mês em Eldorath é carregado de simbologia e ligado às tradições e fenômenos que ocorrem no seu decorrer.",
+                    "Uma semana em Eldorath tem 6 Dias. Os dias da semana são nomeados em honra a divindades e forças ancestrais.",
+                    "Um Dia em Eldorath é separado em Fases: A Madrugada que se inicia à meia-noite, a Alvorada, às 6 horas da manhã, a Tarde, ao meio-dia e a Noite, às 18 horas."
                 ]}
 
                 links={isMaster ? [`/user/campaign/${campaignId}/rtn/timeOfDay`, `/user/campaign/${campaignId}/rtn/monthDay`, `/user/campaign/${campaignId}/rtn/month`, `/user/campaign/${campaignId}/rtn/year`, `/user/campaign/${campaignId}/rtn/era`] : []}
-                linkNames={isMaster ? [`Voltar Fase`, `Voltar Dia`, `Voltar Mês`, `Voltar Ano`, `Voltar Æra`] : []}
+                linkNames={isMaster ? [`Voltar Fase`, `Voltar Dia`, `Voltar Mês`, `Voltar Ano`, `Voltar Era`] : []}
                 temp={
 
                     getCampaignAction()

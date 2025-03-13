@@ -47,7 +47,7 @@ export default function CampaignRoute() {
                     <li key={4}><NavLink to={`/user/campaign/${campaignId}/adv/year`}>Avançar Ano</NavLink></li>
                     <li key={5}><NavLink to={`/user/campaign/${campaignId}/adv/era`}>Avançar Era</NavLink></li>
                 </ul>
-                
+
                 <table>
                     <tbody>
                         <tr onClick={() => showList === 0 ? setShowList(1) : setShowList(0)}>
@@ -60,7 +60,7 @@ export default function CampaignRoute() {
                 <ul style={showList === 0 ? { display: 'none' } : {}}>
                     {campaign.scenes.map(sc =>
                         <li key={sc.id}>
-                            <NavLink to={`/user/campaign/${campaignId}/scene/${sc.id}`}>
+                            <NavLink to={`/user/scene/${sc.id}`}>
                                 {sc.title}
                             </NavLink>
                         </li>

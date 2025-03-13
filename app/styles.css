@@ -90,6 +90,11 @@ h3 {
   color: #FFFFFF;
 }
 
+a h2,
+a h3 {
+  color: gold;
+}
+
 button.lineBtn,
 a.lineBtn {
   background: none;
@@ -504,6 +509,11 @@ th {
   border-left: 0;
   text-align: center;
   padding: 18px;
+}
+
+th {
+  font-size: 1.25rem;
+  font-weight: bold;
 }
 
 .selected {

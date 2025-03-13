@@ -4,6 +4,7 @@ import { LoaderFunction } from "@remix-run/node";
 import { NavLink, Outlet, useLoaderData } from "@remix-run/react";
 import React, { useState } from "react";
 import { DeleteConfirm } from "~/components/delete-confirmation";
+import { GridMap } from "~/components/scene/grid-map";
 import { useSidebar } from "~/components/side-bars/side-bar-context";
 import { SideBars } from "~/components/side-bars/side-bars";
 import { getUserIdFromSession } from "~/utils/auth.server";
@@ -69,17 +70,16 @@ export default function SceneRoute() {
 
             />
 
+
+
             <div className="user" style={isAllOpen ? { marginLeft: '200px', marginRight: '200px' } : isHeaderOpen ?
                 { marginLeft: '200px' } : isTempOpen ? { marginRight: '200px' } : {}}>
 
-                <div className="title-container">
-                    <h1>{scene.title}</h1>
-                    <DeleteConfirm key={scene.id} id={String(scene.id)} name={scene.title} entity={'scene'} isHidden={selectedDelete != scene.id} onShow={() => setSelectedDelete(scene.id)} onCancel={() => setSelectedDelete(0)} />
-                </div>
+                <h1>{scene.title}</h1>
 
-                <div className="container" style={{ margin: '5%' }}>
-                    <Outlet />
-                </div>
+                    <GridMap onClick={() => null} rows={10} columns={10}/>
+                    
+                    <Outlet/>
 
             </div >
 

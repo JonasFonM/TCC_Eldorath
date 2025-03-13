@@ -434,16 +434,11 @@ li button:hover {
   cursor: pointer;
 }
 
-.grid-item {
-  background-color: #1f1f1f;
-  border: 1px solid #333;
-  margin: 10px auto;
+.grid .grid-item {
+  background-color: black;
+  border: 1px solid white;
   padding: 20px;
-  width: 65%;
-  display: flex;
-  position: relative;
-  flex-direction: column;
-  justify-content: center;
+  text-align: center;
 }
 
 .grid-item:hover {
@@ -717,21 +712,13 @@ td:last-child {
   width: 100%;
 }
 
+.grid,
 .skills-grid,
-.trainings-grid,
 .weapons-grid,
 .armors-grid {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-}
-
-.skills-grid div:hover,
-.trainings-grid div:hover,
-.weapons-grid div:hover,
-.armors-grid div:hover,
-.block:hover {
-  transition: transform 0.2s;
+  display: grid;
+  background-color: #1f1f1f;
+  padding: 10px;
 }
 
 .pure-lineage-skills,

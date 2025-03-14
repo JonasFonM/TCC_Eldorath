@@ -33,12 +33,10 @@ export default function InventoryRoute() {
     return (
         <React.Fragment>
             <h1 className="title-container">Inventário<NavLink style={{ color: 'blue' }} className={'question-button'} to={'../new/inventory'}>+</NavLink></h1>
-            <div className="items-grid">
-                <ItemDisplay
-                    items={items}
-                    character={character}
-                    isAuthor={isAuthor} />
-            </div>
+            <ItemDisplay
+                items={items}
+                character={character}
+                isAuthor={isAuthor} />
 
         </React.Fragment>
     );

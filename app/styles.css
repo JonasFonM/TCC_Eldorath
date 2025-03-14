@@ -439,15 +439,45 @@ li button:hover {
   background-color: black;
   border: 1px solid white;
   padding: 20px;
-  margin: 4%;
+  margin: 1%;
   width: 100%;
   text-align: center;
+}
+
+.inventory {
+  display: grid;
+  margin: auto;
+  text-align: center;
+  width: fit-content;
+  justify-content: center;
+
+}
+
+.inventory div {
+  justify-content: center;
 }
 
 .grid .grid-item:hover,
 .inventory .grid-item:hover {
   background-color: #575757;
   cursor: pointer;
+}
+
+.grid-item.center {
+  grid-column: 3;
+  /* Middle column */
+}
+
+/* Left-aligned items */
+.grid-item.left {
+  grid-column: 2;
+  /* One column left of center */
+}
+
+/* Right-aligned items */
+.grid-item.right {
+  grid-column: 4;
+  /* One column right of center */
 }
 
 .dropdown-content {
@@ -724,17 +754,6 @@ td:last-child {
   background: transparent;
   padding: 10px;
 }
-
-.inventory {
-  display: flex;
-  flex-direction: column;
-  margin: auto;
-  text-align: center;
-  align-items: center;
-  justify-items: center;
-  flex-wrap: wrap;
-}
-
 
 .pure-lineage-skills,
 .nonpure-lineage-skills {

@@ -152,15 +152,18 @@ export default function CharacterRoute() {
 
             </ul>
 
-            <h1>Inventário</h1>
             {isAuthor ?
-              <h1 className="title-container"><NavLink className="question-button" to={`/user/character/${characterId}/new/inventory/`}>+</NavLink></h1>
+              <ul>
+                <li key={-4}>
+                  <NavLink to={`/user/character/${characterId}/inventory/`}>Inventário</NavLink>
+                </li>
+              </ul>
               : ''}
 
             <table>
               <tbody>
                 <tr onClick={() => setShowInv(1)}>
-                  <th>AU</th>
+                  <th>DK</th>
                   <td>{character.gold}</td>
                 </tr>
               </tbody>
@@ -177,25 +180,6 @@ export default function CharacterRoute() {
             </table>
             <GeneralExplain style={'linear-gradient(to bottom, white, gold)'} color={'black'} title={'Carga Atual'} description="Indica quantas Cargas estão ocupadas no seu Inventário. Se sua Carga Atual for maior que a sua Capacidade de Carga, você fica Sobrecarregado." isHidden={showInv != 2} onCancel={() => setShowInv(0)} />
 
-            <ul>
-              <li key={0}><button style={selectInv <= 1 ? { display: 'inherit' } : { display: 'none' }} onClick={() => selectInv === 0 ? setInv(1) : setInv(0)}>Itens</button></li>
-
-              {selectInv === 1 ? items.map(item => (
-                <React.Fragment key={item.id}>
-                  <CharacterItemCircle
-                    item={item}
-                    onClick={() => explainItem(item.id)}
-                  />
-                  <CharacterItemExplain
-                    style={'linear-gradient(to bottom right, gold, goldenrod)'}
-                    character_item={item}
-                    isHidden={showItem != item.id}
-                    onCancel={() => setShowItem(0)}
-                  />
-                </React.Fragment>
-
-              )) : ''}
-            </ul>
           </React.Fragment>
         }
 

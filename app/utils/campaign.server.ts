@@ -239,11 +239,10 @@ export const addPlayerstoCampaign = async (partyMemberList: number[], campaignId
   return;
 };
 
-export const removeSinglePlayerFromCampaign = async (campaignId: number, playerId: number) => {
-  return await prisma.partyMembers.deleteMany({
+export const removeSinglePlayerFromCampaign = async (relationId: number) => {
+  return await prisma.partyMembers.delete({
     where: {
-      campaignId: campaignId,
-      userId: playerId
+      id: relationId
     }
   })
 };

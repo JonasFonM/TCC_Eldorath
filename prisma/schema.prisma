@@ -296,18 +296,18 @@ model character {
 
   gold Int @default(500)
 
-  slotWeapon    Int @default(2)
   slotHelm      Int @default(1)
-  slotPauldron  Int @default(2)
-  slotGauntlet  Int @default(2)
-  slotCuirass   Int @default(1)
-  slotUpperLegs Int @default(1)
-  slotGreaves   Int @default(2)
+  slotEarings   Int @default(2)
   slotCloak     Int @default(1)
   slotAmulet    Int @default(1)
-  slotBelt      Int @default(1)
+  slotPauldron  Int @default(2)
+  slotCuirass   Int @default(1)
+  slotGauntlet  Int @default(2)
+  slotWeapon    Int @default(2)
   slotRings     Int @default(10)
-  slotEarings   Int @default(2)
+  slotBelt      Int @default(1)
+  slotUpperLegs Int @default(1)
+  slotGreaves   Int @default(2)
 
   public   Boolean @default(false)
   authorId Int

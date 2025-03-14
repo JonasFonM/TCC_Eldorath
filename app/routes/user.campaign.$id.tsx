@@ -1,4 +1,4 @@
-import { campaign, character, scene, user } from "@prisma/client";
+import { campaign, character, partyMembers, scene, user } from "@prisma/client";
 import { LoaderFunction } from "@remix-run/node";
 import { NavLink, Outlet, useLoaderData, useLocation } from "@remix-run/react";
 import { prisma } from "~/utils/prisma.server";
@@ -18,6 +18,11 @@ export const loader: LoaderFunction = async ({ params, request }) => {
         include: { scenes: true, characters: true, players: true },
     });
 
+    const party = await prisma.user.findMany({
+        where:
+            { id: { in: campaign?.players.map(pl => pl.userId) } }
+    })
+
     const characters = await getCharactersFromUser(Number(userId))
 
     const isMaster = Number(userId) === Number(campaign?.masterId)
@@ -26,14 +31,15 @@ export const loader: LoaderFunction = async ({ params, request }) => {
 
     const campaignCharacter = campaign?.characters.find(cc => cc.campaignId == campaign.id && cc.authorId == userId)
 
-    return ({ isMaster, isPlayer, campaignCharacter, characters, campaignId, campaign })
+    return ({ isMaster, isPlayer, campaignCharacter, characters, campaignId, campaign, party })
 }
 
 export default function CampaignRoute() {
-    const { isMaster, isPlayer, campaignCharacter, characters, campaign } = useLoaderData<{ isMaster: boolean, isPlayer: boolean, campaignCharacter: character, characters: character[], campaign: (campaign & { scenes: scene[], characters: character[], players: user[] }) }>()
+    const { isMaster, isPlayer, campaignCharacter, characters, campaign, party } = useLoaderData<{ isMaster: boolean, isPlayer: boolean, campaignCharacter: character, characters: character[], campaign: (campaign & { scenes: scene[], characters: character[], players: partyMembers[] }), party: user[] }>()
     const { isAllOpen, isHeaderOpen, isTempOpen } = useSidebar();
     const [showList, setShowList] = useState(0);
     const [showCreator, setShowCreator] = useState(0);
+    const [showPlayers, setShowPlayers] = useState(0);
     const location = useLocation()
     const campaignId = String(campaign.id)
 
@@ -82,6 +88,7 @@ export default function CampaignRoute() {
         );
         if (isPlayer) {
             if (campaignCharacter) {
+
                 return (
                     <React.Fragment>
                         <ul>
@@ -126,6 +133,7 @@ export default function CampaignRoute() {
                     </React.Fragment>
                 );
             }
+
             return (
                 <React.Fragment>
                     <ul>
@@ -145,8 +153,15 @@ export default function CampaignRoute() {
                         )}
                     </ul>
 
+                    <ul>
+                        <li key={-2}>
+                            <NavLink to={`/user/campaign/${campaignId}/quit`}>Sair da Campanha</NavLink>
+                        </li>
+                    </ul>
+
 
                 </React.Fragment>);
+
         }
         return (
             <React.Fragment>
@@ -178,8 +193,28 @@ export default function CampaignRoute() {
                 links={isMaster ? [`/user/campaign/${campaignId}/rtn/timeOfDay`, `/user/campaign/${campaignId}/rtn/monthDay`, `/user/campaign/${campaignId}/rtn/month`, `/user/campaign/${campaignId}/rtn/year`, `/user/campaign/${campaignId}/rtn/era`] : []}
                 linkNames={isMaster ? [`Voltar Fase`, `Voltar Dia`, `Voltar Mês`, `Voltar Ano`, `Voltar Era`] : []}
                 temp={
+                    <React.Fragment>
 
-                    getCampaignAction()
+                        {getCampaignAction()}
+
+                        <ul>
+                            <li key={-3}>
+                                <button onClick={showPlayers != 1 ? () => setShowPlayers(1) : () => setShowPlayers(0)}>Jogadores</button>
+                            </li>
+
+                        </ul>
+
+                        <ul style={showPlayers != 1 ? { display: 'none' } : { display: "inherit" }}>
+                            {party.map(
+                                pl => <li key={pl.id}>
+                                    <NavLink to={`/user/home/profile/${pl.id}`}>
+                                        {pl.username}
+                                    </NavLink>
+                                </li>
+                            )}
+                        </ul>
+
+                    </React.Fragment>
 
                 }
 

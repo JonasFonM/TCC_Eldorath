@@ -27,7 +27,7 @@ export const loader: LoaderFunction = async ({ request, params }) => {
 
     const isAuthor = userId === character?.authorId;
     return isAuthor ? ({ userId, items, character, characterId, referer }) :
-        redirect(`/user/character/${characterId}/stats`);
+        redirect(`/user/character/${characterId}/inventory`);
 }
 
 export const action: ActionFunction = async ({ request, params }) => {
@@ -39,7 +39,7 @@ export const action: ActionFunction = async ({ request, params }) => {
 
     try {
         await submitStartingCharItems(selectedItemIds, Number(characterId))
-        return redirect(`/user/character/${characterId}/stats/`);
+        return redirect(`/user/character/${characterId}/inventory/`);
 
     } catch (error) {
         console.error(error);
@@ -91,7 +91,9 @@ export default function ItemSelection() {
     return (
         <form method="post">
             <h1 className="title-container">Inventário<NavLink style={{ color: 'red' }} className={'question-button'} to={referer}>X</NavLink></h1>
-            <h1>Armas</h1>
+            <h2>Escolha seus itens iniciais</h2>
+            <h2>Drakas : {character.gold - selectedCost}</h2>
+            {error && <p>{error}</p>}
             <div className="items-grid">
                 {items.map(item => (
                     <ItemCircle
@@ -106,23 +108,8 @@ export default function ItemSelection() {
                 <input type="hidden" key={itemId} name="items" value={itemId} />
             ))}
 
-            <h1>Armaduras</h1>
-            <div className="items-grid">
-                {items.map(item => (
-                    <ItemCircle
-                        key={item.id}
-                        item={item}
-                        isSelected={selectedItems.includes(item.id)}
-                        onClick={() => !isMaxSelected || selectedItems.includes(item.id) ? handleItemClick(item.id, item.baseCost) : null}
-                    />
-                ))}
-            </div>
-            {selectedItems.map(itemId => (
-                <input type="hidden" key={itemId} name="items" value={itemId} />
-            ))}
+
             <div className="dice-box">
-                <h2>Drakas : {character.gold - selectedCost}</h2>
-                {error && <p>{error}</p>}
                 <button type="submit" className="button">Confirmar</button>
             </div>
         </form>

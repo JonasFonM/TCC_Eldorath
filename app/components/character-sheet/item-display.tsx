@@ -1,4 +1,5 @@
 import { character, character_item, item } from "@prisma/client";
+import { join } from "node:path";
 import React, { useState } from "react";
 
 interface Props {
@@ -13,48 +14,57 @@ export function ItemDisplay({ character, items, onClick }: Props) {
     let totalSlots = character.slotAmulet + character.slotBelt + character.slotCloak + character.slotCuirass + character.slotEarings + character.slotGauntlet + character.slotGreaves + character.slotHelm + character.slotPauldron + character.slotRings + character.slotUpperLegs + character.slotWeapon
     totalSlots % 2 === 0 ? totalSlots++ : totalSlots
 
-    let headSlots = (character.slotCloak + character.slotHelm + character.slotEarings)
+    let headSlots = (character.slotCloak + character.slotEarings + character.slotEarings)
     headSlots % 2 === 0 ? headSlots++ : headSlots
 
-    const renderItems = (slots: number, row: number, totalColumns: number, slotType: string) => {
+    const renderItems = (slots: number[], row: number, totalColumns: number, slotTypes: string[]) => {
         const items: JSX.Element[] = [];
-
         const center = (totalColumns + 1) / 2
+        const columnPlacement: number[][] = Array(slots.length).fill(null).map(() => []);
 
-        for (let index = 0; index < slots; index++) {
+        slots.forEach((sl, index) => {
+            let lastJ = 0
+            for (let j = 0; j < sl; j++) {
 
-            const columnPlacement =
-                slots > 1 ?
-                    index % 2 < 1 ?
-                        (center - (Math.floor(index / 2) + 1))
-                        : (center + (Math.floor(index / 2) + 1))
-                    : (center)
+                index != 0 ?
+                    lastJ % 2 < 1 ?
+                        columnPlacement[index].push(columnPlacement[index - 1][lastJ] - 1)
+                        :
+                        columnPlacement[index].push(columnPlacement[index - 1][lastJ] + 1)
+                    :
+                    j === 0 ?
+                        columnPlacement[index].push(center)
+                        :
+                        j % 2 < 1 ?
+                            columnPlacement[index].push(center - (Math.floor(index / 2) + 1))
+                            :
+                            columnPlacement[index].push(center + (Math.floor(index / 2) + 1))
 
-            items.push(
 
-                <button key={`i${index}`} style={{ gridRow: row, gridColumn: columnPlacement }} className={`grid-item`} onClick={onClick}></button>)
+                console.log(columnPlacement[index][j])
+
+                items.push(
+                    <button key={`${index}-${j}`}
+                        style={{ gridRow: row, gridColumn: columnPlacement[index][j] }}
+                        className={`grid-item`}
+                        onClick={onClick}
+                    >{slotTypes[index].at(4) + ` ${index},${j}`}</button>
+                )
+
+                lastJ = j
+            }
 
         }
+        )
         return (items)
     }
 
     return (
 
         <>
-            <div className="inventory" style={{ width: '100%', gridTemplateColumns: `repeat(${totalSlots}, 1fr)` }}>
-                {renderItems(character.slotCloak, 1, totalSlots, 'slotCloak')}
-                {renderItems(character.slotHelm, 2, totalSlots, 'slotHelm')}
-                {renderItems(character.slotEarings, 2, totalSlots, 'slotEarings')}
-                {renderItems(character.slotAmulet, 5, totalSlots, 'slotAmulet')}
-                {renderItems(character.slotPauldron, 4, totalSlots, 'slotPauldron')}
-                {renderItems(character.slotCuirass, 4, totalSlots, 'slotCuirass')}
-                {renderItems(character.slotGauntlet, 5, totalSlots, 'slotGauntlet')}
-                {renderItems(character.slotWeapon, 6, totalSlots, 'slotWeapon')}
-                {renderItems(character.slotRings, 8, totalSlots, 'slotRings')}
-                {renderItems(character.slotBelt, 9, totalSlots, 'slotBelt')}
-                {renderItems(character.slotUpperLegs, 10, totalSlots, 'slotUpperLegs')}
-                {renderItems(character.slotGreaves, 11, totalSlots, 'slotGreaves')}
-
+            <div className="inventory" style={{ width: '100%', gridTemplateColumns: `repeat(${headSlots}, 1fr)` }}>
+                {
+                    renderItems([character.slotEarings, character.slotEarings, character.slotCloak], 1, headSlots, ['slotHelm', 'slotEarings', 'slotCloak'])}
             </div>
 
         </>

@@ -36,7 +36,7 @@ export default function InventoryRoute() {
             <ItemDisplay
                 items={items}
                 character={character}
-                isAuthor={isAuthor} />
+                onClick={isAuthor ? () => null : () => null} />
 
         </React.Fragment>
     );

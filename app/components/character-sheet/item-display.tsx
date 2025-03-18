@@ -9,21 +9,23 @@ interface Props {
 
 export function ItemDisplay({ character, items, onClick }: Props) {
 
-
     let totalSlots = character.slotAmulet + character.slotBelt + character.slotCloak + character.slotCuirass + character.slotEarings + character.slotGauntlet + character.slotGreaves + character.slotHelm + character.slotPauldron + character.slotRings + character.slotUpperLegs + character.slotWeapon
     totalSlots % 2 === 0 ? totalSlots++ : totalSlots
-
-    let headSlots = (character.slotHelm + character.slotEarings + character.slotCloak)
-    headSlots % 2 === 0 ? headSlots++ : headSlots
 
     const renderRow = (slots: number[], row: number, totalColumns: number, slotTypes: string[]) => {
         const items: JSX.Element[] = [];
         const center = (totalColumns + 1) / 2
         const columnPlacement: number[][] = slots.map(() => []);
+        let prevMin = center
+        let prevMax = center
 
         slots.forEach((sl, index) => {
-            let prevMin = Math.min(...columnPlacement[index - 1])
-            let prevMax = Math.max(...columnPlacement[index - 1])
+
+
+            if (index != 0) {
+                prevMin = Math.min(...columnPlacement[index - 1])
+                prevMax = Math.max(...columnPlacement[index - 1])
+            }
 
             for (let j = 0; j < sl; j++) {
                 index != 0 ?
@@ -32,15 +34,14 @@ export function ItemDisplay({ character, items, onClick }: Props) {
                         :
                         columnPlacement[index].push(prevMax + 1)
                     :
-                    j === 0 ?
-                        columnPlacement[index].push(center)
-                        :
-                        columnPlacement[index][columnPlacement[index].length - 1] < center ?
-                            columnPlacement[index].push(columnPlacement[index][columnPlacement[index].length - 1] - 1)
+                    sl > 1 ?
+                        j % 2 < 1 ?
+                            columnPlacement[index].push(center - (Math.floor(j / 2) + 1))
                             :
-                            columnPlacement[index].push(columnPlacement[index][columnPlacement[index].length - 1] + 1)
+                            columnPlacement[index].push(center + (Math.floor(j / 2) + 1))
+                        :
+                        columnPlacement[index].push(center)
 
-                console.log(columnPlacement)
                 items.push(
                     <button key={`${index}-${j}`}
                         style={{ gridRow: row, gridColumn: columnPlacement[index][j] }}
@@ -48,6 +49,7 @@ export function ItemDisplay({ character, items, onClick }: Props) {
                         onClick={onClick}
                     >{slotTypes[index].at(4) + ` ${index},${j}`}</button>
                 )
+
             }
 
         }
@@ -58,9 +60,23 @@ export function ItemDisplay({ character, items, onClick }: Props) {
     return (
 
         <>
-            <div className="inventory" style={{ width: '100%', gridTemplateColumns: `repeat(${headSlots}, 1fr)` }}>
-                {
-                    renderRow([character.slotHelm, character.slotEarings, character.slotCloak], 1, headSlots, ['slotHelm', 'slotEarings', 'slotCloak'])}
+            <div className="inventory"
+                style={{ width: '100%', gridTemplateColumns: `repeat(${totalSlots}, 1fr)` }}>
+
+                {renderRow([character.slotHelm, character.slotEarings], 1, totalSlots, ['slotHelm', 'slotEarings'])}
+
+                {renderRow([character.slotCuirass, character.slotPauldron, character.slotCloak], 2, totalSlots, ['slotCuirass', 'slotPauldron', 'slotCloak ',])}
+
+                {renderRow([character.slotAmulet, character.slotGauntlet,], 3, totalSlots, ['slotAmulet', 'slotGauntlet'])}
+
+                {renderRow([character.slotRings], 4, totalSlots, ['slotRings'])}
+
+                {renderRow([character.slotWeapon], 5, totalSlots, ['slotWeapon'])}
+
+                {renderRow([character.slotBelt], 6, totalSlots, ['slotBelt'])}
+
+                {renderRow([character.slotUpperLegs, character.slotGreaves], 7, totalSlots, ['slotUpperLegs', 'slotGreaves'])}
+
             </div>
 
         </>

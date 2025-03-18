@@ -434,23 +434,12 @@ li button:hover {
   cursor: pointer;
 }
 
+/*GRID E INVENTÁRIO*/
 
-
-.grid .grid-item,
-.inventory .grid-item {
-  background-color: black;
-  border: 1px solid white;
-  padding: 20px;
-  width: 100%;
-  text-align: center;
-}
-
-.inventory .grid-item {
-  color: gold;
-  border-radius: 100%;
-  padding: 32px;
-  max-width: 96px;
-  max-height: 96px;
+.grid .grid-item:hover,
+.inventory .grid-item:hover {
+  background-color: #575757;
+  cursor: pointer;
 }
 
 .inventory {
@@ -461,50 +450,27 @@ li button:hover {
   justify-content: center;
 }
 
+.grid .grid-item,
+.inventory .grid-item {
+  background-color: black;
+  border: 1px solid white;
+  padding: 24px;
+  width: 100%;
+  text-align: center;
+}
+
+.inventory .grid-item {
+  color: gold;
+  border-radius: 100%;
+  max-width: 96px;
+  max-height: 96px;
+}
+
+
 .inventory div {
   justify-content: center;
 }
 
-.grid .grid-item:hover,
-.inventory .grid-item:hover {
-  background-color: #575757;
-  cursor: pointer;
-}
-
-.grid-item.center {
-  grid-column: 3;
-  /* Middle column */
-}
-
-/* Left-aligned items */
-.grid-item.left {
-  grid-column: 2;
-  /* One column left of center */
-}
-
-/* Right-aligned items */
-.grid-item.right {
-  grid-column: 4;
-  /* One column right of center */
-}
-
-.dropdown-content {
-  display: none;
-  position: absolute;
-  background-color: #000000;
-  width: 100%;
-  top: 100%;
-  margin: 0 auto;
-  left: 0;
-  padding: 12px 16px;
-  z-index: 4;
-  transition: 0.3s ease;
-}
-
-.drop:hover .dropdown-content,
-.grid-item:hover .dropdown-content {
-  display: block;
-}
 
 .grid-item .question-button {
   width: 100%;

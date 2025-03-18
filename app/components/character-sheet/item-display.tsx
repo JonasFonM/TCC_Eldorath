@@ -9,7 +9,7 @@ interface Props {
 
 export function ItemDisplay({ character, items, onClick }: Props) {
 
-    let totalSlots = character.slotAmulet + character.slotBelt + character.slotCloak + character.slotCuirass + character.slotEarings + character.slotGauntlet + character.slotGreaves + character.slotHelm + character.slotPauldron + character.slotRings + character.slotUpperLegs + character.slotWeapon
+    let totalSlots = Math.max(character.slotAmulet, character.slotBelt, character.slotCloak, character.slotCuirass, character.slotEarings, character.slotGauntlet, character.slotGreaves, character.slotHelm, character.slotPauldron, character.slotRings, character.slotUpperLegs, character.slotWeapon)
     totalSlots % 2 === 0 ? totalSlots++ : totalSlots
 
     const renderRow = (slots: number[], row: number, totalColumns: number, slotTypes: string[]) => {

@@ -1,6 +1,5 @@
 import { character, character_item, item } from "@prisma/client";
-import { join } from "node:path";
-import React, { useState } from "react";
+
 
 interface Props {
     character: character,
@@ -14,35 +13,34 @@ export function ItemDisplay({ character, items, onClick }: Props) {
     let totalSlots = character.slotAmulet + character.slotBelt + character.slotCloak + character.slotCuirass + character.slotEarings + character.slotGauntlet + character.slotGreaves + character.slotHelm + character.slotPauldron + character.slotRings + character.slotUpperLegs + character.slotWeapon
     totalSlots % 2 === 0 ? totalSlots++ : totalSlots
 
-    let headSlots = (character.slotCloak + character.slotEarings + character.slotEarings)
+    let headSlots = (character.slotHelm + character.slotEarings + character.slotCloak)
     headSlots % 2 === 0 ? headSlots++ : headSlots
 
-    const renderItems = (slots: number[], row: number, totalColumns: number, slotTypes: string[]) => {
+    const renderRow = (slots: number[], row: number, totalColumns: number, slotTypes: string[]) => {
         const items: JSX.Element[] = [];
         const center = (totalColumns + 1) / 2
-        const columnPlacement: number[][] = Array(slots.length).fill(null).map(() => []);
+        const columnPlacement: number[][] = slots.map(() => []);
 
         slots.forEach((sl, index) => {
-            let lastJ = 0
-            for (let j = 0; j < sl; j++) {
+            let prevMin = Math.min(...columnPlacement[index - 1])
+            let prevMax = Math.max(...columnPlacement[index - 1])
 
+            for (let j = 0; j < sl; j++) {
                 index != 0 ?
-                    lastJ % 2 < 1 ?
-                        columnPlacement[index].push(columnPlacement[index - 1][lastJ] - 1)
+                    j % 2 < 1 ?
+                        columnPlacement[index].push(prevMin - 1)
                         :
-                        columnPlacement[index].push(columnPlacement[index - 1][lastJ] + 1)
+                        columnPlacement[index].push(prevMax + 1)
                     :
                     j === 0 ?
                         columnPlacement[index].push(center)
                         :
-                        j % 2 < 1 ?
-                            columnPlacement[index].push(center - (Math.floor(index / 2) + 1))
+                        columnPlacement[index][columnPlacement[index].length - 1] < center ?
+                            columnPlacement[index].push(columnPlacement[index][columnPlacement[index].length - 1] - 1)
                             :
-                            columnPlacement[index].push(center + (Math.floor(index / 2) + 1))
+                            columnPlacement[index].push(columnPlacement[index][columnPlacement[index].length - 1] + 1)
 
-
-                console.log(columnPlacement[index][j])
-
+                console.log(columnPlacement)
                 items.push(
                     <button key={`${index}-${j}`}
                         style={{ gridRow: row, gridColumn: columnPlacement[index][j] }}
@@ -50,8 +48,6 @@ export function ItemDisplay({ character, items, onClick }: Props) {
                         onClick={onClick}
                     >{slotTypes[index].at(4) + ` ${index},${j}`}</button>
                 )
-
-                lastJ = j
             }
 
         }
@@ -64,7 +60,7 @@ export function ItemDisplay({ character, items, onClick }: Props) {
         <>
             <div className="inventory" style={{ width: '100%', gridTemplateColumns: `repeat(${headSlots}, 1fr)` }}>
                 {
-                    renderItems([character.slotEarings, character.slotEarings, character.slotCloak], 1, headSlots, ['slotHelm', 'slotEarings', 'slotCloak'])}
+                    renderRow([character.slotHelm, character.slotEarings, character.slotCloak], 1, headSlots, ['slotHelm', 'slotEarings', 'slotCloak'])}
             </div>
 
         </>

@@ -203,7 +203,9 @@ ul {
   font-weight: bolder
 }
 
-.header {
+
+.header,
+.temp {
   overflow: auto;
   transition: 0.3s ease-in-out;
   position: fixed;
@@ -211,11 +213,18 @@ ul {
   width: 200px;
   height: calc(100% - 64px);
   top: 64px;
-  left: 0;
   padding: 0;
   background-color: #090809;
   box-shadow: 1px 0px 8px 1px gold;
   z-index: 5;
+}
+
+.header {
+  left: 0;
+}
+
+.temp {
+  right: 0;
 }
 
 .header h1,
@@ -223,16 +232,6 @@ ul {
   margin-top: 6px;
   font-size: 1.25rem;
   width: 100%;
-}
-
-.temp h1 a {
-  font-family: 'Times New Roman', Times, serif;
-  color: gold;
-}
-
-.temp h1 a:hover {
-  color: white;
-  transition: color 0.3s ease;
 }
 
 .header p,
@@ -273,7 +272,8 @@ ul {
   text-align: center;
 }
 
-.toggle-menu {
+.toggle-menu,
+.toggle-temp {
   position: fixed;
   border: 0;
   top: 62px;
@@ -281,52 +281,27 @@ ul {
   width: 10px;
   background-color: gold;
   opacity: 0;
-  margin-left: 196px;
   transition: 0.3s ease-in-out;
   z-index: 4;
   box-shadow: 1px 0px 4px 1px gold;
-
-}
-
-.toggle-menu:hover.toggle-menu {
-  opacity: 0.5;
-  cursor: pointer;
-}
-
-
-.temp {
-  overflow: auto;
-  transition: 0.3s ease-in-out;
-  position: fixed;
-  width: 200px;
-  height: calc(100% - 64px);
-  top: 64px;
-  right: 0;
-  padding: 0;
-  background-color: #090809;
-  box-shadow: -1px 0px 8px 1px gold;
-  z-index: 5;
 }
 
 .toggle-temp {
-  position: fixed;
-  border: 0;
-  top: 62px;
   right: 0;
-  height: calc(100% + 64px);
-  width: 10px;
-  background-color: gold;
-  opacity: 0;
   margin-right: 196px;
-  transition: 0.3s ease-in-out;
-  z-index: 4;
-  box-shadow: 1px 0px 4px 1px gold;
+
 }
 
-.toggle-temp:hover.toggle-temp {
+.toggle-menu {
+  margin-left: 196px;
+}
+
+.toggle-menu:hover,
+.toggle-temp:hover {
   opacity: 0.5;
   cursor: pointer;
 }
+
 
 .skill-container {
   display: flex;
@@ -453,24 +428,16 @@ li button:hover {
 .grid .grid-item,
 .inventory .grid-item {
   background-color: black;
+  color: gold;
   border: 1px solid white;
   padding: 24px;
   width: 100%;
   text-align: center;
 }
 
-.inventory .grid-item {
-  color: gold;
-  border-radius: 100%;
-  max-width: 96px;
-  max-height: 96px;
-}
-
-
 .inventory div {
   justify-content: center;
 }
-
 
 .grid-item .question-button {
   width: 100%;

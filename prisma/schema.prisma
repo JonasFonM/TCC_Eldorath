@@ -483,7 +483,7 @@ model character_item {
   material    material @default(Ferro)
   weight      Int      @default(0)
   cost        Int      @default(0)
-  equipped    Boolean  @default(false)
+  equipped    Int      @default(-1)
 
   reach  Int?
   hitMod Int?

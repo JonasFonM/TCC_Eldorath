@@ -20,7 +20,12 @@ export function ItemDisplay({ character, items, equippedItems }: Props) {
 
         <React.Fragment key={'Equipment'}>
             <div className="inventory"
-                style={{ width: '100%', gridTemplateColumns: `1fr 2fr 1fr 6fr 1fr 2fr 1fr` }}>
+                style=
+                {{
+                    width: '100%',
+                    padding: '5%',
+                    gridTemplateColumns: `1fr 2fr 1fr 6fr 1fr 2fr 1fr`,
+                }}>
 
                 <RenderSlot slots={character.slotCloak} slotType="slotCloak" row={1} column={2} equippedItems={equippedItems.filter(it => it.item.type === 'slotCloak')} availableItems={availableItems.filter(it => it.item.type === 'slotCloak')}></RenderSlot>
                 <RenderSlot slots={character.slotEarings} slotType="slotEarings" row={2} column={2} equippedItems={equippedItems.filter(it => it.item.type === 'slotEarings')} availableItems={availableItems.filter(it => it.item.type === 'slotEarings')}></RenderSlot>

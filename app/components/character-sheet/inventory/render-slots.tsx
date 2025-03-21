@@ -84,8 +84,8 @@ export function RenderSlot({ slots, slotType, row, column, equippedItems, availa
         ?
         squares.push(
             <React.Fragment key={`Change current ${slotType}`}>
-                <button key={'Left'} style={{ gridRow: row, gridColumn: column - 1 }} onClick={handleLeftClick}>{`<`}</button>
-                <button key={'Right'} style={{ gridRow: row, gridColumn: column + 1 }} onClick={handleRightClick}>{`>`}</button>
+                <button key={'Left'} className="grid-item" style={{ gridRow: row, gridColumn: column - 1 }} onClick={handleLeftClick}>{`<`}</button>
+                <button key={'Right'} className="grid-item" style={{ gridRow: row, gridColumn: column + 1 }} onClick={handleRightClick}>{`>`}</button>
             </React.Fragment>
         )
         :

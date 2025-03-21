@@ -9,9 +9,10 @@ interface Props {
     row: number,
     column: number,
     equippedItems: (character_item & { item: item })[],
+    availableItems: (character_item & { item: item })[]
 }
 
-export function RenderSlot({ slots, slotType, row, column, equippedItems }: Props) {
+export function RenderSlot({ slots, slotType, row, column, equippedItems, availableItems }: Props) {
     const squares: JSX.Element[] = [];
     const showLayer = useRef<number>(0); // Avoid re-renders
 
@@ -35,36 +36,48 @@ export function RenderSlot({ slots, slotType, row, column, equippedItems }: Prop
         forceUpdate(n => n + 1); // Minimal re-render
     };
 
-    const showEquippedItem = useRef<number>(-1); // Avoid re-renders
-
-    const handleEquippedItemClick = (slotPosition: number) => {
-        showEquippedItem.current = showEquippedItem.current != slotPosition ? slotPosition : showEquippedItem.current;
-        console.log(showEquippedItem)
-        forceUpdate(n => n + 1); // Minimal re-render
-    };
-
     for (let index = 0; index < slots; index++) {
+        const slotItem = equippedItems.find(ei => ei.equipped === index)
 
-        squares.push(
-            <React.Fragment key={`${slotType}-${index}`}>
-                <button
-                    style=
-                    {{
-                        gridRow: row,
-                        gridColumn: column,
-                        display: showLayer.current === index ? 'inherit' : 'none'
-                    }}
-                    className={`grid-item`}
-                    onClick={() => handleSlotClick(index)}>
+        slotItem
+            ? squares.push(
+                <React.Fragment key={`${slotType}-${index}`}>
 
-                    {`${slotType.at(4)} ${index}`}
+                    <button
+                        style={{
+                            gridRow: row,
+                            gridColumn: column,
+                            display: showLayer.current === index ? 'inherit' : 'none',
+                        }}
+                        className={`grid-item`}
+                        onClick={() => handleSlotClick(index)}>
+                        {slotItem.item.name + ` ${index}`}
+                    </button>
+                    <EquippedItem item={slotItem} slotType={slotType} index={index} onCancel={() => handleSlotClick(-1)} isHidden={showItemsForSlot.current != index}></EquippedItem>
 
-                </button>
+                </React.Fragment>
+            )
 
-                <EmptySlot slotType={slotType} index={index} onCancel={() => handleSlotClick(-1)} isHidden={showItemsForSlot.current != index}></EmptySlot>
+            : squares.push(
+                <React.Fragment key={`${slotType}-${index}`}>
+                    <button
+                        style=
+                        {{
+                            gridRow: row,
+                            gridColumn: column,
+                            display: showLayer.current === index ? 'inherit' : 'none'
+                        }}
+                        className={`grid-item`}
+                        onClick={() => handleSlotClick(index)}>
 
-            </React.Fragment>
-        )
+                        {`${slotType.at(4)} ${index}`}
+
+                    </button>
+
+                    <EmptySlot slotType={slotType} index={index} onCancel={() => handleSlotClick(-1)} isHidden={showItemsForSlot.current != index} availableItems={availableItems}></EmptySlot>
+
+                </React.Fragment>
+            )
     }
 
     slots > 1
@@ -80,24 +93,3 @@ export function RenderSlot({ slots, slotType, row, column, equippedItems }: Prop
 
     return (squares)
 }
-
-/* !!! PRECISA SER ADAPTADO !!!
-
-        squares.push(
-            <React.Fragment key={`${slotType}-${index}`}>
-
-                <button
-                    style={{
-                        gridRow: row,
-                        gridColumn: column,
-                        display: showLayer.current === index ? 'inherit' : 'none',
-                    }}
-                    className={`grid-item`}
-                    onClick={() => handleEquippedItemClick(index)}>
-                    {equippedItems[index].item.name + ` ${index}`}
-                </button>
-                <EquippedItem item={equippedItems[index]} slotType={slotType} index={index} onCancel={() => handleSlotClick(-1)} isHidden={showItemsForSlot.current != index}></EquippedItem>
-
-            </React.Fragment>
-        )
-*/

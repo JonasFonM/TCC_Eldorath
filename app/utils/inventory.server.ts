@@ -20,8 +20,8 @@ export const submitStartingCharItems = async (itemList: number[], characterId: n
     Bomb: 'Alquimico'
   };
 
-  const weaponMapping: { [key: string]: any} = {
-    slotWeapon: 0  
+  const weaponMapping: { [key: string]: any } = {
+    slotWeapon: 0
   }
 
   if (itemList.length > 0) {
@@ -29,23 +29,23 @@ export const submitStartingCharItems = async (itemList: number[], characterId: n
     await prisma.character_item.createMany({
       data: selectedItems.map(i => (
         {
-        characterId: characterId,
-        itemId: i.id,
-        craftTier: 1,
-        material: materialMapping[i.subType] || 'Ferro',
-        weight: i.baseWeight,
-        cost: i.baseCost,        
+          characterId: characterId,
+          itemId: i.id,
+          craftTier: 1,
+          material: materialMapping[i.subType] || 'Ferro',
+          weight: i.baseWeight,
+          cost: i.baseCost,
 
-        reach: i.baseReach || null,
-        hitMod: weaponMapping[i.type] || null,
+          reach: i.baseReach || null,
+          hitMod: weaponMapping[i.type] || null,
 
-        defense: i.baseDefense || null,
-        
-        impact: i.impact,
-        pierce: i.pierce,
-        slash: i.slash
+          defense: i.baseDefense || null,
 
-      })),
+          impact: i.impact,
+          pierce: i.pierce,
+          slash: i.slash
+
+        })),
       skipDuplicates: false,
     });
 
@@ -67,3 +67,17 @@ export const deleteItemById = async (id: number) => {
     where: { id: id }
   })
 };
+
+export const equipItemToSlot = async (character_itemId: number, slot: number) => {
+  await prisma.character_item.update({
+    where: { id: character_itemId },
+    data: { equipped: slot }
+  })
+}
+
+export const unequipItem = async (character_itemId: number) => {
+  await prisma.character_item.update({
+    where: { id: character_itemId },
+    data: { equipped: -1 }
+  })
+}

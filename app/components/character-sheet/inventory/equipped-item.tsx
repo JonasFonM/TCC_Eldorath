@@ -1,4 +1,5 @@
 import { character_item, item } from "@prisma/client";
+import { NavLink } from "@remix-run/react";
 import React, { useRef, useState } from "react";
 
 interface props {
@@ -13,12 +14,14 @@ export function EquippedItem({ slotType, index, item, isHidden, onCancel }: prop
 
     return (
         <React.Fragment key={slotType + index}>
-            <div className="modal-overlay" style={{ display: isHidden ? 'none' : 'flex' }}>
+            <div className="modal-overlay" onClick={onCancel} style={{ display: isHidden ? 'none' : 'flex' }}>
                 <div className="modal-content">
+
                     <h1>{item.item.name} de {item.material}</h1>
+
                     <div className="modal-buttons">
 
-                        <button onClick={onCancel} className="btn-cancel">Cancelar</button>
+                        <NavLink to={`/item/unequip/${item.id}`} className="btn-cancel">Desequipar</NavLink>
 
                     </div>
                 </div>

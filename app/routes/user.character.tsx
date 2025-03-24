@@ -9,6 +9,7 @@ export const loader: LoaderFunction = async ({ request }) => {
 }
 
 export const translateSlotTypes: { [key: string]: any } = {
+  'slotAmulet': 'Pingente',
   'slotBelt': 'Cinturão',
   'slotCloak': 'Manto',
   'slotCuirass': 'Peitoral',

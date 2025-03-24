@@ -1,6 +1,7 @@
 import { character_item, item } from "@prisma/client";
 import { NavLink } from "@remix-run/react";
 import React, { useRef, useState } from "react";
+import { translateSlotTypes } from "~/routes/user.character";
 
 interface props {
     slotType: string;
@@ -17,10 +18,13 @@ export function EquippedItem({ slotType, index, item, isHidden, onCancel }: prop
             <div className="modal-overlay" style={{ display: isHidden ? 'none' : 'flex' }}>
 
                 <button onClick={onCancel} className={'modal-close'}></button>
-
                 <div className="modal-content">
 
-                    <h1>{item.item.name} de {item.material}</h1>
+                    <h1>{translateSlotTypes[slotType]}</h1>
+
+                    <h2 style={{ color: "gold" }}>{item.item.name} de {item.material}</h2>
+
+                    <p style={{ color: "white" }}>Equipado no espaço {index + 1}</p>
 
                     <div className="modal-buttons">
 

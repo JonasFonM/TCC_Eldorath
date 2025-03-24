@@ -2,6 +2,7 @@ import { character_item, item } from "@prisma/client";
 import React, { useRef, useState } from "react";
 import { EmptySlot } from "./empty-slot";
 import { EquippedItem } from "./equipped-item";
+import { translateSlotTypes } from "~/routes/user.character";
 
 interface Props {
     slots: number,
@@ -50,7 +51,7 @@ export function RenderSlot({ slots, slotType, row, column, equippedItems, availa
                         }}
                         className={`grid-item`}
                         onClick={() => handleSlotClick(index)}>
-                        {slotItem.item.name + ` ${index}`}
+                        {slotItem.item.name + ' de ' + slotItem.material}
                     </button>
                     <EquippedItem item={slotItem} slotType={slotType} index={index} onCancel={() => handleSlotClick(-1)} isHidden={showItemsForSlot.current != index}></EquippedItem>
 
@@ -69,7 +70,10 @@ export function RenderSlot({ slots, slotType, row, column, equippedItems, availa
                         className={`grid-item`}
                         onClick={() => handleSlotClick(index)}>
 
-                        {`${slotType.at(4)} ${index}`}
+                        {slots < 2
+                            ? `${translateSlotTypes[slotType]}`
+                            : `${translateSlotTypes[slotType]} ${index + 1}`
+                        }
 
                     </button>
 

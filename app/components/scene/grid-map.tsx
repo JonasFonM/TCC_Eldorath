@@ -23,7 +23,7 @@ export function GridMap({ onClick, rows, columns }: Props) {
 
     const renderGridSquares = () => {
         for (let index = 0; index < (rows * columns); index++) {
-            gridSquares.push(<div key={index} className="grid-item"> </div>)
+            gridSquares.push(<button key={index} onClick={onClick} className="grid-item"> </button>)
         }
         return (gridSquares)
     }

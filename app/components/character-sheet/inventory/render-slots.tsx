@@ -32,7 +32,6 @@ export function RenderSlot({ slots, slotType, row, column, equippedItems, availa
 
     const handleSlotClick = (slotPosition: number) => {
         showItemsForSlot.current = showItemsForSlot.current != slotPosition ? slotPosition : showItemsForSlot.current;
-        console.log(showItemsForSlot)
         forceUpdate(n => n + 1); // Minimal re-render
     };
 

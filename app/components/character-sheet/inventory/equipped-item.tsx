@@ -14,7 +14,10 @@ export function EquippedItem({ slotType, index, item, isHidden, onCancel }: prop
 
     return (
         <React.Fragment key={slotType + index}>
-            <div className="modal-overlay" onClick={onCancel} style={{ display: isHidden ? 'none' : 'flex' }}>
+            <div className="modal-overlay" style={{ display: isHidden ? 'none' : 'flex' }}>
+
+                <button onClick={onCancel} className={'modal-close'}></button>
+
                 <div className="modal-content">
 
                     <h1>{item.item.name} de {item.material}</h1>

@@ -5,10 +5,8 @@ import { NavLink, Outlet, useLoaderData } from "@remix-run/react";
 import { prisma } from "~/utils/prisma.server";
 import { LSrelations } from "~/utils/types.server";
 import { character, character_item, lineage, path, skill, item } from "@prisma/client";
-import { ResetConfirm } from "~/components/character-sheet/reset-confirm";
 import React, { useState } from "react";
-import { CharacterItemCircle } from "~/components/c-item-circle";
-import { CharacterItemExplain } from "~/components/explanations/item-explain";
+
 import { SideBars } from "~/components/side-bars/side-bars";
 import { useSidebar } from "~/components/side-bars/side-bar-context";
 import { GeneralExplain } from "~/components/explanations/general-explain";
@@ -93,24 +91,10 @@ export default function CharacterRoute() {
   const { paths } = useLoaderData<{ paths: path[] }>();
   const { isAllOpen, isHeaderOpen, isTempOpen } = useSidebar();
 
-
-  const [showItem, setShowItem] = useState<number>();
   const [showInv, setShowInv] = useState<number>(0);
-
-  const explainItem = (id: number) => {
-    showItem != id ?
-      setShowItem(() => {
-        return id;
-      })
-      :
-      setShowItem(() => {
-        return 0;
-      })
-  }
 
   const subtitle = paths.length > 0 ? String(paths.map(p => p.name)) : "Sem Caminho"
 
-  const [selectInv, setInv] = useState<number>(0);
   return (
     <>
       <SideBars

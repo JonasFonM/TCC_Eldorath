@@ -5,16 +5,15 @@ import { RenderSlot } from "./render-slots";
 
 interface Props {
     character: character,
-    items: (character_item & { item: item })[],
     equippedItems: (character_item & { item: item })[],
+    availableItems: (character_item & { item: item })[],
 }
 
-export function ItemDisplay({ character, items, equippedItems }: Props) {
+export function ItemDisplay({ character, equippedItems, availableItems }: Props) {
 
     let totalSlots = Math.max(character.slotAmulet, character.slotBelt, character.slotCloak, character.slotCuirass, character.slotEarings, character.slotGauntlet, character.slotGreaves, character.slotHelm, character.slotPauldron, character.slotRings, character.slotUpperLegs, character.slotWeapon)
     totalSlots % 2 === 0 ? totalSlots++ : totalSlots
 
-    const availableItems = items.filter(it => it.equipped === -1)
 
     return (
 
@@ -45,6 +44,7 @@ export function ItemDisplay({ character, items, equippedItems }: Props) {
 
 
             </div>
+
 
         </React.Fragment>
     )

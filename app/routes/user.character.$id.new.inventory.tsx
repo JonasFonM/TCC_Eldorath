@@ -2,7 +2,6 @@ import { character, item } from "@prisma/client";
 import { ActionFunction, json, LoaderFunction, redirect } from "@remix-run/node";
 import { NavLink, useLoaderData } from "@remix-run/react";
 import { useState } from "react";
-import { ItemCircle } from "~/components/item-circle";
 import { requireUserId } from "~/utils/auth.server";
 import { submitStartingCharItems } from "~/utils/inventory.server";
 import { prisma } from "~/utils/prisma.server";
@@ -84,8 +83,7 @@ export default function ItemSelection() {
 
             }
         });
-    };
-
+    }
 
 
     return (
@@ -94,24 +92,40 @@ export default function ItemSelection() {
             <h2>Escolha seus itens iniciais</h2>
             <h2>Drakas : {character.gold - selectedCost}</h2>
             {error && <p>{error}</p>}
+
             <div className="items-grid">
+
                 {items.map(item => (
-                    <ItemCircle
+                    <div
                         key={item.id}
-                        item={item}
-                        isSelected={selectedItems.includes(item.id)}
                         onClick={() => !isMaxSelected || selectedItems.includes(item.id) ? handleItemClick(item.id, item.baseCost) : null}
-                    />
+                        className='container'
+                        style={{ border: selectedItems.includes(item.id) ? '1px solid green' : '1px solid gray', padding: '5%', borderRadius: '2%' }}>
+
+                        <div className="col-12">
+                            <h3 style={{ color: 'gold' }}>{item.name}</h3>
+                            <p>{item.description}</p>
+                        </div>
+
+                        <div className='col-12'>
+                            <p>Custo: {item.baseCost}</p>
+                            <p>Peso: {item.baseWeight}</p>
+                            {item.type === 'slotWeapon'
+                                ? <p>Alcance: {item.baseReach}</p>
+                                : <p>Defesa: {item.baseDefense}</p>
+                            }
+                        </div>
+
+                    </div >
+
                 ))}
             </div>
             {selectedItems.map(itemId => (
                 <input type="hidden" key={itemId} name="items" value={itemId} />
             ))}
 
+            <button type="submit" className="button">Confirmar</button>
 
-            <div className="dice-box">
-                <button type="submit" className="button">Confirmar</button>
-            </div>
         </form>
     );
 }

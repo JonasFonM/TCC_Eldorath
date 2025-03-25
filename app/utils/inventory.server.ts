@@ -18,7 +18,8 @@ export const submitStartingCharItems = async (itemList: number[], characterId: n
     Potion: 'Alquimico',
     Oil: 'Alquimico',
     Bomb: 'Alquimico',
-    lArmor: 'Tecidos'
+    lArmor: 'Tecidos',
+    Focus: 'Bronze'
   };
 
   const weaponMapping: { [key: string]: any } = {

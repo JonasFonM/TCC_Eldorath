@@ -61,8 +61,6 @@ export default function ItemSelection() {
         setSelectedItems((prevItems) => {
             let newCost = selectedCost;
 
-
-
             if (newCost + cost > maxCost) {
                 setError("Você não pode pagar este item.");
                 return prevItems;
@@ -71,6 +69,7 @@ export default function ItemSelection() {
             newCost += cost;
             setSelectedCost(newCost);
             setError(null);
+            console.log([...prevItems, itemId])
             return [...prevItems, itemId];
 
         });
@@ -79,19 +78,20 @@ export default function ItemSelection() {
         setSelectedItems((prevItems) => {
             const isSelected = prevItems.includes(itemId);
             let newCost = selectedCost;
-            console.log(prevItems)
 
 
             if (isSelected) {
                 newCost -= cost;
                 setSelectedCost(newCost);
-                const index = prevItems.lastIndexOf(itemId)
+                const sameIdItems = prevItems.filter(i => i === itemId)
+                const differentIdItems = prevItems.filter(i => i !== itemId)
 
+                const index = sameIdItems.lastIndexOf(itemId)
 
-                console.log(index)
-                console.log(prevItems.splice(0, 1))
+                const newItemList = differentIdItems.concat(sameIdItems.slice(0, index))
+                console.log(newItemList)
 
-                return prevItems.splice(0, 1);
+                return newItemList;
 
             }
 

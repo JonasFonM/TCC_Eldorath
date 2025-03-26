@@ -23,7 +23,7 @@ export function EmptySlot({ slotType, index, isHidden, availableItems, onCancel 
 
                     {availableItems.length > 0 ?
                         <>
-                            <div className="grid" style={{ width: '100%', padding: "5%", gridTemplateColumns: 'auto auto auto auto auto' }}>
+                            <div className="grid" style={{ width: '100%', padding: "5%" }}>
                                 {
                                     availableItems.map(ai =>
                                         <NavLink

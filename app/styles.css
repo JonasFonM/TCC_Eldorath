@@ -425,6 +425,10 @@ li button:hover {
   justify-content: center;
 }
 
+.grid {
+  grid-template-columns: auto auto auto auto auto;
+}
+
 .grid .grid-item,
 .inventory .grid-item {
   background-color: black;
@@ -567,7 +571,7 @@ td:last-child {
   color: gold;
   padding: 20px;
   border-radius: 10px;
-  max-width: 500px;
+  max-width: 700px;
   width: 100%;
   text-align: center;
   cursor: initial;
@@ -829,6 +833,15 @@ button {
 }
 
 @media (max-width: 900px) {
+  .modal-content .grid {
+    max-width: 500px;
+    grid-template-columns: auto auto auto;
+  }
+
+  .modal-content {
+    max-width: 550px;
+  }
+
   .button {
     width: 30%;
   }
@@ -847,6 +860,15 @@ button {
 }
 
 @media (max-width: 600px) {
+  .modal-content .grid {
+    max-width: 350px;
+    grid-template-columns: auto auto;
+  }
+
+  .modal-content {
+    max-width: 400px;
+  }
+
   .button {
     width: 35%;
   }

@@ -54,34 +54,55 @@ export default function ItemSelection() {
     const [error, setError] = useState<string | null>(null);
     const maxCost = character.gold;
 
-
     const isMaxSelected = selectedCost >= maxCost;
 
 
-    const handleItemClick = (itemId: number, cost: number) => {
+    const handleItemPlus = (itemId: number, cost: number) => {
+        setSelectedItems((prevItems) => {
+            let newCost = selectedCost;
+
+
+
+            if (newCost + cost > maxCost) {
+                setError("Você não pode pagar este item.");
+                return prevItems;
+
+            }
+            newCost += cost;
+            setSelectedCost(newCost);
+            setError(null);
+            return [...prevItems, itemId];
+
+        });
+    }
+    const handleItemMinus = (itemId: number, cost: number) => {
         setSelectedItems((prevItems) => {
             const isSelected = prevItems.includes(itemId);
             let newCost = selectedCost;
+            console.log(prevItems)
+
 
             if (isSelected) {
-
                 newCost -= cost;
                 setSelectedCost(newCost);
-                return prevItems.filter(id => id !== itemId);
+                const index = prevItems.lastIndexOf(itemId)
 
-            } else {
 
-                if (newCost + cost > maxCost) {
-                    setError("Você não pode pagar este item.");
-                    return prevItems;
+                console.log(index)
+                console.log(prevItems.splice(0, 1))
 
-                }
-                newCost += cost;
-                setSelectedCost(newCost);
-                setError(null);
-                return [...prevItems, itemId];
+                return prevItems.splice(0, 1);
 
             }
+
+            if (newCost + cost > maxCost) {
+                setError("Você não pode pagar este item.");
+                return prevItems;
+
+            }
+
+            return prevItems;
+
         });
     }
 
@@ -98,7 +119,6 @@ export default function ItemSelection() {
                 {items.map(item => (
                     <div
                         key={item.id}
-                        onClick={() => !isMaxSelected || selectedItems.includes(item.id) ? handleItemClick(item.id, item.baseCost) : null}
                         className='container'
                         style={{ border: selectedItems.includes(item.id) ? '1px solid green' : '1px solid gray', padding: '5%', borderRadius: '2%' }}>
 
@@ -116,12 +136,25 @@ export default function ItemSelection() {
                             }
                         </div>
 
+                        <div className="col-4">
+                            <button type="button" className="button" onClick={() => handleItemMinus(item.id, item.baseCost)}>-</button>
+                        </div>
+
+                        <div className="col-4">
+                            <p>{selectedItems.filter(i => i === item.id).length || 0}</p>
+                        </div>
+
+                        <div className="col-4">
+                            <button type="button" className="button" onClick={() => handleItemPlus(item.id, item.baseCost)}>+</button>
+                        </div>
+
+
                     </div >
 
                 ))}
             </div>
-            {selectedItems.map(itemId => (
-                <input type="hidden" key={itemId} name="items" value={itemId} />
+            {selectedItems.map((itemId, index) => (
+                <input type="hidden" key={`${index} ${itemId}`} name="items" value={itemId} />
             ))}
 
             <button type="submit" className="button">Confirmar</button>

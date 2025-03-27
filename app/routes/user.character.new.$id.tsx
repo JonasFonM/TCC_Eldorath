@@ -180,26 +180,25 @@ export default function NewCharacterRoute() {
             <SideBars
                 entity={character} title={character.name}
                 subtitle={''}
-                tableHeaders={["NV", "CT", "XP"]}
-                tableDatas={[character.level, character.tier, character.experience]}
+                tableHeaders={["AGI", "COR", "MEN"]}
+                tableDatas={[character.agility, character.body, character.mind]}
                 tableExplain={[
-                    "Seu Nível é um indicador geral de quão poderoso você é no momento. Você sobe de nível conforme ganha Experiência.",
-                    "Sua Categoria representa em qual patamar da sua jornada você está. Você pode ser Iniciante, Profissional, Mestre ou Lendário.",
-                    "Seus Pontos de Experiência determinam quando você pode subir de nível. Você pode receber Experiência de várias formas, como derrotar inimigos, ou passar por um treinamento árduo.",
-                ]}
+                    "Agilidade é usada para Acertar Ataques Físicos, além de ser a base principal da sua Iniciativa e da sua Esquiva.",
+                    "Corpo é somado no Dano dos seus Ataques Físicos, além de ser uma base da sua Vitalidade, Vigor, Peso, Capacidade de Carga e Capacidade de Levantamento",
+                    "Mente é usada para Acertar Ataques Mágicos, além de ser uma base do seu Vigor e do seu Poder"]}
                 links={[
-                    `/user/character/new/${characterId}/basic/`,
                     `/user/character/new/${characterId}/lineages/`,
                     `/user/character/new/${characterId}/paths/`,
                     `/user/character/new/${characterId}/skills/`,
+                    `/user/character/new/${characterId}/inventory/`,
 
                 ]}
 
                 linkNames={[
-                    'Personagem',
                     'Linhagens',
                     'Caminhos',
                     'Talentos',
+                    'Itens Iniciais'
                 ]}
                 temp={
                     <>

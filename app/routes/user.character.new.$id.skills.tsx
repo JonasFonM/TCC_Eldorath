@@ -17,20 +17,20 @@ export const action: ActionFunction = async ({ request, params }) => {
   const characterId = params.id
 
   await submitCharSkills(selectedSkillIds, Number(characterId), Number(pendingSkills))
-  return redirect(`/user/character/${characterId}/skills/`)
+  return redirect(`/user/character/new/${characterId}/`)
 }
 export default function SkillSelectionRoute() {
   const {
     characterId,
     nonPureLineageSkills, pureLineageSkills, isPure,
     characteristics, magics, maneuvers, tricks, oaths,
-    maxSelectable, maxMagics, maxTechniques, maxManeuvers, maxOaths, maxTricks, }
+    maxSelectableSkills, maxMagics, maxTechniques, maxManeuvers, maxOaths, maxTricks, }
     =
     useOutletContext<{
       characterId: string,
       pureLineageSkills: LSrelations, nonPureLineageSkills: LSrelations, isPure: boolean,
       characteristics: skill[], magics: skill[], maneuvers: skill[], tricks: skill[], oaths: skill[]
-      maxSelectable: number, maxMagics: number, maxTechniques: number, maxManeuvers: number, maxOaths: number, maxTricks: number
+      maxSelectableSkills: number, maxMagics: number, maxTechniques: number, maxManeuvers: number, maxOaths: number, maxTricks: number
     }>();
 
   const [selectedSkills, setSelectedSkills] = useState<number[]>([]);
@@ -40,7 +40,7 @@ export default function SkillSelectionRoute() {
   const [selectedOaths, setSelectedOaths] = useState<number[]>([]);
   const [selectedTricks, setSelectedTricks] = useState<number[]>([]);
 
-  const isMaxSelected = selectedSkills.length >= maxSelectable;
+  const isMaxSelected = selectedSkills.length >= maxSelectableSkills;
   const isMaxMagics = selectedMagics.length >= maxMagics;
   const isMaxTechniques = selectedTechniques.length >= maxTechniques;
   const isMaxManeuvers = selectedManeuvers.length >= maxManeuvers;
@@ -146,12 +146,12 @@ export default function SkillSelectionRoute() {
 
   return (
     <>
-      {maxSelectable > 0 || maxMagics > 0 || maxTechniques > 0 || maxManeuvers > 0 || maxOaths > 0 || maxTricks > 0 ?
+      {maxSelectableSkills > 0 || maxMagics > 0 || maxTechniques > 0 || maxManeuvers > 0 || maxOaths > 0 || maxTricks > 0 ?
         <>
 
           <form method="post">
 
-            <h1 className="title-container">Escolha seus Talentos<NavLink to={`/user/character/${characterId}/skills/`} style={{ color: 'red' }} className="question-button">X</NavLink></h1>
+            <h1 className="title-container">Escolha seus Talentos</h1>
 
             <table>
               <tbody>
@@ -272,7 +272,7 @@ export default function SkillSelectionRoute() {
             ))
             }
 
-            <input type="hidden" key={maxSelectable} name="pendingSkills" value={maxSelectable} />
+            <input type="hidden" key={maxSelectableSkills} name="pendingSkills" value={maxSelectableSkills} />
 
             <button type="submit" className="button">Confirmar</button>
 
@@ -284,7 +284,7 @@ export default function SkillSelectionRoute() {
 
         <>
           <h1 className="title-container">Máximo de escolhas atingido</h1>
-          <NavLink to={`/user/character/${characterId}/skills/`} className="button">Sair</NavLink>
+          <NavLink to={`/user/character/new/${characterId}/`} className="button">Sair</NavLink>
         </>
       }
 

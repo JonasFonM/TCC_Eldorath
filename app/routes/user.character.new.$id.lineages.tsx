@@ -19,7 +19,7 @@ export const action: ActionFunction = async ({ request, params }) => {
     }
     try {
         await submitCharLineages(selectedLineageIds, Number(characterId), pure)
-        return redirect(`/user/character/${characterId}/lineages`)
+        return redirect(`/user/character/new/${characterId}/`)
     } catch (error) {
         console.error(error);
         return json({ error: "Failed to save lineages." }, { status: 500 });
@@ -31,7 +31,7 @@ export default function LineageSelection() {
     const { characterId, lineages, maxSelectableLineages } = useOutletContext<{ characterId: string, lineages: lineage[], maxSelectableLineages: number }>();
     const [selectedLineages, setSelectedLineages] = useState<number[]>([]);
     const [error, setError] = useState<string | null>(null);
-    const [isPure, setPure] = useState<boolean>(true);
+    const [isPure, setPure] = useState<boolean>(false);
     const [showLineage, setShowLineage] = useState<number>(0);
 
     const handleLineageClick = (lineageId: number) => {
@@ -70,7 +70,7 @@ export default function LineageSelection() {
             {maxSelectableLineages > 0 ?
                 <>
                     <form method="post" onSubmit={handleSubmit}>
-                        <h1 className="title-container">Escolha até {maxSelectableLineages} Linhagens<NavLink to={`/user/character/${characterId}/lineages`} style={{ color: 'red' }} className="question-button">X</NavLink></h1>
+                        <h1 className="title-container">Escolha até {maxSelectableLineages} Linhagens</h1>
                         <h3>Escolher apenas 1 Linhagem a torna Pura</h3>
 
                         <table>
@@ -109,7 +109,7 @@ export default function LineageSelection() {
                 :
                 <>
                     <h1 className="title-container">Sua Linhagem já foi Escolhida</h1>
-                    <NavLink to={`/user/character/${characterId}/lineages`}><button type="button" className="button">Sair</button></NavLink>
+                    <NavLink to={`/user/character/new/${characterId}/`}><button type="button" className="button">Sair</button></NavLink>
 
                 </>
             }

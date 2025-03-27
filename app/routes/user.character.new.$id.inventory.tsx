@@ -13,7 +13,7 @@ export const action: ActionFunction = async ({ request, params }) => {
 
     try {
         await submitStartingCharItems(selectedItemIds, Number(characterId))
-        return redirect(`/user/character/${characterId}/inventory/`);
+        return redirect(`/user/character/new/${characterId}/`);
 
     } catch (error) {
         console.error(error);
@@ -65,7 +65,7 @@ export default function ItemSelection() {
         <>
 
             <form method="post">
-                <h1 className="title-container">Inventário<NavLink style={{ color: 'red' }} className={'question-button'} to={`/user/character/${character.id}/inventory`}>X</NavLink></h1>
+                <h1 className="title-container">Inventário</h1>
                 <h2>Escolha seus itens iniciais</h2>
                 <h2>Drakas : {character.gold - selectedCost}</h2>
 

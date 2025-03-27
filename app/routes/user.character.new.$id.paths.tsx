@@ -18,7 +18,7 @@ export const action: ActionFunction = async ({ request, params }) => {
     }
     try {
         await submitCharPaths(selectedPathIds, Number(characterId), Number(pendingPaths))
-        return redirect(`/user/character/${characterId}/paths`)
+        return redirect(`/user/character/new/${characterId}/`)
     } catch (error) {
         console.error(error);
         return json({ error: "Failed to save paths." }, { status: 500 });
@@ -77,29 +77,39 @@ export default function PathSelection() {
                 <>
                     <form method="post">
 
-                        <h1 className="title-container">Escolha seu Caminho<NavLink to={`/user/character/${characterId}/paths`} style={{ color: 'red' }} className="question-button">X</NavLink></h1>
+                        <h1 className="title-container">Escolha seu Caminho</h1>
 
                         <h2 style={{ fontVariant: 'small-caps' }}>Caminhos Iniciantes</h2>
 
                         <table>
-                            <tbody>
-                                <TableHead tableTitles={tableTitles} onClick={() => showRow(1)} />
-
-                                {tier1.map(p => (
-                                    <React.Fragment key={p.id}>
+                            <thead>
+                                <TableHead tableTitles={["Caminho"]} onClick={() => showRow(1)} />
+                            </thead>
+                            {tier1.map(p => (
+                                <React.Fragment key={p.id}>
+                                    <tbody>
                                         <TableData
                                             key={p.id}
-                                            tableData={[p.name, String(p.vitality), String(p.power), String(p.addTechniques), String(p.addManeuvers), String(p.addOaths), String(p.addTricks), String(p.addMagics)]}
+                                            tableData={[`${p.name}`]}
                                             show={show === (p.pathTier)}
                                             onClick={() => handlePathClick(p.id, 1)}
                                             selected={selectedPaths.includes(p.id)}
-
                                         />
-                                    </React.Fragment>
 
-                                ))
-                                }
-                            </tbody>
+                                    </tbody>
+                                    <tbody style={{ display: selectedPaths.includes(p.id) && show === (p.pathTier) ? '' : 'none', width: '100%' }}>
+                                        <tr><th>Benefícios</th></tr>
+                                        <tr><td>Vitalidade: {String(p.vitality)}</td></tr>
+                                        <tr><td>Poder: {String(p.power)}</td></tr>
+                                        <tr><td>Técnicas: {String(p.addTechniques)}</td></tr>
+                                        <tr><td>Manobras: {String(p.addManeuvers)}</td></tr>
+                                        <tr><td>Juramentos: {String(p.addOaths)}</td></tr>
+                                        <tr><td>Truques: {String(p.addTricks)}</td></tr>
+                                        <tr><td>Mágicas: {String(p.addMagics)}</td></tr>
+                                    </tbody>
+                                </React.Fragment>
+                            ))
+                            }
                         </table>
 
 
@@ -205,7 +215,7 @@ export default function PathSelection() {
 
                 <>
                     <h1 className="title-container">Você já escolheu um Caminho</h1>
-                    <NavLink className='button' to={`/user/character/${characterId}/paths`}>Sair</NavLink>
+                    <NavLink className='button' to={`/user/character/new/${characterId}/`}>Sair</NavLink>
                 </>
 
             }

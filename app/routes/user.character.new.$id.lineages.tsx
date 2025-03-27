@@ -1,30 +1,11 @@
 import { lineage } from "@prisma/client";
-import { ActionFunction, json, LoaderFunction, redirect } from "@remix-run/node";
-import { NavLink, useLoaderData } from "@remix-run/react";
+import { ActionFunction, json, redirect } from "@remix-run/node";
+import { NavLink, useOutletContext } from "@remix-run/react";
 import React, { useState } from "react";
 import { TableHead } from "~/components/character-sheet/general-table";
 import { TableData } from "~/components/character-sheet/general-table-data";
-import { requireUserId } from "~/utils/auth.server";
 import { submitCharLineages } from "~/utils/character.server";
-import { prisma } from "~/utils/prisma.server";
 
-export const loader: LoaderFunction = async ({ request, params }) => {
-    const userId = await requireUserId(request)
-    const lineages = await prisma.lineage.findMany()
-
-    const characterId = Number(params.id)
-
-    const character = await prisma.character.findUnique({
-        where: { id: characterId },
-        include: { skills: true }
-    });
-
-    const maxSelectable = character?.pendingLineages;
-
-    const isAuthor = userId === character?.authorId
-    return isAuthor ? ({ userId, lineages, maxSelectable, characterId })
-        : redirect(`/user/character/${characterId}/lineages/`);
-}
 
 export const action: ActionFunction = async ({ request, params }) => {
     const form = await request.formData();
@@ -38,7 +19,7 @@ export const action: ActionFunction = async ({ request, params }) => {
     }
     try {
         await submitCharLineages(selectedLineageIds, Number(characterId), pure)
-        return redirect(`../../lineages`)
+        return redirect(`/user/character/${characterId}/lineages`)
     } catch (error) {
         console.error(error);
         return json({ error: "Failed to save lineages." }, { status: 500 });
@@ -47,13 +28,11 @@ export const action: ActionFunction = async ({ request, params }) => {
 }
 
 export default function LineageSelection() {
-    const { lineages, maxSelectable } = useLoaderData<{ lineages: lineage[], maxSelectable: number }>();
+    const { characterId, lineages, maxSelectableLineages } = useOutletContext<{ characterId: string, lineages: lineage[], maxSelectableLineages: number }>();
     const [selectedLineages, setSelectedLineages] = useState<number[]>([]);
     const [error, setError] = useState<string | null>(null);
     const [isPure, setPure] = useState<boolean>(true);
     const [showLineage, setShowLineage] = useState<number>(0);
-
-    const isMaxSelected = selectedLineages.length >= maxSelectable;
 
     const handleLineageClick = (lineageId: number) => {
         setSelectedLineages((prevSelectedLineages) => {
@@ -65,7 +44,7 @@ export default function LineageSelection() {
 
             setPure(newSelectedLineages.length === 1);
 
-            if (newSelectedLineages.length > maxSelectable) {
+            if (newSelectedLineages.length > maxSelectableLineages) {
                 setError("Você não pode escolher mais Linhagens.");
                 return prevSelectedLineages;
             } else {
@@ -78,7 +57,7 @@ export default function LineageSelection() {
 
     const handleSubmit = async (event: React.FormEvent) => {
 
-        if (!selectedLineages && maxSelectable != 0 || selectedLineages.length <= 0 && maxSelectable != 0) {
+        if (!selectedLineages && maxSelectableLineages != 0 || selectedLineages.length <= 0 && maxSelectableLineages != 0) {
             event.preventDefault();
 
             return alert(`Selecione pelo menos uma Linhagem.`);
@@ -88,10 +67,10 @@ export default function LineageSelection() {
 
     return (
         <>
-            {maxSelectable > 0 ?
+            {maxSelectableLineages > 0 ?
                 <>
                     <form method="post" onSubmit={handleSubmit}>
-                        <h1 className="title-container">Escolha até {maxSelectable} Linhagens<NavLink to={`../../lineages`} style={{ color: 'red' }} className="question-button">X</NavLink></h1>
+                        <h1 className="title-container">Escolha até {maxSelectableLineages} Linhagens<NavLink to={`/user/character/${characterId}/lineages`} style={{ color: 'red' }} className="question-button">X</NavLink></h1>
                         <h3>Escolher apenas 1 Linhagem a torna Pura</h3>
 
                         <table>
@@ -108,7 +87,7 @@ export default function LineageSelection() {
                                             onClick={() => handleLineageClick(Number(ln.id))}
                                             selected={selectedLineages.includes(ln.id)}
                                         />
-                                        
+
                                     </React.Fragment>
                                 ))}
 
@@ -130,7 +109,7 @@ export default function LineageSelection() {
                 :
                 <>
                     <h1 className="title-container">Sua Linhagem já foi Escolhida</h1>
-                    <NavLink to={`../../lineages`}><button type="button" className="button">Sair</button></NavLink>
+                    <NavLink to={`/user/character/${characterId}/lineages`}><button type="button" className="button">Sair</button></NavLink>
 
                 </>
             }

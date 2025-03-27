@@ -30,14 +30,14 @@ export const loader: LoaderFunction = async ({ request, params }) => {
 }
 
 export default function InventoryRoute() {
-    const { items, equippedItems, availableItems, referer } = useLoaderData<{ items: (character_item & { item: item })[]; equippedItems: (character_item & { item: item })[]; availableItems: (character_item & { item: item })[]; referer: string }>();
+    const { items, equippedItems, availableItems, characterId } = useLoaderData<{ items: (character_item & { item: item })[]; equippedItems: (character_item & { item: item })[]; availableItems: (character_item & { item: item })[]; characterId: string }>();
     const { character, isAuthor } = useOutletContext<{ character: character, isAuthor: boolean }>();
 
 
 
     return (
         <React.Fragment>
-            <h1 className="title-container">Inventário<NavLink style={{ color: 'blue' }} className={'question-button'} to={'../new/inventory'}>+</NavLink></h1>
+            <h1 className="title-container">Inventário<NavLink style={{ color: 'blue' }} className={'question-button'} to={`../../new/${characterId}/inventory`}>+</NavLink></h1>
 
             <ItemDisplay
                 availableItems={availableItems}

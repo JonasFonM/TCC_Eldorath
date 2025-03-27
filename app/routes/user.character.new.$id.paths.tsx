@@ -1,31 +1,10 @@
 import { character, path } from "@prisma/client";
-import { ActionFunction, json, LoaderFunction, redirect } from "@remix-run/node";
-import { NavLink, useLoaderData, useOutletContext } from "@remix-run/react";
+import { ActionFunction, json, redirect } from "@remix-run/node";
+import { NavLink, useOutletContext } from "@remix-run/react";
 import React, { useState } from "react";
 import { TableHead } from "~/components/character-sheet/general-table";
 import { TableData } from "~/components/character-sheet/general-table-data";
-import { requireUserId } from "~/utils/auth.server";
 import { submitCharPaths } from "~/utils/character.server";
-import { prisma } from "~/utils/prisma.server";
-
-export const loader: LoaderFunction = async ({ request, params }) => {
-    const userId = await requireUserId(request)
-    const characterId = Number(params.id);
-
-    const character = await prisma.character.findUnique({
-        where: { id: characterId },
-    });
-
-    const paths = await prisma.path.findMany()
-
-    const maxSelectable = character?.pendingPath
-
-
-    const isAuthor = userId === character?.authorId
-
-    return isAuthor ? ({ userId, paths, maxSelectable, characterId, character })
-        : redirect(`/user/character/${characterId}/paths/`);
-}
 
 export const action: ActionFunction = async ({ request, params }) => {
     const form = await request.formData();
@@ -39,7 +18,7 @@ export const action: ActionFunction = async ({ request, params }) => {
     }
     try {
         await submitCharPaths(selectedPathIds, Number(characterId), Number(pendingPaths))
-        return redirect(`../../paths`)
+        return redirect(`/user/character/${characterId}/paths`)
     } catch (error) {
         console.error(error);
         return json({ error: "Failed to save paths." }, { status: 500 });
@@ -48,7 +27,7 @@ export const action: ActionFunction = async ({ request, params }) => {
 }
 
 export default function PathSelection() {
-    const { paths, maxSelectable, character } = useLoaderData<{ paths: path[], characterId: string, maxSelectable: number, character: character }>();
+    const { paths, maxSelectablePaths, character, characterId } = useOutletContext<{ paths: path[], characterId: string, maxSelectablePaths: number, character: character }>();
     const [selectedPaths, setSelectedPaths] = useState<number[]>([]);
     const [error, setError] = useState<string | null>(null);
 
@@ -78,7 +57,7 @@ export default function PathSelection() {
                 ? prevPaths.filter(id => id !== pathId)
                 : [...prevPaths, pathId];
 
-            if (newSelectedPaths.length * pathTier > maxSelectable) {
+            if (newSelectedPaths.length * pathTier > maxSelectablePaths) {
                 setError("Você selecionou o máximo de caminhos.");
                 return prevPaths;
             } else {
@@ -94,11 +73,11 @@ export default function PathSelection() {
     return (
         <>
 
-            {maxSelectable > 0 ?
+            {maxSelectablePaths > 0 ?
                 <>
                     <form method="post">
 
-                        <h1 className="title-container">Escolha seu Caminho<NavLink to={`../../paths`} style={{ color: 'red' }} className="question-button">X</NavLink></h1>
+                        <h1 className="title-container">Escolha seu Caminho<NavLink to={`/user/character/${characterId}/paths`} style={{ color: 'red' }} className="question-button">X</NavLink></h1>
 
                         <h2 style={{ fontVariant: 'small-caps' }}>Caminhos Iniciantes</h2>
 
@@ -214,7 +193,7 @@ export default function PathSelection() {
                         ))}
                         {error && <p>{error}</p>}
 
-                        <input type="hidden" key={maxSelectable} name="pendingPaths" value={maxSelectable} />
+                        <input type="hidden" key={maxSelectablePaths} name="pendingPaths" value={maxSelectablePaths} />
 
 
                         <button type="submit" className="button">Confirmar</button>
@@ -226,7 +205,7 @@ export default function PathSelection() {
 
                 <>
                     <h1 className="title-container">Você já escolheu um Caminho</h1>
-                    <NavLink className='button' to={`../../paths`}>Sair</NavLink>
+                    <NavLink className='button' to={`/user/character/${characterId}/paths`}>Sair</NavLink>
                 </>
 
             }

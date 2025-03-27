@@ -1,136 +1,12 @@
 import { skill } from "@prisma/client";
-import { ActionFunction, json, LoaderFunction, redirect } from "@remix-run/node";
-import { NavLink, useLoaderData, useOutletContext } from "@remix-run/react";
+import { ActionFunction, redirect } from "@remix-run/node";
+import { NavLink, useOutletContext } from "@remix-run/react";
 import { useState } from "react";
 import { SkillTableHead } from "~/components/character-sheet/skill-table";
 import { SkillTableData } from "~/components/character-sheet/skill-table-data";
 import { SkillCircle } from "~/components/skill-circle";
-import { requireUserId } from "~/utils/auth.server";
 import { submitCharSkills } from "~/utils/character.server";
-import { prisma } from "~/utils/prisma.server";
 import { LSrelations } from "~/utils/types.server";
-
-
-export const loader: LoaderFunction = async ({ request, params }) => {
-  const userId = await requireUserId(request)
-  const characterId = Number(params.id)
-  const character_lineages = await prisma.character_lineage.findMany({
-    where: { characterId },
-    include: { lineage: true }
-  });
-
-  const character = await prisma.character.findUnique({
-    where: { id: characterId },
-    include: { skills: true }
-  });
-
-
-  const paths = await prisma.character_path.findMany({
-    where:
-      { characterId: characterId },
-    include: { path: true }
-  });
-
-  const selectMagics = paths.map(pss => pss.path.addMagics)
-
-  const maxMagics = selectMagics.reduce((accumulator, currentValue) => accumulator + currentValue, 0)
-
-  const selectTechniques = paths.map(pss => pss.path.addTechniques)
-
-  const maxTechniques = selectTechniques.reduce((accumulator, currentValue) => accumulator + currentValue, 0)
-
-  const selectOaths = paths.map(pss => pss.path.addOaths)
-
-  const maxOaths = selectOaths.reduce((accumulator, currentValue) => accumulator + currentValue, 0)
-
-  const selectTricks = paths.map(pss => pss.path.addTricks)
-
-  const maxTricks = selectTricks.reduce((accumulator, currentValue) => accumulator + currentValue, 0)
-
-  const selectManeuvers = paths.map(pss => pss.path.addManeuvers)
-
-  const maxManeuvers = selectManeuvers.reduce((accumulator, currentValue) => accumulator + currentValue, 0)
-
-  const maxSelectable = character?.pendingSkills;
-
-  const general_skills = await prisma.skill.findMany({
-    where: {
-      lineages: { none: {} },
-      id: { notIn: character?.skills.map(skill => skill.skillId) },
-      agi: {
-        lte: character?.agility
-      },
-      bdy: {
-        lte: character?.body
-      },
-      mnd: {
-        lte: character?.mind
-      },
-      lvl: {
-        lte: character?.level
-      },
-      OR: [{
-        trSiz: {
-          lte: character?.trueSize,
-        },
-        rlSiz: {
-          lte: character?.relativeSize,
-        },
-      },
-      { trSiz: { lte: 0 } },
-      { rlSiz: { lte: 0 } },
-      ],
-      AND: [{
-        OR: [{
-          prerequisiteId: { in: character?.skills.map(skill => skill.skillId) },
-        },
-        { prerequisiteId: null },
-        ]
-      }]
-
-    },
-
-  });
-
-  const characteristics = general_skills.filter(gs => gs.type == 'CHARACTERISTIC')
-  const magics = general_skills.filter(gs => gs.type == 'MAGIC')
-  const techniques = general_skills.filter(gs => gs.type == 'TECHNIQUE')
-  const oaths = general_skills.filter(gs => gs.techniqueSubtype == 'OATH')
-  const maneuvers = general_skills.filter(gs => gs.techniqueSubtype == 'MANEUVER')
-  const tricks = general_skills.filter(gs => gs.techniqueSubtype == 'TRICK')
-
-  const isPure = character_lineages.length === 1;
-
-  const pureLineageSkills = await prisma.lineage_skill.findMany({
-    where: {
-      skillId: { notIn: character?.skills.map(skill => skill.skillId) },
-      lineageId: { in: character_lineages.map(cl => cl.lineageId) },
-      pureSkill: true
-    },
-    include: { skill: true },
-  });
-
-  const nonPureLineageSkills = await prisma.lineage_skill.findMany({
-    where: {
-      skillId: { notIn: character?.skills.map(skill => skill.skillId) },
-      lineageId: { in: character_lineages.map(cl => cl.lineageId) },
-      pureSkill: false
-    },
-    include: { skill: true },
-  });
-
-
-  const isAuthor = userId === character?.authorId
-
-  return isAuthor ? ({
-    userId, maxSelectable, maxMagics, maxTechniques, maxManeuvers, maxOaths, maxTricks,
-    characteristics, magics, techniques, oaths, maneuvers, tricks,
-    pureLineageSkills, nonPureLineageSkills, isPure, characterId
-  })
-    :
-    redirect(`/user/character/${characterId}/skills/`);
-  ;
-}
 
 
 export const action: ActionFunction = async ({ request, params }) => {
@@ -141,19 +17,18 @@ export const action: ActionFunction = async ({ request, params }) => {
   const characterId = params.id
 
   await submitCharSkills(selectedSkillIds, Number(characterId), Number(pendingSkills))
-  return redirect(`../../skills/`)
+  return redirect(`/user/character/${characterId}/skills/`)
 }
 export default function SkillSelectionRoute() {
   const {
+    characterId,
     nonPureLineageSkills, pureLineageSkills, isPure,
     characteristics, magics, maneuvers, tricks, oaths,
     maxSelectable, maxMagics, maxTechniques, maxManeuvers, maxOaths, maxTricks, }
-
     =
-
-    useLoaderData<{
+    useOutletContext<{
       characterId: string,
-      general_skills: skill[], pureLineageSkills: LSrelations, nonPureLineageSkills: LSrelations, isPure: boolean,
+      pureLineageSkills: LSrelations, nonPureLineageSkills: LSrelations, isPure: boolean,
       characteristics: skill[], magics: skill[], maneuvers: skill[], tricks: skill[], oaths: skill[]
       maxSelectable: number, maxMagics: number, maxTechniques: number, maxManeuvers: number, maxOaths: number, maxTricks: number
     }>();
@@ -276,7 +151,7 @@ export default function SkillSelectionRoute() {
 
           <form method="post">
 
-            <h1 className="title-container">Escolha seus Talentos<NavLink to={`../../skills/`} style={{ color: 'red' }} className="question-button">X</NavLink></h1>
+            <h1 className="title-container">Escolha seus Talentos<NavLink to={`/user/character/${characterId}/skills/`} style={{ color: 'red' }} className="question-button">X</NavLink></h1>
 
             <table>
               <tbody>
@@ -409,7 +284,7 @@ export default function SkillSelectionRoute() {
 
         <>
           <h1 className="title-container">Máximo de escolhas atingido</h1>
-          <NavLink to={`../../skills/`} className="button">Sair</NavLink>
+          <NavLink to={`/user/character/${characterId}/skills/`} className="button">Sair</NavLink>
         </>
       }
 

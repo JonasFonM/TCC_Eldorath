@@ -1,33 +1,8 @@
 import { character, item } from "@prisma/client";
-import { ActionFunction, json, LoaderFunction, redirect } from "@remix-run/node";
-import { NavLink, useLoaderData } from "@remix-run/react";
+import { ActionFunction, json, redirect } from "@remix-run/node";
+import { NavLink, useOutletContext } from "@remix-run/react";
 import { useState } from "react";
-import { requireUserId } from "~/utils/auth.server";
 import { submitStartingCharItems } from "~/utils/inventory.server";
-import { prisma } from "~/utils/prisma.server";
-
-export const loader: LoaderFunction = async ({ request, params }) => {
-    const userId = await requireUserId(request)
-
-
-    const referer = request.headers.get("Referer") || "/";
-
-    const characterId = Number(params.id)
-
-    const character = await prisma.character.findUnique({
-        where: { id: characterId },
-    })
-
-    const items = await prisma.item.findMany({
-        where: {
-            baseCost: { lte: 500 }
-        },
-    })
-
-    const isAuthor = userId === character?.authorId;
-    return isAuthor ? ({ userId, items, character, characterId, referer }) :
-        redirect(`/user/character/${characterId}/inventory`);
-}
 
 export const action: ActionFunction = async ({ request, params }) => {
     const form = await request.formData();
@@ -48,14 +23,11 @@ export const action: ActionFunction = async ({ request, params }) => {
 }
 
 export default function ItemSelection() {
-    const { items, character, referer } = useLoaderData<{ items: item[]; character: character, referer: string }>();
+    const { items, character } = useOutletContext<{ items: item[]; character: character }>();
     const [selectedItems, setSelectedItems] = useState<number[]>([]);
     const [selectedCost, setSelectedCost] = useState<number>(0);
     const [error, setError] = useState<string | null>(null);
-    const maxCost = character.gold;
-
-    const isMaxSelected = selectedCost >= maxCost;
-
+    const maxCost = 500;
 
     const handleItemPlus = (itemId: number, cost: number) => {
         setSelectedItems((prevItems) => {
@@ -68,51 +40,33 @@ export default function ItemSelection() {
             }
             newCost += cost;
             setSelectedCost(newCost);
-            setError(null);
-            console.log([...prevItems, itemId])
             return [...prevItems, itemId];
 
         });
     }
+
     const handleItemMinus = (itemId: number, cost: number) => {
+
         setSelectedItems((prevItems) => {
-            const isSelected = prevItems.includes(itemId);
-            let newCost = selectedCost;
+            const index = prevItems.lastIndexOf(itemId);
+            if (index === -1) return prevItems;
 
+            let newCost = selectedCost - cost;
+            setSelectedCost(newCost)
 
-            if (isSelected) {
-                newCost -= cost;
-                setSelectedCost(newCost);
-                const sameIdItems = prevItems.filter(i => i === itemId)
-                const differentIdItems = prevItems.filter(i => i !== itemId)
+            const newItemList = [...prevItems.slice(0, index), ...prevItems.slice(index + 1)];
 
-                const index = sameIdItems.lastIndexOf(itemId)
-
-                const newItemList = differentIdItems.concat(sameIdItems.slice(0, index))
-                console.log(newItemList)
-
-                return newItemList;
-
-            }
-
-            if (newCost + cost > maxCost) {
-                setError("Você não pode pagar este item.");
-                return prevItems;
-
-            }
-
-            return prevItems;
-
+            return newItemList;
         });
-    }
+    };
+
 
 
     return (
         <form method="post">
-            <h1 className="title-container">Inventário<NavLink style={{ color: 'red' }} className={'question-button'} to={referer}>X</NavLink></h1>
+            <h1 className="title-container">Inventário<NavLink style={{ color: 'red' }} className={'question-button'} to={`/user/character/${character.id}/inventory`}>X</NavLink></h1>
             <h2>Escolha seus itens iniciais</h2>
             <h2>Drakas : {character.gold - selectedCost}</h2>
-            {error && <p>{error}</p>}
 
             <div className="items-grid">
 
@@ -136,17 +90,18 @@ export default function ItemSelection() {
                             }
                         </div>
 
-                        <div className="col-4">
+                        <div className="col-5">
                             <button type="button" className="button" onClick={() => handleItemMinus(item.id, item.baseCost)}>-</button>
                         </div>
 
-                        <div className="col-4">
-                            <p>{selectedItems.filter(i => i === item.id).length || 0}</p>
+                        <div className="col-2">
+                            {selectedItems.filter(i => i === item.id).length || 0}
                         </div>
 
-                        <div className="col-4">
+                        <div className="col-5">
                             <button type="button" className="button" onClick={() => handleItemPlus(item.id, item.baseCost)}>+</button>
                         </div>
+                        {item.baseCost > maxCost - selectedCost ? error && <p className="form-error" >{error}</p> : ''}
 
 
                     </div >

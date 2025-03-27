@@ -1,7 +1,6 @@
 import { NavLink, useOutletContext } from "@remix-run/react";
 import { lineage } from "@prisma/client";
 import { LoaderFunction } from "@remix-run/node";
-import { LineageCircle } from "~/components/lineage-circle";
 import { GeneralExplain } from "~/components/explanations/general-explain";
 import React, { useState } from "react";
 import { TableData } from "~/components/character-sheet/general-table-data";
@@ -14,14 +13,15 @@ export const loader: LoaderFunction = async ({ params }) => {
 
 
 export default function LineagesRoute() {
-  const { lineages, isPure, isAuthor } = useOutletContext<{ lineages: lineage[], isPure: boolean, isAuthor: boolean }>();
+  const { lineages, isPure, isAuthor, characterId } = useOutletContext<{ lineages: lineage[], isPure: boolean, isAuthor: boolean, characterId: string }>();
+  
   const [showLineage, setShowLineage] = useState<number>(-3);
 
   return (
     <>
       <div className="title-container">
         {isAuthor ?
-          <NavLink to={`../new/lineages/`}> <h1 style={{ marginTop: '0', marginBottom: '0', padding: '0' }}>Linhagens</h1></NavLink>
+          <NavLink to={`../../new/${characterId}/lineages/`}> <h1 style={{ marginTop: '0', marginBottom: '0', padding: '0' }}>Linhagens</h1></NavLink>
           :
           <h1 style={{ marginTop: '0', marginBottom: '0', padding: '0' }}>Linhagens</h1>
         }

@@ -61,59 +61,66 @@ export default function ItemSelection() {
     };
 
 
-
     return (
-        <form method="post">
-            <h1 className="title-container">Inventário<NavLink style={{ color: 'red' }} className={'question-button'} to={`/user/character/${character.id}/inventory`}>X</NavLink></h1>
-            <h2>Escolha seus itens iniciais</h2>
-            <h2>Drakas : {character.gold - selectedCost}</h2>
+        <>
 
-            <div className="items-grid">
+            <form method="post">
+                <h1 className="title-container">Inventário<NavLink style={{ color: 'red' }} className={'question-button'} to={`/user/character/${character.id}/inventory`}>X</NavLink></h1>
+                <h2>Escolha seus itens iniciais</h2>
+                <h2>Drakas : {character.gold - selectedCost}</h2>
 
-                {items.map(item => (
-                    <div
-                        key={item.id}
-                        className='container'
-                        style={{ border: selectedItems.includes(item.id) ? '1px solid green' : '1px solid gray', padding: '5%', borderRadius: '2%' }}>
+                <div className="items-grid">
 
-                        <div className="col-12">
-                            <h3 style={{ color: 'gold' }}>{item.name}</h3>
-                            <p>{item.description}</p>
-                        </div>
+                    {items.map(item => (
+                        <div
+                            key={item.id}
+                            className='container'
+                            style={{
+                                border: selectedItems.includes(item.id) ? '1px solid green' : '1px solid gray',
+                                borderRadius: '2%'
+                            }}
+                        >
 
-                        <div className='col-12'>
-                            <p>Custo: {item.baseCost}</p>
-                            <p>Peso: {item.baseWeight}</p>
-                            {item.type === 'slotWeapon'
-                                ? <p>Alcance: {item.baseReach}</p>
-                                : <p>Defesa: {item.baseDefense}</p>
-                            }
-                        </div>
+                            <div className="col-12">
+                                <h3 style={{ color: 'gold' }}>{item.name}</h3>
+                                <p>{item.description}</p>
+                            </div>
 
-                        <div className="col-5">
-                            <button type="button" className="button" onClick={() => handleItemMinus(item.id, item.baseCost)}>-</button>
-                        </div>
+                            <div className='col-12'>
+                                <p>Custo: {item.baseCost}</p>
+                                <p>Peso: {item.baseWeight}</p>
+                                {item.type === 'slotWeapon'
+                                    ? <p>Alcance: {item.baseReach}</p>
+                                    : <p>Defesa: {item.baseDefense}</p>
+                                }
+                            </div>
 
-                        <div className="col-2">
-                            {selectedItems.filter(i => i === item.id).length || 0}
-                        </div>
+                            <div className="col-5">
+                                <button type="button" className="button" onClick={() => handleItemMinus(item.id, item.baseCost)}>-</button>
+                            </div>
 
-                        <div className="col-5">
-                            <button type="button" className="button" onClick={() => handleItemPlus(item.id, item.baseCost)}>+</button>
-                        </div>
-                        {item.baseCost > maxCost - selectedCost ? error && <p className="form-error" >{error}</p> : ''}
+                            <div className="col-2">
+                                {selectedItems.filter(i => i === item.id).length || 0}
+                            </div>
+
+                            <div className="col-5">
+                                <button type="button" className="button" onClick={() => handleItemPlus(item.id, item.baseCost)}>+</button>
+                            </div>
+                            {item.baseCost > maxCost - selectedCost ? error && <p className="error" >{error}</p> : ''}
 
 
-                    </div >
+                        </div >
 
+                    ))}
+                </div>
+                {selectedItems.map((itemId, index) => (
+                    <input type="hidden" key={`${index} ${itemId}`} name="items" value={itemId} />
                 ))}
-            </div>
-            {selectedItems.map((itemId, index) => (
-                <input type="hidden" key={`${index} ${itemId}`} name="items" value={itemId} />
-            ))}
 
-            <button type="submit" className="button">Confirmar</button>
+                <button type="submit" className="button">Confirmar</button>
 
-        </form>
+            </form>
+
+        </>
     );
 }

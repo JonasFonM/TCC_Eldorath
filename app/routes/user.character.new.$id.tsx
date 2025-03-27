@@ -2,6 +2,8 @@
 import { character, item, lineage, path, skill } from "@prisma/client"
 import { LoaderFunction, redirect } from "@remix-run/node"
 import { Outlet, useLoaderData } from "@remix-run/react"
+import { useSidebar } from "~/components/side-bars/side-bar-context"
+import { SideBars } from "~/components/side-bars/side-bars"
 import { requireUserId } from '~/utils/auth.server'
 import { prisma } from "~/utils/prisma.server"
 import { LSrelations } from "~/utils/types.server"
@@ -148,6 +150,8 @@ export const loader: LoaderFunction = async ({ request, params }) => {
 }
 
 export default function NewCharacterRoute() {
+    const { isAllOpen, isHeaderOpen, isTempOpen } = useSidebar();
+
     const {
         userId,
         character, characterId,
@@ -171,15 +175,53 @@ export default function NewCharacterRoute() {
         }>()
 
     return (
-        <Outlet context={{
-            userId,
-            character, characterId,
-            maxSelectableSkills, maxMagics, maxTechniques, maxManeuvers, maxOaths, maxTricks,
-            characteristics, magics, techniques, oaths, maneuvers, tricks,
-            pureLineageSkills, nonPureLineageSkills, isPure,
-            lineages, maxSelectableLineages,
-            paths, maxSelectablePaths,
-            items
-        }} />
+
+        <>
+            <SideBars
+                entity={character} title={character.name}
+                subtitle={''}
+                tableHeaders={["NV", "CT", "XP"]}
+                tableDatas={[character.level, character.tier, character.experience]}
+                tableExplain={[
+                    "Seu Nível é um indicador geral de quão poderoso você é no momento. Você sobe de nível conforme ganha Experiência.",
+                    "Sua Categoria representa em qual patamar da sua jornada você está. Você pode ser Iniciante, Profissional, Mestre ou Lendário.",
+                    "Seus Pontos de Experiência determinam quando você pode subir de nível. Você pode receber Experiência de várias formas, como derrotar inimigos, ou passar por um treinamento árduo.",
+                ]}
+                links={[
+                    `/user/character/new/${characterId}/basic/`,
+                    `/user/character/new/${characterId}/lineages/`,
+                    `/user/character/new/${characterId}/paths/`,
+                    `/user/character/new/${characterId}/skills/`,
+
+                ]}
+
+                linkNames={[
+                    'Personagem',
+                    'Linhagens',
+                    'Caminhos',
+                    'Talentos',
+                ]}
+                temp={
+                    <>
+
+                    </>
+                }
+
+            />
+
+            <div className="character-sheet" style={isAllOpen ? { marginLeft: '200px', marginRight: '200px' } : isHeaderOpen ? { marginLeft: '200px' } : isTempOpen ? { marginRight: '200px' } : {}}>
+                <Outlet context={{
+                    userId,
+                    character, characterId,
+                    maxSelectableSkills, maxMagics, maxTechniques, maxManeuvers, maxOaths, maxTricks,
+                    characteristics, magics, techniques, oaths, maneuvers, tricks,
+                    pureLineageSkills, nonPureLineageSkills, isPure,
+                    lineages, maxSelectableLineages,
+                    paths, maxSelectablePaths,
+                    items
+                }} />
+            </div>
+        </>
+
     );
 }

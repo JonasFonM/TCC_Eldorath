@@ -206,7 +206,8 @@ ul {
 
 .header,
 .temp {
-  overflow: auto;
+  overflow-y: auto;
+  overflow-x: hidden;
   transition: 0.3s ease-in-out;
   position: fixed;
   display: block;
@@ -347,6 +348,11 @@ li button {
 
 }
 
+li a.active {
+  color: gold;
+  scale: 1.1
+}
+
 .header table button {
   color: white;
   text-align: center;
@@ -363,7 +369,7 @@ li a:hover,
 li button:hover {
   color: gold;
   cursor: pointer;
-  background-color: rgb(0, 0, 0);
+  background-color: black;
   box-shadow: 1px 1px 8px 1px gold;
   transition: 0.3s;
 }
@@ -476,22 +482,28 @@ tr {
 
 td,
 th {
-  font-size: 1.1rem;
-  font-family: serif;
-  font-variant: small-caps;
   border: 2px solid #dddddd;
   border-left: 0;
   text-align: center;
   padding: 18px;
 }
 
+td {
+  font-family: serif;
+  font-size: 1.1rem;
+}
+
 th {
+  font-family: serif;
+  font-variant: small-caps;
   font-size: 1.25rem;
-  font-weight: bold;
+  font-weight: 700;
+  letter-spacing: 0.07rem;
 }
 
 .selected {
-  background-color: darkgoldenrod;
+  color: gold;
+  background-color: rgb(9, 8, 9);
   box-shadow: 0px 0px 16px 1px gold;
 
 }

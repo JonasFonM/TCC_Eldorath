@@ -29,7 +29,7 @@ export function CharacterSheet({ character, isAuthor }: Props) {
         <>
             <h1 className="title-container">
                 {isAuthor ?
-                    <NavLink to={`/user/character/update/${String(character.id)}/basic`} className={'lineBtn'}>Atributos</NavLink>
+                    <NavLink to={`/user/character/new/${String(character.id)}/basic`} className={'lineBtn'}>Atributos</NavLink>
                     :
                     'Atributos'
                 }

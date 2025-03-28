@@ -19,7 +19,7 @@ export const action: ActionFunction = async ({ request, params }) => {
     }
     try {
         await submitCharLineages(selectedLineageIds, Number(characterId), pure)
-        return redirect(`/user/character/new/${characterId}/`)
+        return redirect(`/user/character/new/${characterId}/paths/`)
     } catch (error) {
         console.error(error);
         return json({ error: "Failed to save lineages." }, { status: 500 });
@@ -30,7 +30,6 @@ export const action: ActionFunction = async ({ request, params }) => {
 export default function LineageSelection() {
     const { characterId, lineages, maxSelectableLineages } = useOutletContext<{ characterId: string, lineages: lineage[], maxSelectableLineages: number }>();
     const [selectedLineages, setSelectedLineages] = useState<number[]>([]);
-    const [error, setError] = useState<string | null>(null);
     const [isPure, setPure] = useState<boolean>(false);
     const [showLineage, setShowLineage] = useState<number>(0);
 
@@ -43,13 +42,6 @@ export default function LineageSelection() {
                 : [...prevSelectedLineages, lineageId];
 
             setPure(newSelectedLineages.length === 1);
-
-            if (newSelectedLineages.length > maxSelectableLineages) {
-                setError("Você não pode escolher mais Linhagens.");
-                return prevSelectedLineages;
-            } else {
-                setError(null);
-            }
 
             return newSelectedLineages;
         });
@@ -67,16 +59,21 @@ export default function LineageSelection() {
 
     return (
         <>
+            <h1>Linhagens</h1>
             {maxSelectableLineages > 0 ?
                 <>
                     <form method="post" onSubmit={handleSubmit}>
-                        <h1 className="title-container">Escolha até {maxSelectableLineages} Linhagens</h1>
+                        <h2>Escolha até {maxSelectableLineages} Linhagens</h2>
                         <h3>Escolher apenas 1 Linhagem a torna Pura</h3>
 
                         <table>
                             <tbody>
 
-                                <TableHead tableTitles={['Linhagem']} onClick={showLineage != -2 ? () => setShowLineage(-2) : () => setShowLineage(0)} />
+                                <TableHead
+                                    tableTitles={['Linhagem']}
+                                    onClick={showLineage != -2 ? () => setShowLineage(-2) : () => setShowLineage(0)}
+                                    open={showLineage === -2}
+                                />
 
                                 {lineages.map(ln => (
                                     <React.Fragment key={ln.id}>
@@ -84,10 +81,11 @@ export default function LineageSelection() {
                                             key={ln.id}
                                             tableData={isPure ? [String(ln.name) + ' Pura'] : [String(ln.name)]}
                                             show={showLineage === (-2)}
-                                            onClick={() => handleLineageClick(Number(ln.id))}
+                                            onClick={selectedLineages.length < maxSelectableLineages || selectedLineages.includes(ln.id)
+                                                ? () => handleLineageClick(Number(ln.id))
+                                                : () => alert("Você não pode escolher mais Linhagens.")}
                                             selected={selectedLineages.includes(ln.id)}
                                         />
-
                                     </React.Fragment>
                                 ))}
 
@@ -100,16 +98,15 @@ export default function LineageSelection() {
 
                         <input type="hidden" key='pure' name="pure" value={isPure ? 'true' : 'false'} />
 
-                        {error && <p>{error}</p>}
 
-                        <button type="submit" className="button">Confirmar</button>
+                        <button type="submit" className="button">Próximo</button>
                     </form>
                 </>
 
                 :
                 <>
-                    <h1 className="title-container">Sua Linhagem já foi Escolhida</h1>
-                    <NavLink to={`/user/character/new/${characterId}/`}><button type="button" className="button">Sair</button></NavLink>
+                    <h2>Sua Linhagem já foi Escolhida</h2>
+                    <NavLink to={`/user/character/new/${characterId}/paths`}><button type="button" className="button">Caminhos</button></NavLink>
 
                 </>
             }

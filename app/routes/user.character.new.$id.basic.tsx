@@ -40,7 +40,7 @@ export const action: ActionFunction = async ({ params, request }) => {
         const character = await updateCharacter({ name, level, tier, agility, body, mind, authorId }, Number(params.id));
 
         return (
-            redirect(`/user/character/${String(character.id)}/stats`)
+            redirect(`/user/character/new/${String(character.id)}/lineages/`)
         );
     } catch (error) {
         console.error(error);
@@ -210,7 +210,7 @@ export default function NewCharacterRoute() {
 
 
             <div className="container">
-                <button className="button" type="submit">Confirmar</button>
+                <button className="button" type="submit">Próximo</button>
             </div>
         </form>
     );

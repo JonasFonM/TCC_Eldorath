@@ -1,9 +1,9 @@
 import { skill } from "@prisma/client";
 import { ActionFunction, redirect } from "@remix-run/node";
 import { NavLink, useOutletContext } from "@remix-run/react";
-import { useState } from "react";
-import { SkillTableHead } from "~/components/character-sheet/skill-table";
-import { SkillTableData } from "~/components/character-sheet/skill-table-data";
+import React, { useState } from "react";
+import { TableHead } from "~/components/character-sheet/general-table";
+import { TableData } from "~/components/character-sheet/general-table-data";
 import { SkillCircle } from "~/components/skill-circle";
 import { submitCharSkills } from "~/utils/character.server";
 import { LSrelations } from "~/utils/types.server";
@@ -17,19 +17,19 @@ export const action: ActionFunction = async ({ request, params }) => {
   const characterId = params.id
 
   await submitCharSkills(selectedSkillIds, Number(characterId), Number(pendingSkills))
-  return redirect(`/user/character/new/${characterId}/`)
+  return redirect(`/user/character/new/${characterId}/inventory/`)
 }
 export default function SkillSelectionRoute() {
   const {
     characterId,
     nonPureLineageSkills, pureLineageSkills, isPure,
-    characteristics, magics, maneuvers, tricks, oaths,
+    skills, selectableSkills,
     maxSelectableSkills, maxMagics, maxTechniques, maxManeuvers, maxOaths, maxTricks, }
     =
     useOutletContext<{
       characterId: string,
       pureLineageSkills: LSrelations, nonPureLineageSkills: LSrelations, isPure: boolean,
-      characteristics: skill[], magics: skill[], maneuvers: skill[], tricks: skill[], oaths: skill[]
+      skills: skill[], selectableSkills: skill[],
       maxSelectableSkills: number, maxMagics: number, maxTechniques: number, maxManeuvers: number, maxOaths: number, maxTricks: number
     }>();
 
@@ -61,153 +61,138 @@ export default function SkillSelectionRoute() {
   }
 
 
-  const handleSkillClick = (skillId: number) => {
-    setSelectedSkills((prevSkills) => {
+  const handleSkillClick = (skillId: number, skillType: string, techniqueSubtype: string | null) => {
+    if (skillType === 'MAGIC' && !isMaxMagics) {
+      setSelectedMagics((prevSkills) => {
 
-      const isSelected = prevSkills.includes(skillId);
+        const isSelected = prevSkills.includes(skillId);
 
-      const newSelectedSkills = isSelected
-        ? prevSkills.filter(id => id !== skillId)
-        : [...prevSkills, skillId];
+        const newSelectedSkills = isSelected
+          ? prevSkills.filter(id => id !== skillId)
+          : [...prevSkills, skillId];
 
-      return newSelectedSkills;
-    });
-  };
+        return newSelectedSkills
+      }
+      )
+    }
 
-  const handleMagicClick = (skillId: number) => {
-    setSelectedMagics((prevSkills) => {
+    if (techniqueSubtype === 'MANEUVER' && !isMaxManeuvers) {
+      setSelectedManeuvers((prevSkills) => {
 
-      const isSelected = prevSkills.includes(skillId);
+        const isSelected = prevSkills.includes(skillId);
 
-      const newSelectedSkills = isSelected
-        ? prevSkills.filter(id => id !== skillId)
-        : [...prevSkills, skillId];
+        const newSelectedSkills = isSelected
+          ? prevSkills.filter(id => id !== skillId)
+          : [...prevSkills, skillId];
 
-      return newSelectedSkills;
-    })
+        return newSelectedSkills;
+      }
+      )
+    }
 
-  };
+    if (techniqueSubtype === 'OATH' && !isMaxOaths) {
+      setSelectedOaths((prevSkills) => {
 
-  const handleTechniqueClick = (skillId: number) => {
-    setSelectedTechniques((prevSkills) => {
+        const isSelected = prevSkills.includes(skillId);
 
-      const isSelected = prevSkills.includes(skillId);
+        const newSelectedSkills = isSelected
+          ? prevSkills.filter(id => id !== skillId)
+          : [...prevSkills, skillId];
 
-      const newSelectedSkills = isSelected
-        ? prevSkills.filter(id => id !== skillId)
-        : [...prevSkills, skillId];
+        return newSelectedSkills;
+      })
+    }
 
-      return newSelectedSkills;
-    })
+    if (techniqueSubtype === 'TRICK' && !isMaxTricks) {
+      setSelectedTricks((prevSkills) => {
 
-  };
+        const isSelected = prevSkills.includes(skillId);
 
-  const handleManeuverClick = (skillId: number) => {
-    setSelectedManeuvers((prevSkills) => {
+        const newSelectedSkills = isSelected
+          ? prevSkills.filter(id => id !== skillId)
+          : [...prevSkills, skillId];
 
-      const isSelected = prevSkills.includes(skillId);
+        return newSelectedSkills;
+      }
+      )
+    }
 
-      const newSelectedSkills = isSelected
-        ? prevSkills.filter(id => id !== skillId)
-        : [...prevSkills, skillId];
+    if (skillType === 'TECHNIQUE' && !isMaxTechniques) {
+      setSelectedTechniques((prevSkills) => {
 
-      return newSelectedSkills;
-    })
+        const isSelected = prevSkills.includes(skillId);
 
-  };
+        const newSelectedSkills = isSelected
+          ? prevSkills.filter(id => id !== skillId)
+          : [...prevSkills, skillId];
 
-  const handleOathClick = (skillId: number) => {
-    setSelectedOaths((prevSkills) => {
+        return newSelectedSkills;
+      }
+      )
+    }
 
-      const isSelected = prevSkills.includes(skillId);
+    if (!isMaxSelected || selectedSkills.includes(skillId)) {
+      setSelectedSkills((prevSkills) => {
 
-      const newSelectedSkills = isSelected
-        ? prevSkills.filter(id => id !== skillId)
-        : [...prevSkills, skillId];
+        const isSelected = prevSkills.includes(skillId);
 
-      return newSelectedSkills;
-    })
+        const newSelectedSkills = isSelected
+          ? prevSkills.filter(id => id !== skillId)
+          : [...prevSkills, skillId];
 
-  };
-
-  const handleTrickClick = (skillId: number) => {
-    setSelectedTricks((prevSkills) => {
-
-      const isSelected = prevSkills.includes(skillId);
-
-      const newSelectedSkills = isSelected
-        ? prevSkills.filter(id => id !== skillId)
-        : [...prevSkills, skillId];
-
-      return newSelectedSkills;
-    })
+        return newSelectedSkills;
+      });
+    }
 
   };
 
   return (
     <>
+      <h1>Talentos</h1>
       {maxSelectableSkills > 0 || maxMagics > 0 || maxTechniques > 0 || maxManeuvers > 0 || maxOaths > 0 || maxTricks > 0 ?
         <>
 
           <form method="post">
 
-            <h1 className="title-container">Escolha seus Talentos</h1>
+            <h2>Escolha seus Talentos</h2>
 
             <table>
-              <tbody>
+              <thead>
+                <TableHead
+                  tableTitles={['Talentos']}
+                  onClick={() => showRow()}
+                  open={show === 1}
+                />
+              </thead>
 
-                <SkillTableHead onClick={() => showRow()} />
+              {selectableSkills.map(sk => (
+                <React.Fragment key={sk.id}>
+                  <tbody className={isMaxSelected ? 'error' : ''}>
+                    <TableData
+                      key={sk.id}
+                      tableData={[`${sk.name}`]}
+                      show={show === 1}
+                      onClick={() => handleSkillClick(sk.id, sk.type, sk.techniqueSubtype)}
+                      selected={selectedSkills.includes(sk.id)}
+                    />
 
-                {characteristics.map(skill => (
-                  <SkillTableData
-                    key={skill.id}
-                    skill={skill}
-                    show={show === 1}
-                    selected={selectedSkills.includes(skill.id)}
-                    onClick={() => !isMaxSelected || selectedSkills.includes(skill.id) ? handleSkillClick(skill.id) : alert((`Você já escolheu o seu limite de Características.`))}
-                  />
-                ))}
+                  </tbody>
+                  <tbody style={{ display: selectedSkills.includes(sk.id) && show === (1) ? '' : 'none', width: '100%' }} className="selected">
+                    <tr><th>Tipo</th></tr>
+                    <tr><td>{String(sk.type)}</td></tr>
+                    {sk.techniqueSubtype ? <tr><td>{String(sk.techniqueSubtype)}</td></tr> : ''}
+                    <tr><th>Requisitos</th></tr>
+                    <tr><td>Agilidade: {String(sk.agi)}</td></tr>
+                    <tr><td>Corpo: {String(sk.bdy)}</td></tr>
+                    <tr><td>Mente: {String(sk.mnd)}</td></tr>
+                    <tr><td>Nível: {String(sk.lvl)}</td></tr>
+                    <tr><td>Tamanho Real: {String(sk.trSiz)}</td></tr>
+                    <tr><td>Tamanho Efetivo: {String(sk.rlSiz)}</td></tr>
+                    {sk.prerequisiteId ? <tr><td>Talento: {String(sk.prerequisiteId)}</td></tr> : ''}
+                  </tbody>
+                </React.Fragment>
+              ))}
 
-                {maneuvers.map(skill => (
-                  <SkillTableData
-                    key={skill.id}
-                    skill={skill}
-                    show={show === 1}
-                    selected={selectedManeuvers.includes(skill.id) || selectedTechniques.includes(skill.id) || selectedSkills.includes(skill.id)}
-                    onClick={() => !isMaxManeuvers || selectedManeuvers.includes(skill.id) ? handleManeuverClick(skill.id) : !isMaxTechniques || selectedTechniques.includes(skill.id) ? handleTechniqueClick(skill.id) : !isMaxSelected || selectedSkills.includes(skill.id) ? handleSkillClick(skill.id) : alert((`Você já escolheu o seu limite de Manobras.`))}
-                  />
-                ))}
-
-                {oaths.map(skill => (
-                  <SkillTableData
-                    key={skill.id}
-                    skill={skill}
-                    show={show === 1}
-                    selected={selectedOaths.includes(skill.id) || selectedTechniques.includes(skill.id) || selectedSkills.includes(skill.id)}
-                    onClick={() => !isMaxOaths || selectedOaths.includes(skill.id) ? handleOathClick(skill.id) : !isMaxTechniques || selectedTechniques.includes(skill.id) ? handleTechniqueClick(skill.id) : !isMaxSelected || selectedSkills.includes(skill.id) ? handleSkillClick(skill.id) : alert((`Você já escolheu o seu limite de Juramentos.`))}
-                  />
-                ))}
-                {tricks.map(skill => (
-                  <SkillTableData
-                    key={skill.id}
-                    skill={skill}
-                    show={show === 1}
-                    selected={selectedTricks.includes(skill.id) || selectedTechniques.includes(skill.id) || selectedSkills.includes(skill.id)}
-
-                    onClick={() => !isMaxTricks || selectedTricks.includes(skill.id) ? handleTrickClick(skill.id) : !isMaxTechniques || selectedTechniques.includes(skill.id) ? handleTechniqueClick(skill.id) : !isMaxSelected || selectedSkills.includes(skill.id) ? handleSkillClick(skill.id) : alert((`Você já escolheu o seu limite de Truques.`))}
-                  />
-                ))}
-                {magics.map(skill => (
-                  <SkillTableData
-                    key={skill.id}
-                    skill={skill}
-                    show={show === 1}
-                    selected={selectedMagics.includes(skill.id) || selectedSkills.includes(skill.id)}
-                    onClick={() => !isMaxMagics || selectedMagics.includes(skill.id) ? handleMagicClick(skill.id) : !isMaxSelected || selectedSkills.includes(skill.id) ? handleSkillClick(skill.id) : alert((`Você já escolheu o seu limite de Mágicas.`))}
-                  />
-                ))}
-
-              </tbody>
 
             </table>
 
@@ -219,7 +204,7 @@ export default function SkillSelectionRoute() {
                   key={ls.skill.id}
                   skill={ls.skill}
                   isSelected={selectedSkills.includes(ls.skill.id)}
-                  onClick={() => !isMaxSelected || selectedSkills.includes(ls.skill.id) ? handleSkillClick(ls.skill.id) : alert((`Você já escolheu o seu limite de Talentos.`))}
+                  onClick={() => !isMaxSelected || selectedSkills.includes(ls.skill.id) ? handleSkillClick(ls.skill.id, ls.skill.type, ls.skill.techniqueSubtype) : alert((`Você já escolheu o seu limite de Talentos.`))}
                   isPureLineage={false}
                 />
               ))}
@@ -233,7 +218,7 @@ export default function SkillSelectionRoute() {
                   key={ls.skill.id}
                   skill={ls.skill}
                   isSelected={selectedSkills.includes(ls.skill.id)}
-                  onClick={() => !isMaxSelected || selectedSkills.includes(ls.skill.id) ? handleSkillClick(ls.skill.id) : alert((`Você já escolheu o seu limite de Talentos.`))}
+                  onClick={() => !isMaxSelected || selectedSkills.includes(ls.skill.id) ? handleSkillClick(ls.skill.id, ls.skill.type, ls.skill.techniqueSubtype) : alert((`Você já escolheu o seu limite de Talentos.`))}
                   isPureLineage={true}
                 />
               ))}
@@ -274,7 +259,7 @@ export default function SkillSelectionRoute() {
 
             <input type="hidden" key={maxSelectableSkills} name="pendingSkills" value={maxSelectableSkills} />
 
-            <button type="submit" className="button">Confirmar</button>
+            <button type="submit" className="button">Próximo</button>
 
           </form>
 
@@ -283,8 +268,8 @@ export default function SkillSelectionRoute() {
         :
 
         <>
-          <h1 className="title-container">Máximo de escolhas atingido</h1>
-          <NavLink to={`/user/character/new/${characterId}/`} className="button">Sair</NavLink>
+          <h2>Você já escolheu o máximo de Talentos que pode</h2>
+          <NavLink to={`/user/character/new/${characterId}/inventory/`} className="button">Itens Iniciais</NavLink>
         </>
       }
 

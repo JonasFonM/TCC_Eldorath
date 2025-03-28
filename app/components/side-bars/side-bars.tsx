@@ -38,7 +38,7 @@ export function SideBars({ title, subtitle, tableHeaders, tableDatas, tableExpla
                 <h3>{subtitle}</h3>
 
                 {tableHeaders.map((th, index) => (
-                    <React.Fragment key={th}>
+                    <React.Fragment key={th + index}>
                         <table>
                             <tbody>
                                 <tr onClick={() => setShowExplain(index + 1)}>
@@ -54,7 +54,7 @@ export function SideBars({ title, subtitle, tableHeaders, tableDatas, tableExpla
 
                 <ul>
                     {links.map((lk, index) => (
-                        <li key={lk[index]}><NavLink to={lk}>{linkNames[index]}</NavLink></li>
+                        <li key={lk + index}><NavLink to={lk}>{linkNames[index]}</NavLink></li>
                     ))}
                 </ul>
 

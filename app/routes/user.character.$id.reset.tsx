@@ -1,16 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { redirect, LoaderFunction } from "@remix-run/node";
-import { getUserIdFromSession } from "~/utils/auth.server";
 import { prisma } from "~/utils/prisma.server";
 
-export const loader: LoaderFunction = async ({ params, request }) => {
+export const loader: LoaderFunction = async ({ params }) => {
     const characterId = Number(params.id);
-    const userId = Number(getUserIdFromSession(request))
     const character = await prisma.character.findUnique({
         where: { id: characterId },
     });
-    const isAuthor = userId === Number(character?.authorId)
-    const referer = request.headers.get("Referer") || "/"; // Fallback to "/" if no referer
 
     if (!character) {
         throw new Response("Personagem não encontrado", { status: 404 });
@@ -66,5 +62,5 @@ export const loader: LoaderFunction = async ({ params, request }) => {
         }
     });
 
-    return redirect(referer);
+    return redirect(`/user/character/new/${characterId}/basic/`);
 };

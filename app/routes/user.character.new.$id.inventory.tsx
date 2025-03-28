@@ -13,7 +13,7 @@ export const action: ActionFunction = async ({ request, params }) => {
 
     try {
         await submitStartingCharItems(selectedItemIds, Number(characterId))
-        return redirect(`/user/character/new/${characterId}/`);
+        return redirect(`/user/character/new/${characterId}/end/`);
 
     } catch (error) {
         console.error(error);
@@ -27,7 +27,7 @@ export default function ItemSelection() {
     const [selectedItems, setSelectedItems] = useState<number[]>([]);
     const [selectedCost, setSelectedCost] = useState<number>(0);
     const [error, setError] = useState<string | null>(null);
-    const maxCost = 500;
+    const maxCost = character.gold;
 
     const handleItemPlus = (itemId: number, cost: number) => {
         setSelectedItems((prevItems) => {
@@ -65,8 +65,9 @@ export default function ItemSelection() {
         <>
 
             <form method="post">
-                <h1 className="title-container">Inventário</h1>
+                <h1 className="title-container">Itens Iniciais</h1>
                 <h2>Escolha seus itens iniciais</h2>
+                <h3>*Drakas não gastos podem ser usados em jogo</h3>
                 <h2>Drakas : {character.gold - selectedCost}</h2>
 
                 <div className="items-grid">
@@ -117,7 +118,7 @@ export default function ItemSelection() {
                     <input type="hidden" key={`${index} ${itemId}`} name="items" value={itemId} />
                 ))}
 
-                <button type="submit" className="button">Confirmar</button>
+                <button type="submit" className="button">Próximo</button>
 
             </form>
 

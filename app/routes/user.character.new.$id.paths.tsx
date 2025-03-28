@@ -18,7 +18,7 @@ export const action: ActionFunction = async ({ request, params }) => {
     }
     try {
         await submitCharPaths(selectedPathIds, Number(characterId), Number(pendingPaths))
-        return redirect(`/user/character/new/${characterId}/`)
+        return redirect(`/user/character/new/${characterId}/skills/`)
     } catch (error) {
         console.error(error);
         return json({ error: "Failed to save paths." }, { status: 500 });
@@ -72,18 +72,22 @@ export default function PathSelection() {
 
     return (
         <>
-
+            <h1>Caminhos</h1>
             {maxSelectablePaths > 0 ?
                 <>
                     <form method="post">
 
-                        <h1 className="title-container">Escolha seu Caminho</h1>
+                        <h2>Escolha seu Caminho</h2>
 
                         <h2 style={{ fontVariant: 'small-caps' }}>Caminhos Iniciantes</h2>
 
                         <table>
                             <thead>
-                                <TableHead tableTitles={["Caminho"]} onClick={() => showRow(1)} />
+                                <TableHead
+                                    tableTitles={["Caminho"]}
+                                    onClick={() => showRow(1)}
+                                    open={show === 1}
+                                />
                             </thead>
                             {tier1.map(p => (
                                 <React.Fragment key={p.id}>
@@ -91,7 +95,7 @@ export default function PathSelection() {
                                         <TableData
                                             key={p.id}
                                             tableData={[`${p.name}`]}
-                                            show={show === (p.pathTier)}
+                                            show={show === (p.pathTier) && (selectedPaths.includes(p.id) || selectedPaths.length === 0)}
                                             onClick={() => handlePathClick(p.id, 1)}
                                             selected={selectedPaths.includes(p.id)}
                                         />
@@ -120,7 +124,12 @@ export default function PathSelection() {
                                 <table>
                                     <tbody>
 
-                                        <TableHead tableTitles={tableTitles} onClick={() => showRow(2)} />
+                                        <TableHead
+                                            tableTitles={tableTitles}
+                                            onClick={() => showRow(2)}
+                                            open={show === 2}
+                                        />
+
                                         {tier2.map(p => (
                                             <React.Fragment key={p.id}>
                                                 <TableData
@@ -149,7 +158,11 @@ export default function PathSelection() {
                                 <table>
                                     <tbody>
 
-                                        <TableHead tableTitles={tableTitles} onClick={() => showRow(3)} />
+                                        <TableHead
+                                            tableTitles={tableTitles}
+                                            onClick={() => showRow(3)}
+                                            open={show === 3}
+                                        />
 
                                         {tier3.map(p => (
                                             <React.Fragment key={p.id}>
@@ -176,7 +189,11 @@ export default function PathSelection() {
                                 <table>
                                     <tbody>
 
-                                        <TableHead tableTitles={tableTitles} onClick={() => showRow(4)} />
+                                        <TableHead
+                                            tableTitles={tableTitles}
+                                            onClick={() => showRow(4)}
+                                            open={show === 4}
+                                        />
 
                                         {tier4.map(p => (
                                             <React.Fragment key={p.id}>
@@ -206,7 +223,7 @@ export default function PathSelection() {
                         <input type="hidden" key={maxSelectablePaths} name="pendingPaths" value={maxSelectablePaths} />
 
 
-                        <button type="submit" className="button">Confirmar</button>
+                        <button type="submit" className="button">Próximo</button>
                     </form>
 
                 </>
@@ -214,8 +231,8 @@ export default function PathSelection() {
                 :
 
                 <>
-                    <h1 className="title-container">Você já escolheu um Caminho</h1>
-                    <NavLink className='button' to={`/user/character/new/${characterId}/`}>Sair</NavLink>
+                    <h2>Você já escolheu um Caminho</h2>
+                    <NavLink className='button' to={`/user/character/new/${characterId}/skills/`}>Talentos</NavLink>
                 </>
 
             }

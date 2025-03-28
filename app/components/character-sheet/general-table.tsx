@@ -3,14 +3,15 @@ import "~/styles.css";
 interface Props {
     onClick: () => void;
     tableTitles: string[];
+    open: boolean
 }
 
-export function TableHead({ onClick, tableTitles }: Props) {
+export function TableHead({ onClick, tableTitles, open }: Props) {
 
     return (
-        <tr style={{ display: 'table-row' }} onClick={onClick}>
+        <tr style={{ backgroundColor: open ? '#090809' : 'inherit' }} onClick={onClick}>
             {tableTitles.map((tt, index) => (
-                <th key={index}>{tt}</th>
+                <th style={{color: open ? 'gold' : 'inherit'}} key={index}>{tt}</th>
             ))}
         </tr>
     )

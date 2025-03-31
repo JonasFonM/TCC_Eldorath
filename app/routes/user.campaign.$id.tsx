@@ -31,17 +31,16 @@ export const loader: LoaderFunction = async ({ params, request }) => {
 
     const campaignCharacter = campaign?.characters.find(cc => cc.campaignId == campaign.id && cc.authorId == userId)
 
-    return ({ isMaster, isPlayer, campaignCharacter, characters, campaignId, campaign, party })
+    return ({ isMaster, isPlayer, campaignCharacter, characters, campaign, party, campaignId })
 }
 
 export default function CampaignRoute() {
-    const { isMaster, isPlayer, campaignCharacter, characters, campaign, party } = useLoaderData<{ isMaster: boolean, isPlayer: boolean, campaignCharacter: character, characters: character[], campaign: (campaign & { scenes: scene[], characters: character[], players: partyMembers[] }), party: user[] }>()
+    const { isMaster, isPlayer, campaignCharacter, characters, campaign, party, campaignId } = useLoaderData<{ isMaster: boolean, isPlayer: boolean, campaignCharacter: character, characters: character[], campaign: (campaign & { scenes: scene[], characters: character[], players: partyMembers[] }), party: user[], campaignId: number }>()
     const { isAllOpen, isHeaderOpen, isTempOpen } = useSidebar();
     const [showList, setShowList] = useState(0);
     const [showCreator, setShowCreator] = useState(0);
     const [showPlayers, setShowPlayers] = useState(0);
     const location = useLocation()
-    const campaignId = String(campaign.id)
 
     const getCampaignAction = () => {
         if (isMaster) return (
@@ -223,12 +222,13 @@ export default function CampaignRoute() {
             <div className="user" style={isAllOpen ? { marginLeft: '200px', marginRight: '200px' } : isHeaderOpen ?
                 { marginLeft: '200px' } : isTempOpen ? { marginRight: '200px' } : {}}>
 
-                <h1><NavLink className={'lineBtn'} to={`/user/campaign/${campaignId}`}>{campaign.title}</NavLink></h1>
-                <SceneCreator isHidden={showCreator === 0} onCancel={() => setShowCreator(0)} campaignId={campaignId} />
+                <h1>{campaign.title}</h1>
+                <SceneCreator isHidden={showCreator === 0} onCancel={() => setShowCreator(0)} campaignId={String(campaignId)} />
 
                 <div className="container" style={{ margin: '5%' }}>
+                    <h2><NavLink className={'lineBtn'} to={`/user/campaign/edit/${campaignId}/`}>Editar</NavLink></h2>
                     <p style={{ textAlign: 'justify', display: location.pathname === `/user/campaign/${campaignId}` ? 'inherit' : 'none' }}>{campaign.description}</p>
-                    <Outlet />
+                    <Outlet context={{ isMaster, isPlayer, campaignCharacter, characters, campaign, party, campaignId }} />
                 </div>
 
             </div >

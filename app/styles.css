@@ -381,6 +381,7 @@ li button:hover {
 
 
 .topnav a.active {
+  color: white;
   background-color: goldenrod;
 }
 
@@ -574,6 +575,7 @@ td:last-child {
   justify-content: center;
   align-items: center;
   overflow: auto;
+  cursor: default;
   z-index: 15;
 }
 

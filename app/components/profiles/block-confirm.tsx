@@ -26,7 +26,7 @@ export function BlockConfirm({ name, isHidden, onShow, onCancel, userId }: props
 
                         <input placeholder="Digite BLOQUEAR" value={confirmText} onChange={(e) => setConfirmText(e.target.value)}></input>
 
-                        <NavLink to={`/user/friend/block/${userId}`}> <button className="btn-delete" disabled={!isConfirmed}>BLOQUEAR</button></NavLink>
+                        <NavLink to={`/user/friend/block/${userId}`}> <button className="btn-delete" onClick={onCancel} disabled={!isConfirmed}>BLOQUEAR</button></NavLink>
 
                         <button onClick={onCancel} className="btn-cancel">CANCELAR</button>
                     </div>

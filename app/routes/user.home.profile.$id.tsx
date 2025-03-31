@@ -65,7 +65,7 @@ export default function UserProfileRoute() {
                 </div>
             )}
 
-            <h1 id="Personagens" className="title-input" style={showCreations !== 2 ? {} : { backgroundColor: 'rgb(0, 0, 0)', boxShadow: '1px 1px 8px 1px gold' }}>
+            <h1 id="Personagens" className="title-input" style={showCreations !== 2 ? {} : { backgroundColor: 'black', boxShadow: '1px 1px 8px 1px gold' }}>
                 <button className="lineBtn" onClick={() => setShowCreations(showCreations !== 2 ? 2 : 0)}>
                     {isOwnProfile ? 'Seus Personagens' : `Personagens de ${profileUser.username}`}
                 </button>
@@ -76,7 +76,7 @@ export default function UserProfileRoute() {
                     <CharacterPanel isAuthor={isOwnProfile} characters={profileCharacters} />
                     {isOwnProfile ?
                         <div className="col-12">
-                            <div className='title-container' style={{ backgroundColor: 'rgb(0, 0, 0)', boxShadow: '1px 1px 8px 1px gold' }}>
+                            <div className='title-container' style={{ backgroundColor: 'black', boxShadow: '1px 1px 8px 1px gold' }}>
                                 <NavLink className={'lineBtn'} to={`/user/character/new/basic`}><h1>Criar Personagem</h1></NavLink>
                             </div>
                         </div> :

@@ -1,4 +1,4 @@
-import { friendship, user } from "@prisma/client";
+import { user } from "@prisma/client";
 import { json, LoaderFunction } from "@remix-run/node";
 import { Outlet, useOutletContext, useFetcher } from "@remix-run/react";
 import React, { useEffect } from "react";
@@ -53,8 +53,8 @@ export default function UserRoute() {
                 tableHeaders={[]}
                 tableDatas={[]}
                 tableExplain={[]}
-                links={[`/user/home/profile/${String(userId)}`].concat(pendingInvites.map((pi) => `/user/home/profile/${String(pi.id)}`)).concat(friends.map((fr) => `/user/home/profile/${String(fr.id)}`))}
-                linkNames={["Meu Perfil"].concat(pendingInvites.map((pi) => '! ' + String(pi.username) + ' !')).concat(friends.map((fr) => String(fr.username)))}
+                links={[`/user/campaign/new/`, `/user/character/new/basic/` , `/user/home/profile/${String(userId)}/`].concat(pendingInvites.map((pi) => `/user/home/profile/${String(pi.id)}/`)).concat(friends.map((fr) => `/user/home/profile/${String(fr.id)}/`))}
+                linkNames={[`Criar Campanha`,`Criar Personagem`, "Meu Perfil"].concat(pendingInvites.map((pi) => '! ' + String(pi.username) + ' !')).concat(friends.map((fr) => String(fr.username)))}
                 temp={
                     <React.Fragment>
                         <fetcher.Form id="search-form" role="search">

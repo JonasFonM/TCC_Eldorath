@@ -55,6 +55,17 @@ export default function NewCampaignRoute() {
   const { campaign } = useLoaderData<{ campaign: campaign }>()
   const actionData = useActionData<ActionFunction>();
 
+  const title = useRef<number>(-1); // Avoid re-renders
+
+  const forceUpdate = useState(0)[1]; // Trigger minimal re-renders when necessary
+
+  const handleTitleClick = (index: number) => {
+    title.current = title.current != index
+      ? index
+      : title.current;
+    forceUpdate(n => n + 1); // Minimal re-render
+  };
+
   const firstLoad = useRef(true);
   const [formData, setFormData] = useState({
     title: campaign.title,
@@ -176,25 +187,29 @@ export default function NewCampaignRoute() {
       />
       {errors.title && <p className="error">{errors.title}</p>}
 
-      <div className="container">
+      <label>
+        <h1>
+          <button
+            onClick={() => title.current !== 1 ? handleTitleClick(1) : handleTitleClick(0)}
+            className="lineBtn"
+            type="button">{title.current < 1 ? 'Descrição' : 'Calendário'}</button>
+        </h1>
+      </label>
 
-        <div className="col-11">
-          <label><h1>Descrição</h1></label>
-          <textarea
-            name="description"
-            placeholder="Descreva os pontos básicos da sua Campanha. Você pode alterar essa descrição mais tarde!"
-            value={formData.description}
-            onChange={handleTextArea}
-          />
-          {errors.description && <p className="error">{errors.description}</p>}
-        </div>
-
+      <div style={title.current < 1 ? { display: 'inherit' } : { display: 'none' }} className="container">
+        <textarea
+          style={{ minHeight: '50vh' }}
+          className="calendar-box"
+          name="description"
+          placeholder="Descreva os pontos básicos da sua Campanha. Você pode alterar essa descrição mais tarde!"
+          value={formData.description}
+          onChange={handleTextArea}
+        />
+        {errors.description && <p className="error">{errors.description}</p>}
       </div>
 
-      <div className="container">
-
+      <div style={title.current < 1 ? { display: 'none' } : { display: 'inherit' }} className="container">
         <div className="calendar-box">
-
           <div className="calendar-field">
 
             <label>Era: {formData.era}</label>

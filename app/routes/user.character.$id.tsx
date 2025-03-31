@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { LoaderFunction, } from "@remix-run/node";
-import { NavLink, Outlet, useLoaderData } from "@remix-run/react";
+import { NavLink, Outlet, useLoaderData, useLocation } from "@remix-run/react";
 import { prisma } from "~/utils/prisma.server";
 import { LSrelations } from "~/utils/types.server";
 import { character, character_item, lineage, path, skill, item } from "@prisma/client";
@@ -91,6 +91,8 @@ export default function CharacterRoute() {
   const { paths } = useLoaderData<{ paths: path[] }>();
   const { isAllOpen, isHeaderOpen, isTempOpen } = useSidebar();
 
+  const location = useLocation()
+
   const [showInv, setShowInv] = useState<number>(0);
 
   const subtitle = paths.length > 0 ? String(paths.map(p => p.name)) : "Sem Caminho"
@@ -112,6 +114,7 @@ export default function CharacterRoute() {
           `/user/character/${characterId}/lineages/`,
           `/user/character/${characterId}/paths/`,
           `/user/character/${characterId}/skills/`,
+          `/user/character/${characterId}/inventory/`
 
         ]}
 
@@ -120,6 +123,7 @@ export default function CharacterRoute() {
           'Linhagens',
           'Caminhos',
           'Talentos',
+          'Inventário'
         ]}
         temp={
           <React.Fragment>
@@ -135,34 +139,33 @@ export default function CharacterRoute() {
               </li>
 
             </ul>
+            {location.pathname.includes(`/user/character/${characterId}/inventory`) ?
+              <>
+                <table>
+                  <tbody>
+                    <tr onClick={() => setShowInv(1)}>
+                      <th>DK</th>
+                      <td>{character.gold}</td>
+                    </tr>
+                  </tbody>
+                </table>
+                <GeneralExplain style={'linear-gradient(to bottom, white, gold)'} color={'black'} title={'Drakas'} description="Drakas são a moeda corrente principal em Eldorath. Cunhadas a partir de uma liga metálica especial chamada Orivélio, resistente ao desgaste e capaz de manter seu brilho por séculos. O nome vem das antigas tradições do Império de Zarethia, onde os primeiros imperadores usavam escamas de dragão como lastro para suas riquezas." isHidden={showInv != 1} onCancel={() => setShowInv(0)} />
 
-            {isAuthor ?
-              <ul>
-                <li key={-4}>
-                  <NavLink to={`/user/character/${characterId}/inventory/`}>Inventário</NavLink>
-                </li>
-              </ul>
-              : ''}
+                <table>
+                  <tbody>
+                    <tr onClick={() => setShowInv(2)}>
+                      <th>CA</th>
+                      <td>{items.map(items => items.weight).reduce((accumulator, currentValue) => accumulator + currentValue, 0)}/{character.carryCap}</td>
+                    </tr>
+                  </tbody>
+                </table>
+                <GeneralExplain style={'linear-gradient(to bottom, white, gold)'} color={'black'} title={'Carga Atual'} description="Indica quantas Cargas estão ocupadas no seu Inventário. Se sua Carga Atual for maior que a sua Capacidade de Carga, você fica Sobrecarregado." isHidden={showInv != 2} onCancel={() => setShowInv(0)} />
 
-            <table>
-              <tbody>
-                <tr onClick={() => setShowInv(1)}>
-                  <th>DK</th>
-                  <td>{character.gold}</td>
-                </tr>
-              </tbody>
-            </table>
-            <GeneralExplain style={'linear-gradient(to bottom, white, gold)'} color={'black'} title={'Drakas'} description="Drakas são a moeda corrente principal em Eldorath. Cunhadas a partir de uma liga metálica especial chamada Orivélio, resistente ao desgaste e capaz de manter seu brilho por séculos. O nome vem das antigas tradições do Império de Zarethia, onde os primeiros imperadores usavam escamas de dragão como lastro para suas riquezas." isHidden={showInv != 1} onCancel={() => setShowInv(0)} />
+              </>
+              : ''
+            }
 
-            <table>
-              <tbody>
-                <tr onClick={() => setShowInv(2)}>
-                  <th>CA</th>
-                  <td>{items.map(items => items.weight).reduce((accumulator, currentValue) => accumulator + currentValue, 0)}/{character.carryCap}</td>
-                </tr>
-              </tbody>
-            </table>
-            <GeneralExplain style={'linear-gradient(to bottom, white, gold)'} color={'black'} title={'Carga Atual'} description="Indica quantas Cargas estão ocupadas no seu Inventário. Se sua Carga Atual for maior que a sua Capacidade de Carga, você fica Sobrecarregado." isHidden={showInv != 2} onCancel={() => setShowInv(0)} />
+
 
           </React.Fragment>
         }

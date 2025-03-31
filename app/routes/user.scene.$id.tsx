@@ -77,9 +77,9 @@ export default function SceneRoute() {
 
                 <h1>{scene.title}</h1>
 
-                    <GridMap onClick={() => null} rows={10} columns={10}/>
-                    
-                    <Outlet/>
+                <GridMap onClick={() => null} rows={10} columns={10} />
+
+                <Outlet />
 
             </div >
 

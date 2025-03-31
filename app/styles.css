@@ -793,6 +793,7 @@ td:last-child {
   display: flex;
   flex-wrap: wrap;
   margin: 10px;
+  color: white;
   background-color: #090809;
   padding: 15px;
   border-radius: 10px;
@@ -809,7 +810,7 @@ td:last-child {
   color: gold;
 }
 
-.calendar-field label{
+.calendar-field label {
   font-family: serif;
   font-variant: small-caps;
   font-weight: bold;
@@ -831,13 +832,6 @@ select {
 .calendar-buttons {
   display: flex;
   gap: 5px;
-}
-
-textarea {
-  background-color: #090809;
-  color: white;
-  min-height: 128px;
-  width: 100%;
 }
 
 button {
@@ -894,6 +888,10 @@ button {
     max-width: 550px;
   }
 
+  .grid {
+    grid-template-columns: auto auto auto auto;
+  }
+
   .button {
     width: 30%;
   }
@@ -919,6 +917,10 @@ button {
 
   .modal-content {
     max-width: 400px;
+  }
+
+  .grid {
+    grid-template-columns: auto auto auto;
   }
 
   .button {

@@ -1,4 +1,4 @@
-import { NavLink } from "@remix-run/react";
+import { Link } from "@remix-run/react";
 import { useState } from "react";
 
 interface props {
@@ -22,13 +22,16 @@ export function ResetConfirm({ name, isHidden, onShow, onCancel, id }: props) {
         <div className="modal-content">
           <h2 style={{ color: "gold", fontSize: "1.4rem" }}>Tem certeza que quer resetar {name}?</h2>
 
-          <p style={{ color: 'white', fontFamily: 'sans-serif', fontSize: "1rem" }}>Este processo vai retornar o personagem ao nível 1 além de excluir todos os seus Caminhos, Linhagens, Talentos e Itens</p>
+          <p style={{ color: 'white', fontVariant: 'none', fontFamily: 'sans-serif', fontSize: "1rem" }}>Este processo vai retornar o personagem ao nível 1 além de excluir todos os seus Caminhos, Linhagens, Talentos e Itens</p>
 
           <div className="modal-buttons">
 
             <input placeholder="Digite RESETAR" value={confirmText} onChange={(e) => setConfirmText(e.target.value)}></input>
 
-            <NavLink to={`/user/character/${id}/reset/`}> <button onClick={onCancel} className="btn-delete" disabled={!isConfirmed}>RESETAR</button></NavLink>
+            <button className="btn-delete" onClick={onCancel} disabled={!isConfirmed}>
+              <Link className="lineBtn" to={`/user/character/${id}/reset/`}>RESETAR</Link>
+            </button>
+
 
             <button onClick={onCancel} className="btn-cancel">CANCELAR</button>
 

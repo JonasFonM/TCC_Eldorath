@@ -2,7 +2,7 @@ import { campaign, character, partyMembers, scene, user } from "@prisma/client";
 import { LoaderFunction } from "@remix-run/node";
 import { NavLink, Outlet, useLoaderData, useLocation } from "@remix-run/react";
 import { prisma } from "~/utils/prisma.server";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { SideBars } from "~/components/side-bars/side-bars";
 import { useSidebar } from "~/components/side-bars/side-bar-context";
 import { SceneCreator } from "~/components/campaign/scene-creator";
@@ -225,8 +225,8 @@ export default function CampaignRoute() {
                 <h1>{campaign.title}</h1>
                 <SceneCreator isHidden={showCreator === 0} onCancel={() => setShowCreator(0)} campaignId={String(campaignId)} />
 
-                <div className="container" style={{ margin: '5%' }}>
-                    <h2><NavLink className={'lineBtn'} to={`/user/campaign/edit/${campaignId}/`}>Editar</NavLink></h2>
+                <h2><NavLink className={'lineBtn'} to={`/user/campaign/edit/${campaignId}/`}>Editar</NavLink></h2>
+                <div className="container">
                     <p style={{ textAlign: 'justify', display: location.pathname === `/user/campaign/${campaignId}` ? 'inherit' : 'none' }}>{campaign.description}</p>
                     <Outlet context={{ isMaster, isPlayer, campaignCharacter, characters, campaign, party, campaignId }} />
                 </div>

@@ -14,14 +14,14 @@ export const action: ActionFunction = async ({ request, params }) => {
     const characterId = params.id
 
     if (!selectedPaths || selectedPaths.length === 0) {
-        return json({ error: "You must select at least one path." }, { status: 400 });
+        return json({ error: "Você não selecionou um Caminho!" }, { status: 400 });
     }
     try {
         await submitCharPaths(selectedPathIds, Number(characterId), Number(pendingPaths))
         return redirect(`/user/character/new/${characterId}/skills/`)
     } catch (error) {
         console.error(error);
-        return json({ error: "Failed to save paths." }, { status: 500 });
+        return json({ error: "Falha ao salvar Caminhos." }, { status: 500 });
     }
 
 }
@@ -68,18 +68,25 @@ export default function PathSelection() {
         });
     };
 
-    const tableTitles = ["Caminho", "Vit", "Pod", "Tec", "Man", "Jur", "Tru", "Mag"]
+    const handleSubmit = async (event: React.FormEvent) => {
+        if (!selectedPaths || selectedPaths.length === 0) {
+            event.preventDefault();
+            return alert("Selecione pelo menos um Caminho.")
+        }
+
+    };
+
 
     return (
         <>
             <h1>Caminhos</h1>
             {maxSelectablePaths > 0 ?
                 <>
-                    <form method="post">
+                    <form method="post" onSubmit={handleSubmit}>
 
                         <h2>Escolha seu Caminho</h2>
 
-                        <h2 style={{ fontVariant: 'small-caps' }}>Caminhos Iniciantes</h2>
+                        <h2>Caminhos Iniciantes</h2>
 
                         <table>
                             <thead>
@@ -101,7 +108,7 @@ export default function PathSelection() {
                                         />
 
                                     </tbody>
-                                    <tbody style={{ display: selectedPaths.includes(p.id) && show === (p.pathTier) ? '' : 'none', width: '100%' }}>
+                                    <tbody style={{ display: selectedPaths.includes(p.id) && show === (p.pathTier) ? '' : 'none', width: '100%' }} className="table-extension">
                                         <tr><th>Benefícios</th></tr>
                                         <tr><td>Vitalidade: {String(p.vitality)}</td></tr>
                                         <tr><td>Poder: {String(p.power)}</td></tr>
@@ -125,21 +132,33 @@ export default function PathSelection() {
                                     <tbody>
 
                                         <TableHead
-                                            tableTitles={tableTitles}
+                                            tableTitles={['Caminho']}
                                             onClick={() => showRow(2)}
                                             open={show === 2}
                                         />
 
                                         {tier2.map(p => (
                                             <React.Fragment key={p.id}>
-                                                <TableData
-                                                    key={p.id}
-                                                    tableData={[p.name, String(p.vitality), String(p.power), String(p.addTechniques), String(p.addManeuvers), String(p.addOaths), String(p.addTricks), String(p.addMagics)]}
-                                                    show={show === (p.pathTier)}
-                                                    onClick={() => handlePathClick(p.id, 2)}
-                                                    selected={selectedPaths.includes(p.id)}
+                                                <tbody>
+                                                    <TableData
+                                                        key={p.id}
+                                                        tableData={[`${p.name}`]}
+                                                        show={show === (p.pathTier) && (selectedPaths.includes(p.id) || selectedPaths.length === 0)}
+                                                        onClick={() => handlePathClick(p.id, 1)}
+                                                        selected={selectedPaths.includes(p.id)}
+                                                    />
 
-                                                />
+                                                </tbody>
+                                                <tbody style={{ display: selectedPaths.includes(p.id) && show === (p.pathTier) ? '' : 'none', width: '100%' }} className="table-extension">
+                                                    <tr><th>Benefícios</th></tr>
+                                                    <tr><td>Vitalidade: {String(p.vitality)}</td></tr>
+                                                    <tr><td>Poder: {String(p.power)}</td></tr>
+                                                    <tr><td>Técnicas: {String(p.addTechniques)}</td></tr>
+                                                    <tr><td>Manobras: {String(p.addManeuvers)}</td></tr>
+                                                    <tr><td>Juramentos: {String(p.addOaths)}</td></tr>
+                                                    <tr><td>Truques: {String(p.addTricks)}</td></tr>
+                                                    <tr><td>Mágicas: {String(p.addMagics)}</td></tr>
+                                                </tbody>
                                             </React.Fragment>
                                         ))
                                         }
@@ -159,20 +178,33 @@ export default function PathSelection() {
                                     <tbody>
 
                                         <TableHead
-                                            tableTitles={tableTitles}
+                                            tableTitles={['Caminho']}
                                             onClick={() => showRow(3)}
                                             open={show === 3}
                                         />
 
                                         {tier3.map(p => (
                                             <React.Fragment key={p.id}>
-                                                <TableData
-                                                    key={p.id}
-                                                    tableData={[p.name, String(p.vitality), String(p.power), String(p.addTechniques), String(p.addManeuvers), String(p.addOaths), String(p.addTricks), String(p.addMagics)]}
-                                                    show={show === (p.pathTier)}
-                                                    onClick={() => handlePathClick(p.id, 3)}
-                                                    selected={selectedPaths.includes(p.id)}
-                                                />
+                                                <tbody>
+                                                    <TableData
+                                                        key={p.id}
+                                                        tableData={[`${p.name}`]}
+                                                        show={show === (p.pathTier) && (selectedPaths.includes(p.id) || selectedPaths.length === 0)}
+                                                        onClick={() => handlePathClick(p.id, 1)}
+                                                        selected={selectedPaths.includes(p.id)}
+                                                    />
+
+                                                </tbody>
+                                                <tbody style={{ display: selectedPaths.includes(p.id) && show === (p.pathTier) ? '' : 'none', width: '100%' }} className="table-extension">
+                                                    <tr><th>Benefícios</th></tr>
+                                                    <tr><td>Vitalidade: {String(p.vitality)}</td></tr>
+                                                    <tr><td>Poder: {String(p.power)}</td></tr>
+                                                    <tr><td>Técnicas: {String(p.addTechniques)}</td></tr>
+                                                    <tr><td>Manobras: {String(p.addManeuvers)}</td></tr>
+                                                    <tr><td>Juramentos: {String(p.addOaths)}</td></tr>
+                                                    <tr><td>Truques: {String(p.addTricks)}</td></tr>
+                                                    <tr><td>Mágicas: {String(p.addMagics)}</td></tr>
+                                                </tbody>
                                             </React.Fragment>
                                         ))
                                         }
@@ -190,21 +222,33 @@ export default function PathSelection() {
                                     <tbody>
 
                                         <TableHead
-                                            tableTitles={tableTitles}
+                                            tableTitles={['Caminho']}
                                             onClick={() => showRow(4)}
                                             open={show === 4}
                                         />
 
                                         {tier4.map(p => (
                                             <React.Fragment key={p.id}>
-                                                <TableData
-                                                    key={p.id}
-                                                    tableData={[p.name, String(p.vitality), String(p.power), String(p.addTechniques), String(p.addManeuvers), String(p.addOaths), String(p.addTricks), String(p.addMagics)]}
-                                                    show={show === (p.pathTier)}
-                                                    onClick={() => handlePathClick(p.id, 4)}
-                                                    selected={selectedPaths.includes(p.id)}
+                                                <tbody>
+                                                    <TableData
+                                                        key={p.id}
+                                                        tableData={[`${p.name}`]}
+                                                        show={show === (p.pathTier) && (selectedPaths.includes(p.id) || selectedPaths.length === 0)}
+                                                        onClick={() => handlePathClick(p.id, 1)}
+                                                        selected={selectedPaths.includes(p.id)}
+                                                    />
 
-                                                />
+                                                </tbody>
+                                                <tbody style={{ display: selectedPaths.includes(p.id) && show === (p.pathTier) ? '' : 'none', width: '100%' }} className="table-extension">
+                                                    <tr><th>Benefícios</th></tr>
+                                                    <tr><td>Vitalidade: {String(p.vitality)}</td></tr>
+                                                    <tr><td>Poder: {String(p.power)}</td></tr>
+                                                    <tr><td>Técnicas: {String(p.addTechniques)}</td></tr>
+                                                    <tr><td>Manobras: {String(p.addManeuvers)}</td></tr>
+                                                    <tr><td>Juramentos: {String(p.addOaths)}</td></tr>
+                                                    <tr><td>Truques: {String(p.addTricks)}</td></tr>
+                                                    <tr><td>Mágicas: {String(p.addMagics)}</td></tr>
+                                                </tbody>
                                             </React.Fragment>
                                         ))
                                         }

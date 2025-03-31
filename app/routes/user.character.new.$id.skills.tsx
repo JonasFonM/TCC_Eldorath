@@ -146,13 +146,21 @@ export default function SkillSelectionRoute() {
 
   };
 
+  const handleSubmit = async (event: React.FormEvent) => {
+    if (!selectedSkills || selectedSkills.length === 0) {
+      event.preventDefault();
+      return alert("Selecione pelo menos um Talento.")
+    }
+
+  };
+
   return (
     <>
       <h1>Talentos</h1>
       {maxSelectableSkills > 0 || maxMagics > 0 || maxTechniques > 0 || maxManeuvers > 0 || maxOaths > 0 || maxTricks > 0 ?
         <>
 
-          <form method="post">
+          <form method="post" onSubmit={handleSubmit}>
 
             <h2>Escolha seus Talentos</h2>
 
@@ -167,7 +175,7 @@ export default function SkillSelectionRoute() {
 
               {selectableSkills.map(sk => (
                 <React.Fragment key={sk.id}>
-                  <tbody className={isMaxSelected ? 'error' : ''}>
+                  <tbody className={!isMaxSelected || selectedSkills.includes(sk.id) ? '' : 'error'}>
                     <TableData
                       key={sk.id}
                       tableData={[`${sk.name}`]}
@@ -177,7 +185,7 @@ export default function SkillSelectionRoute() {
                     />
 
                   </tbody>
-                  <tbody style={{ display: selectedSkills.includes(sk.id) && show === (1) ? '' : 'none', width: '100%' }} className="selected">
+                  <tbody style={{ display: selectedSkills.includes(sk.id) && show === (1) ? '' : 'none', width: '100%' }} className="table-extension">
                     <tr><th>Tipo</th></tr>
                     <tr><td>{String(sk.type)}</td></tr>
                     {sk.techniqueSubtype ? <tr><td>{String(sk.techniqueSubtype)}</td></tr> : ''}

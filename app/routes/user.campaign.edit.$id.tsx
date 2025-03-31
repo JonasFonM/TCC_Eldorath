@@ -178,6 +178,21 @@ export default function NewCampaignRoute() {
 
       <div className="container">
 
+        <div className="col-11">
+          <label><h1>Descrição</h1></label>
+          <textarea
+            name="description"
+            placeholder="Descreva os pontos básicos da sua Campanha. Você pode alterar essa descrição mais tarde!"
+            value={formData.description}
+            onChange={handleTextArea}
+          />
+          {errors.description && <p className="error">{errors.description}</p>}
+        </div>
+
+      </div>
+
+      <div className="container">
+
         <div className="calendar-box">
 
           <div className="calendar-field">
@@ -260,22 +275,6 @@ export default function NewCampaignRoute() {
         </div>
       </div>
 
-      <div className="container">
-
-        <div className="col-11">
-          <label><h1>Descrição</h1></label>
-          <textarea
-            style={{minHeight: '128px'}}
-            name="description"
-            placeholder="Descreva os pontos básicos da sua Campanha.
-Você pode alterar essa descrição mais tarde!"
-            value={formData.description}
-            onChange={handleTextArea}
-          />
-          {errors.description && <p className="error">{errors.description}</p>}
-        </div>
-
-      </div>
 
       <button className="button" type="submit">Confirmar</button>
 

@@ -506,7 +506,27 @@ th {
   color: gold;
   background-color: rgb(9, 8, 9);
   box-shadow: 0px 0px 16px 1px gold;
+}
 
+.table-extension {
+  color: gold;
+  background-color: rgb(9, 8, 9);
+}
+
+.table-extension :hover {
+  box-shadow: none;
+  background-color: initial;
+  cursor: default;
+}
+
+.table-extension tr th,
+.table-extension tr td {
+  border: 0;
+  padding: 8px;
+}
+
+.table-extension tr td {
+  color: white
 }
 
 tr:hover {
@@ -789,11 +809,17 @@ td:last-child {
   color: gold;
 }
 
+.calendar-field label{
+  font-family: serif;
+  font-variant: small-caps;
+  font-weight: bold;
+}
+
 select {
   width: 100%;
   background: #222;
   color: gold;
-  border: 1px solid gold;
+  border: 1px solid white;
   padding: 5px;
   text-align: center;
 }
@@ -810,8 +836,8 @@ select {
 textarea {
   background-color: #090809;
   color: white;
-  min-height: 64px;
-  min-width: 400px;
+  min-height: 128px;
+  width: 100%;
 }
 
 button {
@@ -847,7 +873,14 @@ button {
   font-size: 1.1rem;
   font-weight: bold;
   font-variant: small-caps;
+}
 
+.error:hover,
+.error :hover {
+  color: black;
+  background-color: darkred;
+  box-shadow: none;
+  transition: 0.3s;
 }
 
 

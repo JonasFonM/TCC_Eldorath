@@ -38,10 +38,10 @@ export default function ItemSelection() {
         if (show.current.includes(n)) {
             const newShow = show.current.filter(ns => ns != n)
             show.current = newShow
-            forceUpdate(n => n + 1);
+            return forceUpdate(n => n + 1);
         }
         show.current.push(n);
-        forceUpdate(n => n + 1);
+        return forceUpdate(n => n + 1);
 
     }
 

@@ -1,7 +1,7 @@
 import { lineage, lineage_skill, skill } from "@prisma/client";
 import { ActionFunction, redirect } from "@remix-run/node";
 import { NavLink, useOutletContext } from "@remix-run/react";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { TableHead } from "~/components/character-sheet/general-table";
 import { TableData } from "~/components/character-sheet/general-table-data";
 import { submitCharSkills } from "~/utils/character.server";
@@ -49,18 +49,18 @@ export default function SkillSelectionRoute() {
   const isMaxOaths = selectedOaths.length >= maxOaths;
   const isMaxTricks = selectedTricks.length >= maxTricks;
 
-  const [show, setShow] = useState<number[]>([]);
+  const show = useRef<number[]>([]); // Avoid re-renders
+
+  const forceUpdate = useState(0)[1]; // Trigger minimal re-renders when necessary
 
   const showRow = (n: number) => {
-    setShow((prevN) => {
-      const isSelected = prevN.includes(n);
-
-      if (isSelected) {
-        return prevN.filter(id => id !== n);
-      }
-
-      return [...prevN, n];
-    })
+    if (show.current.includes(n)) {
+      const newShow = show.current.filter(ns => ns != n)
+      show.current = newShow
+      return forceUpdate(n => n + 1);
+    }
+    show.current.push(n);
+    return forceUpdate(n => n + 1);
   }
 
   const handleSkillClick = (skillId: number, skillType: string, techniqueSubtype: string | null) => {
@@ -171,7 +171,7 @@ export default function SkillSelectionRoute() {
                 <TableHead
                   tableTitles={['Talentos']}
                   onClick={() => showRow(1)}
-                  open={show.includes(1)}
+                  open={show.current.includes(1)}
                 />
               </thead>
 
@@ -181,17 +181,23 @@ export default function SkillSelectionRoute() {
                     <TableData
                       key={sk.id}
                       tableData={[`${sk.name}`]}
-                      show={show.includes(1)}
+                      show={show.current.includes(1)}
                       onClick={() => handleSkillClick(sk.id, sk.type, sk.techniqueSubtype)}
                       selected={selectedSkills.includes(sk.id)}
                     />
                   </tbody>
 
-                  <tbody style={{ display: selectedSkills.includes(sk.id) && show.includes(1) ? '' : 'none', width: '100%' }} className="table-extension">
+                  <tbody style={{ display: selectedSkills.includes(sk.id) && show.current.includes(1) ? '' : 'none', width: '100%' }} className="table-extension">
                     <tr><td>{String(sk.description)}</td></tr>
                     <tr><th>Tipo</th></tr>
                     <tr><td>{String(sk.type)}</td></tr>
-                    {sk.techniqueSubtype ? <tr><td>{String(sk.techniqueSubtype)}</td></tr> : ''}
+                    {sk.techniqueSubtype
+                      ? <>
+                        <tr><th>Tipo de Técnica</th></tr>
+                        <tr><td>{String(sk.techniqueSubtype)}</td></tr>
+                      </>
+                      : ''
+                    }
                     <tr><th>Requisitos</th></tr>
                     <tr><td>Agilidade: {String(sk.agi)}</td></tr>
                     <tr><td>Corpo: {String(sk.bdy)}</td></tr>
@@ -209,7 +215,7 @@ export default function SkillSelectionRoute() {
                   <TableHead
                     tableTitles={['Talentos de Linhagem']}
                     onClick={() => showRow(2)}
-                    open={show.includes(2)}
+                    open={show.current.includes(2)}
                   />
                 </thead>
                 : ''
@@ -221,19 +227,24 @@ export default function SkillSelectionRoute() {
                     <TableData
                       key={ls.id}
                       tableData={[`${ls.skill.name}`]}
-                      show={show.includes(2)}
+                      show={show.current.includes(2)}
                       onClick={() => handleSkillClick(ls.skill.id, ls.skill.type, ls.skill.techniqueSubtype)}
                       selected={selectedSkills.includes(ls.skill.id)}
                     />
                   </tbody>
 
-                  <tbody style={{ display: selectedSkills.includes(ls.skill.id) && show.includes(2) ? '' : 'none', width: '100%' }} className="table-extension">
+                  <tbody style={{ display: selectedSkills.includes(ls.skill.id) && show.current.includes(2) ? '' : 'none', width: '100%' }} className="table-extension">
                     <tr><td>{String(ls.skill.description)}</td></tr>
                     <tr><th>Linhagem</th></tr>
                     <tr><td style={{ fontVariant: 'small-caps', fontSize: '1.3rem' }}>{String(ls.lineage.name)}</td></tr>
                     <tr><th>Tipo</th></tr>
                     <tr><td>{String(ls.skill.type)}</td></tr>
-                    {ls.skill.techniqueSubtype ? <tr><td>{String(ls.skill.techniqueSubtype)}</td></tr> : ''}
+                    {ls.skill.techniqueSubtype
+                      ? <>
+                        <tr><th>Tipo de Técnica</th></tr>
+                        <tr><td>{String(ls.skill.techniqueSubtype)}</td></tr>
+                      </>
+                      : ''}
                     <tr><th>Requisitos</th></tr>
                     <tr><td>Agilidade: {String(ls.skill.agi)}</td></tr>
                     <tr><td>Corpo: {String(ls.skill.bdy)}</td></tr>
@@ -251,7 +262,7 @@ export default function SkillSelectionRoute() {
                   <TableHead
                     tableTitles={['Talentos de Linhagem Pura']}
                     onClick={() => showRow(3)}
-                    open={show.includes(3)}
+                    open={show.current.includes(3)}
                   />
                 </thead>
                 : ''}
@@ -262,19 +273,24 @@ export default function SkillSelectionRoute() {
                     <TableData
                       key={ls.id}
                       tableData={[`${ls.skill.name}`]}
-                      show={show.includes(3)}
+                      show={show.current.includes(3)}
                       onClick={() => handleSkillClick(ls.skill.id, ls.skill.type, ls.skill.techniqueSubtype)}
                       selected={selectedSkills.includes(ls.skill.id)}
                     />
 
                   </tbody>
-                  <tbody style={{ display: selectedSkills.includes(ls.skill.id) && show.includes(3) ? '' : 'none', width: '100%' }} className="table-extension">
+                  <tbody style={{ display: selectedSkills.includes(ls.skill.id) && show.current.includes(3) ? '' : 'none', width: '100%' }} className="table-extension">
                     <tr><td>{String(ls.skill.description)}</td></tr>
                     <tr><th>Linhagem</th></tr>
                     <tr><td style={{ fontVariant: 'small-caps', fontSize: '1.3rem' }}>{String(ls.lineage.name) + ' Pura'}</td></tr>
                     <tr><th>Tipo</th></tr>
                     <tr><td>{String(ls.skill.type)}</td></tr>
-                    {ls.skill.techniqueSubtype ? <tr><td>{String(ls.skill.techniqueSubtype)}</td></tr> : ''}
+                    {ls.skill.techniqueSubtype
+                      ? <>
+                        <tr><th>Tipo de Técnica</th></tr>
+                        <tr><td>{String(ls.skill.techniqueSubtype)}</td></tr>
+                      </>
+                      : ''}
                     <tr><th>Requisitos</th></tr>
                     <tr><td>Agilidade: {String(ls.skill.agi)}</td></tr>
                     <tr><td>Corpo: {String(ls.skill.bdy)}</td></tr>

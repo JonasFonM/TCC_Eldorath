@@ -5,6 +5,7 @@ import { PathExplain } from "~/components/explanations/path-explain";
 import { TableData } from "~/components/character-sheet/general-table-data";
 import { TableHead } from "~/components/character-sheet/general-table";
 import React, { useRef, useState } from "react";
+import { GeneralExplain } from "~/components/explanations/general-explain";
 
 export const loader: LoaderFunction = async ({ params }) => {
   const characterId = params.id;
@@ -13,9 +14,9 @@ export const loader: LoaderFunction = async ({ params }) => {
 
 export default function PathsRoute() {
   const { characterId, paths, isAuthor } = useOutletContext<{ characterId: string, paths: path[], isAuthor: boolean }>();
-  const show = useRef<number[]>([]); // Avoid re-renders
+  const show = useRef<number[]>([]);
 
-  const forceUpdate = useState(0)[1]; // Trigger minimal re-renders when necessary
+  const forceUpdate = useState(0)[1]; 
 
   const showRow = (n: number) => {
     if (show.current.includes(n)) {
@@ -26,6 +27,7 @@ export default function PathsRoute() {
     show.current.push(n);
     return forceUpdate(n => n + 1);
   }
+
   const tier1 = paths.filter(p => p.pathTier == 1);
   const tier2 = paths.filter(p => p.pathTier == 2);
   const tier3 = paths.filter(p => p.pathTier == 3);
@@ -36,8 +38,17 @@ export default function PathsRoute() {
       <div className="title-container">
         <h1 style={{ marginTop: '0', marginBottom: '0', padding: '0' }}>Caminhos</h1>
 
+        <button className="question-button" onClick={() => showRow(-5)}>?</button>
 
       </div>
+      <GeneralExplain
+        style={'linear-gradient(to bottom, white, gold)'}
+        color={'black'}
+        title={'Caminhos'}
+        description="Caminhos são especializações que agregam nas suas capacidades, e determinam uma parcela importante da sua Vitalidade e do seu Poder. Alguns Caminhos dão acesso a Talentos exclusivos."
+        isHidden={!show.current.includes(-5)}
+        onCancel={() => showRow(-5)}
+      />
 
       <table>
         <thead>

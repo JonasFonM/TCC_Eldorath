@@ -25,6 +25,16 @@ export function SideBars({ title, subtitle, tableHeaders, tableDatas, tableExpla
 
     const [showExplain, setShowExplain] = useState<number>(0);
 
+    const characterTH = ["NV", "CT", "XP", "DK"]
+
+    const translateTH: { [key: string]: any } = {
+        "NV": "Nível",
+        "CT": "Categoria",
+        "XP": "Experiência",
+        "DK": "Drakas",
+
+    }
+
     return (
         <div id="side-bars">
             <div className="header" style={selectHeader === 0 ? {} : { transform: 'translate(-200px)' }}>
@@ -42,7 +52,14 @@ export function SideBars({ title, subtitle, tableHeaders, tableDatas, tableExpla
                                 </tr>
                             </tbody>
                         </table>
-                        <GeneralExplain style={'linear-gradient(to bottom, white, gold)'} color={'black'} title={th} description={tableExplain[index]} isHidden={showExplain != (index + 1)} onCancel={() => setShowExplain(0)} />
+                        <GeneralExplain style={'linear-gradient(to bottom, white, gold)'}
+                            color={'black'}
+                            title={characterTH.includes(th)
+                                ? translateTH[th]
+                                : th}
+                            description={tableExplain[index]}
+                            isHidden={showExplain != (index + 1)}
+                            onCancel={() => setShowExplain(0)} />
                     </React.Fragment>
                 ))
                 }
@@ -59,7 +76,7 @@ export function SideBars({ title, subtitle, tableHeaders, tableDatas, tableExpla
                 onClick={selectHeader === 0 ? () => setHeader(Number(entity.id)) : () => setHeader(0)}>
             </button>
 
-            <div className="temp">
+            <div className="temp" style={selectTemp === 0 ? {} : { transform: 'translate(200px)' }}>
 
                 {temp}
 

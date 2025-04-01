@@ -108,12 +108,13 @@ export default function CharacterRoute() {
       <SideBars
         entity={character} title={character.name}
         subtitle={subtitle}
-        tableHeaders={["NV", "CT", "XP"]}
-        tableDatas={[character.level, character.tier, character.experience]}
+        tableHeaders={["NV", "CT", "XP", "DK"]}
+        tableDatas={[character.level, character.tier, character.experience, character.gold]}
         tableExplain={[
           "Seu Nível é um indicador geral de quão poderoso você é no momento. Você sobe de nível conforme ganha Experiência.",
           "Sua Categoria representa em qual patamar da sua jornada você está. Você pode ser Iniciante, Profissional, Mestre ou Lendário.",
           "Seus Pontos de Experiência determinam quando você pode subir de nível. Você pode receber Experiência de várias formas, como derrotar inimigos, ou passar por um treinamento árduo.",
+          "Drakas são a moeda corrente principal em Eldorath. Cunhadas a partir de uma liga metálica especial chamada Orivélio, resistente ao desgaste e capaz de manter seu brilho por séculos. O nome vem das antigas tradições do Império de Zarethia, onde os primeiros imperadores usavam escamas de dragão como lastro para suas riquezas.",
         ]}
         links={[
           `/user/character/${characterId}/stats/`,
@@ -133,7 +134,6 @@ export default function CharacterRoute() {
         ]}
         temp={
           <React.Fragment>
-
             <ul>
               <li key={1}>
                 <NavLink to={
@@ -145,34 +145,6 @@ export default function CharacterRoute() {
               </li>
 
             </ul>
-            {location.pathname.includes(`/user/character/${characterId}/inventory`) ?
-              <>
-                <table>
-                  <tbody>
-                    <tr onClick={() => setShowInv(1)}>
-                      <th>DK</th>
-                      <td>{character.gold}</td>
-                    </tr>
-                  </tbody>
-                </table>
-                <GeneralExplain style={'linear-gradient(to bottom, white, gold)'} color={'black'} title={'Drakas'} description="Drakas são a moeda corrente principal em Eldorath. Cunhadas a partir de uma liga metálica especial chamada Orivélio, resistente ao desgaste e capaz de manter seu brilho por séculos. O nome vem das antigas tradições do Império de Zarethia, onde os primeiros imperadores usavam escamas de dragão como lastro para suas riquezas." isHidden={showInv != 1} onCancel={() => setShowInv(0)} />
-
-                <table>
-                  <tbody>
-                    <tr onClick={() => setShowInv(2)}>
-                      <th>CA</th>
-                      <td>{items.map(items => items.weight).reduce((accumulator, currentValue) => accumulator + currentValue, 0)}/{character.carryCap}</td>
-                    </tr>
-                  </tbody>
-                </table>
-                <GeneralExplain style={'linear-gradient(to bottom, white, gold)'} color={'black'} title={'Carga Atual'} description="Indica quantas Cargas estão ocupadas no seu Inventário. Se sua Carga Atual for maior que a sua Capacidade de Carga, você fica Sobrecarregado." isHidden={showInv != 2} onCancel={() => setShowInv(0)} />
-
-              </>
-              : ''
-            }
-
-
-
           </React.Fragment>
         }
 

@@ -121,7 +121,7 @@ export default function LineageSelection() {
 
                 :
                 <>
-                    <h2>Sua Linhagem já foi Escolhida</h2>
+                    <h2>Você já escolheu uma Linhagem</h2>
                     <NavLink to={`/user/character/new/${characterId}/paths`}><button type="button" className="button">Caminhos</button></NavLink>
 
                 </>

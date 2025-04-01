@@ -43,7 +43,8 @@ export default function LineagesRoute() {
         title={'Linhagens'}
         description="Linhagens são sua descendência, sua origem. Geralmente representam a quais espécies ou raças você e os seus pais pertencem, mas existem exceções."
         isHidden={!show.current.includes(-3)}
-        onCancel={() => showRow(-3)} />
+        onCancel={() => showRow(-3)}
+      />
 
       <table>
         <thead>
@@ -73,12 +74,12 @@ export default function LineagesRoute() {
 
       {lineages.map(ln => (
         <React.Fragment key={ln.id}>
-          <GeneralExplain 
-          title={String(ln.name)} 
-          description={String(ln.description)} 
-          isHidden={!show.current.includes(ln.id)} 
-          onCancel={() => showRow(ln.id)} 
-          style={'linear-gradient(to bottom right, white, gold)'} color="black" />
+          <GeneralExplain
+            title={String(ln.name)}
+            description={String(ln.description)}
+            isHidden={!show.current.includes(ln.id)}
+            onCancel={() => showRow(ln.id)}
+            style={'linear-gradient(to bottom right, white, gold)'} color="black" />
         </React.Fragment>
       ))}
 

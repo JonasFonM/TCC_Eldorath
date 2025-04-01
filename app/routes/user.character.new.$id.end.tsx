@@ -1,5 +1,5 @@
-import { Link, useOutletContext } from "@remix-run/react";
-import { character_item, character_lineage, character_path, character_skill, item, lineage, path, skill } from "@prisma/client";
+import { Link, NavLink, useOutletContext } from "@remix-run/react";
+import { character, character_item, character_lineage, character_path, character_skill, item, lineage, path, skill } from "@prisma/client";
 import { LoaderFunction } from "@remix-run/node";
 import { GeneralExplain } from "~/components/explanations/general-explain";
 import React, { useState } from "react";
@@ -13,9 +13,10 @@ export const loader: LoaderFunction = async ({ params }) => {
 
 
 export default function LineagesRoute() {
-    const { characterId, character_lineages, character_paths, character_skills, character_items }
+    const { characterId, character, character_lineages, character_paths, character_skills, character_items }
         = useOutletContext<{
             characterId: string,
+            character: character,
             character_lineages: (character_lineage & { lineage: lineage })[],
             character_paths: (character_path & { path: path })[],
             character_skills: (character_skill & { skill: skill })[],
@@ -32,14 +33,49 @@ export default function LineagesRoute() {
             <h1 style={{ marginTop: '0', marginBottom: '0', padding: '0' }}>Resumo Final</h1>
             <h2>Suas Escolhas</h2>
 
+
+            <table>
+                <thead>
+                    <tr>
+                        <th style={{ width: '33.3%' }}>AGI</th>
+                        <th style={{ width: '33.3%' }}>COR</th>
+                        <th style={{ width: '33.3%' }}>MEN</th>
+                    </tr>
+                    <tr>
+                        <td style={{ width: '33.3%' }}>{character.agility}</td>
+                        <td style={{ width: '33.3%' }}>{character.body}</td>
+                        <td style={{ width: '33.3%' }}>{character.mind}</td>
+                    </tr>
+                </thead>
+            </table>
+
             <table>
                 <tbody>
+                    {character.agility + character.body + character.mind < 7
+                        ? <tr className="error">
+                            <td>
+                                <NavLink to={`/user/character/new/${characterId}/basic/`}
+                                    className={'lineBtn'}
+                                    style={{ color: 'inherit' }}>Você precisa usar seus Pontos de Atributo</NavLink>
+                            </td>
+                        </tr>
+                        : ''}
 
                     <TableHead
                         tableTitles={['Linhagens']}
                         onClick={showLineage != 0 ? () => setShowLineage(0) : () => setShowLineage(-3)}
                         open={showLineage > -3}
                     />
+
+                    {character_lineages.length < 1
+                        ? <tr className="error">
+                            <td>
+                                <NavLink to={`/user/character/new/${characterId}/lineages/`}
+                                    className={'lineBtn'}
+                                    style={{ color: 'inherit' }}>Você precisa de pelo menos 1 Linhagem</NavLink>
+                            </td>
+                        </tr>
+                        : ''}
 
                     {character_lineages.map(ln => (
                         <React.Fragment key={ln.id}>
@@ -57,8 +93,17 @@ export default function LineagesRoute() {
                         tableTitles={['Caminhos']}
                         onClick={showPath != 0 ? () => setShowPath(0) : () => setShowPath(-3)}
                         open={showPath > -3}
-
                     />
+
+                    {character_paths.length < 1
+                        ? <tr className="error">
+                            <td>
+                                <NavLink to={`/user/character/new/${characterId}/paths/`}
+                                    className={'lineBtn'}
+                                    style={{ color: 'inherit' }}>Você precisa de pelo menos 1 Caminho</NavLink>
+                            </td>
+                        </tr>
+                        : ''}
 
                     {character_paths.map(p => (
                         <React.Fragment key={p.id}>
@@ -78,6 +123,17 @@ export default function LineagesRoute() {
                         open={showSkill > -3}
                     />
 
+                    {character_skills.length < 1
+                        ? <tr className="error">
+                            <td>
+                                <NavLink to={`/user/character/new/${characterId}/skills/`}
+                                    className={'lineBtn'}
+                                    style={{ color: 'inherit' }}>Você precisa de pelo menos 1 Talento
+                                </NavLink>
+                            </td>
+                        </tr>
+                        : ''}
+
                     {character_skills.map(sk => (
                         <React.Fragment key={sk.id}>
                             <TableData
@@ -95,6 +151,7 @@ export default function LineagesRoute() {
                         onClick={showItem != 0 ? () => setShowItem(0) : () => setShowItem(-3)}
                         open={showItem > -3}
                     />
+
 
                     {character_items.map(it => (
                         <React.Fragment key={it.id}>
@@ -118,7 +175,7 @@ export default function LineagesRoute() {
                         description={String(ln.lineage.description)}
                         isHidden={showLineage != Number(ln.id)}
                         onCancel={() => setShowLineage(0)}
-                        style={'linear-gradient(to bottom right, white, darkgoldenrod)'}
+                        style={'linear-gradient(to bottom right, white, gold)'}
                         color="black" />
                 </React.Fragment>
             ))}
@@ -130,7 +187,7 @@ export default function LineagesRoute() {
                         description={String(p.path.description)}
                         isHidden={showPath != Number(p.id)}
                         onCancel={() => setShowPath(0)}
-                        style={'linear-gradient(to bottom right, white, darkgoldenrod)'}
+                        style={'linear-gradient(to bottom right, white, gold)'}
                         color="black" />
                 </React.Fragment>))}
 
@@ -141,7 +198,7 @@ export default function LineagesRoute() {
                         description={String(sk.skill.description)}
                         isHidden={showSkill != Number(sk.id)}
                         onCancel={() => setShowSkill(0)}
-                        style={'linear-gradient(to bottom right, white, darkgoldenrod)'}
+                        style={'linear-gradient(to bottom right, white, gold)'}
                         color="black" />
                 </React.Fragment>))}
 
@@ -152,7 +209,7 @@ export default function LineagesRoute() {
                         description={String(it.item.description)}
                         isHidden={showItem != Number(it.id)}
                         onCancel={() => setShowItem(0)}
-                        style={'linear-gradient(to bottom right, white, darkgoldenrod)'}
+                        style={'linear-gradient(to bottom right, white, gold)'}
                         color="black" />
                 </React.Fragment>))}
             <div className="col-6">
@@ -160,9 +217,9 @@ export default function LineagesRoute() {
             </div>
             <div className="col-6">
 
-                {character_items.length < 0 || character_skills.length < 0 || character_paths.length < 0 || character_lineages.length < 0
-                    ? ''
-                    : <Link to={`/user/character/${characterId}/stats/`} className="button" style={{ width: '60%' }}>Finalizar</Link>
+                {character.agility + character.body + character.mind >= 7 && character_skills.length > 0 && character_paths.length > 0 && character_lineages.length > 0
+                    ? <Link to={`/user/character/${characterId}/stats/`} className="button" style={{ width: '60%' }}>Finalizar</Link>
+                    : ''
                 }
             </div>
         </>

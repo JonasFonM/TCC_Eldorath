@@ -128,20 +128,20 @@ export default function NewCharacterRoute() {
     const handleSubmit = async (event: React.FormEvent) => {
         if (limit > 0) {
             event.preventDefault();
-            setFormError(`Please allocate all available points. ${limit} points left.`);
+            setFormError(`Você precisa usar todos os pontos. ${limit} pontos não foram gastos.`);
             return;
         }
 
         if (!formData.name || !formData.level || !formData.agility || !formData.body || !formData.mind) {
             event.preventDefault();
             setErrors({
-                name: !formData.name ? 'Name is required' : '',
-                level: !formData.level ? 'Level is required' : '',
-                agility: !formData.agility ? 'Agility is required' : '',
-                body: !formData.body ? 'Body is required' : '',
-                mind: !formData.mind ? 'Mind is required' : '',
+                name: !formData.name ? 'Você precisa informar um nome' : '',
+                level: '',
+                agility: !formData.agility ? 'Agilidade tem valor mínimo 1' : '',
+                body: !formData.body ? 'Corpo tem valor mínimo 1' : '',
+                mind: !formData.mind ? 'Mente tem valor mínimo 1' : '',
             });
-            setFormError('Please fill in all required fields.');
+            setFormError('Preencha todos os campos. O valor mínimo de cada Atributo é 1');
             return;
         }
     };

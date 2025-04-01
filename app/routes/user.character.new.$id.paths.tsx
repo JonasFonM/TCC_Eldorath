@@ -1,7 +1,7 @@
 import { character, path } from "@prisma/client";
 import { ActionFunction, json, redirect } from "@remix-run/node";
 import { NavLink, useOutletContext } from "@remix-run/react";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { TableHead } from "~/components/character-sheet/general-table";
 import { TableData } from "~/components/character-sheet/general-table-data";
 import { submitCharPaths } from "~/utils/character.server";
@@ -29,25 +29,29 @@ export const action: ActionFunction = async ({ request, params }) => {
 export default function PathSelection() {
     const { paths, maxSelectablePaths, character, characterId } = useOutletContext<{ paths: path[], characterId: string, maxSelectablePaths: number, character: character }>();
     const [selectedPaths, setSelectedPaths] = useState<number[]>([]);
-    const [error, setError] = useState<string | null>(null);
+    const isMaxSelected = selectedPaths.length >= maxSelectablePaths;
 
-    const [show, setShow] = useState<number>();
+    const show = useRef<number[]>([]); // Avoid re-renders
+
+    const forceUpdate = useState(0)[1]; // Trigger minimal re-renders when necessary
+
+    const showRow = (n: number) => {
+        if (show.current.includes(n)) {
+            const newShow = show.current.filter(ns => ns != n)
+            show.current = newShow
+            return forceUpdate(n => n + 1);
+        }
+        show.current.push(n);
+        return forceUpdate(n => n + 1);
+    }
+
 
     const tier1 = paths.filter(p => p.pathTier == 1);
     const tier2 = paths.filter(p => p.pathTier == 2);
     const tier3 = paths.filter(p => p.pathTier == 3);
     const tier4 = paths.filter(p => p.pathTier == 4);
 
-    const showRow = (tier: number) => {
-        show != tier ?
-            setShow(() => {
-                return tier;
-            })
-            :
-            setShow(() => {
-                return 0;
-            })
-    }
+
 
     const handlePathClick = (pathId: number, pathTier: number) => {
         setSelectedPaths((prevPaths) => {
@@ -56,13 +60,6 @@ export default function PathSelection() {
             const newSelectedPaths = isSelected
                 ? prevPaths.filter(id => id !== pathId)
                 : [...prevPaths, pathId];
-
-            if (newSelectedPaths.length * pathTier > maxSelectablePaths) {
-                setError("Você selecionou o máximo de caminhos.");
-                return prevPaths;
-            } else {
-                setError(null);
-            }
 
             return newSelectedPaths;
         });
@@ -86,29 +83,29 @@ export default function PathSelection() {
 
                         <h2>Escolha seu Caminho</h2>
 
-                        <h2>Caminhos Iniciantes</h2>
-
                         <table>
                             <thead>
                                 <TableHead
-                                    tableTitles={["Caminho"]}
+                                    tableTitles={["Iniciante"]}
                                     onClick={() => showRow(1)}
-                                    open={show === 1}
+                                    open={show.current.includes(1)}
                                 />
                             </thead>
                             {tier1.map(p => (
                                 <React.Fragment key={p.id}>
-                                    <tbody>
+                                    <tbody className={!isMaxSelected || selectedPaths.includes(p.id) ? '' : 'error'}>
                                         <TableData
                                             key={p.id}
                                             tableData={[`${p.name}`]}
-                                            show={show === (p.pathTier) && (selectedPaths.includes(p.id) || selectedPaths.length === 0)}
-                                            onClick={() => handlePathClick(p.id, 1)}
+                                            show={show.current.includes(p.pathTier)}
+                                            onClick={selectedPaths.length < maxSelectablePaths || selectedPaths.includes(p.id)
+                                                ? () => handlePathClick(p.id, 1)
+                                                : () => null}
                                             selected={selectedPaths.includes(p.id)}
                                         />
 
                                     </tbody>
-                                    <tbody style={{ display: selectedPaths.includes(p.id) && show === (p.pathTier) ? '' : 'none', width: '100%' }} className="table-extension">
+                                    <tbody style={{ display: selectedPaths.includes(p.id) && show.current.includes(p.pathTier) ? '' : 'none', width: '100%' }} className="table-extension">
                                         <tr><th>Benefícios</th></tr>
                                         <tr><td>Vitalidade: {String(p.vitality)}</td></tr>
                                         <tr><td>Poder: {String(p.power)}</td></tr>
@@ -126,30 +123,29 @@ export default function PathSelection() {
 
                         {character.tier >= 2 ?
                             <>
-                                <h2 style={{ fontVariant: 'small-caps' }}>Caminhos Veteranos</h2>
-
                                 <table>
                                     <tbody>
-
                                         <TableHead
-                                            tableTitles={['Caminho']}
+                                            tableTitles={['Veterano']}
                                             onClick={() => showRow(2)}
-                                            open={show === 2}
+                                            open={show.current.includes(2)}
                                         />
 
                                         {tier2.map(p => (
                                             <React.Fragment key={p.id}>
-                                                <tbody>
+                                                <tbody className={!isMaxSelected || selectedPaths.includes(p.id) ? '' : 'error'}>
                                                     <TableData
                                                         key={p.id}
                                                         tableData={[`${p.name}`]}
-                                                        show={show === (p.pathTier) && (selectedPaths.includes(p.id) || selectedPaths.length === 0)}
-                                                        onClick={() => handlePathClick(p.id, 1)}
+                                                        show={show.current.includes(p.pathTier) && (selectedPaths.includes(p.id) || selectedPaths.length === 0)}
+                                                        onClick={selectedPaths.length < maxSelectablePaths || selectedPaths.includes(p.id)
+                                                            ? () => handlePathClick(p.id, 1)
+                                                            : () => null}
                                                         selected={selectedPaths.includes(p.id)}
                                                     />
 
                                                 </tbody>
-                                                <tbody style={{ display: selectedPaths.includes(p.id) && show === (p.pathTier) ? '' : 'none', width: '100%' }} className="table-extension">
+                                                <tbody style={{ display: selectedPaths.includes(p.id) && show.current.includes(p.pathTier) ? '' : 'none', width: '100%' }} className="table-extension">
                                                     <tr><th>Benefícios</th></tr>
                                                     <tr><td>Vitalidade: {String(p.vitality)}</td></tr>
                                                     <tr><td>Poder: {String(p.power)}</td></tr>
@@ -163,39 +159,37 @@ export default function PathSelection() {
                                         ))
                                         }
                                     </tbody>
-
                                 </table>
-
                             </>
                             : ''
                         }
 
                         {character.tier >= 3 ?
                             <>
-                                <h2 style={{ fontVariant: 'small-caps' }}>Caminhos Mestres</h2>
-
                                 <table>
                                     <tbody>
 
                                         <TableHead
-                                            tableTitles={['Caminho']}
+                                            tableTitles={['Mestre']}
                                             onClick={() => showRow(3)}
-                                            open={show === 3}
+                                            open={show.current.includes(3)}
                                         />
 
                                         {tier3.map(p => (
                                             <React.Fragment key={p.id}>
-                                                <tbody>
+                                                <tbody className={!isMaxSelected || selectedPaths.includes(p.id) ? '' : 'error'}>
                                                     <TableData
                                                         key={p.id}
                                                         tableData={[`${p.name}`]}
-                                                        show={show === (p.pathTier) && (selectedPaths.includes(p.id) || selectedPaths.length === 0)}
-                                                        onClick={() => handlePathClick(p.id, 1)}
+                                                        show={show.current.includes(p.pathTier) && (selectedPaths.includes(p.id) || selectedPaths.length === 0)}
+                                                        onClick={selectedPaths.length < maxSelectablePaths || selectedPaths.includes(p.id)
+                                                            ? () => handlePathClick(p.id, 1)
+                                                            : () => alert("Você não pode escolher mais Caminhos.")}
                                                         selected={selectedPaths.includes(p.id)}
                                                     />
 
                                                 </tbody>
-                                                <tbody style={{ display: selectedPaths.includes(p.id) && show === (p.pathTier) ? '' : 'none', width: '100%' }} className="table-extension">
+                                                <tbody style={{ display: selectedPaths.includes(p.id) && show.current.includes(p.pathTier) ? '' : 'none', width: '100%' }} className="table-extension">
                                                     <tr><th>Benefícios</th></tr>
                                                     <tr><td>Vitalidade: {String(p.vitality)}</td></tr>
                                                     <tr><td>Poder: {String(p.power)}</td></tr>
@@ -216,30 +210,29 @@ export default function PathSelection() {
 
                         {character.tier >= 4 ?
                             <>
-                                <h2 style={{ fontVariant: 'small-caps' }}>Caminhos Lendários</h2>
-
                                 <table>
                                     <tbody>
-
                                         <TableHead
-                                            tableTitles={['Caminho']}
+                                            tableTitles={['Lenda']}
                                             onClick={() => showRow(4)}
-                                            open={show === 4}
+                                            open={show.current.includes(4)}
                                         />
 
                                         {tier4.map(p => (
                                             <React.Fragment key={p.id}>
-                                                <tbody>
+                                                <tbody className={!isMaxSelected || selectedPaths.includes(p.id) ? '' : 'error'}>
                                                     <TableData
                                                         key={p.id}
                                                         tableData={[`${p.name}`]}
-                                                        show={show === (p.pathTier) && (selectedPaths.includes(p.id) || selectedPaths.length === 0)}
-                                                        onClick={() => handlePathClick(p.id, 1)}
+                                                        show={show.current.includes(p.pathTier) && (selectedPaths.includes(p.id) || selectedPaths.length === 0)}
+                                                        onClick={selectedPaths.length < maxSelectablePaths || selectedPaths.includes(p.id)
+                                                            ? () => handlePathClick(p.id, 1)
+                                                            : () => alert("Você não pode escolher mais Caminhos.")}
                                                         selected={selectedPaths.includes(p.id)}
                                                     />
 
                                                 </tbody>
-                                                <tbody style={{ display: selectedPaths.includes(p.id) && show === (p.pathTier) ? '' : 'none', width: '100%' }} className="table-extension">
+                                                <tbody style={{ display: selectedPaths.includes(p.id) && show.current.includes(p.pathTier) ? '' : 'none', width: '100%' }} className="table-extension">
                                                     <tr><th>Benefícios</th></tr>
                                                     <tr><td>Vitalidade: {String(p.vitality)}</td></tr>
                                                     <tr><td>Poder: {String(p.power)}</td></tr>
@@ -262,7 +255,6 @@ export default function PathSelection() {
                         {selectedPaths.map(pathId => (
                             <input type="hidden" key={pathId} id={String(pathId)} name="paths" value={pathId} />
                         ))}
-                        {error && <p>{error}</p>}
 
                         <input type="hidden" key={maxSelectablePaths} name="pendingPaths" value={maxSelectablePaths} />
 

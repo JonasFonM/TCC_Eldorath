@@ -1,7 +1,7 @@
 import { lineage } from "@prisma/client";
 import { ActionFunction, json, redirect } from "@remix-run/node";
 import { NavLink, useOutletContext } from "@remix-run/react";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { TableHead } from "~/components/character-sheet/general-table";
 import { TableData } from "~/components/character-sheet/general-table-data";
 import { submitCharLineages } from "~/utils/character.server";
@@ -31,7 +31,21 @@ export default function LineageSelection() {
     const { characterId, lineages, maxSelectableLineages } = useOutletContext<{ characterId: string, lineages: lineage[], maxSelectableLineages: number }>();
     const [selectedLineages, setSelectedLineages] = useState<number[]>([]);
     const [isPure, setPure] = useState<boolean>(false);
-    const [showLineage, setShowLineage] = useState<number>(0);
+    const isMaxSelected = selectedLineages.length >= maxSelectableLineages;
+
+    const show = useRef<number[]>([]); // Avoid re-renders
+
+    const forceUpdate = useState(0)[1]; // Trigger minimal re-renders when necessary
+
+    const showRow = (n: number) => {
+        if (show.current.includes(n)) {
+            const newShow = show.current.filter(ns => ns != n)
+            show.current = newShow
+            return forceUpdate(n => n + 1);
+        }
+        show.current.push(n);
+        return forceUpdate(n => n + 1);
+    }
 
     const handleLineageClick = (lineageId: number) => {
         setSelectedLineages((prevSelectedLineages) => {
@@ -67,29 +81,31 @@ export default function LineageSelection() {
                         <h3>Escolher apenas 1 Linhagem a torna Pura</h3>
 
                         <table>
-                            <tbody>
-
+                            <thead>
                                 <TableHead
                                     tableTitles={['Linhagem']}
-                                    onClick={showLineage != -2 ? () => setShowLineage(-2) : () => setShowLineage(0)}
-                                    open={showLineage === -2}
+                                    onClick={() => showRow(-2)}
+                                    open={show.current.includes(-2)}
                                 />
+                            </thead>
 
-                                {lineages.map(ln => (
-                                    <React.Fragment key={ln.id}>
+                            {lineages.map(ln => (
+                                <React.Fragment key={ln.id}>
+                                    <tbody className={!isMaxSelected || selectedLineages.includes(ln.id) ? '' : 'error'}>
+
                                         <TableData
                                             key={ln.id}
-                                            tableData={isPure ? [String(ln.name) + ' Pura'] : [String(ln.name)]}
-                                            show={showLineage === (-2)}
+                                            tableData={isPure && selectedLineages.includes(ln.id) ? [String(ln.name) + ' Pura'] : [String(ln.name)]}
+                                            show={show.current.includes(-2)}
                                             onClick={selectedLineages.length < maxSelectableLineages || selectedLineages.includes(ln.id)
                                                 ? () => handleLineageClick(Number(ln.id))
-                                                : () => alert("Você não pode escolher mais Linhagens.")}
+                                                : () => null}
                                             selected={selectedLineages.includes(ln.id)}
                                         />
-                                    </React.Fragment>
-                                ))}
+                                    </tbody>
+                                </React.Fragment>
+                            ))}
 
-                            </tbody>
                         </table >
 
                         {selectedLineages.map(lineageId => (

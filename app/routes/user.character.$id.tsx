@@ -3,8 +3,7 @@
 import { LoaderFunction, } from "@remix-run/node";
 import { NavLink, Outlet, useLoaderData, useLocation } from "@remix-run/react";
 import { prisma } from "~/utils/prisma.server";
-import { LSrelations } from "~/utils/types.server";
-import { character, character_item, lineage, path, skill, item } from "@prisma/client";
+import { character, character_item, lineage, path, skill, item, lineage_skill } from "@prisma/client";
 import React, { useState } from "react";
 
 import { SideBars } from "~/components/side-bars/side-bars";
@@ -45,18 +44,20 @@ export const loader: LoaderFunction = async ({ params, request }) => {
 
   const pureLineageSkills = await prisma.lineage_skill.findMany({
     where: {
+      skillId: { in: character?.skills.map(skill => skill.skillId) },
       lineageId: { in: character_lineages.map(cl => cl.lineageId) },
       pureSkill: true
     },
-    include: { skill: true },
+    include: { skill: true, lineage: true },
   });
 
   const nonPureLineageSkills = await prisma.lineage_skill.findMany({
     where: {
+      skillId: { in: character?.skills.map(skill => skill.skillId) },
       lineageId: { in: character_lineages.map(cl => cl.lineageId) },
       pureSkill: false
     },
-    include: { skill: true },
+    include: { skill: true, lineage: true },
   });
 
   const lineages = await prisma.lineage.findMany({
@@ -84,11 +85,16 @@ export const loader: LoaderFunction = async ({ params, request }) => {
 };
 
 export default function CharacterRoute() {
-  const { isAuthor, character, characterId } = useLoaderData<{ isAuthor: boolean, character: character, characterId: string }>()
-  const { skills, pureLineageSkills, nonPureLineageSkills } = useLoaderData<{ skills: skill[], pureLineageSkills: LSrelations, nonPureLineageSkills: LSrelations }>();
-  const { lineages, isPure } = useLoaderData<{ lineages: lineage[], isPure: boolean }>();
-  const { items } = useLoaderData<{ items: (character_item & { item: item })[] }>();
-  const { paths } = useLoaderData<{ paths: path[] }>();
+  const { isAuthor, character, characterId,
+    skills, pureLineageSkills, nonPureLineageSkills,
+    lineages, isPure, items, paths }
+    =
+    useLoaderData<{
+      isAuthor: boolean, character: character, characterId: string,
+      skills: skill[], pureLineageSkills: (lineage_skill & { skill: skill, lineage: lineage })[],
+      nonPureLineageSkills: (lineage_skill & { skill: skill, lineage: lineage })[],
+      lineages: lineage[], isPure: boolean, items: (character_item & { item: item })[], paths: path[]
+    }>()
   const { isAllOpen, isHeaderOpen, isTempOpen } = useSidebar();
 
   const location = useLocation()
@@ -173,7 +179,11 @@ export default function CharacterRoute() {
       />
 
       <div className="character-sheet" style={isAllOpen ? { marginLeft: '200px', marginRight: '200px' } : isHeaderOpen ? { marginLeft: '200px' } : isTempOpen ? { marginRight: '200px' } : {}}>
-        <Outlet context={{ characterId, isAuthor, character, skills, paths, lineages, pureLineageSkills, nonPureLineageSkills, isPure, items }} />
+        <Outlet context={{
+          characterId, isAuthor,
+          character, skills, paths,
+          lineages, pureLineageSkills, nonPureLineageSkills, isPure, items
+        }} />
       </div >
     </>
 

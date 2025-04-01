@@ -1,7 +1,7 @@
 import { character, item } from "@prisma/client";
 import { ActionFunction, json, redirect } from "@remix-run/node";
 import { useOutletContext } from "@remix-run/react";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { TableHead } from "~/components/character-sheet/general-table";
 import { submitStartingCharItems } from "~/utils/inventory.server";
 import { translateSlotTypes } from "./user.character";
@@ -28,19 +28,21 @@ export default function ItemSelection() {
     const { items, character } = useOutletContext<{ items: item[]; character: character }>();
     const [selectedItems, setSelectedItems] = useState<number[]>([]);
     const [selectedCost, setSelectedCost] = useState<number>(0);
-    const [show, setShow] = useState<number>(-2);
     const [error, setError] = useState<string | null>(null);
     const maxCost = character.gold;
+    const show = useRef<number[]>([]); // Avoid re-renders
 
-    const showRow = (row: number) => {
-        show != row ?
-            setShow(() => {
-                return row;
-            })
-            :
-            setShow(() => {
-                return 0;
-            })
+    const forceUpdate = useState(0)[1]; // Trigger minimal re-renders when necessary
+
+    const showRow = (n: number) => {
+        if (show.current.includes(n)) {
+            const newShow = show.current.filter(ns => ns != n)
+            show.current = newShow
+            forceUpdate(n => n + 1);
+        }
+        show.current.push(n);
+        forceUpdate(n => n + 1);
+
     }
 
     const slotTypes = [
@@ -110,7 +112,7 @@ export default function ItemSelection() {
                                     <TableHead
                                         tableTitles={[translateSlotTypes[st]]}
                                         onClick={() => showRow(index)}
-                                        open={show === index}
+                                        open={show.current.includes(index)}
                                     />
                                 </thead>
                             </table>
@@ -119,7 +121,7 @@ export default function ItemSelection() {
                                     key={item.id}
                                     className='container'
                                     style={{
-                                        display: show === index ? '' : 'none',
+                                        display: show.current.includes(index) ? '' : 'none',
                                         border: selectedItems.includes(item.id) ? '1px solid green' : '1px solid gray',
                                         borderRadius: '2%'
                                     }}>

@@ -1,12 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { character, character_item, character_lineage, character_path, character_skill, item, lineage, path, skill } from "@prisma/client"
+import { character, character_item, character_lineage, character_path, character_skill, item, lineage, lineage_skill, path, skill } from "@prisma/client"
 import { LoaderFunction, redirect } from "@remix-run/node"
 import { Outlet, useLoaderData } from "@remix-run/react"
 import { useSidebar } from "~/components/side-bars/side-bar-context"
 import { SideBars } from "~/components/side-bars/side-bars"
 import { requireUserId } from '~/utils/auth.server'
 import { prisma } from "~/utils/prisma.server"
-import { LSrelations } from "~/utils/types.server"
 
 export const loader: LoaderFunction = async ({ request, params }) => {
     const userId = await requireUserId(request)
@@ -63,18 +62,28 @@ export const loader: LoaderFunction = async ({ request, params }) => {
 
     const maxSelectableSkills = character?.pendingSkills;
 
-    const skills = await prisma.skill.findMany();
+    const skills = await prisma.skill.findMany({
+        where: {
+            id: { notIn: character?.skills.map(skill => skill.skillId) },
+            lineages: { none: {} },
+        }
+    });
 
     const selectableSkills = skills.filter(sk =>
-        !(character_skills.map(cs => cs.skill.id).includes(sk.id)) &&
-        Number(character?.agility) >= sk.agi ||
-        Number(character?.body) >= sk.bdy ||
-        Number(character?.mind) >= sk.mnd ||
-        Number(character?.level) >= sk.lvl ||
-        Number(character?.trueSize) >= sk.trSiz ||
-        Number(character?.relativeSize) >= sk.rlSiz ||
-        character?.skills.map(cs => cs.skillId).includes(Number(sk.prerequisiteId))
-    )
+        !character_skills.some(cs => cs.skill.id === sk.id) &&
+        Number(character?.agility) >= sk.agi &&
+        Number(character?.body) >= sk.bdy &&
+        Number(character?.mind) >= sk.mnd &&
+        Number(character?.level) >= sk.lvl &&
+        (
+            (Number(character?.trueSize) >= sk.trSiz || sk.trSiz <= 0) &&
+            (Number(character?.relativeSize) >= sk.rlSiz || sk.rlSiz <= 0)
+        ) &&
+        (
+            sk.prerequisiteId === null ||
+            character?.skills.some(cs => cs.skillId === Number(sk.prerequisiteId))
+        )
+    );
 
     const isPure = character_lineages.length === 1;
 
@@ -82,10 +91,26 @@ export const loader: LoaderFunction = async ({ request, params }) => {
         where: {
             skillId: { notIn: character?.skills.map(skill => skill.skillId) },
             lineageId: { in: character_lineages.map(cl => cl.lineageId) },
-            pureSkill: true
+            pureSkill: true,
         },
-        include: { skill: true },
+        include: { skill: true, lineage: true },
     });
+
+    const selectablePureLineageSkills = pureLineageSkills.filter(ls =>
+        !character_skills.some(cs => cs.skill.id === ls.skill.id) &&
+        Number(character?.agility) >= ls.skill.agi &&
+        Number(character?.body) >= ls.skill.bdy &&
+        Number(character?.mind) >= ls.skill.mnd &&
+        Number(character?.level) >= ls.skill.lvl &&
+        (
+            (Number(character?.trueSize) >= ls.skill.trSiz || ls.skill.trSiz <= 0) &&
+            (Number(character?.relativeSize) >= ls.skill.rlSiz || ls.skill.rlSiz <= 0)
+        ) &&
+        (
+            ls.skill.prerequisiteId === null ||
+            character?.skills.some(cs => cs.skillId === Number(ls.skill.prerequisiteId))
+        )
+    );
 
     const nonPureLineageSkills = await prisma.lineage_skill.findMany({
         where: {
@@ -93,8 +118,24 @@ export const loader: LoaderFunction = async ({ request, params }) => {
             lineageId: { in: character_lineages.map(cl => cl.lineageId) },
             pureSkill: false
         },
-        include: { skill: true },
+        include: { skill: true, lineage: true },
     });
+
+    const selectableNonPureLineageSkills = nonPureLineageSkills.filter(ls =>
+        !character_skills.some(cs => cs.skill.id === ls.skill.id) &&
+        Number(character?.agility) >= ls.skill.agi &&
+        Number(character?.body) >= ls.skill.bdy &&
+        Number(character?.mind) >= ls.skill.mnd &&
+        Number(character?.level) >= ls.skill.lvl &&
+        (
+            (Number(character?.trueSize) >= ls.skill.trSiz || ls.skill.trSiz <= 0) &&
+            (Number(character?.relativeSize) >= ls.skill.rlSiz || ls.skill.rlSiz <= 0)
+        ) &&
+        (
+            ls.skill.prerequisiteId === null ||
+            character?.skills.some(cs => cs.skillId === Number(ls.skill.prerequisiteId))
+        )
+    );
 
     //Lineages
     const lineages = await prisma.lineage.findMany()
@@ -121,7 +162,8 @@ export const loader: LoaderFunction = async ({ request, params }) => {
         character_lineages, character_paths, character_skills, character_items,
         maxSelectableSkills, maxMagics, maxTechniques, maxManeuvers, maxOaths, maxTricks,
         skills, selectableSkills,
-        pureLineageSkills, nonPureLineageSkills, isPure,
+        selectablePureLineageSkills,
+        selectableNonPureLineageSkills, isPure,
         lineages, maxSelectableLineages,
         paths, maxSelectablePaths,
         items
@@ -139,7 +181,11 @@ export default function NewCharacterRoute() {
         character_lineages, character_paths, character_skills, character_items,
         maxSelectableSkills, maxMagics, maxTechniques, maxManeuvers, maxOaths, maxTricks,
         skills, selectableSkills,
-        pureLineageSkills, nonPureLineageSkills, isPure,
+        selectablePureLineageSkills,
+        pureLineageSkills,
+        selectableNonPureLineageSkills,
+        nonPureLineageSkills,
+        isPure,
         lineages, maxSelectableLineages,
         paths, maxSelectablePaths,
         items
@@ -151,7 +197,11 @@ export default function NewCharacterRoute() {
             character_lineages: (character_lineage & { lineage: lineage })[], character_paths: (character_path & { path: path })[], character_skills: (character_skill & { skill: skill })[], character_items: (character_item & { item: item })[],
             maxSelectableSkills: number, maxMagics: number, maxTechniques: number, maxManeuvers: number, maxOaths: number, maxTricks: number,
             skills: skill[], selectableSkills: skill[],
-            pureLineageSkills: LSrelations, nonPureLineageSkills: LSrelations, isPure: boolean,
+            selectablePureLineageSkills: (lineage_skill & { skill: skill, lineage: lineage })[],
+            pureLineageSkills: (lineage_skill & { skill: skill, lineage: lineage })[],
+            selectableNonPureLineageSkills: (lineage_skill & { skill: skill, lineage: lineage })[],
+            nonPureLineageSkills: (lineage_skill & { skill: skill, lineage: lineage })[],
+            isPure: boolean,
             lineages: lineage[], maxSelectableLineages: number,
             paths: path[], maxSelectablePaths: number,
             items: item[]
@@ -203,7 +253,11 @@ export default function NewCharacterRoute() {
                     character_lineages, character_paths, character_skills, character_items,
                     maxSelectableSkills, maxMagics, maxTechniques, maxManeuvers, maxOaths, maxTricks,
                     skills, selectableSkills,
-                    pureLineageSkills, nonPureLineageSkills, isPure,
+                    selectablePureLineageSkills,
+                    pureLineageSkills,
+                    selectableNonPureLineageSkills,
+                    nonPureLineageSkills,
+                    isPure,
                     lineages, maxSelectableLineages,
                     paths, maxSelectablePaths,
                     items

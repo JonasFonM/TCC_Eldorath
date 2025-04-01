@@ -25,11 +25,6 @@ export function SideBars({ title, subtitle, tableHeaders, tableDatas, tableExpla
 
     const [showExplain, setShowExplain] = useState<number>(0);
 
-    const tempStyle = {
-        zIndex: showExplain === 0 ? 5 : 4,
-        ...(selectTemp !== 0 && { transform: "translate(200px)" })
-    };
-
     return (
         <div id="side-bars">
             <div className="header" style={selectHeader === 0 ? {} : { transform: 'translate(-200px)' }}>
@@ -64,7 +59,7 @@ export function SideBars({ title, subtitle, tableHeaders, tableDatas, tableExpla
                 onClick={selectHeader === 0 ? () => setHeader(Number(entity.id)) : () => setHeader(0)}>
             </button>
 
-            <div className="temp" style={tempStyle}>
+            <div className="temp">
 
                 {temp}
 

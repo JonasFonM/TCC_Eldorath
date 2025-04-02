@@ -191,6 +191,10 @@ ul {
   border-bottom: 1.5px solid goldenrod;
 }
 
+.topnav li a {
+  padding: 16px
+}
+
 .character-sheet {
   transition: 0.3s ease-in-out;
 }
@@ -231,7 +235,7 @@ ul {
 .header h1,
 .temp h1 {
   margin-top: 6px;
-  font-size: 5vw;
+  font-size: 150%;
   width: 100%;
 }
 
@@ -242,7 +246,7 @@ ul {
   text-align: center;
   font-variant: small-caps;
   font-family: serif;
-  font-size: 4vw;
+  font-size: 140%;
   width: 100%;
 }
 
@@ -275,7 +279,7 @@ ul {
   font-weight: bold;
   font-family: serif;
   font-variant: small-caps;
-  font-size: 4vw;
+  font-size: 140%;
   width: 50%;
   text-align: center;
 }
@@ -286,7 +290,7 @@ ul {
   border: 0;
   top: 62px;
   height: 100vh;
-  width: 10px;
+  width: 12px;
   background-color: gold;
   opacity: 0;
   transition: 0.3s ease-in-out;
@@ -297,13 +301,11 @@ ul {
 .toggle-temp {
   right: 0;
   margin-right: 25vw;
-  ;
 
 }
 
 .toggle-menu {
   margin-left: 25vw;
-  ;
 }
 
 .toggle-menu:hover,
@@ -346,7 +348,7 @@ li button {
   display: block;
   color: white;
   text-align: center;
-  padding: 3vw;
+  padding: 5%;
   text-decoration: none;
   font-weight: bold;
   font-family: serif;
@@ -496,7 +498,7 @@ th {
   border: 2px solid #dddddd;
   border-left: 0;
   text-align: center;
-  padding: 3vw;
+  padding: 5%;
 }
 
 td {

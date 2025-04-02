@@ -30,9 +30,9 @@ export default function ItemSelection() {
     const [selectedCost, setSelectedCost] = useState<number>(0);
     const [error, setError] = useState<string | null>(null);
     const maxCost = character.gold;
-    const show = useRef<number[]>([]); // Avoid re-renders
+    const show = useRef<number[]>([]);
 
-    const forceUpdate = useState(0)[1]; // Trigger minimal re-renders when necessary
+    const forceUpdate = useState(0)[1];
 
     const showRow = (n: number) => {
         if (show.current.includes(n)) {
@@ -102,8 +102,6 @@ export default function ItemSelection() {
                 <h3>*Drakas não gastos podem ser usados em jogo</h3>
                 <h2>Drakas : {character.gold - selectedCost}</h2>
 
-
-
                 <div className="items-grid">
                     {slotTypes.map((st, index) =>
                         <React.Fragment key={st}>
@@ -168,7 +166,7 @@ export default function ItemSelection() {
                     ))
                 }
 
-                < button type="submit" className="button" > Próximo</button>
+                <button type="submit" className="button"> Próximo</button>
 
             </form>
 

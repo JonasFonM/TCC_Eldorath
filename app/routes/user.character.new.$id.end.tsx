@@ -212,14 +212,18 @@ export default function LineagesRoute() {
                         style={'linear-gradient(to bottom right, white, gold)'}
                         color="black" />
                 </React.Fragment>))}
-            <div className="col-6">
-                <Link to={`/user/character/${characterId}/reset/`} className="button" style={{ width: '60%' }}>Recomeçar</Link>
-            </div>
-            <div className="col-6">
 
+            <div className="col-6">
+                {character.level === 1 && character.experience === 0
+                    ? <Link to={`/user/character/${characterId}/reset/`} className="button" style={{ width: '60%' }}>Recomeçar</Link>
+                    : <div style={{ visibility: 'hidden' }}>Hi</div>
+                }
+            </div>
+
+            <div className="col-6">
                 {character.agility + character.body + character.mind >= 7 && character_skills.length > 0 && character_paths.length > 0 && character_lineages.length > 0
                     ? <Link to={`/user/character/${characterId}/stats/`} className="button" style={{ width: '60%' }}>Finalizar</Link>
-                    : ''
+                    : <div style={{ visibility: 'hidden' }}>Hi</div>
                 }
             </div>
         </>

@@ -89,11 +89,11 @@ export default function UserRoute() {
                 className="user"
                 style={
                     isAllOpen
-                        ? { marginLeft: "200px", marginRight: "200px" }
+                        ? { marginLeft: "25vw", marginRight: "25vw" }
                         : isHeaderOpen
-                            ? { marginLeft: "200px" }
+                            ? { marginLeft: "25vw" }
                             : isTempOpen
-                                ? { marginRight: "200px" }
+                                ? { marginRight: "25vw" }
                                 : {}
                 }
             >

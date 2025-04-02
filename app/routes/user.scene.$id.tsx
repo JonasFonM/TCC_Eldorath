@@ -72,8 +72,8 @@ export default function SceneRoute() {
 
 
 
-            <div className="user" style={isAllOpen ? { marginLeft: '200px', marginRight: '200px' } : isHeaderOpen ?
-                { marginLeft: '200px' } : isTempOpen ? { marginRight: '200px' } : {}}>
+            <div className="user" style={isAllOpen ? { marginLeft: '25vw', marginRight: '25vw' } : isHeaderOpen ?
+                { marginLeft: '25vw' } : isTempOpen ? { marginRight: '25vw' } : {}}>
 
                 <h1>{scene.title}</h1>
 

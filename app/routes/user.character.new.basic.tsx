@@ -155,37 +155,37 @@ export default function NewCharacterRoute() {
       <h3>Pontos: {limit}</h3>
 
       <div className="container">
-        <div className="block">
-          <label>
+        <div className="col-4">
+          <label style={{ fontVariant: 'small-caps', fontFamily: 'serif', fontSize: '1.3rem' }}>
             Agilidade: {formData.agility}
             <input hidden type="number" name="agility" value={formData.agility} onChange={handleChange} />
-            <div className="col-12">
-              <button className="col-6 button" type="button" onClick={() => adjustAttribute('agility', 1)}>+</button>
-              <button className="col-6 button" type="button" onClick={() => adjustAttribute('agility', -1)}>-</button>
+            <div className="container">
+              <button className="col-5 button" type="button" onClick={() => adjustAttribute('agility', -1)}>-</button>
+              <button className="col-5 button" type="button" onClick={() => adjustAttribute('agility', 1)}>+</button>
             </div>
           </label>
           {errors.agility && <p className="error">{errors.agility}</p>}
         </div>
 
-        <div className="block">
-          <label>
+        <div className="col-4">
+          <label style={{ fontVariant: 'small-caps', fontFamily: 'serif', fontSize: '1.3rem' }}>
             Corpo: {formData.body}
             <input hidden type="number" name="body" value={formData.body} onChange={handleChange} />
-            <div className="col-12">
-              <button className="col-6 button" type="button" onClick={() => adjustAttribute('body', 1)}>+</button>
-              <button className="col-6 button" type="button" onClick={() => adjustAttribute('body', -1)}>-</button>
+            <div className="container">
+              <button className="col-5 button" type="button" onClick={() => adjustAttribute('body', -1)}>-</button>
+              <button className="col-5 button" type="button" onClick={() => adjustAttribute('body', 1)}>+</button>
             </div>
           </label>
           {errors.body && <p className="error">{errors.body}</p>}
         </div>
 
-        <div className="block">
-          <label>
+        <div className="col-4">
+          <label style={{ fontVariant: 'small-caps', fontFamily: 'serif', fontSize: '1.3rem' }}>
             Mente: {formData.mind}
             <input hidden type="number" name="mind" value={formData.mind} onChange={handleChange} />
-            <div className="col-12">
-              <button className="col-6 button" type="button" onClick={() => adjustAttribute('mind', 1)}>+</button>
-              <button className="col-6 button" type="button" onClick={() => adjustAttribute('mind', -1)}>-</button>
+            <div className="container">
+              <button className="col-5 button" type="button" onClick={() => adjustAttribute('mind', -1)}>-</button>
+              <button className="col-5 button" type="button" onClick={() => adjustAttribute('mind', 1)}>+</button>
             </div>
           </label>
           {errors.mind && <p className="error">{errors.mind}</p>}

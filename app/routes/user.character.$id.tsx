@@ -150,7 +150,7 @@ export default function CharacterRoute() {
 
       />
 
-      <div className="character-sheet" style={isAllOpen ? { marginLeft: '200px', marginRight: '200px' } : isHeaderOpen ? { marginLeft: '200px' } : isTempOpen ? { marginRight: '200px' } : {}}>
+      <div className="character-sheet" style={isAllOpen ? { marginLeft: '25vw', marginRight: '25vw' } : isHeaderOpen ? { marginLeft: '25vw' } : isTempOpen ? { marginRight: '25vw' } : {}}>
         <Outlet context={{
           characterId, isAuthor,
           character, skills, paths,

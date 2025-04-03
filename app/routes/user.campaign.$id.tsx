@@ -219,8 +219,8 @@ export default function CampaignRoute() {
 
             />
 
-            <div className="user" style={isAllOpen ? { marginLeft: '25vw', marginRight: '25vw' } : isHeaderOpen ?
-                { marginLeft: '25vw' } : isTempOpen ? { marginRight: '25vw' } : {}}>
+            <div className="user" style={isAllOpen ? { marginLeft: '200px', marginRight: '200px' } : isHeaderOpen ?
+                { marginLeft: '200px' } : isTempOpen ? { marginRight: '200px' } : {}}>
 
                 <h1>{campaign.title}</h1>
                 <SceneCreator isHidden={showCreator === 0} onCancel={() => setShowCreator(0)} campaignId={String(campaignId)} />

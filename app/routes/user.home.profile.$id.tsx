@@ -45,7 +45,7 @@ export default function UserProfileRoute() {
                 </thead>
             </table>
 
-            <h1 id="Campanhas" className="title-input" style={showCreations !== 1 ? {} : { backgroundColor: 'rgb(0, 0, 0)', boxShadow: '1px 1px 8px 1px gold' }}>
+            <h1 id="Campanhas" className="title-input" style={showCreations !== 1 ? {} : { backgroundColor: 'black', boxShadow: '1px 1px 8px 1px gold' }}>
                 <button className="lineBtn" onClick={() => setShowCreations(showCreations !== 1 ? 1 : 0)} >
                     {isOwnProfile ? 'Suas Campanhas' : `Campanhas de ${profileUser.username}`}
                 </button>
@@ -56,7 +56,7 @@ export default function UserProfileRoute() {
                     <CampaignPanel isAuthor={isOwnProfile} campaigns={profileCampaigns} />
                     {isOwnProfile ?
                         <div className="col-12">
-                            <div className='title-container' style={{ backgroundColor: 'rgb(0, 0, 0)', boxShadow: '1px 1px 8px 1px gold' }}>
+                            <div className='title-container' style={{ backgroundColor: 'black', boxShadow: '1px 1px 8px 1px gold' }}>
                                 <NavLink className={'lineBtn'} to={`/user/campaign/new`}><h1>Criar Campanha</h1></NavLink>
                             </div>
                         </div>

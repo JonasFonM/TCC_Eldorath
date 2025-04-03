@@ -47,7 +47,7 @@ export function SideBars({ title, subtitle, tableHeaders, tableDatas, tableExpla
     return (
         <div id="side-bars">
 
-            <div className="header" style={selectHeader === 0 ? {} : { transform: 'translate(-25vw)' }}>
+            <div className="header" style={selectHeader === 0 ? {} : { transform: 'translate(-200px)' }}>
                 <h1>{title}</h1>
                 <h3>{subtitle}</h3>
                 {tableHeaders.map((th, index) => (
@@ -81,15 +81,15 @@ export function SideBars({ title, subtitle, tableHeaders, tableDatas, tableExpla
                     onCancel={() => setShowExplain(index)} />
             ))}
 
-            <button className="toggle-menu" style={selectHeader === 0 ? {} : { transform: 'translate(-25vw)' }}
+            <button className="toggle-menu" style={selectHeader === 0 ? {} : { transform: 'translate(-200px)' }}
                 onClick={selectHeader === 0 ? () => setHeader(Number(entity.id)) : () => setHeader(0)}>
             </button>
 
-            <div className="temp" style={selectTemp === 0 ? {} : { transform: 'translate(25vw)' }}>
+            <div className="temp" style={selectTemp === 0 ? {} : { transform: 'translate(200px)' }}>
                 {temp}
             </div>
 
-            <button className="toggle-temp" style={selectTemp === 0 ? {} : { transform: 'translate(25vw)' }}
+            <button className="toggle-temp" style={selectTemp === 0 ? {} : { transform: 'translate(200px)' }}
                 onClick={selectTemp === 0 ? () => setTemp(Number(entity.id)) : () => setTemp(0)}>
             </button>
         </div >

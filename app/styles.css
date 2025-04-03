@@ -5,6 +5,8 @@
 
 a {
   text-decoration: none;
+  font-family: sans-serif;
+  color: gold;
 }
 
 a :hover {
@@ -74,6 +76,7 @@ body {
 
 h1 {
   color: gold;
+  font-size: 1.7em
 }
 
 h1,
@@ -214,7 +217,7 @@ ul {
   transition: 0.3s ease-in-out;
   position: fixed;
   display: block;
-  width: 25vw;
+  width: 200px;
   height: 100vh;
   top: 64px;
   padding: 0;
@@ -235,8 +238,13 @@ ul {
 .header h1,
 .temp h1 {
   margin-top: 6px;
-  font-size: 150%;
+  font-size: 1.25rem;
   width: 100%;
+}
+
+.header h3,
+.temp h3 {
+  font-size: 1.15rem;
 }
 
 .header p,
@@ -246,7 +254,7 @@ ul {
   text-align: center;
   font-variant: small-caps;
   font-family: serif;
-  font-size: 140%;
+  font-size: 1.1rem;
   width: 100%;
 }
 
@@ -279,7 +287,7 @@ ul {
   font-weight: bold;
   font-family: serif;
   font-variant: small-caps;
-  font-size: 140%;
+  font-size: 1.2rem;
   width: 50%;
   text-align: center;
 }
@@ -300,12 +308,12 @@ ul {
 
 .toggle-temp {
   right: 0;
-  margin-right: 25vw;
+  margin-right: 200px;
 
 }
 
 .toggle-menu {
-  margin-left: 25vw;
+  margin-left: 200px;
 }
 
 .toggle-menu:hover,
@@ -321,7 +329,7 @@ ul {
   align-items: left;
   justify-content: left;
   flex-wrap: wrap;
-  margin-left: 25vw;
+  margin-left: 200px;
   width: auto;
 }
 
@@ -348,7 +356,7 @@ li button {
   display: block;
   color: white;
   text-align: center;
-  padding: 5%;
+  padding: 16px;
   text-decoration: none;
   font-weight: bold;
   font-family: serif;
@@ -498,7 +506,7 @@ th {
   border: 2px solid #dddddd;
   border-left: 0;
   text-align: center;
-  padding: 5%;
+  padding: 16px;
 }
 
 td {
@@ -946,7 +954,7 @@ button:hover {
     font-size: 28px;
   }
 
-  .col-4 {
+   .col-4 {
     width: 100%
   }
 }

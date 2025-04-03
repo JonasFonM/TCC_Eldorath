@@ -141,7 +141,7 @@ export default function NewCharacterRoute() {
                 body: !formData.body ? 'Corpo tem valor mínimo 1' : '',
                 mind: !formData.mind ? 'Mente tem valor mínimo 1' : '',
             });
-            setFormError('Preencha todos os campos. O valor mínimo de cada Atributo é 1');
+            setFormError('Preencha todos os campos.');
             return;
         }
     };

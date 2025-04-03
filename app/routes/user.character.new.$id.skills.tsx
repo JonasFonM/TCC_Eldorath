@@ -64,7 +64,8 @@ export default function SkillSelectionRoute() {
   }
 
   const handleSkillClick = (skillId: number, skillType: string, techniqueSubtype: string | null) => {
-    if (skillType === 'MAGIC' && !isMaxMagics) {
+
+    if (skillType === 'MAGIC' && !isMaxMagics || selectedMagics.includes(skillId)) {
       setSelectedMagics((prevSkills) => {
 
         const isSelected = prevSkills.includes(skillId);
@@ -72,13 +73,12 @@ export default function SkillSelectionRoute() {
         const newSelectedSkills = isSelected
           ? prevSkills.filter(id => id !== skillId)
           : [...prevSkills, skillId];
-
         return newSelectedSkills
       }
       )
     }
 
-    if (techniqueSubtype === 'MANEUVER' && !isMaxManeuvers) {
+    if (techniqueSubtype === 'MANEUVER' && !isMaxManeuvers || selectedManeuvers.includes(skillId)) {
       setSelectedManeuvers((prevSkills) => {
 
         const isSelected = prevSkills.includes(skillId);
@@ -92,7 +92,7 @@ export default function SkillSelectionRoute() {
       )
     }
 
-    if (techniqueSubtype === 'OATH' && !isMaxOaths) {
+    if (techniqueSubtype === 'OATH' && !isMaxOaths || selectedOaths.includes(skillId)) {
       setSelectedOaths((prevSkills) => {
 
         const isSelected = prevSkills.includes(skillId);
@@ -105,7 +105,7 @@ export default function SkillSelectionRoute() {
       })
     }
 
-    if (techniqueSubtype === 'TRICK' && !isMaxTricks) {
+    if (techniqueSubtype === 'TRICK' && !isMaxTricks || selectedTricks.includes(skillId)) {
       setSelectedTricks((prevSkills) => {
 
         const isSelected = prevSkills.includes(skillId);
@@ -119,7 +119,7 @@ export default function SkillSelectionRoute() {
       )
     }
 
-    if (skillType === 'TECHNIQUE' && !isMaxTechniques) {
+    if (skillType === 'TECHNIQUE' && !isMaxTechniques || selectedTechniques.includes(skillId)) {
       setSelectedTechniques((prevSkills) => {
 
         const isSelected = prevSkills.includes(skillId);
@@ -133,12 +133,18 @@ export default function SkillSelectionRoute() {
       )
     }
 
-    if (!isMaxSelected || selectedSkills.includes(skillId)) {
+    if (!isMaxSelected || selectedSkills.includes(skillId)
+    ) {
       setSelectedSkills((prevSkills) => {
 
         const isSelected = prevSkills.includes(skillId);
 
         const newSelectedSkills = isSelected
+          || selectedTechniques.includes(skillId)
+          || selectedTricks.includes(skillId)
+          || selectedOaths.includes(skillId)
+          || selectedManeuvers.includes(skillId)
+          || selectedMagics.includes(skillId)
           ? prevSkills.filter(id => id !== skillId)
           : [...prevSkills, skillId];
 
@@ -177,17 +183,43 @@ export default function SkillSelectionRoute() {
 
               {selectableSkills.map(sk => (
                 <React.Fragment key={sk.id}>
-                  <tbody className={!isMaxSelected || selectedSkills.includes(sk.id) ? '' : 'error'}>
+                  <tbody className={!isMaxSelected
+                    || sk.type === 'MAGIC' && !isMaxMagics
+                    || sk.techniqueSubtype === 'MANEUVER' && !isMaxManeuvers
+                    || sk.techniqueSubtype === 'OATH' && !isMaxOaths
+                    || sk.techniqueSubtype === 'TRICK' && !isMaxTricks
+                    || sk.type === 'TECHNIQUE' && !isMaxTechniques
+                    || selectedSkills.includes(sk.id)
+                    || selectedMagics.includes(sk.id)
+                    || selectedManeuvers.includes(sk.id)
+                    || selectedOaths.includes(sk.id)
+                    || selectedTricks.includes(sk.id)
+                    || selectedTechniques.includes(sk.id)
+                    ? '' : 'error'}>
                     <TableData
                       key={sk.id}
                       tableData={[`${sk.name}`]}
                       show={show.current.includes(1)}
                       onClick={() => handleSkillClick(sk.id, sk.type, sk.techniqueSubtype)}
-                      selected={selectedSkills.includes(sk.id)}
+                      selected={
+                        selectedSkills.includes(sk.id)
+                        || selectedMagics.includes(sk.id)
+                        || selectedManeuvers.includes(sk.id)
+                        || selectedOaths.includes(sk.id)
+                        || selectedTricks.includes(sk.id)
+                        || selectedTechniques.includes(sk.id)}
                     />
                   </tbody>
 
-                  <tbody style={{ display: selectedSkills.includes(sk.id) && show.current.includes(1) ? '' : 'none', width: '100%' }} className="table-extension">
+                  <tbody style={{
+                    display: selectedSkills.includes(sk.id)
+                      || selectedMagics.includes(sk.id)
+                      || selectedManeuvers.includes(sk.id)
+                      || selectedOaths.includes(sk.id)
+                      || selectedTricks.includes(sk.id)
+                      || selectedTechniques.includes(sk.id)
+                      && show.current.includes(1) ? '' : 'none', width: '100%'
+                  }} className="table-extension">
                     <tr><td>{String(sk.description)}</td></tr>
                     <tr><th>Tipo</th></tr>
                     <tr><td>{String(sk.type)}</td></tr>

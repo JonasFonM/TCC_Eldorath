@@ -64,7 +64,6 @@ export const loader: LoaderFunction = async ({ request, params }) => {
 
     const skills = await prisma.skill.findMany({
         where: {
-            id: { notIn: character?.skills.map(skill => skill.skillId) },
             lineages: { none: {} },
         }
     });

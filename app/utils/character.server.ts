@@ -169,7 +169,6 @@ export const submitCharSkills = async (skillList: number[], characterId: number,
   const newPendingSkills = pendingSkills - newSkills.length;
 
 
-
   if (newSkills.length > 0) {
     await prisma.character_skill.createMany({
       data: newSkills.map(skillId => ({

@@ -20,6 +20,7 @@ export const action: ActionFunction = async ({ request, params }) => {
 export default function SkillSelectionRoute() {
   const {
     characterId,
+    skills,
     selectableNonPureLineageSkills,
     selectablePureLineageSkills,
     isPure,
@@ -28,6 +29,7 @@ export default function SkillSelectionRoute() {
     =
     useOutletContext<{
       characterId: string,
+      skills: skill[],
       selectablePureLineageSkills: (lineage_skill & { skill: skill, lineage: lineage })[],
       selectableNonPureLineageSkills: (lineage_skill & { skill: skill, lineage: lineage })[],
       isPure: boolean,
@@ -119,7 +121,11 @@ export default function SkillSelectionRoute() {
       )
     }
 
-    if (skillType === 'TECHNIQUE' && !isMaxTechniques || selectedTechniques.includes(skillId)) {
+    if (skillType === 'TECHNIQUE' && !isMaxTechniques &&
+      (techniqueSubtype === 'OATH' && isMaxOaths && !selectedOaths.includes(skillId)
+        || techniqueSubtype === 'MANEUVER' && isMaxManeuvers && !selectedManeuvers.includes(skillId)
+        || techniqueSubtype === 'TRICK' && isMaxTricks && !selectedTricks.includes(skillId))
+      || selectedTechniques.includes(skillId)) {
       setSelectedTechniques((prevSkills) => {
 
         const isSelected = prevSkills.includes(skillId);
@@ -133,18 +139,19 @@ export default function SkillSelectionRoute() {
       )
     }
 
-    if (!isMaxSelected || selectedSkills.includes(skillId)
+    if (skillType === 'CHARACTERISTIC' && !isMaxSelected
+      || !isMaxSelected && skillType === 'TECHNIQUE' && isMaxTechniques && !selectedTechniques.includes(skillId)
+      && (techniqueSubtype === 'OATH' && isMaxOaths && !selectedOaths.includes(skillId)
+        || techniqueSubtype === 'MANEUVER' && isMaxManeuvers && !selectedManeuvers.includes(skillId)
+        || techniqueSubtype === 'TRICK' && isMaxTricks && !selectedTricks.includes(skillId))
+      || !isMaxSelected && skillType === 'MAGIC' && isMaxMagics && !selectedMagics.includes(skillId)
+      || selectedSkills.includes(skillId)
     ) {
       setSelectedSkills((prevSkills) => {
 
         const isSelected = prevSkills.includes(skillId);
 
         const newSelectedSkills = isSelected
-          || selectedTechniques.includes(skillId)
-          || selectedTricks.includes(skillId)
-          || selectedOaths.includes(skillId)
-          || selectedManeuvers.includes(skillId)
-          || selectedMagics.includes(skillId)
           ? prevSkills.filter(id => id !== skillId)
           : [...prevSkills, skillId];
 
@@ -155,7 +162,12 @@ export default function SkillSelectionRoute() {
   };
 
   const handleSubmit = async (event: React.FormEvent) => {
-    if (!selectedSkills || selectedSkills.length === 0) {
+    if (selectedSkills.length
+      + selectedMagics.length
+      + selectedManeuvers.length
+      + selectedOaths.length
+      + selectedTricks.length
+      + selectedTechniques.length === 0) {
       event.preventDefault();
       return alert("Selecione pelo menos um Talento.")
     }
@@ -165,7 +177,12 @@ export default function SkillSelectionRoute() {
   return (
     <>
       <h1>Talentos</h1>
-      {maxSelectableSkills > 0 || maxMagics > 0 || maxTechniques > 0 || maxManeuvers > 0 || maxOaths > 0 || maxTricks > 0 ?
+      {maxSelectableSkills > 0
+        || maxMagics > 0
+        || maxTechniques > 0
+        || maxManeuvers > 0
+        || maxOaths > 0
+        || maxTricks > 0 ?
         <>
 
           <form method="post" onSubmit={handleSubmit}>
@@ -212,13 +229,13 @@ export default function SkillSelectionRoute() {
                   </tbody>
 
                   <tbody style={{
-                    display: selectedSkills.includes(sk.id)
-                      || selectedMagics.includes(sk.id)
-                      || selectedManeuvers.includes(sk.id)
-                      || selectedOaths.includes(sk.id)
-                      || selectedTricks.includes(sk.id)
-                      || selectedTechniques.includes(sk.id)
-                      && show.current.includes(1) ? '' : 'none', width: '100%'
+                    display: show.current.includes(1)
+                      && (selectedSkills.includes(sk.id)
+                        || selectedMagics.includes(sk.id)
+                        || selectedManeuvers.includes(sk.id)
+                        || selectedOaths.includes(sk.id)
+                        || selectedTricks.includes(sk.id)
+                        || selectedTechniques.includes(sk.id)) ? '' : 'none', width: '100%'
                   }} className="table-extension">
                     <tr><td>{String(sk.description)}</td></tr>
                     <tr><th>Tipo</th></tr>
@@ -231,13 +248,12 @@ export default function SkillSelectionRoute() {
                       : ''
                     }
                     <tr><th>Requisitos</th></tr>
-                    <tr><td>Agilidade: {String(sk.agi)}</td></tr>
-                    <tr><td>Corpo: {String(sk.bdy)}</td></tr>
-                    <tr><td>Mente: {String(sk.mnd)}</td></tr>
-                    <tr><td>Nível: {String(sk.lvl)}</td></tr>
-                    <tr><td>Tamanho Real: {String(sk.trSiz)}</td></tr>
-                    <tr><td>Tamanho Efetivo: {String(sk.rlSiz)}</td></tr>
-                    {sk.prerequisiteId ? <tr><td>Talento: {String(sk.prerequisiteId)}</td></tr> : ''}
+                    <tr><td>Nível: {String(sk.lvl)} | Agilidade: {String(sk.agi)} | Corpo: {String(sk.bdy)} | Mente: {String(sk.mnd)} | Tamanho Real: {String(sk.trSiz)} | Tamanho Efetivo: {String(sk.rlSiz)}</td></tr>
+                    {sk.prerequisiteId
+                      ? <><tr><th>Talento Requerido</th></tr>
+                        <tr><td> {String(skills.filter(s => s.id === sk.prerequisiteId).map(s => s.name))}</td></tr>
+                      </>
+                      : ''}
                   </tbody>
                 </React.Fragment>
               ))}
@@ -278,13 +294,11 @@ export default function SkillSelectionRoute() {
                       </>
                       : ''}
                     <tr><th>Requisitos</th></tr>
-                    <tr><td>Agilidade: {String(ls.skill.agi)}</td></tr>
-                    <tr><td>Corpo: {String(ls.skill.bdy)}</td></tr>
-                    <tr><td>Mente: {String(ls.skill.mnd)}</td></tr>
-                    <tr><td>Nível: {String(ls.skill.lvl)}</td></tr>
-                    <tr><td>Tamanho Real: {String(ls.skill.trSiz)}</td></tr>
-                    <tr><td>Tamanho Efetivo: {String(ls.skill.rlSiz)}</td></tr>
-                    {ls.skill.prerequisiteId ? <tr><td>Talento: {String(ls.skill.prerequisiteId)}</td></tr> : ''}
+                    <tr><td>Nível: {String(ls.skill.lvl)} | Agilidade: {String(ls.skill.agi)} | Corpo: {String(ls.skill.bdy)} | Mente: {String(ls.skill.mnd)} | Tamanho Real: {String(ls.skill.trSiz)} Tamanho Efetivo: {String(ls.skill.rlSiz)}</td></tr>
+                    {ls.skill.prerequisiteId
+                      ? <><tr><th>Talento Requerido</th></tr>
+                        <tr><td> {String(skills.filter(s => s.id === ls.skill.prerequisiteId).map(s => s.name))}</td></tr></>
+                      : ''}
                   </tbody>
                 </React.Fragment>
               ))}
@@ -324,13 +338,11 @@ export default function SkillSelectionRoute() {
                       </>
                       : ''}
                     <tr><th>Requisitos</th></tr>
-                    <tr><td>Agilidade: {String(ls.skill.agi)}</td></tr>
-                    <tr><td>Corpo: {String(ls.skill.bdy)}</td></tr>
-                    <tr><td>Mente: {String(ls.skill.mnd)}</td></tr>
-                    <tr><td>Nível: {String(ls.skill.lvl)}</td></tr>
-                    <tr><td>Tamanho Real: {String(ls.skill.trSiz)}</td></tr>
-                    <tr><td>Tamanho Efetivo: {String(ls.skill.rlSiz)}</td></tr>
-                    {ls.skill.prerequisiteId ? <tr><td>Talento: {String(ls.skill.prerequisiteId)}</td></tr> : ''}
+                    <tr><td>Nível: {String(ls.skill.lvl)} | Agilidade: {String(ls.skill.agi)} | Corpo: {String(ls.skill.bdy)} | Mente: {String(ls.skill.mnd)} | Tamanho Real: {String(ls.skill.trSiz)} Tamanho Efetivo: {String(ls.skill.rlSiz)}</td></tr>
+                    {ls.skill.prerequisiteId
+                      ? <><tr><th>Talento Requerido</th></tr>
+                        <tr><td> {String(skills.filter(s => s.id === ls.skill.prerequisiteId).map(s => s.name))}</td></tr></>
+                      : ''}
                   </tbody>
                 </React.Fragment>
               ))}
@@ -371,7 +383,7 @@ export default function SkillSelectionRoute() {
             ))
             }
 
-            <input type="hidden" key={maxSelectableSkills} name="pendingSkills" value={maxSelectableSkills} />
+            <input type="hidden" key={"pendingSkills"} name="pendingSkills" value={maxSelectableSkills} />
 
             <button type="submit" className="button">Próximo</button>
 

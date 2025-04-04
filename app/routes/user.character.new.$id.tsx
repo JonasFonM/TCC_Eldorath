@@ -40,31 +40,15 @@ export const loader: LoaderFunction = async ({ request, params }) => {
     })
 
     //Skills
-    const selectMagics = character_paths.map(pss => pss.path.addMagics)
+    const maxMagics = character?.pendingMagic || 0
 
-    const maxMagics = selectMagics.reduce((accumulator, currentValue) => accumulator + currentValue, 0)
+    const maxManeuvers = character?.pendingManeuver || 0
 
-    const selectTechniques = character_paths.map(pss => pss.path.addTechniques)
-
-    const maxTechniques = selectTechniques.reduce((accumulator, currentValue) => accumulator + currentValue, 0)
-
-    const selectOaths = character_paths.map(pss => pss.path.addOaths)
-
-    const maxOaths = selectOaths.reduce((accumulator, currentValue) => accumulator + currentValue, 0)
-
-    const selectTricks = character_paths.map(pss => pss.path.addTricks)
-
-    const maxTricks = selectTricks.reduce((accumulator, currentValue) => accumulator + currentValue, 0)
-
-    const selectManeuvers = character_paths.map(pss => pss.path.addManeuvers)
-
-    const maxManeuvers = selectManeuvers.reduce((accumulator, currentValue) => accumulator + currentValue, 0)
-
-    const maxSelectableSkills = character?.pendingSkills;
+    const maxSelectableSkills = character?.pendingSkills || 0;
 
     const skills = await prisma.skill.findMany({
         where: {
-            lineages: { none: {} },
+            lineages: { none: {} }, paths: { none: {} }
         }
     });
 
@@ -76,7 +60,7 @@ export const loader: LoaderFunction = async ({ request, params }) => {
         Number(character?.level) >= sk.lvl &&
         (
             (Number(character?.trueSize) >= sk.trSiz || sk.trSiz <= 0) &&
-            (Number(character?.relativeSize) >= sk.rlSiz || sk.rlSiz <= 0)
+            (Number(character?.effectiveSize) >= sk.efSiz || sk.efSiz <= 0)
         ) &&
         (
             sk.prerequisiteId === null ||
@@ -103,7 +87,7 @@ export const loader: LoaderFunction = async ({ request, params }) => {
         Number(character?.level) >= ls.skill.lvl &&
         (
             (Number(character?.trueSize) >= ls.skill.trSiz || ls.skill.trSiz <= 0) &&
-            (Number(character?.relativeSize) >= ls.skill.rlSiz || ls.skill.rlSiz <= 0)
+            (Number(character?.effectiveSize) >= ls.skill.efSiz || ls.skill.efSiz <= 0)
         ) &&
         (
             ls.skill.prerequisiteId === null ||
@@ -128,7 +112,7 @@ export const loader: LoaderFunction = async ({ request, params }) => {
         Number(character?.level) >= ls.skill.lvl &&
         (
             (Number(character?.trueSize) >= ls.skill.trSiz || ls.skill.trSiz <= 0) &&
-            (Number(character?.relativeSize) >= ls.skill.rlSiz || ls.skill.rlSiz <= 0)
+            (Number(character?.effectiveSize) >= ls.skill.efSiz || ls.skill.efSiz <= 0)
         ) &&
         (
             ls.skill.prerequisiteId === null ||
@@ -159,7 +143,7 @@ export const loader: LoaderFunction = async ({ request, params }) => {
         userId,
         character, characterId,
         character_lineages, character_paths, character_skills, character_items,
-        maxSelectableSkills, maxMagics, maxTechniques, maxManeuvers, maxOaths, maxTricks,
+        maxSelectableSkills, maxMagics, maxManeuvers,
         skills, selectableSkills,
         selectablePureLineageSkills,
         selectableNonPureLineageSkills, isPure,
@@ -178,7 +162,7 @@ export default function NewCharacterRoute() {
         userId,
         character, characterId,
         character_lineages, character_paths, character_skills, character_items,
-        maxSelectableSkills, maxMagics, maxTechniques, maxManeuvers, maxOaths, maxTricks,
+        maxSelectableSkills, maxMagics, maxManeuvers,
         skills, selectableSkills,
         selectablePureLineageSkills,
         pureLineageSkills,
@@ -194,7 +178,7 @@ export default function NewCharacterRoute() {
             userId: string,
             character: character, characterId: string,
             character_lineages: (character_lineage & { lineage: lineage })[], character_paths: (character_path & { path: path })[], character_skills: (character_skill & { skill: skill })[], character_items: (character_item & { item: item })[],
-            maxSelectableSkills: number, maxMagics: number, maxTechniques: number, maxManeuvers: number, maxOaths: number, maxTricks: number,
+            maxSelectableSkills: number, maxMagics: number, maxManeuvers: number
             skills: skill[], selectableSkills: skill[],
             selectablePureLineageSkills: (lineage_skill & { skill: skill, lineage: lineage })[],
             pureLineageSkills: (lineage_skill & { skill: skill, lineage: lineage })[],
@@ -250,7 +234,7 @@ export default function NewCharacterRoute() {
                     userId,
                     character, characterId,
                     character_lineages, character_paths, character_skills, character_items,
-                    maxSelectableSkills, maxMagics, maxTechniques, maxManeuvers, maxOaths, maxTricks,
+                    maxSelectableSkills, maxMagics, maxManeuvers,
                     skills, selectableSkills,
                     selectablePureLineageSkills,
                     pureLineageSkills,

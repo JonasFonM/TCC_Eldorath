@@ -11,8 +11,8 @@ export const createCharacter = async (character: CharacterForm) => {
   const carryCap = 15 + (5 * character.body);
   const liftCap = 20 + (10 * character.body);
   const weight = 10 + (2 * character.body)
-  const initiative = character.agility;
   const defense = character.agility;
+  const magicdefense = character.mind;
 
   const newcharacter = await prisma.character.create({
     data: {
@@ -32,8 +32,8 @@ export const createCharacter = async (character: CharacterForm) => {
       carryCap: carryCap,
       liftCap: liftCap,
       baseWeight: weight,
-      initiative: initiative,
-      defense: defense
+      defense: defense,
+      magicDefense: magicdefense,
     },
   })
   return {
@@ -51,8 +51,8 @@ export const createCharacter = async (character: CharacterForm) => {
     carryCap: carryCap,
     liftCap: liftCap,
     baseWeight: weight,
-    initiative: initiative,
     defense: defense,
+    magicDefense: magicdefense,
     authorId: character.authorId
   }
 }
@@ -64,8 +64,8 @@ export const updateCharacter = async (character: CharacterForm, characterId: num
   const carryCap = 15 + (5 * character.body);
   const liftCap = 20 + (10 * character.body);
   const weight = 10 + (2 * character.body)
-  const initiative = character.agility;
   const defense = character.agility;
+  const magicdefense = character.mind;
 
 
   const updatedCharacter = await prisma.character.update({
@@ -86,8 +86,8 @@ export const updateCharacter = async (character: CharacterForm, characterId: num
       carryCap: carryCap,
       liftCap: liftCap,
       baseWeight: weight,
-      initiative: initiative,
-      defense: defense
+      defense: defense,
+      magicDefense: magicdefense
 
     },
   })
@@ -104,8 +104,8 @@ export const updateCharacter = async (character: CharacterForm, characterId: num
     carryCap: carryCap,
     liftCap: liftCap,
     baseWeight: weight,
-    initiative: initiative,
     defense: defense,
+    magicDefense: magicdefense,
     authorId: character.authorId
   }
 }
@@ -116,7 +116,7 @@ export async function submitCharacter(character: CharacterForm) {
 
     return json(
       {
-        error: `Something went wrong trying to create a new character.`,
+        error: `Houve um erro na criação de Personagem.`,
         fields: { name: character.name, tier: character.tier, agility: character.agility, body: character.body, mind: character.mind, authorId: character.authorId },
       },
       { status: 400 },
@@ -154,20 +154,51 @@ export function tierByLevel(level: any) {
 }
 
 //SKILLS
-export const submitCharSkills = async (skillList: number[], characterId: number, pendingSkills: number) => {
+export const updateSkillPendencies = async (characterId: number, skillQuantity: number, pendingSkills: number) => {
+
+  const newPendingSkills = pendingSkills - skillQuantity
+
+  await prisma.character.update({
+    where: { id: characterId },
+    data: {
+      pendingSkills: newPendingSkills
+    }
+  })
+}
+
+export const updateManeuverPendencies = async (characterId: number, skillQuantity: number, pendingManeuvers: number) => {
+
+  const newPendingManeuvers = pendingManeuvers - skillQuantity
+
+  await prisma.character.update({
+    where: { id: characterId },
+    data: {
+      pendingManeuver: newPendingManeuvers
+    }
+  })
+}
+
+export const updateMagicPendencies = async (characterId: number, skillQuantity: number, pendingMagics: number) => {
+
+  const newPendingMagics = pendingMagics - skillQuantity
+
+  await prisma.character.update({
+    where: { id: characterId },
+    data: {
+      pendingMagic: newPendingMagics
+    }
+  })
+}
+
+export const submitCharSkills = async (skillList: number[], characterId: number) => {
   const existingSkills = await prisma.character_skill.findMany({
     where: {
       skillId: { in: skillList },
       characterId: characterId,
     },
   });
-
   const existingSkillIds = existingSkills.map(cs => cs.skillId);
-
   const newSkills = skillList.filter(skillId => !existingSkillIds.includes(skillId));
-
-  const newPendingSkills = pendingSkills - newSkills.length;
-
 
   if (newSkills.length > 0) {
     await prisma.character_skill.createMany({
@@ -177,16 +208,9 @@ export const submitCharSkills = async (skillList: number[], characterId: number,
       })),
       skipDuplicates: true,
     });
-    await prisma.character.update({
-      where: { id: characterId },
-      data: {
-        pendingSkills: newPendingSkills
-      }
-    })
   }
-
   return;
-};
+}
 
 //LINEAGES
 export const submitCharLineages = async (lineageList: number[], characterId: number, pure: boolean) => {
@@ -223,6 +247,85 @@ export const submitCharLineages = async (lineageList: number[], characterId: num
 
 //PATHS
 
+export const addPendingManeuverOrMagics = async (characterId: number, pathId: number) => {
+  const path = await prisma.path.findUnique({
+    where: { id: pathId }
+  })
+
+  const addMagics = path?.addMagics || 0
+  const addManeuvers = path?.addManeuvers || 0
+
+  if (addMagics > 0) {
+    await prisma.character.update({
+      where: { id: characterId },
+      data: {
+        pendingMagic: addMagics
+      }
+    })
+  }
+
+  if (addManeuvers > 0) {
+    await prisma.character.update({
+      where: { id: characterId },
+      data: {
+        pendingManeuver: addManeuvers
+      }
+    })
+  }
+
+}
+
+export const addPathBasedSkills = async (characterId: number, pathId: number) => {
+  const path = await prisma.path.findUnique({
+    where: { id: pathId },
+    include: { skills: true }
+  })
+
+  const skills = await prisma.skill.findMany({
+    where: { id: { in: path?.skills.map(ps => ps.skillId) } }
+  })
+
+  if (skills.length > 0) {
+    await prisma.character_skill.createMany({
+      data: skills.map(sk => ({
+        skillId: sk.id,
+        characterId: characterId,
+      })),
+      skipDuplicates: true,
+    });
+
+  }
+}
+
+export const addPathBasedStats = async (characterId: number, pathId: number) => {
+  const path = await prisma.path.findUnique({
+    where: { id: pathId },
+  })
+
+  const addVitality = path?.vitality || 0
+  const addPower = path?.power || 0
+
+  if (addVitality > 0) {
+    await prisma.character.update({
+      where: { id: characterId },
+      data: {
+        vitality: { increment: addVitality },
+        currentVitality: { increment: addVitality }
+      }
+    })
+  }
+
+  if (addPower > 0) {
+    await prisma.character.update({
+      where: { id: characterId },
+      data: {
+        power: { increment: addPower },
+        currentPower: { increment: addPower }
+      }
+    })
+  }
+}
+
 export const submitCharPaths = async (pathList: number[], characterId: number, pendingPaths: number) => {
   const existingPaths = await prisma.character_path.findMany({
     where: {
@@ -246,12 +349,20 @@ export const submitCharPaths = async (pathList: number[], characterId: number, p
       })),
       skipDuplicates: true,
     });
+
+    newPaths.map(np => addPendingManeuverOrMagics(characterId, np))
+
+    newPaths.map(np => addPathBasedSkills(characterId, np))
+
+    newPaths.map(np => addPathBasedStats(characterId, np))
+
     await prisma.character.update({
       where: { id: characterId },
       data: {
         pendingPath: newPendingPaths
       }
     })
+
   }
 
   return;

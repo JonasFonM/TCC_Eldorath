@@ -187,9 +187,8 @@ export const createScene = async (campaign: SceneForm, campaignId: number, title
       era: campaign.era,
       month: campaign.month,
       monthDay: campaign.monthDay,
-      weekDay: campaign.weekDay,
-      roundCount: 0,
-      playerTurn: false
+      weekDay: campaign.weekDay
+
     },
   })
   return {
@@ -199,9 +198,8 @@ export const createScene = async (campaign: SceneForm, campaignId: number, title
     era: campaign.era,
     month: campaign.month,
     monthDay: campaign.monthDay,
-    weekDay: campaign.weekDay,
-    roundCount: 0,
-    playerTurn: false
+    weekDay: campaign.weekDay
+
   }
 };
 
@@ -304,51 +302,5 @@ export const removeAllCharactersFromCampaign = async (campaignId: number) => {
   return await prisma.character.updateMany({
     where: { campaignId: campaignId },
     data: { campaignId: null },
-  });
-};
-
-//LOGS
-export const createLog = async (characterId: number, sceneId: number, round: number, turnType: string, targetIds: string) => {
-  return await prisma.log.create({
-    data: {
-      sceneId: sceneId,
-      actorId: characterId,
-      round: round,
-      turnType: turnType,
-      targetIds: targetIds
-    },
-  });
-
-};
-
-export const createLogAction = async (logId: number, actionId: number) => {
-  return await prisma.logAction.create({
-    data: {
-      logId: logId,
-      actionId: actionId,
-    },
-  });
-};
-
-export const createLogEffect = async (logId: number, effectId: number, targetIds: string, targetType: any) => {
-  return await prisma.logEffect.create({
-    data: {
-      logId: logId,
-      effectId: effectId,
-      targetIds: targetIds,
-      targetType: targetType,
-    },
-  });
-};
-
-export const createDamageLogs = async (logId: number, actorId: number, targetIds: string, preMitigationDamage: number, critical: boolean) => {
-  return await prisma.damageLog.create({
-    data: {
-      logId: logId,
-      actorId: actorId,
-      targetIds: targetIds,
-      preMitigationDamage: preMitigationDamage,
-      critical: critical
-    },
   });
 };

@@ -48,7 +48,7 @@ export default function InventoryRoute() {
             <GeneralGrid
                 gridItems={availableItems.map(i => `${i.item.name} de ${i.material}`)}
                 columns={5}
-                rows={(character.body * 5) + (character.relativeSize * 5) + 5}
+                rows={(character.body * 5) + (character.effectiveSize * 5) + 5}
                 descriptions={availableItems.map(i => i.item.description)}
                 onClick={() => null}
             />

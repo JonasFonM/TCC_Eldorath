@@ -115,7 +115,10 @@ export default function Login() {
         </h1>
 
         <form method="POST" autoComplete="new-password" onSubmit={handleSubmit}>
-          <div className='container'>{formError}</div>
+          <div className='container'>
+            <p className='error'>{formError}</p>
+          </div>
+          
           <FormField
             htmlFor="email"
             label="Email"

@@ -49,7 +49,7 @@ export default function SkillsRoute() {
         style={'linear-gradient(to bottom, white, gold)'}
         color={'black'}
         title={'Talentos'}
-        description="Talentos têm efeitos diferentes que mudam como você interage com o jogo, principalmente em Combate. Eles são divididos em Características, Técnicas e Mágicas."
+        description="Talentos têm efeitos diferentes que mudam como você interage com o jogo, principalmente em Combate. Eles são divididos em Características, Técnicas e Magias."
         isHidden={!show.current.includes(-5)}
         onCancel={() => showRow(-5)}
       />
@@ -79,20 +79,13 @@ export default function SkillsRoute() {
               <tr><td>{String(sk.description)}</td></tr>
               <tr><th>Tipo</th></tr>
               <tr><td>{String(sk.type)}</td></tr>
-              {sk.techniqueSubtype
-                ? <>
-                  <tr><th>Tipo de Técnica</th></tr>
-                  <tr><td>{String(sk.techniqueSubtype)}</td></tr>
-                </>
-                : ''
-              }
               <tr><th>Requisitos</th></tr>
               <tr><td>Agilidade: {String(sk.agi)}</td></tr>
               <tr><td>Corpo: {String(sk.bdy)}</td></tr>
               <tr><td>Mente: {String(sk.mnd)}</td></tr>
               <tr><td>Nível: {String(sk.lvl)}</td></tr>
               <tr><td>Tamanho Real: {String(sk.trSiz)}</td></tr>
-              <tr><td>Tamanho Efetivo: {String(sk.rlSiz)}</td></tr>
+              <tr><td>Tamanho Efetivo: {String(sk.efSiz)}</td></tr>
               {sk.prerequisiteId ? <tr><td>Talento: {String(sk.prerequisiteId)}</td></tr> : ''}
             </tbody>
           </React.Fragment>
@@ -127,19 +120,13 @@ export default function SkillsRoute() {
               <tr><td style={{ fontVariant: 'small-caps', fontSize: '1.3rem' }}>{String(ls.lineage.name)}</td></tr>
               <tr><th>Tipo</th></tr>
               <tr><td>{String(ls.skill.type)}</td></tr>
-              {ls.skill.techniqueSubtype
-                ? <>
-                  <tr><th>Tipo de Técnica</th></tr>
-                  <tr><td>{String(ls.skill.techniqueSubtype)}</td></tr>
-                </>
-                : ''}
               <tr><th>Requisitos</th></tr>
               <tr><td>Agilidade: {String(ls.skill.agi)}</td></tr>
               <tr><td>Corpo: {String(ls.skill.bdy)}</td></tr>
               <tr><td>Mente: {String(ls.skill.mnd)}</td></tr>
               <tr><td>Nível: {String(ls.skill.lvl)}</td></tr>
               <tr><td>Tamanho Real: {String(ls.skill.trSiz)}</td></tr>
-              <tr><td>Tamanho Efetivo: {String(ls.skill.rlSiz)}</td></tr>
+              <tr><td>Tamanho Efetivo: {String(ls.skill.efSiz)}</td></tr>
               {ls.skill.prerequisiteId ? <tr><td>Talento: {String(ls.skill.prerequisiteId)}</td></tr> : ''}
             </tbody>
           </React.Fragment>
@@ -173,19 +160,14 @@ export default function SkillsRoute() {
               <tr><td style={{ fontVariant: 'small-caps', fontSize: '1.3rem' }}>{String(ls.lineage.name) + ' Pura'}</td></tr>
               <tr><th>Tipo</th></tr>
               <tr><td>{String(ls.skill.type)}</td></tr>
-              {ls.skill.techniqueSubtype
-                ? <>
-                  <tr><th>Tipo de Técnica</th></tr>
-                  <tr><td>{String(ls.skill.techniqueSubtype)}</td></tr>
-                </>
-                : ''}
+
               <tr><th>Requisitos</th></tr>
               <tr><td>Agilidade: {String(ls.skill.agi)}</td></tr>
               <tr><td>Corpo: {String(ls.skill.bdy)}</td></tr>
               <tr><td>Mente: {String(ls.skill.mnd)}</td></tr>
               <tr><td>Nível: {String(ls.skill.lvl)}</td></tr>
               <tr><td>Tamanho Real: {String(ls.skill.trSiz)}</td></tr>
-              <tr><td>Tamanho Efetivo: {String(ls.skill.rlSiz)}</td></tr>
+              <tr><td>Tamanho Efetivo: {String(ls.skill.efSiz)}</td></tr>
               {ls.skill.prerequisiteId ? <tr><td>Talento: {String(ls.skill.prerequisiteId)}</td></tr> : ''}
             </tbody>
           </React.Fragment>

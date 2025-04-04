@@ -12,7 +12,7 @@ export function TableData({ tableData, show, onClick, selected }: Props) {
     return (
         <tr className={selected ? 'selected' : ''} onClick={onClick} style={show ? {} : { display: 'none' }}>
             {tableData.map((td, index) => (
-                <td style={{ fontSize: '1.3rem' }} key={index}>{td}</td>
+                <td key={index}>{td}</td>
             ))
             }
         </tr>

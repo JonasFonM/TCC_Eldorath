@@ -13,15 +13,12 @@ export const submitStartingCharItems = async (itemList: number[], characterId: n
     Club: 'Madeira',
     Whip: 'Couro',
     Catalyst: 'Madeira',
-    Potion: 'Alquimico',
-    Oil: 'Alquimico',
-    Bomb: 'Alquimico',
-    lArmor: 'Tecidos',
-    Focus: 'Bronze'
-  };
-
-  const weaponMapping: { [key: string]: any } = {
-    slotWeapon: 0
+    Potion: 'Alquímico',
+    Oil: 'Alquímico',
+    Bomb: 'Alquímico',
+    lArmor: 'Algodão',
+    Focus: 'Bronze',
+    Jewel: 'Bronze'
   };
 
   // Count occurrences of each itemId in itemList
@@ -33,18 +30,13 @@ export const submitStartingCharItems = async (itemList: number[], characterId: n
   if (itemList.length > 0) {
     const characterItemsData = selectedItems.flatMap(i =>
       Array.from({ length: itemCountMap[i.id] }, () => ({
-        characterId,
+        characterId: characterId,
         itemId: i.id,
         craftTier: 1,
         material: materialMapping[i.subType] || 'Ferro',
         weight: i.baseWeight,
-        cost: i.baseCost,
-        reach: i.baseReach || null,
-        hitMod: weaponMapping[i.type] || null,
-        defense: i.baseDefense || null,
-        impact: i.impact,
-        pierce: i.pierce,
-        slash: i.slash
+        cost: i.baseCost
+
       }))
     );
 
@@ -83,5 +75,12 @@ export const unequipItem = async (character_itemId: number) => {
   await prisma.character_item.update({
     where: { id: character_itemId },
     data: { equipped: -1 }
+  })
+}
+
+export const twoHandWeapon = async (character_itemId: number, offslot: number) => {
+  await prisma.character_item.update({
+    where: { id: character_itemId },
+    data: { twoHanded: offslot }
   })
 }

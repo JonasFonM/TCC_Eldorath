@@ -1,12 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { NavLink, useOutletContext } from "@remix-run/react";
-import { lineage, path, skill } from "@prisma/client";
-import { LSrelations } from "~/utils/types.server";
+import { lineage, lineage_skill, path, skill } from "@prisma/client";
 import { LoaderFunction } from "@remix-run/node";
-import { SkillTableHead } from "~/components/character-sheet/skill-table";
-import { SkillTableData } from "~/components/character-sheet/skill-table-data";
-import React, { useState } from "react";
-import { SkillExplain } from "~/components/explanations/skill-explain";
+import React, { useRef, useState } from "react";
+import { TableHead } from "~/components/character-sheet/general-table";
+import { TableData } from "~/components/character-sheet/general-table-data";
+import { GeneralExplain } from "~/components/explanations/general-explain";
 
 export const loader: LoaderFunction = async ({ params }) => {
   const characterId = params.id;
@@ -14,122 +13,185 @@ export const loader: LoaderFunction = async ({ params }) => {
 }
 
 export default function SkillsRoute() {
-  const { characterId, isAuthor, skills, pureLineageSkills, nonPureLineageSkills } = useOutletContext<{ characterId: string, isAuthor: boolean, skills: skill[], pureLineageSkills: LSrelations, nonPureLineageSkills: LSrelations, paths: path[], lineages: lineage[], isPure: boolean }>();
-  const [show, setShow] = useState<number>();
-  const [showSkill, setShowSkill] = useState<number>();
+  const { characterId, isAuthor,
+    skills, pureLineageSkills, nonPureLineageSkills } =
+    useOutletContext<{
+      characterId: string, isAuthor: boolean,
+      skills: skill[], pureLineageSkills: (lineage_skill & { skill: skill, lineage: lineage })[],
+      nonPureLineageSkills: (lineage_skill & { skill: skill, lineage: lineage })[], paths: path[],
+      lineages: lineage[], isPure: boolean
+    }>();
 
-  const showRow = () => {
-    show != 1 ?
-      setShow(() => {
-        return 1;
-      })
-      :
-      setShow(() => {
-        return 0;
-      })
-  }
+  const show = useRef<number[]>([]); // Avoid re-renders
 
-  const explainSkill = (id: number) => {
-    showSkill != id ?
-      setShowSkill(() => {
-        return id;
-      })
-      :
-      setShowSkill(() => {
-        return 0;
-      })
+  const forceUpdate = useState(0)[1]; // Trigger minimal re-renders when necessary
+
+  const showRow = (n: number) => {
+    if (show.current.includes(n)) {
+      const newShow = show.current.filter(ns => ns != n)
+      show.current = newShow
+      return forceUpdate(n => n + 1);
+    }
+    show.current.push(n);
+    return forceUpdate(n => n + 1);
   }
 
   return (
     <React.Fragment>
       <div className="title-container">
-        {
-          isAuthor ?
-            <NavLink to={`../../new/${characterId}/skills/`}> <h1 style={{ marginTop: '0', marginBottom: '0', padding: '0' }}>Talentos</h1></NavLink>
-            :
-            <h1 style={{ marginTop: '0', marginBottom: '0', padding: '0' }}>Talentos</h1>
-        }
-        <NavLink className="question-button" to={`/user/home/atr/`}>?</NavLink>
+
+        <h1 style={{ marginTop: '0', marginBottom: '0', padding: '0' }}>Talentos</h1>
+
+        <button className="question-button" onClick={() => showRow(-5)}>?</button>
+
       </div>
+      <GeneralExplain
+        style={'linear-gradient(to bottom, white, gold)'}
+        color={'black'}
+        title={'Talentos'}
+        description="Talentos têm efeitos diferentes que mudam como você interage com o jogo, principalmente em Combate. Eles são divididos em Características, Técnicas e Mágicas."
+        isHidden={!show.current.includes(-5)}
+        onCancel={() => showRow(-5)}
+      />
 
       <table>
-        <tbody>
+        <thead>
+          <TableHead
+            tableTitles={['Talentos']}
+            onClick={() => showRow(-1)}
+            open={show.current.includes(-1)}
+          />
+        </thead>
 
-          <SkillTableHead onClick={() => showRow()} />
-          {pureLineageSkills.map(pls => (
-            <React.Fragment key={pls.skill.id}>
-              <SkillTableData
-                skill={pls.skill}
-                show={show === 1}
-                onClick={() => explainSkill(pls.skill.id)}
-                selected={false}
+        {skills.map(sk => (
+          <React.Fragment key={sk.id}>
+            <tbody>
+              <TableData
+                key={sk.id}
+                tableData={[`${sk.name}`]}
+                show={show.current.includes(-1)}
+                onClick={() => showRow(sk.id)}
+                selected={show.current.includes(sk.id)}
+              />
+            </tbody>
+
+            <tbody style={{ display: show.current.includes(sk.id) && show.current.includes(-1) ? '' : 'none', width: '100%' }} className="table-extension">
+              <tr><td>{String(sk.description)}</td></tr>
+              <tr><th>Tipo</th></tr>
+              <tr><td>{String(sk.type)}</td></tr>
+              {sk.techniqueSubtype
+                ? <>
+                  <tr><th>Tipo de Técnica</th></tr>
+                  <tr><td>{String(sk.techniqueSubtype)}</td></tr>
+                </>
+                : ''
+              }
+              <tr><th>Requisitos</th></tr>
+              <tr><td>Agilidade: {String(sk.agi)}</td></tr>
+              <tr><td>Corpo: {String(sk.bdy)}</td></tr>
+              <tr><td>Mente: {String(sk.mnd)}</td></tr>
+              <tr><td>Nível: {String(sk.lvl)}</td></tr>
+              <tr><td>Tamanho Real: {String(sk.trSiz)}</td></tr>
+              <tr><td>Tamanho Efetivo: {String(sk.rlSiz)}</td></tr>
+              {sk.prerequisiteId ? <tr><td>Talento: {String(sk.prerequisiteId)}</td></tr> : ''}
+            </tbody>
+          </React.Fragment>
+        ))}
+
+        {nonPureLineageSkills.length > 0
+          ? <thead>
+            <TableHead
+              tableTitles={['Talentos de Linhagem']}
+              onClick={() => showRow(-2)}
+              open={show.current.includes(-2)}
+            />
+          </thead>
+          : ''
+        }
+
+        {nonPureLineageSkills.map(ls => (
+          <React.Fragment key={ls.id}>
+            <tbody>
+              <TableData
+                key={ls.id}
+                tableData={[`${ls.skill.name}`]}
+                show={show.current.includes(-2)}
+                onClick={() => showRow(ls.skill.id)}
+                selected={show.current.includes(ls.skill.id)}
+              />
+            </tbody>
+
+            <tbody style={{ display: show.current.includes(ls.skill.id) && show.current.includes(-2) ? '' : 'none', width: '100%' }} className="table-extension">
+              <tr><td>{String(ls.skill.description)}</td></tr>
+              <tr><th>Linhagem</th></tr>
+              <tr><td style={{ fontVariant: 'small-caps', fontSize: '1.3rem' }}>{String(ls.lineage.name)}</td></tr>
+              <tr><th>Tipo</th></tr>
+              <tr><td>{String(ls.skill.type)}</td></tr>
+              {ls.skill.techniqueSubtype
+                ? <>
+                  <tr><th>Tipo de Técnica</th></tr>
+                  <tr><td>{String(ls.skill.techniqueSubtype)}</td></tr>
+                </>
+                : ''}
+              <tr><th>Requisitos</th></tr>
+              <tr><td>Agilidade: {String(ls.skill.agi)}</td></tr>
+              <tr><td>Corpo: {String(ls.skill.bdy)}</td></tr>
+              <tr><td>Mente: {String(ls.skill.mnd)}</td></tr>
+              <tr><td>Nível: {String(ls.skill.lvl)}</td></tr>
+              <tr><td>Tamanho Real: {String(ls.skill.trSiz)}</td></tr>
+              <tr><td>Tamanho Efetivo: {String(ls.skill.rlSiz)}</td></tr>
+              {ls.skill.prerequisiteId ? <tr><td>Talento: {String(ls.skill.prerequisiteId)}</td></tr> : ''}
+            </tbody>
+          </React.Fragment>
+        ))}
+
+        {pureLineageSkills.length > 0
+          ? <thead>
+            <TableHead
+              tableTitles={['Talentos de Linhagem Pura']}
+              onClick={() => showRow(-3)}
+              open={show.current.includes(-3)}
+            />
+          </thead>
+          : ''}
+
+        {pureLineageSkills.map(ls => (
+          <React.Fragment key={ls.id}>
+            <tbody>
+              <TableData
+                key={ls.id}
+                tableData={[`${ls.skill.name}`]}
+                show={show.current.includes(-3)}
+                onClick={() => showRow(ls.skill.id)}
+                selected={show.current.includes(ls.skill.id)}
               />
 
-            </React.Fragment>
-          ))}
-
-
-          {nonPureLineageSkills.map(npls => (
-            <React.Fragment key={npls.skill.id}>
-              <SkillTableData
-                skill={npls.skill}
-                show={show === 1}
-                onClick={() => explainSkill(npls.skill.id)}
-                selected={false}
-
-              />
-            </React.Fragment>
-          ))}
-
-          {skills.map(skill => (
-            <React.Fragment key={skill.id}>
-              <SkillTableData
-                skill={skill}
-                show={show === 1}
-                onClick={() => explainSkill(skill.id)}
-                selected={false}
-              />
-            </React.Fragment>
-          ))}
-
-        </tbody>
+            </tbody>
+            <tbody style={{ display: show.current.includes(ls.skill.id) && show.current.includes(-3) ? '' : 'none', width: '100%' }} className="table-extension">
+              <tr><td>{String(ls.skill.description)}</td></tr>
+              <tr><th>Linhagem</th></tr>
+              <tr><td style={{ fontVariant: 'small-caps', fontSize: '1.3rem' }}>{String(ls.lineage.name) + ' Pura'}</td></tr>
+              <tr><th>Tipo</th></tr>
+              <tr><td>{String(ls.skill.type)}</td></tr>
+              {ls.skill.techniqueSubtype
+                ? <>
+                  <tr><th>Tipo de Técnica</th></tr>
+                  <tr><td>{String(ls.skill.techniqueSubtype)}</td></tr>
+                </>
+                : ''}
+              <tr><th>Requisitos</th></tr>
+              <tr><td>Agilidade: {String(ls.skill.agi)}</td></tr>
+              <tr><td>Corpo: {String(ls.skill.bdy)}</td></tr>
+              <tr><td>Mente: {String(ls.skill.mnd)}</td></tr>
+              <tr><td>Nível: {String(ls.skill.lvl)}</td></tr>
+              <tr><td>Tamanho Real: {String(ls.skill.trSiz)}</td></tr>
+              <tr><td>Tamanho Efetivo: {String(ls.skill.rlSiz)}</td></tr>
+              {ls.skill.prerequisiteId ? <tr><td>Talento: {String(ls.skill.prerequisiteId)}</td></tr> : ''}
+            </tbody>
+          </React.Fragment>
+        ))}
 
       </table>
-
-      {pureLineageSkills.map(pls => (
-        <React.Fragment key={pls.skill.id}>
-          <SkillExplain
-            style={'linear-gradient(to bottom right, gold, goldenrod)'}
-            skill={pls.skill}
-            isHidden={showSkill != pls.skill.id}
-            onCancel={() => setShowSkill(0)}
-          />
-
-        </React.Fragment>
-      ))}
-
-      {nonPureLineageSkills.map(npls => (
-        <React.Fragment key={npls.skill.id}>
-
-          <SkillExplain style={'linear-gradient(to bottom right, goldenrod, darkgoldenrod)'}
-            skill={npls.skill}
-            isHidden={showSkill != npls.skill.id}
-            onCancel={() => setShowSkill(0)}
-          />
-
-        </React.Fragment>
-      ))}
-
-      {skills.map(skill => (
-        <React.Fragment key={skill.id}>
-          <SkillExplain
-            style={'linear-gradient(to bottom right, darkgoldenrod, darkyellow )'}
-            skill={skill}
-            isHidden={showSkill != skill.id}
-            onCancel={() => setShowSkill(0)} />
-
-        </React.Fragment>
-      ))}
 
 
     </React.Fragment>

@@ -4,7 +4,8 @@ import { LoaderFunction } from "@remix-run/node";
 import { PathExplain } from "~/components/explanations/path-explain";
 import { TableData } from "~/components/character-sheet/general-table-data";
 import { TableHead } from "~/components/character-sheet/general-table";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
+import { GeneralExplain } from "~/components/explanations/general-explain";
 
 export const loader: LoaderFunction = async ({ params }) => {
   const characterId = params.id;
@@ -13,173 +14,202 @@ export const loader: LoaderFunction = async ({ params }) => {
 
 export default function PathsRoute() {
   const { characterId, paths, isAuthor } = useOutletContext<{ characterId: string, paths: path[], isAuthor: boolean }>();
-  const [show, setShow] = useState<number>();
+  const show = useRef<number[]>([]);
+
+  const forceUpdate = useState(0)[1]; 
+
+  const showRow = (n: number) => {
+    if (show.current.includes(n)) {
+      const newShow = show.current.filter(ns => ns != n)
+      show.current = newShow
+      return forceUpdate(n => n + 1);
+    }
+    show.current.push(n);
+    return forceUpdate(n => n + 1);
+  }
 
   const tier1 = paths.filter(p => p.pathTier == 1);
   const tier2 = paths.filter(p => p.pathTier == 2);
   const tier3 = paths.filter(p => p.pathTier == 3);
   const tier4 = paths.filter(p => p.pathTier == 4);
 
-  const [showPath, setShowPath] = useState<number>();
-
-  const explainPath = (id: number) => {
-    showPath != id ?
-      setShowPath(() => {
-        return id;
-      })
-      :
-      setShowPath(() => {
-        return 0;
-      })
-  }
-
-  const tableTitles = ["Caminho", "Vit", "Pod", "Tec", "Man", "Jur", "Tru", "Mag"]
-
   return (
     <React.Fragment key={-1}>
       <div className="title-container">
-        {isAuthor ?
-          <NavLink to={`../../new/${characterId}/paths/`}> <h1 style={{ marginTop: '0', marginBottom: '0', padding: '0' }}>Caminhos</h1></NavLink>
-          :
-          <h1 style={{ marginTop: '0', marginBottom: '0', padding: '0' }}>Caminhos</h1>
-        }
-        <NavLink className="question-button" to={`/user/home/atr/`}>?</NavLink>
+        <h1 style={{ marginTop: '0', marginBottom: '0', padding: '0' }}>Caminhos</h1>
+
+        <button className="question-button" onClick={() => showRow(-5)}>?</button>
+
       </div>
+      <GeneralExplain
+        style={'linear-gradient(to bottom, white, gold)'}
+        color={'black'}
+        title={'Caminhos'}
+        description="Caminhos são especializações que agregam nas suas capacidades, e determinam uma parcela importante da sua Vitalidade e do seu Poder. Alguns Caminhos dão acesso a Talentos exclusivos."
+        isHidden={!show.current.includes(-5)}
+        onCancel={() => showRow(-5)}
+      />
 
-
-      <h2 style={{ fontVariant: 'small-caps' }}>Caminhos Iniciantes</h2>
       <table>
-        <tbody>
-          <TableHead tableTitles={tableTitles} onClick={show != 1 ? () => setShow(1) : () => setShow(0)} />
-
-          {tier1.map(p => (
-            <React.Fragment key={p.id}>
-
-
+        <thead>
+          <TableHead
+            tableTitles={["Iniciante"]}
+            onClick={() => showRow(-1)}
+            open={show.current.includes(-1)}
+          />
+        </thead>
+        {tier1.map(p => (
+          <React.Fragment key={p.id}>
+            <tbody>
               <TableData
                 key={p.id}
-                tableData={[p.name, String(p.vitality), String(p.power), String(p.addTechniques), String(p.addManeuvers), String(p.addOaths), String(p.addTricks), String(p.addMagics)]}
-                show={show === (p.pathTier)}
-                onClick={() => explainPath(p.id)}
-                selected={false}
-
+                tableData={[`${p.name}`]}
+                show={show.current.includes(-1)}
+                onClick={() => showRow(p.id)}
+                selected={show.current.includes(p.id)}
               />
 
-
-            </React.Fragment>
-
-          ))}
-        </tbody>
+            </tbody>
+            <tbody style={{ display: show.current.includes(p.id) && show.current.includes(-1) ? '' : 'none', width: '100%' }} className="table-extension">
+              <tr><th>Benefícios</th></tr>
+              <tr><td>Vitalidade: {String(p.vitality)}</td></tr>
+              <tr><td>Poder: {String(p.power)}</td></tr>
+              <tr><td>Técnicas: {String(p.addTechniques)}</td></tr>
+              <tr><td>Manobras: {String(p.addManeuvers)}</td></tr>
+              <tr><td>Juramentos: {String(p.addOaths)}</td></tr>
+              <tr><td>Truques: {String(p.addTricks)}</td></tr>
+              <tr><td>Mágicas: {String(p.addMagics)}</td></tr>
+            </tbody>
+          </React.Fragment>
+        ))
+        }
       </table>
 
-      {tier1.map(p => (
-        <React.Fragment key={p.id}>
-          <PathExplain style={'linear-gradient(to bottom right, gold, goldenrod)'} path={p} isHidden={showPath != p.id} onCancel={() => setShowPath(0)} />
-        </React.Fragment>
 
-      ))};
-
-
-      <h2 style={{ fontVariant: 'small-caps' }}>Caminhos Veteranos</h2>
-      <table>
-        <tbody>
-          <TableHead tableTitles={tableTitles} onClick={show != 2 ? () => setShow(2) : () => setShow(0)} />
-
-          {tier2.map(p => (
-            <React.Fragment key={p.id}>
-
-
-              <TableData
-                key={p.id}
-                tableData={[p.name, String(p.vitality), String(p.power), String(p.addTechniques), String(p.addManeuvers), String(p.addOaths), String(p.addTricks), String(p.addMagics)]}
-                show={show === (p.pathTier)}
-                onClick={() => explainPath(p.id)}
-                selected={false}
-
+      {tier2.length > 0 ?
+        <>
+          <table>
+            <tbody>
+              <TableHead
+                tableTitles={['Veterano']}
+                onClick={() => showRow(-2)}
+                open={show.current.includes(-2)}
               />
 
+              {tier2.map(p => (
+                <React.Fragment key={p.id}>
+                  <tbody>
+                    <TableData
+                      key={p.id}
+                      tableData={[`${p.name}`]}
+                      show={show.current.includes(-2)}
+                      onClick={() => showRow(p.id)}
+                      selected={show.current.includes(p.id)}
+                    />
 
-            </React.Fragment>
+                  </tbody>
+                  <tbody style={{ display: show.current.includes(p.id) && show.current.includes(-2) ? '' : 'none', width: '100%' }} className="table-extension">
+                    <tr><th>Benefícios</th></tr>
+                    <tr><td>Vitalidade: {String(p.vitality)}</td></tr>
+                    <tr><td>Poder: {String(p.power)}</td></tr>
+                    <tr><td>Técnicas: {String(p.addTechniques)}</td></tr>
+                    <tr><td>Manobras: {String(p.addManeuvers)}</td></tr>
+                    <tr><td>Juramentos: {String(p.addOaths)}</td></tr>
+                    <tr><td>Truques: {String(p.addTricks)}</td></tr>
+                    <tr><td>Mágicas: {String(p.addMagics)}</td></tr>
+                  </tbody>
+                </React.Fragment>
+              ))
+              }
+            </tbody>
+          </table>
+        </>
+        : ''
+      }
 
-          ))}
-        </tbody>
-      </table>
+      {tier3.length > 0 ?
+        <>
+          <table>
+            <tbody>
 
-      {tier2.map(p => (
-        <React.Fragment key={p.id}>
-          <PathExplain style={'linear-gradient(to bottom right, gold, goldenrod)'} path={p} isHidden={showPath != p.id} onCancel={() => setShowPath(0)} />
-        </React.Fragment>
-
-      ))};
-      
-      
-      <h2 style={{ fontVariant: 'small-caps' }}>Caminhos Mestres</h2>
-      <table>
-        <tbody>
-          <TableHead tableTitles={tableTitles} onClick={show != 3 ? () => setShow(3) : () => setShow(0)} />
-
-          {tier3.map(p => (
-            <React.Fragment key={p.id}>
-
-
-              <TableData
-                key={p.id}
-                tableData={[p.name, String(p.vitality), String(p.power), String(p.addTechniques), String(p.addManeuvers), String(p.addOaths), String(p.addTricks), String(p.addMagics)]}
-                show={show === (p.pathTier)}
-                onClick={() => explainPath(p.id)}
-                selected={false}
-
+              <TableHead
+                tableTitles={['Mestre']}
+                onClick={() => showRow(-3)}
+                open={show.current.includes(-3)}
               />
 
+              {tier3.map(p => (
+                <React.Fragment key={p.id}>
+                  <tbody>
+                    <TableData
+                      key={p.id}
+                      tableData={[`${p.name}`]}
+                      show={show.current.includes(-3)}
+                      onClick={() => showRow(p.id)}
+                      selected={show.current.includes(p.id)}
+                    />
 
-            </React.Fragment>
+                  </tbody>
+                  <tbody style={{ display: show.current.includes(p.id) && show.current.includes(-3) ? '' : 'none', width: '100%' }} className="table-extension">
+                    <tr><th>Benefícios</th></tr>
+                    <tr><td>Vitalidade: {String(p.vitality)}</td></tr>
+                    <tr><td>Poder: {String(p.power)}</td></tr>
+                    <tr><td>Técnicas: {String(p.addTechniques)}</td></tr>
+                    <tr><td>Manobras: {String(p.addManeuvers)}</td></tr>
+                    <tr><td>Juramentos: {String(p.addOaths)}</td></tr>
+                    <tr><td>Truques: {String(p.addTricks)}</td></tr>
+                    <tr><td>Mágicas: {String(p.addMagics)}</td></tr>
+                  </tbody>
+                </React.Fragment>
+              ))
+              }
+            </tbody>
 
-          ))}
-        </tbody>
-      </table>
+          </table>
+        </>
+        : ''}
 
-      {tier3.map(p => (
-        <React.Fragment key={p.id}>
-          <PathExplain style={'linear-gradient(to bottom right, gold, goldenrod)'} path={p} isHidden={showPath != p.id} onCancel={() => setShowPath(0)} />
-        </React.Fragment>
-
-      ))};
-      
-      
-      <h2 style={{ fontVariant: 'small-caps' }}>Caminhos Lendários</h2>
-      <table>
-        <tbody>
-          <TableHead tableTitles={tableTitles} onClick={show != 4 ? () => setShow(4) : () => setShow(0)} />
-
-          {tier4.map(p => (
-            <React.Fragment key={p.id}>
-
-
-              <TableData
-                key={p.id}
-                tableData={[p.name, String(p.vitality), String(p.power), String(p.addTechniques), String(p.addManeuvers), String(p.addOaths), String(p.addTricks), String(p.addMagics)]}
-                show={show === (p.pathTier)}
-                onClick={() => explainPath(p.id)}
-                selected={false}
-
+      {tier4.length > 0 ?
+        <>
+          <table>
+            <tbody>
+              <TableHead
+                tableTitles={['Lenda']}
+                onClick={() => showRow(-4)}
+                open={show.current.includes(-4)}
               />
 
+              {tier4.map(p => (
+                <React.Fragment key={p.id}>
+                  <tbody>
+                    <TableData
+                      key={p.id}
+                      tableData={[`${p.name}`]}
+                      show={show.current.includes(-4)}
+                      onClick={() => showRow(p.id)}
+                      selected={show.current.includes(p.id)}
+                    />
 
-            </React.Fragment>
+                  </tbody>
+                  <tbody style={{ display: show.current.includes(p.id) && show.current.includes(-4) ? '' : 'none', width: '100%' }} className="table-extension">
+                    <tr><th>Benefícios</th></tr>
+                    <tr><td>Vitalidade: {String(p.vitality)}</td></tr>
+                    <tr><td>Poder: {String(p.power)}</td></tr>
+                    <tr><td>Técnicas: {String(p.addTechniques)}</td></tr>
+                    <tr><td>Manobras: {String(p.addManeuvers)}</td></tr>
+                    <tr><td>Juramentos: {String(p.addOaths)}</td></tr>
+                    <tr><td>Truques: {String(p.addTricks)}</td></tr>
+                    <tr><td>Mágicas: {String(p.addMagics)}</td></tr>
+                  </tbody>
+                </React.Fragment>
+              ))
+              }
+            </tbody>
 
-          ))}
-        </tbody>
-      </table>
-
-      {tier4.map(p => (
-        <React.Fragment key={p.id}>
-          <PathExplain style={'linear-gradient(to bottom right, gold, goldenrod)'} path={p} isHidden={showPath != p.id} onCancel={() => setShowPath(0)} />
-        </React.Fragment>
-
-      ))};
-
-      
-
+          </table>
+        </>
+        : ''
+      }
     </React.Fragment>
   )
 }

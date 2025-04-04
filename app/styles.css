@@ -5,6 +5,8 @@
 
 a {
   text-decoration: none;
+  font-family: sans-serif;
+  color: gold;
 }
 
 a :hover {
@@ -74,6 +76,7 @@ body {
 
 h1 {
   color: gold;
+  font-size: 1.7em
 }
 
 h1,
@@ -95,8 +98,7 @@ a h3 {
   color: gold;
 }
 
-button.lineBtn,
-a.lineBtn {
+.lineBtn {
   background: none;
   border: none;
   padding: 0;
@@ -107,9 +109,9 @@ a.lineBtn {
   cursor: pointer
 }
 
-button.lineBtn:hover,
-a.lineBtn:hover {
-  color: #FFFFFF
+.lineBtn:hover {
+  color: white;
+  background-color: initial;
 }
 
 ul {
@@ -192,6 +194,10 @@ ul {
   border-bottom: 1.5px solid goldenrod;
 }
 
+.topnav li a {
+  padding: 16px
+}
+
 .character-sheet {
   transition: 0.3s ease-in-out;
 }
@@ -206,25 +212,27 @@ ul {
 
 .header,
 .temp {
-  overflow: auto;
+  overflow-y: auto;
+  overflow-x: hidden;
   transition: 0.3s ease-in-out;
   position: fixed;
   display: block;
   width: 200px;
-  height: calc(100% - 64px);
+  height: 100vh;
   top: 64px;
   padding: 0;
   background-color: #090809;
   box-shadow: 1px 0px 8px 1px gold;
-  z-index: 5;
 }
 
 .header {
   left: 0;
+  z-index: 6;
 }
 
 .temp {
   right: 0;
+  z-index: 5;
 }
 
 .header h1,
@@ -234,8 +242,15 @@ ul {
   width: 100%;
 }
 
+.header h3,
+.temp h3 {
+  font-size: 1.15rem;
+}
+
 .header p,
-.temp p {
+.temp p,
+.header a,
+.temp a {
   text-align: center;
   font-variant: small-caps;
   font-family: serif;
@@ -255,8 +270,13 @@ ul {
   font-family: serif;
   border-collapse: collapse;
   width: 100%;
-  height: 12px;
+  height: 3vh;
   box-shadow: 1px 0px 4px 1px gold;
+}
+
+.header tr,
+.temp tr {
+  animation: none !important;
 }
 
 .header td,
@@ -277,23 +297,23 @@ ul {
   position: fixed;
   border: 0;
   top: 62px;
-  height: calc(100% + 900px);
-  width: 10px;
+  height: 100vh;
+  width: 12px;
   background-color: gold;
   opacity: 0;
   transition: 0.3s ease-in-out;
   z-index: 4;
-  box-shadow: 1px 0px 4px 1px gold;
+  box-shadow: 1px 1px 4px 1px gold;
 }
 
 .toggle-temp {
   right: 0;
-  margin-right: 196px;
+  margin-right: 200px;
 
 }
 
 .toggle-menu {
-  margin-left: 196px;
+  margin-left: 200px;
 }
 
 .toggle-menu:hover,
@@ -336,7 +356,7 @@ li button {
   display: block;
   color: white;
   text-align: center;
-  padding: 16px 16px;
+  padding: 16px;
   text-decoration: none;
   font-weight: bold;
   font-family: serif;
@@ -345,6 +365,11 @@ li button {
   cursor: pointer;
   background: none;
 
+}
+
+li a.active {
+  color: gold;
+  scale: 1.1
 }
 
 .header table button {
@@ -363,7 +388,7 @@ li a:hover,
 li button:hover {
   color: gold;
   cursor: pointer;
-  background-color: rgb(0, 0, 0);
+  background-color: black;
   box-shadow: 1px 1px 8px 1px gold;
   transition: 0.3s;
 }
@@ -375,6 +400,7 @@ li button:hover {
 
 
 .topnav a.active {
+  color: white;
   background-color: goldenrod;
 }
 
@@ -472,28 +498,55 @@ tr {
   margin: 0;
   width: 100%;
   transition: 0.3s ease-in-out;
+  animation: descend 0.3s;
 }
 
 td,
 th {
-  font-size: 1.1rem;
-  font-family: serif;
-  font-variant: small-caps;
   border: 2px solid #dddddd;
   border-left: 0;
   text-align: center;
-  padding: 18px;
+  padding: 16px;
+}
+
+td {
+  font-family: serif;
+  font-size: 1.1rem;
 }
 
 th {
+  font-family: serif;
+  font-variant: small-caps;
   font-size: 1.25rem;
-  font-weight: bold;
+  font-weight: 700;
+  letter-spacing: 0.07rem;
 }
 
 .selected {
-  background-color: darkgoldenrod;
+  color: gold;
+  background-color: rgb(9, 8, 9);
   box-shadow: 0px 0px 16px 1px gold;
+}
 
+.table-extension {
+  color: gold;
+  background-color: rgb(9, 8, 9);
+}
+
+.table-extension :hover {
+  box-shadow: none;
+  background-color: initial;
+  cursor: default;
+}
+
+.table-extension tr th,
+.table-extension tr td {
+  border: 0;
+  padding: 8px;
+}
+
+.table-extension tr td {
+  color: white
 }
 
 tr:hover {
@@ -523,11 +576,13 @@ td:last-child {
 
 .button {
   background-color: goldenrod;
+  font-family: serif;
+  font-variant: small-caps;
   border: none;
-  color: rgb(255, 255, 255);
+  color: white;
   width: 25%;
-  min-height: 80px;
-  padding: 39px 15px;
+  min-height: 64px;
+  padding: 40px 15px;
   text-align: center;
   text-decoration: none;
   font-weight: bold;
@@ -537,6 +592,7 @@ td:last-child {
   cursor: pointer;
   display: flex;
   justify-content: center;
+  overflow: hidden;
   transition: 0.3s ease;
 }
 
@@ -562,6 +618,7 @@ td:last-child {
   justify-content: center;
   align-items: center;
   overflow: auto;
+  cursor: default;
   z-index: 15;
 }
 
@@ -711,18 +768,6 @@ td:last-child {
   padding: 10px;
 }
 
-.pure-lineage-skills,
-.nonpure-lineage-skills {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-}
-
-.pure-lineage-skills>*,
-.nonpure-lineage-skills>* {
-  margin: 10px;
-}
-
 /*CALENDARIO*/
 .title-input {
   font-family: serif;
@@ -759,6 +804,7 @@ td:last-child {
   display: flex;
   flex-wrap: wrap;
   margin: 10px;
+  color: white;
   background-color: #090809;
   padding: 15px;
   border-radius: 10px;
@@ -775,11 +821,17 @@ td:last-child {
   color: gold;
 }
 
+.calendar-field label {
+  font-family: serif;
+  font-variant: small-caps;
+  font-weight: bold;
+}
+
 select {
   width: 100%;
   background: #222;
   color: gold;
-  border: 1px solid gold;
+  border: 1px solid white;
   padding: 5px;
   text-align: center;
 }
@@ -793,19 +845,20 @@ select {
   gap: 5px;
 }
 
-textarea {
-  background-color: #090809;
-  color: white;
-  min-height: 64px;
-  min-width: 400px;
-}
-
 button {
-  background: gold;
+  background-color: goldenrod;
+  color: white;
+  font-family: serif;
+  font-variant: small-caps;
   border: none;
   padding: 5px 10px;
   cursor: pointer;
   font-weight: bold;
+}
+
+button:hover {
+  transition: ease-in-out 0.3s;
+  background-color: darkgoldenrod;
 }
 
 .submit-container {
@@ -830,10 +883,17 @@ button {
   color: red;
   text-align: center;
   margin-top: 5px;
+  font-family: serif;
   font-size: 1.1rem;
   font-weight: bold;
   font-variant: small-caps;
+}
 
+.error:hover,
+.error :hover {
+  color: red;
+  box-shadow: none;
+  transition: 0.3s;
 }
 
 
@@ -845,6 +905,10 @@ button {
 
   .modal-content {
     max-width: 550px;
+  }
+
+  .grid {
+    grid-template-columns: auto auto auto auto;
   }
 
   .button {
@@ -874,6 +938,10 @@ button {
     max-width: 400px;
   }
 
+  .grid {
+    grid-template-columns: auto auto auto;
+  }
+
   .button {
     width: 35%;
   }
@@ -886,7 +954,7 @@ button {
     font-size: 28px;
   }
 
-  .col-4 {
+   .col-4 {
     width: 100%
   }
 }

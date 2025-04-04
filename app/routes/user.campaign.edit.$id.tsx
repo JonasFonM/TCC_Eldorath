@@ -1,17 +1,25 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { ActionFunction, json, LoaderFunction, redirect } from "@remix-run/node"
-import { useActionData } from "@remix-run/react"
+import { useActionData, useLoaderData, useOutletContext } from "@remix-run/react"
 import { useEffect, useRef, useState } from "react"
 import { getUserIdFromSession, requireUserId } from '~/utils/auth.server'
-import { submitCampaign } from "~/utils/campaign.server"
+import { updateCampaign } from "~/utils/campaign.server"
 import { weekDays, translateWeekDays } from "./user.campaign"
+import { campaign, character, partyMembers, scene } from "@prisma/client"
+import { prisma } from "~/utils/prisma.server"
 
-export const loader: LoaderFunction = async ({ request }) => {
+export const loader: LoaderFunction = async ({ request, params }) => {
   const userId = await requireUserId(request)
-  return json({ userId })
+  const campaignId = Number(params.id)
+
+  const campaign = await prisma.campaign.findUnique({
+    where: { id: campaignId }
+  })
+
+  return json({ userId, campaign })
 }
 
-export const action: ActionFunction = async ({ request }) => {
+export const action: ActionFunction = async ({ request, params }) => {
   const form = await request.formData();
   const title = form.get('title') as string;
   const description = form.get('description') as string;
@@ -21,6 +29,7 @@ export const action: ActionFunction = async ({ request }) => {
   const monthDay = parseInt(form.get('monthDay') as string, 10);
   const weekDay = parseInt(form.get('weekDay') as string, 10);
   const masterId = await getUserIdFromSession(request);
+  const campaignId = Number(params.id)
 
   if (!masterId) {
     return json({ error: "Unauthorized" }, { status: 401 });;
@@ -31,7 +40,7 @@ export const action: ActionFunction = async ({ request }) => {
   }
 
   try {
-    const campaign = await submitCampaign({ title, description, masterId, era, year, month, monthDay, weekDay });
+    const campaign = await updateCampaign({ title, description, masterId, era, year, month, monthDay, weekDay }, campaignId);
     return (
       json({ campaign }, { status: 201 }),
       redirect(`/user/campaign/${campaign}`)
@@ -43,6 +52,7 @@ export const action: ActionFunction = async ({ request }) => {
 }
 
 export default function NewCampaignRoute() {
+  const { campaign } = useLoaderData<{ campaign: campaign }>()
   const actionData = useActionData<ActionFunction>();
 
   const title = useRef<number>(-1); // Avoid re-renders
@@ -58,13 +68,13 @@ export default function NewCampaignRoute() {
 
   const firstLoad = useRef(true);
   const [formData, setFormData] = useState({
-    title: '',
-    description: '',
-    era: 1,
-    year: 1,
-    month: 1,
-    monthDay: 1,
-    weekDay: 1,
+    title: campaign.title,
+    description: campaign.description,
+    era: campaign.era,
+    year: campaign.year,
+    month: campaign.month,
+    monthDay: campaign.monthDay,
+    weekDay: campaign.weekDay,
   });
   const [errors, setErrors] = useState({
     title: '',
@@ -186,7 +196,7 @@ export default function NewCampaignRoute() {
         </h1>
       </label>
 
-      <div style={title.current < 1 ? {display: 'inherit'} : { display: 'none' }} className="container">
+      <div style={title.current < 1 ? { display: 'inherit' } : { display: 'none' }} className="container">
         <textarea
           style={{ minHeight: '50vh' }}
           className="calendar-box"
@@ -198,7 +208,7 @@ export default function NewCampaignRoute() {
         {errors.description && <p className="error">{errors.description}</p>}
       </div>
 
-      <div style={title.current < 1 ? { display: 'none' } : {display: 'inherit'}} className="container">
+      <div style={title.current < 1 ? { display: 'none' } : { display: 'inherit' }} className="container">
         <div className="calendar-box">
           <div className="calendar-field">
 
@@ -226,6 +236,7 @@ export default function NewCampaignRoute() {
               <button type="button" onClick={() => adjustYear(50)}>+50</button>
               <button type="button" onClick={() => adjustYear(250)}>+250</button>
             </div>
+
           </div>
 
           <div className="calendar-field">
@@ -245,6 +256,7 @@ export default function NewCampaignRoute() {
                 </option>
               ))}
             </select>
+
           </div>
 
           <div className="calendar-field">
@@ -272,9 +284,12 @@ export default function NewCampaignRoute() {
                 <option value="12">Floravélis</option>
               </optgroup>
             </select>
+
           </div>
+
         </div>
       </div>
+
 
       <button className="button" type="submit">Confirmar</button>
 

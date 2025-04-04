@@ -1,7 +1,7 @@
 import { lineage } from "@prisma/client";
 import { ActionFunction, json, redirect } from "@remix-run/node";
 import { NavLink, useOutletContext } from "@remix-run/react";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { TableHead } from "~/components/character-sheet/general-table";
 import { TableData } from "~/components/character-sheet/general-table-data";
 import { submitCharLineages } from "~/utils/character.server";
@@ -19,7 +19,7 @@ export const action: ActionFunction = async ({ request, params }) => {
     }
     try {
         await submitCharLineages(selectedLineageIds, Number(characterId), pure)
-        return redirect(`/user/character/${characterId}/lineages`)
+        return redirect(`/user/character/new/${characterId}/paths/`)
     } catch (error) {
         console.error(error);
         return json({ error: "Failed to save lineages." }, { status: 500 });
@@ -30,9 +30,22 @@ export const action: ActionFunction = async ({ request, params }) => {
 export default function LineageSelection() {
     const { characterId, lineages, maxSelectableLineages } = useOutletContext<{ characterId: string, lineages: lineage[], maxSelectableLineages: number }>();
     const [selectedLineages, setSelectedLineages] = useState<number[]>([]);
-    const [error, setError] = useState<string | null>(null);
-    const [isPure, setPure] = useState<boolean>(true);
-    const [showLineage, setShowLineage] = useState<number>(0);
+    const [isPure, setPure] = useState<boolean>(false);
+    const isMaxSelected = selectedLineages.length >= maxSelectableLineages;
+
+    const show = useRef<number[]>([]); // Avoid re-renders
+
+    const forceUpdate = useState(0)[1]; // Trigger minimal re-renders when necessary
+
+    const showRow = (n: number) => {
+        if (show.current.includes(n)) {
+            const newShow = show.current.filter(ns => ns != n)
+            show.current = newShow
+            return forceUpdate(n => n + 1);
+        }
+        show.current.push(n);
+        return forceUpdate(n => n + 1);
+    }
 
     const handleLineageClick = (lineageId: number) => {
         setSelectedLineages((prevSelectedLineages) => {
@@ -43,13 +56,6 @@ export default function LineageSelection() {
                 : [...prevSelectedLineages, lineageId];
 
             setPure(newSelectedLineages.length === 1);
-
-            if (newSelectedLineages.length > maxSelectableLineages) {
-                setError("Você não pode escolher mais Linhagens.");
-                return prevSelectedLineages;
-            } else {
-                setError(null);
-            }
 
             return newSelectedLineages;
         });
@@ -67,31 +73,39 @@ export default function LineageSelection() {
 
     return (
         <>
+            <h1>Linhagens</h1>
             {maxSelectableLineages > 0 ?
                 <>
                     <form method="post" onSubmit={handleSubmit}>
-                        <h1 className="title-container">Escolha até {maxSelectableLineages} Linhagens<NavLink to={`/user/character/${characterId}/lineages`} style={{ color: 'red' }} className="question-button">X</NavLink></h1>
+                        <h2>Escolha até {maxSelectableLineages} Linhagens</h2>
                         <h3>Escolher apenas 1 Linhagem a torna Pura</h3>
 
                         <table>
-                            <tbody>
+                            <thead>
+                                <TableHead
+                                    tableTitles={['Linhagem']}
+                                    onClick={() => showRow(-2)}
+                                    open={show.current.includes(-2)}
+                                />
+                            </thead>
 
-                                <TableHead tableTitles={['Linhagem']} onClick={showLineage != -2 ? () => setShowLineage(-2) : () => setShowLineage(0)} />
+                            {lineages.map(ln => (
+                                <React.Fragment key={ln.id}>
+                                    <tbody className={!isMaxSelected || selectedLineages.includes(ln.id) ? '' : 'error'}>
 
-                                {lineages.map(ln => (
-                                    <React.Fragment key={ln.id}>
                                         <TableData
                                             key={ln.id}
-                                            tableData={isPure ? [String(ln.name) + ' Pura'] : [String(ln.name)]}
-                                            show={showLineage === (-2)}
-                                            onClick={() => handleLineageClick(Number(ln.id))}
+                                            tableData={isPure && selectedLineages.includes(ln.id) ? [String(ln.name) + ' Pura'] : [String(ln.name)]}
+                                            show={show.current.includes(-2)}
+                                            onClick={selectedLineages.length < maxSelectableLineages || selectedLineages.includes(ln.id)
+                                                ? () => handleLineageClick(Number(ln.id))
+                                                : () => null}
                                             selected={selectedLineages.includes(ln.id)}
                                         />
+                                    </tbody>
+                                </React.Fragment>
+                            ))}
 
-                                    </React.Fragment>
-                                ))}
-
-                            </tbody>
                         </table >
 
                         {selectedLineages.map(lineageId => (
@@ -100,16 +114,15 @@ export default function LineageSelection() {
 
                         <input type="hidden" key='pure' name="pure" value={isPure ? 'true' : 'false'} />
 
-                        {error && <p>{error}</p>}
 
-                        <button type="submit" className="button">Confirmar</button>
+                        <button type="submit" className="button">Próximo</button>
                     </form>
                 </>
 
                 :
                 <>
-                    <h1 className="title-container">Sua Linhagem já foi Escolhida</h1>
-                    <NavLink to={`/user/character/${characterId}/lineages`}><button type="button" className="button">Sair</button></NavLink>
+                    <h2>Você já escolheu uma Linhagem</h2>
+                    <NavLink to={`/user/character/new/${characterId}/paths`}><button type="button" className="button">Caminhos</button></NavLink>
 
                 </>
             }

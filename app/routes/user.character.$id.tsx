@@ -1,10 +1,9 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { LoaderFunction, } from "@remix-run/node";
-import { NavLink, Outlet, useLoaderData } from "@remix-run/react";
+import { NavLink, Outlet, useLoaderData, useLocation } from "@remix-run/react";
 import { prisma } from "~/utils/prisma.server";
-import { LSrelations } from "~/utils/types.server";
-import { character, character_item, lineage, path, skill, item } from "@prisma/client";
+import { character, character_item, lineage, path, skill, item, lineage_skill } from "@prisma/client";
 import React, { useState } from "react";
 
 import { SideBars } from "~/components/side-bars/side-bars";
@@ -45,18 +44,20 @@ export const loader: LoaderFunction = async ({ params, request }) => {
 
   const pureLineageSkills = await prisma.lineage_skill.findMany({
     where: {
+      skillId: { in: character?.skills.map(skill => skill.skillId) },
       lineageId: { in: character_lineages.map(cl => cl.lineageId) },
       pureSkill: true
     },
-    include: { skill: true },
+    include: { skill: true, lineage: true },
   });
 
   const nonPureLineageSkills = await prisma.lineage_skill.findMany({
     where: {
+      skillId: { in: character?.skills.map(skill => skill.skillId) },
       lineageId: { in: character_lineages.map(cl => cl.lineageId) },
       pureSkill: false
     },
-    include: { skill: true },
+    include: { skill: true, lineage: true },
   });
 
   const lineages = await prisma.lineage.findMany({
@@ -84,12 +85,19 @@ export const loader: LoaderFunction = async ({ params, request }) => {
 };
 
 export default function CharacterRoute() {
-  const { isAuthor, character, characterId } = useLoaderData<{ isAuthor: boolean, character: character, characterId: string }>()
-  const { skills, pureLineageSkills, nonPureLineageSkills } = useLoaderData<{ skills: skill[], pureLineageSkills: LSrelations, nonPureLineageSkills: LSrelations }>();
-  const { lineages, isPure } = useLoaderData<{ lineages: lineage[], isPure: boolean }>();
-  const { items } = useLoaderData<{ items: (character_item & { item: item })[] }>();
-  const { paths } = useLoaderData<{ paths: path[] }>();
+  const { isAuthor, character, characterId,
+    skills, pureLineageSkills, nonPureLineageSkills,
+    lineages, isPure, items, paths }
+    =
+    useLoaderData<{
+      isAuthor: boolean, character: character, characterId: string,
+      skills: skill[], pureLineageSkills: (lineage_skill & { skill: skill, lineage: lineage })[],
+      nonPureLineageSkills: (lineage_skill & { skill: skill, lineage: lineage })[],
+      lineages: lineage[], isPure: boolean, items: (character_item & { item: item })[], paths: path[]
+    }>()
   const { isAllOpen, isHeaderOpen, isTempOpen } = useSidebar();
+
+  const location = useLocation()
 
   const [showInv, setShowInv] = useState<number>(0);
 
@@ -100,18 +108,20 @@ export default function CharacterRoute() {
       <SideBars
         entity={character} title={character.name}
         subtitle={subtitle}
-        tableHeaders={["NV", "CT", "XP"]}
-        tableDatas={[character.level, character.tier, character.experience]}
+        tableHeaders={["NV", "CT", "XP", "DK"]}
+        tableDatas={[character.level, character.tier, character.experience, character.gold]}
         tableExplain={[
           "Seu Nível é um indicador geral de quão poderoso você é no momento. Você sobe de nível conforme ganha Experiência.",
           "Sua Categoria representa em qual patamar da sua jornada você está. Você pode ser Iniciante, Profissional, Mestre ou Lendário.",
           "Seus Pontos de Experiência determinam quando você pode subir de nível. Você pode receber Experiência de várias formas, como derrotar inimigos, ou passar por um treinamento árduo.",
+          "Drakas são a moeda corrente principal em Eldorath. Cunhadas a partir de uma liga metálica especial chamada Orivélio, resistente ao desgaste e capaz de manter seu brilho por séculos. O nome vem das antigas tradições do Império de Zarethia, onde os primeiros imperadores usavam escamas de dragão como lastro para suas riquezas.",
         ]}
         links={[
           `/user/character/${characterId}/stats/`,
           `/user/character/${characterId}/lineages/`,
           `/user/character/${characterId}/paths/`,
           `/user/character/${characterId}/skills/`,
+          `/user/character/${characterId}/inventory/`
 
         ]}
 
@@ -120,10 +130,10 @@ export default function CharacterRoute() {
           'Linhagens',
           'Caminhos',
           'Talentos',
+          'Inventário'
         ]}
         temp={
           <React.Fragment>
-
             <ul>
               <li key={1}>
                 <NavLink to={
@@ -135,42 +145,17 @@ export default function CharacterRoute() {
               </li>
 
             </ul>
-
-            {isAuthor ?
-              <ul>
-                <li key={-4}>
-                  <NavLink to={`/user/character/${characterId}/inventory/`}>Inventário</NavLink>
-                </li>
-              </ul>
-              : ''}
-
-            <table>
-              <tbody>
-                <tr onClick={() => setShowInv(1)}>
-                  <th>DK</th>
-                  <td>{character.gold}</td>
-                </tr>
-              </tbody>
-            </table>
-            <GeneralExplain style={'linear-gradient(to bottom, white, gold)'} color={'black'} title={'Drakas'} description="Drakas são a moeda corrente principal em Eldorath. Cunhadas a partir de uma liga metálica especial chamada Orivélio, resistente ao desgaste e capaz de manter seu brilho por séculos. O nome vem das antigas tradições do Império de Zarethia, onde os primeiros imperadores usavam escamas de dragão como lastro para suas riquezas." isHidden={showInv != 1} onCancel={() => setShowInv(0)} />
-
-            <table>
-              <tbody>
-                <tr onClick={() => setShowInv(2)}>
-                  <th>CA</th>
-                  <td>{items.map(items => items.weight).reduce((accumulator, currentValue) => accumulator + currentValue, 0)}/{character.carryCap}</td>
-                </tr>
-              </tbody>
-            </table>
-            <GeneralExplain style={'linear-gradient(to bottom, white, gold)'} color={'black'} title={'Carga Atual'} description="Indica quantas Cargas estão ocupadas no seu Inventário. Se sua Carga Atual for maior que a sua Capacidade de Carga, você fica Sobrecarregado." isHidden={showInv != 2} onCancel={() => setShowInv(0)} />
-
           </React.Fragment>
         }
 
       />
 
       <div className="character-sheet" style={isAllOpen ? { marginLeft: '200px', marginRight: '200px' } : isHeaderOpen ? { marginLeft: '200px' } : isTempOpen ? { marginRight: '200px' } : {}}>
-        <Outlet context={{ characterId, isAuthor, character, skills, paths, lineages, pureLineageSkills, nonPureLineageSkills, isPure, items }} />
+        <Outlet context={{
+          characterId, isAuthor,
+          character, skills, paths,
+          lineages, pureLineageSkills, nonPureLineageSkills, isPure, items
+        }} />
       </div >
     </>
 

@@ -10,9 +10,9 @@ interface Props {
 export function TableData({ tableData, show, onClick, selected }: Props) {
 
     return (
-        <tr className={selected ? 'selected' : ''} onClick={onClick} style={show ? { display: 'table-row' } : { display: 'none' }}>
+        <tr className={selected ? 'selected' : ''} onClick={onClick} style={show ? {} : { display: 'none' }}>
             {tableData.map((td, index) => (
-                <td key={index}>{td}</td>
+                <td style={{ fontSize: '1.3rem' }} key={index}>{td}</td>
             ))
             }
         </tr>

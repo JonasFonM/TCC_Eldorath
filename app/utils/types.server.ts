@@ -39,5 +39,3 @@ export type SceneForm = {
   monthDay: number,
   weekDay: number,
 }
-
-export type LSrelations = (lineage_skill & { skill: skill })[];

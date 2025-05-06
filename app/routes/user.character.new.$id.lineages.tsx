@@ -78,7 +78,7 @@ export default function LineageSelection() {
                 <>
                     <form method="post" onSubmit={handleSubmit}>
                         <h2>Escolha até {maxSelectableLineages} Linhagens</h2>
-                        <h3>Escolher apenas 1 Linhagem a torna Pura</h3>
+                        <h3>Escolher apenas 1 Linhagem habilita Talentos especiais</h3>
 
                         <table>
                             <thead>
@@ -95,7 +95,7 @@ export default function LineageSelection() {
 
                                         <TableData
                                             key={ln.id}
-                                            tableData={isPure && selectedLineages.includes(ln.id) ? [String(ln.name) + ' Pura'] : [String(ln.name)]}
+                                            tableData={!isPure && selectedLineages.includes(ln.id) ? ['Meio ' + String(ln.name)] : [String(ln.name)]}
                                             show={show.current.includes(-2)}
                                             onClick={selectedLineages.length < maxSelectableLineages || selectedLineages.includes(ln.id)
                                                 ? () => handleLineageClick(Number(ln.id))

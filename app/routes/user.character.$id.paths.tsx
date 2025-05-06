@@ -1,7 +1,6 @@
-import { NavLink, useOutletContext } from "@remix-run/react";
+import { useOutletContext } from "@remix-run/react";
 import { path } from "@prisma/client";
 import { LoaderFunction } from "@remix-run/node";
-import { PathExplain } from "~/components/explanations/path-explain";
 import { TableData } from "~/components/character-sheet/general-table-data";
 import { TableHead } from "~/components/character-sheet/general-table";
 import React, { useRef, useState } from "react";
@@ -16,7 +15,7 @@ export default function PathsRoute() {
   const { characterId, paths, isAuthor } = useOutletContext<{ characterId: string, paths: path[], isAuthor: boolean }>();
   const show = useRef<number[]>([]);
 
-  const forceUpdate = useState(0)[1]; 
+  const forceUpdate = useState(0)[1];
 
   const showRow = (n: number) => {
     if (show.current.includes(n)) {
@@ -74,11 +73,8 @@ export default function PathsRoute() {
               <tr><th>Benefícios</th></tr>
               <tr><td>Vitalidade: {String(p.vitality)}</td></tr>
               <tr><td>Poder: {String(p.power)}</td></tr>
-              <tr><td>Técnicas: {String(p.addTechniques)}</td></tr>
               <tr><td>Manobras: {String(p.addManeuvers)}</td></tr>
-              <tr><td>Juramentos: {String(p.addOaths)}</td></tr>
-              <tr><td>Truques: {String(p.addTricks)}</td></tr>
-              <tr><td>Mágicas: {String(p.addMagics)}</td></tr>
+              <tr><td>Magias: {String(p.addMagics)}</td></tr>
             </tbody>
           </React.Fragment>
         ))
@@ -112,11 +108,8 @@ export default function PathsRoute() {
                     <tr><th>Benefícios</th></tr>
                     <tr><td>Vitalidade: {String(p.vitality)}</td></tr>
                     <tr><td>Poder: {String(p.power)}</td></tr>
-                    <tr><td>Técnicas: {String(p.addTechniques)}</td></tr>
                     <tr><td>Manobras: {String(p.addManeuvers)}</td></tr>
-                    <tr><td>Juramentos: {String(p.addOaths)}</td></tr>
-                    <tr><td>Truques: {String(p.addTricks)}</td></tr>
-                    <tr><td>Mágicas: {String(p.addMagics)}</td></tr>
+                    <tr><td>Magias: {String(p.addMagics)}</td></tr>
                   </tbody>
                 </React.Fragment>
               ))
@@ -154,11 +147,8 @@ export default function PathsRoute() {
                     <tr><th>Benefícios</th></tr>
                     <tr><td>Vitalidade: {String(p.vitality)}</td></tr>
                     <tr><td>Poder: {String(p.power)}</td></tr>
-                    <tr><td>Técnicas: {String(p.addTechniques)}</td></tr>
                     <tr><td>Manobras: {String(p.addManeuvers)}</td></tr>
-                    <tr><td>Juramentos: {String(p.addOaths)}</td></tr>
-                    <tr><td>Truques: {String(p.addTricks)}</td></tr>
-                    <tr><td>Mágicas: {String(p.addMagics)}</td></tr>
+                    <tr><td>Magias: {String(p.addMagics)}</td></tr>
                   </tbody>
                 </React.Fragment>
               ))
@@ -195,11 +185,8 @@ export default function PathsRoute() {
                     <tr><th>Benefícios</th></tr>
                     <tr><td>Vitalidade: {String(p.vitality)}</td></tr>
                     <tr><td>Poder: {String(p.power)}</td></tr>
-                    <tr><td>Técnicas: {String(p.addTechniques)}</td></tr>
                     <tr><td>Manobras: {String(p.addManeuvers)}</td></tr>
-                    <tr><td>Juramentos: {String(p.addOaths)}</td></tr>
-                    <tr><td>Truques: {String(p.addTricks)}</td></tr>
-                    <tr><td>Mágicas: {String(p.addMagics)}</td></tr>
+                    <tr><td>Magias: {String(p.addMagics)}</td></tr>
                   </tbody>
                 </React.Fragment>
               ))

@@ -46,18 +46,9 @@ export default function ItemSelection() {
     }
 
     const slotTypes = [
-        'slotCloak',
-        'slotEarings',
-        'slotAmulet',
-        'slotRings',
-        'slotBelt',
+        'slotAccessory',
+        'slotArmor',
         'slotWeapon',
-        'slotHelm',
-        'slotPauldron',
-        'slotCuirass',
-        'slotGauntlet',
-        'slotUpperLegs',
-        'slotGreaves',
         'consumable'
     ]
 

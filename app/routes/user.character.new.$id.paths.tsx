@@ -109,11 +109,8 @@ export default function PathSelection() {
                                         <tr><th>Benefícios</th></tr>
                                         <tr><td>Vitalidade: {String(p.vitality)}</td></tr>
                                         <tr><td>Poder: {String(p.power)}</td></tr>
-                                        <tr><td>Técnicas: {String(p.addTechniques)}</td></tr>
                                         <tr><td>Manobras: {String(p.addManeuvers)}</td></tr>
-                                        <tr><td>Juramentos: {String(p.addOaths)}</td></tr>
-                                        <tr><td>Truques: {String(p.addTricks)}</td></tr>
-                                        <tr><td>Mágicas: {String(p.addMagics)}</td></tr>
+                                        <tr><td>Magias: {String(p.addMagics)}</td></tr>
                                     </tbody>
                                 </React.Fragment>
                             ))
@@ -149,11 +146,8 @@ export default function PathSelection() {
                                                     <tr><th>Benefícios</th></tr>
                                                     <tr><td>Vitalidade: {String(p.vitality)}</td></tr>
                                                     <tr><td>Poder: {String(p.power)}</td></tr>
-                                                    <tr><td>Técnicas: {String(p.addTechniques)}</td></tr>
                                                     <tr><td>Manobras: {String(p.addManeuvers)}</td></tr>
-                                                    <tr><td>Juramentos: {String(p.addOaths)}</td></tr>
-                                                    <tr><td>Truques: {String(p.addTricks)}</td></tr>
-                                                    <tr><td>Mágicas: {String(p.addMagics)}</td></tr>
+                                                    <tr><td>Magias: {String(p.addMagics)}</td></tr>
                                                 </tbody>
                                             </React.Fragment>
                                         ))
@@ -193,11 +187,8 @@ export default function PathSelection() {
                                                     <tr><th>Benefícios</th></tr>
                                                     <tr><td>Vitalidade: {String(p.vitality)}</td></tr>
                                                     <tr><td>Poder: {String(p.power)}</td></tr>
-                                                    <tr><td>Técnicas: {String(p.addTechniques)}</td></tr>
                                                     <tr><td>Manobras: {String(p.addManeuvers)}</td></tr>
-                                                    <tr><td>Juramentos: {String(p.addOaths)}</td></tr>
-                                                    <tr><td>Truques: {String(p.addTricks)}</td></tr>
-                                                    <tr><td>Mágicas: {String(p.addMagics)}</td></tr>
+                                                    <tr><td>Magias: {String(p.addMagics)}</td></tr>
                                                 </tbody>
                                             </React.Fragment>
                                         ))
@@ -236,11 +227,8 @@ export default function PathSelection() {
                                                     <tr><th>Benefícios</th></tr>
                                                     <tr><td>Vitalidade: {String(p.vitality)}</td></tr>
                                                     <tr><td>Poder: {String(p.power)}</td></tr>
-                                                    <tr><td>Técnicas: {String(p.addTechniques)}</td></tr>
                                                     <tr><td>Manobras: {String(p.addManeuvers)}</td></tr>
-                                                    <tr><td>Juramentos: {String(p.addOaths)}</td></tr>
-                                                    <tr><td>Truques: {String(p.addTricks)}</td></tr>
-                                                    <tr><td>Mágicas: {String(p.addMagics)}</td></tr>
+                                                    <tr><td>Magias: {String(p.addMagics)}</td></tr>
                                                 </tbody>
                                             </React.Fragment>
                                         ))

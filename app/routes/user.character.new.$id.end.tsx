@@ -157,7 +157,9 @@ export default function LineagesRoute() {
                         <React.Fragment key={it.id}>
                             <TableData
                                 key={String(it.item.name) + it.id}
-                                tableData={[`${String(it.item.name)} de ${String(it.material)}`]}
+                                tableData={[it.material
+                                    ? String(it.item.name) + ' de ' + String(it.material)
+                                    : String(it.item.name)]}
                                 show={showItem >= (0)}
                                 onClick={() => setShowItem(Number(it.id))}
                                 selected={false}
@@ -205,7 +207,9 @@ export default function LineagesRoute() {
             {character_items.map(it => (
                 <React.Fragment key={it.id}>
                     <GeneralExplain
-                        title={`${String(it.item.name)} de ${String(it.material)}`}
+                        title={it.material
+                            ? String(it.item.name) + ' de ' + String(it.material)
+                            : String(it.item.name)}
                         description={String(it.item.description)}
                         isHidden={showItem != Number(it.id)}
                         onCancel={() => setShowItem(0)}

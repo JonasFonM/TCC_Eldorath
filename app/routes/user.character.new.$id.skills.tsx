@@ -4,6 +4,7 @@ import { NavLink, useOutletContext } from "@remix-run/react";
 import React, { useRef, useState } from "react";
 import { TableHead } from "~/components/character-sheet/general-table";
 import { TableData } from "~/components/character-sheet/general-table-data";
+import { TableDropdown } from "~/components/character-sheet/table-dropdown";
 import { submitCharSkills, updateMagicPendencies, updateManeuverPendencies, updateSkillPendencies } from "~/utils/character.server";
 
 
@@ -139,52 +140,49 @@ export default function SkillSelectionRoute() {
             <h3>Você pode escolher {maxManeuvers} Manobras, {maxMagics} Magias e {maxSelectableSkills} Talentos quaisquer</h3>
 
             <table>
-              <thead>
-                <TableHead
-                  tableTitles={['Talentos']}
-                  onClick={() => showRow(1)}
-                  open={show.current.includes(1)}
-                />
-              </thead>
+              <TableHead
+                tableTitles={['Talentos']}
+                onClick={() => showRow(1)}
+                open={show.current.includes(1)}
+              />
 
               {selectableSkills.map(sk => (
                 <React.Fragment key={sk.id}>
-                  <tbody className={!isMaxSelected
+                  {/*
+                   className={!isMaxSelected
                     || sk.type === 'Magia' && !isMaxMagics
                     || sk.type === 'Manobra' && !isMaxManeuvers
                     || selectedSkills.includes(sk.id)
                     || selectedMagics.includes(sk.id)
                     || selectedManeuvers.includes(sk.id)
                     ? '' : 'error'}>
-                    <TableData
-                      key={sk.id}
-                      tableData={[`${sk.name}`]}
-                      show={show.current.includes(1)}
-                      onClick={() => handleSkillClick(sk.id, sk.type)}
-                      selected={
-                        selectedSkills.includes(sk.id)
-                        || selectedMagics.includes(sk.id)
-                        || selectedManeuvers.includes(sk.id)}
-                    />
-                  </tbody>
-
-                  <tbody style={{
-                    display: show.current.includes(1)
+                    */}
+                  <TableData
+                    key={sk.id}
+                    tableData={[`${sk.name}`]}
+                    show={show.current.includes(1)}
+                    onClick={() => handleSkillClick(sk.id, sk.type)}
+                    selected={
+                      selectedSkills.includes(sk.id)
+                      || selectedMagics.includes(sk.id)
+                      || selectedManeuvers.includes(sk.id)}
+                  />
+                  <TableDropdown
+                    key={`Drop-${sk.id}`}
+                    show={show.current.includes(1)
                       && (selectedSkills.includes(sk.id)
                         || selectedMagics.includes(sk.id)
-                        || selectedManeuvers.includes(sk.id)) ? '' : 'none', width: '100%'
-                  }} className="table-extension">
-                    <tr><td>{String(sk.description)}</td></tr>
-                    <tr><th>Tipo</th></tr>
-                    <tr><td>{String(sk.type)}</td></tr>
-                    <tr><th>Requisitos</th></tr>
-                    <tr><td>Nível: {String(sk.lvl)} | Agilidade: {String(sk.agi)} | Corpo: {String(sk.bdy)} | Mente: {String(sk.mnd)} | Tamanho Real: {String(sk.trSiz)} | Tamanho Efetivo: {String(sk.efSiz)}</td></tr>
-                    {sk.prerequisiteId
-                      ? <><tr><th>Talento Requerido</th></tr>
-                        <tr><td> {String(skills.filter(s => s.id === sk.prerequisiteId).map(s => s.name))}</td></tr>
-                      </>
-                      : ''}
-                  </tbody>
+                        || selectedManeuvers.includes(sk.id))
+                    }
+                    categories={["", "Tipo", "Requisitos"]}
+                    subtitleIndexes={[1, 2]}
+                    items={[String(sk.description),
+                    String(sk.type),
+                    `Agilidade: ${String(sk.agi)} | Corpo: ${String(sk.bdy)} | Mente: ${String(sk.mnd)} | Nível: ${String(sk.lvl)} | Tamanho Real: ${String(sk.trSiz)} | Tamanho Efetivo: ${String(sk.efSiz)} |
+                     ${sk.prerequisiteId
+                      ? `Talento: ${String(skills.filter(s => s.id === sk.prerequisiteId).map(s => s.name))}`
+                      : `Não Requer outro Talento`}`]}
+                  />
                 </React.Fragment>
               ))
               }
@@ -202,68 +200,75 @@ export default function SkillSelectionRoute() {
 
               {selectableNonPureLineageSkills.map(ls => (
                 <React.Fragment key={ls.id}>
-                  <tbody className={!isMaxSelected || selectedSkills.includes(ls.skill.id) ? '' : 'error'}>
-                    <TableData
-                      key={ls.id}
-                      tableData={[`${ls.skill.name}`]}
-                      show={show.current.includes(2)}
-                      onClick={() => handleSkillClick(ls.skill.id, ls.skill.type)}
-                      selected={selectedSkills.includes(ls.skill.id)}
-                    />
-                  </tbody>
+                  {
+                    //className={!isMaxSelected || selectedSkills.includes(ls.skill.id) ? '' : 'error'}
+                  }
+                  <TableData
+                    key={ls.id}
+                    tableData={[`${ls.skill.name}`]}
+                    show={show.current.includes(2)}
+                    onClick={() => handleSkillClick(ls.skill.id, ls.skill.type)}
+                    selected={selectedSkills.includes(ls.skill.id)}
+                  />
 
-                  <tbody style={{ display: selectedSkills.includes(ls.skill.id) && show.current.includes(2) ? '' : 'none', width: '100%' }} className="table-extension">
-                    <tr><td>{String(ls.skill.description)}</td></tr>
-                    <tr><th>Linhagem</th></tr>
-                    <tr><td style={{ fontVariant: 'small-caps', fontSize: '1.3rem' }}>{String(ls.lineage.name)}</td></tr>
-                    <tr><th>Tipo</th></tr>
-                    <tr><td>{String(ls.skill.type)}</td></tr>
-                    <tr><th>Requisitos</th></tr>
-                    <tr><td>Nível: {String(ls.skill.lvl)} | Agilidade: {String(ls.skill.agi)} | Corpo: {String(ls.skill.bdy)} | Mente: {String(ls.skill.mnd)} | Tamanho Real: {String(ls.skill.trSiz)} Tamanho Efetivo: {String(ls.skill.efSiz)}</td></tr>
-                    {ls.skill.prerequisiteId
-                      ? <><tr><th>Talento Requerido</th></tr>
-                        <tr><td> {String(skills.filter(s => s.id === ls.skill.prerequisiteId).map(s => s.name))}</td></tr></>
-                      : ''}
-                  </tbody>
+                  <TableDropdown
+                    key={`Drop-${ls.skill.id}`}
+                    show={show.current.includes(2)
+                      && (selectedSkills.includes(ls.skill.id)
+                        || selectedMagics.includes(ls.skill.id)
+                        || selectedManeuvers.includes(ls.skill.id))
+                    }
+                    categories={["", "Linhagem", "Tipo", "Requisitos"]}
+                    subtitleIndexes={[1, 2, 3]}
+                    items={[String(ls.skill.description),
+                    String(ls.lineage.name),
+                    String(ls.skill.type),
+                    `Agilidade: ${String(ls.skill.agi)} | Corpo: ${String(ls.skill.bdy)} | Mente: ${String(ls.skill.mnd)} | Nível: ${String(ls.skill.lvl)} | Tamanho Real: ${String(ls.skill.trSiz)} 
+                                    | Tamanho Efetivo: ${String(ls.skill.efSiz)} | ${ls.skill.prerequisiteId
+                      ? `Talento: ${String(skills.filter(s => s.id === ls.skill.prerequisiteId).map(s => s.name))}`
+                      : `Não Requer outro Talento`}`]}
+                  />
                 </React.Fragment>
               ))
               }
 
               {isPure && selectablePureLineageSkills.length > 0
-                ? <thead>
-                  <TableHead
-                    tableTitles={['Talentos de Linhagem Pura']}
-                    onClick={() => showRow(3)}
-                    open={show.current.includes(3)}
-                  />
-                </thead>
+                ? <TableHead
+                  tableTitles={['Talentos de Linhagem Única']}
+                  onClick={() => showRow(3)}
+                  open={show.current.includes(3)}
+                />
                 : ''}
 
               {selectablePureLineageSkills.map(ls => (
                 <React.Fragment key={ls.id}>
-                  <tbody className={!isMaxSelected || selectedSkills.includes(ls.skill.id) ? '' : 'error'}>
-                    <TableData
-                      key={ls.id}
-                      tableData={[`${ls.skill.name}`]}
-                      show={show.current.includes(3)}
-                      onClick={() => handleSkillClick(ls.skill.id, ls.skill.type)}
-                      selected={selectedSkills.includes(ls.skill.id)}
-                    />
+                  <TableData
+                    key={ls.id}
+                    //className={!isMaxSelected || selectedSkills.includes(ls.skill.id) ? '' : 'error'}
+                    tableData={[`${ls.skill.name}`]}
+                    show={show.current.includes(3)}
+                    onClick={() => handleSkillClick(ls.skill.id, ls.skill.type)}
+                    selected={selectedSkills.includes(ls.skill.id)}
+                  />
 
-                  </tbody>
-                  <tbody style={{ display: selectedSkills.includes(ls.skill.id) && show.current.includes(3) ? '' : 'none', width: '100%' }} className="table-extension">
-                    <tr><td>{String(ls.skill.description)}</td></tr>
-                    <tr><th>Linhagem</th></tr>
-                    <tr><td style={{ fontVariant: 'small-caps', fontSize: '1.3rem' }}>{String(ls.lineage.name) + ' Pura'}</td></tr>
-                    <tr><th>Tipo</th></tr>
-                    <tr><td>{String(ls.skill.type)}</td></tr>
-                    <tr><th>Requisitos</th></tr>
-                    <tr><td>Nível: {String(ls.skill.lvl)} | Agilidade: {String(ls.skill.agi)} | Corpo: {String(ls.skill.bdy)} | Mente: {String(ls.skill.mnd)} | Tamanho Real: {String(ls.skill.trSiz)} Tamanho Efetivo: {String(ls.skill.efSiz)}</td></tr>
-                    {ls.skill.prerequisiteId
-                      ? <><tr><th>Talento Requerido</th></tr>
-                        <tr><td> {String(skills.filter(s => s.id === ls.skill.prerequisiteId).map(s => s.name))}</td></tr></>
-                      : ''}
-                  </tbody>
+                  <TableDropdown
+                    key={`Drop-${ls.skill.id}`}
+                    show=
+                    {show.current.includes(3)
+                      && (selectedSkills.includes(ls.skill.id)
+                        || selectedMagics.includes(ls.skill.id)
+                        || selectedManeuvers.includes(ls.skill.id))}
+
+                    categories={["", "Linhagem", "Tipo", "Requisitos"]}
+                    subtitleIndexes={[1, 2, 3]}
+                    items={[String(ls.skill.description),
+                    String(ls.lineage.name),
+                    String(ls.skill.type),
+                    `Agilidade: ${String(ls.skill.agi)} | Corpo: ${String(ls.skill.bdy)} | Mente: ${String(ls.skill.mnd)} | Nível: ${String(ls.skill.lvl)} | Tamanho Real: ${String(ls.skill.trSiz)} 
+                                    | Tamanho Efetivo: ${String(ls.skill.efSiz)} | ${ls.skill.prerequisiteId
+                      ? `Talento: ${String(skills.filter(s => s.id === ls.skill.prerequisiteId).map(s => s.name))}`
+                      : `Não Requer outro Talento`}`]}
+                  />
                 </React.Fragment>
               ))}
 

@@ -340,8 +340,8 @@ model item {
   id          Int         @id @default(autoincrement())
   name        String
   description String
-  type        itemType    @default(slotAccessory)
-  subType     itemSubtype @default(Jewel)
+  type        itemType    @default(slotWeapon)
+  subType     itemSubtype @default(Espada)
   baseWeight  Int         @default(1)
   baseCost    Int         @default(10)
 
@@ -357,15 +357,15 @@ model item {
 }
 
 model character_item {
-  id          Int    @id @default(autoincrement())
+  id          Int     @id @default(autoincrement())
   characterId Int
   itemId      Int
-  craftTier   Int    @default(1)
-  material    String @default("Ferro")
-  weight      Int    @default(0)
-  cost        Int    @default(0)
-  equipped    Int    @default(-1)
-  twoHanded   Int    @default(-1)
+  craftTier   Int     @default(1)
+  material    String?
+  weight      Int     @default(0)
+  cost        Int     @default(0)
+  equipped    Int     @default(-1)
+  twoHanded   Int     @default(-1)
 
   reachAmp          Int @default(0)
   defenseAmp        Int @default(0)
@@ -396,37 +396,23 @@ enum itemType {
 }
 
 enum itemSubtype {
-  Bow
-  Discreet
-  Thrown
-  Firearm
-  Polearm
+  Arco
+  Espada
+  Machado
+  Martelo
+  Haste
+  Disparo
   Natural
-  Harpoon
-  Crossbow
-  Whip
-  Club
-  Chain
-  Unarmed
-  FieldSword
-  DuelingSword
-  Scythe
-  Lance
-  Axe
-  Hammer
-  lShield
-  mShield
-  hShield
-  lArmor
-  mArmor
-  hArmor
-  Jewel
-  Clothing
-  Catalyst
-  Focus
-  Potion
-  Oil
-  Bomb
+  //Armaduras
+  Leve
+  Pesada
+  //Acessórios
+  Joalheria
+  Traje
+  //Consumíveis
+  Catalisador
+  Elixir
+  Explosivo
 }
 
 model user {

@@ -4,6 +4,7 @@ import { NavLink, useOutletContext } from "@remix-run/react";
 import React, { useRef, useState } from "react";
 import { TableHead } from "~/components/character-sheet/general-table";
 import { TableData } from "~/components/character-sheet/general-table-data";
+import { TableDropdown } from "~/components/character-sheet/table-dropdown";
 import { submitCharLineages } from "~/utils/character.server";
 
 
@@ -48,6 +49,7 @@ export default function LineageSelection() {
     }
 
     const handleLineageClick = (lineageId: number) => {
+
         setSelectedLineages((prevSelectedLineages) => {
             const isSelected = prevSelectedLineages.includes(lineageId);
 
@@ -81,28 +83,32 @@ export default function LineageSelection() {
                         <h3>Escolher apenas 1 Linhagem habilita Talentos especiais</h3>
 
                         <table>
-                            <thead>
-                                <TableHead
-                                    tableTitles={['Linhagem']}
-                                    onClick={() => showRow(-2)}
-                                    open={show.current.includes(-2)}
-                                />
-                            </thead>
+                            <TableHead
+                                tableTitles={['Linhagem']}
+                                onClick={() => showRow(-2)}
+                                open={show.current.includes(-2)}
+                            />
 
                             {lineages.map(ln => (
                                 <React.Fragment key={ln.id}>
-                                    <tbody className={!isMaxSelected || selectedLineages.includes(ln.id) ? '' : 'error'}>
+                                    {/*<tbody className={!isMaxSelected || selectedLineages.includes(ln.id) ? '' : 'error'}></tbody>*/}
 
-                                        <TableData
-                                            key={ln.id}
-                                            tableData={!isPure && selectedLineages.includes(ln.id) ? ['Meio ' + String(ln.name)] : [String(ln.name)]}
-                                            show={show.current.includes(-2)}
-                                            onClick={selectedLineages.length < maxSelectableLineages || selectedLineages.includes(ln.id)
-                                                ? () => handleLineageClick(Number(ln.id))
-                                                : () => null}
-                                            selected={selectedLineages.includes(ln.id)}
-                                        />
-                                    </tbody>
+                                    <TableData
+                                        key={ln.id}
+                                        tableData={!isPure && selectedLineages.includes(ln.id) ? ['Meio ' + String(ln.name)] : [String(ln.name)]}
+                                        show={show.current.includes(-2)}
+                                        onClick={selectedLineages.length < maxSelectableLineages || selectedLineages.includes(ln.id)
+                                            ? () => handleLineageClick(Number(ln.id))
+                                            : () => null}
+                                        selected={selectedLineages.includes(ln.id)}
+                                    />
+                                    <TableDropdown
+                                        key={`Drop-${ln.id}`}
+                                        show={show.current.includes(-2) && selectedLineages.includes(ln.id)}
+                                        categories={[]}
+                                        subtitleIndexes={[]}
+                                        items={[String(ln.description)]}
+                                    />
                                 </React.Fragment>
                             ))}
 

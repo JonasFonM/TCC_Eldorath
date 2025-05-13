@@ -65,7 +65,7 @@ export default function LineagesRoute() {
               key={`Drop-${ln.id}`}
               show={show.current.includes(-2) && show.current.includes(ln.id)}
               categories={[]}
-              subtitleIndexes={[0]}
+              subtitleIndexes={[]}
               items={[String(ln.description)]}
             />
           </React.Fragment>

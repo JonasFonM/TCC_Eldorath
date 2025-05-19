@@ -9,26 +9,24 @@ export const submitStartingCharItems = async (itemList: number[], characterId: n
   });
 
   const materialMapping: { [key: string]: any } = {
-    Bow: 'Madeira',
-    Club: 'Madeira',
-    Whip: 'Couro',
-    Catalyst: 'Madeira',
-    Potion: 'Alquímico',
-    Oil: 'Alquímico',
-    Bomb: 'Alquímico',
-    lArmor: 'Algodão',
-    Focus: 'Bronze',
-    Jewel: 'Bronze'
+    Arco: 'Madeira',
+    Leve: 'Tecido',
+    Traje: 'Tecido',
+    Joalheria: 'Bronze',
   };
 
-  // Count occurrences of each itemId in itemList
   const itemCountMap = itemList.reduce((acc, itemId) => {
     acc[itemId] = (acc[itemId] || 0) + 1;
     return acc;
   }, {} as Record<number, number>);
 
+
   if (itemList.length > 0) {
-    const characterItemsData = selectedItems.flatMap(i =>
+
+    const selectedItemsWithMaterial = selectedItems.filter(si => si.type !== 'consumable' && si.subType !== 'Disparo' && si.subType !== 'Natural')
+    const selectedItemsWithoutMaterial = selectedItems.filter(si => !selectedItemsWithMaterial.includes(si))
+
+    const selectedItemsWithMaterialData = selectedItemsWithMaterial.flatMap(i =>
       Array.from({ length: itemCountMap[i.id] }, () => ({
         characterId: characterId,
         itemId: i.id,
@@ -38,10 +36,24 @@ export const submitStartingCharItems = async (itemList: number[], characterId: n
         cost: i.baseCost
 
       }))
-    );
+    )
+
+    const selectedItemsWithoutMaterialData = (selectedItemsWithoutMaterial.flatMap(i =>
+      Array.from({ length: itemCountMap[i.id] }, () => ({
+        characterId: characterId,
+        itemId: i.id,
+        craftTier: 1,
+        weight: i.baseWeight,
+        cost: i.baseCost
+      }))
+    ));
 
     await prisma.character_item.createMany({
-      data: characterItemsData
+      data: selectedItemsWithMaterialData
+    });
+
+    await prisma.character_item.createMany({
+      data: selectedItemsWithoutMaterialData
     });
 
     await prisma.character.update({

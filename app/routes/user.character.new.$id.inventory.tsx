@@ -86,7 +86,6 @@ export default function ItemSelection() {
 
     return (
         <>
-
             <form method="post">
                 <h1 className="title-container">Itens Iniciais</h1>
                 <h2>Escolha seus itens iniciais</h2>
@@ -97,13 +96,11 @@ export default function ItemSelection() {
                     {slotTypes.map((st, index) =>
                         <React.Fragment key={st}>
                             <table>
-                                <thead>
-                                    <TableHead
-                                        tableTitles={[translateSlotTypes[st]]}
-                                        onClick={() => showRow(index)}
-                                        open={show.current.includes(index)}
-                                    />
-                                </thead>
+                                <TableHead
+                                    tableTitles={[translateSlotTypes[st]]}
+                                    onClick={() => showRow(index)}
+                                    open={show.current.includes(index)}
+                                />
                             </table>
                             {items.filter(i => i.type === st).map(item => (
                                 <div

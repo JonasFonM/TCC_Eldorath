@@ -4,11 +4,10 @@ import { LoaderFunction, } from "@remix-run/node";
 import { NavLink, Outlet, useLoaderData, useLocation } from "@remix-run/react";
 import { prisma } from "~/utils/prisma.server";
 import { character, character_item, lineage, path, skill, item, lineage_skill } from "@prisma/client";
-import React, { useState } from "react";
+import React from "react";
 
 import { SideBars } from "~/components/side-bars/side-bars";
 import { useSidebar } from "~/components/side-bars/side-bar-context";
-import { GeneralExplain } from "~/components/explanations/general-explain";
 import { getUserIdFromSession } from "~/utils/auth.server";
 
 
@@ -96,10 +95,6 @@ export default function CharacterRoute() {
       lineages: lineage[], isPure: boolean, items: (character_item & { item: item })[], paths: path[]
     }>()
   const { isAllOpen, isHeaderOpen, isTempOpen } = useSidebar();
-
-  const location = useLocation()
-
-  const [showInv, setShowInv] = useState<number>(0);
 
   const subtitle = paths.length > 0 ? String(paths.map(p => p.name)) : "Sem Caminho"
 

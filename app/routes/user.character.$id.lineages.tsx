@@ -5,6 +5,7 @@ import { GeneralExplain } from "~/components/explanations/general-explain";
 import React, { useRef, useState } from "react";
 import { TableData } from "~/components/character-sheet/general-table-data";
 import { TableHead } from "~/components/character-sheet/general-table";
+import { TableDropdown } from "~/components/character-sheet/table-dropdown";
 
 export const loader: LoaderFunction = async ({ params }) => {
   const characterId = params.id;
@@ -33,10 +34,9 @@ export default function LineagesRoute() {
     <>
       <div className="title-container">
         <h1 style={{ marginTop: '0', marginBottom: '0', padding: '0' }}>Linhagens</h1>
-
         <button className="question-button" onClick={() => showRow(-3)}>?</button>
-
       </div>
+
       <GeneralExplain
         style={'linear-gradient(to bottom, white, gold)'}
         color={'black'}
@@ -47,42 +47,30 @@ export default function LineagesRoute() {
       />
 
       <table>
-        <thead>
-          <TableHead
-            tableTitles={['Linhagem']}
-            onClick={() => showRow(-2)}
-            open={show.current.includes(-2)}
-          />
-        </thead>
-
+        <TableHead
+          tableTitles={['Linhagem']}
+          onClick={() => showRow(-2)}
+          open={show.current.includes(-2)}
+        />
         {lineages.map(ln => (
           <React.Fragment key={ln.id}>
-            <tbody>
-
-              <TableData
-                key={ln.id}
-                tableData={isPure ? [String(ln.name) + ' Pura'] : [String(ln.name)]}
-                show={show.current.includes(-2)}
-                onClick={() => showRow(ln.id)}
-                selected={show.current.includes(ln.id)}
-              />
-            </tbody>
+            <TableData
+              key={`Data-${ln.id}`}
+              tableData={isPure ? [String(ln.name) + ' Pura'] : [String(ln.name)]}
+              show={show.current.includes(-2)}
+              onClick={() => showRow(ln.id)}
+              selected={show.current.includes(ln.id)}
+            />
+            <TableDropdown
+              key={`Drop-${ln.id}`}
+              show={show.current.includes(-2) && show.current.includes(ln.id)}
+              categories={[]}
+              subtitleIndexes={[]}
+              items={[String(ln.description)]}
+            />
           </React.Fragment>
         ))}
-
-      </table >
-
-      {lineages.map(ln => (
-        <React.Fragment key={ln.id}>
-          <GeneralExplain
-            title={String(ln.name)}
-            description={String(ln.description)}
-            isHidden={!show.current.includes(ln.id)}
-            onCancel={() => showRow(ln.id)}
-            style={'linear-gradient(to bottom right, white, gold)'} color="black" />
-        </React.Fragment>
-      ))}
-
+      </table>
     </>
   )
 }

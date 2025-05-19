@@ -46,6 +46,16 @@ export default function CampaignRoute() {
     const [showPlayers, setShowPlayers] = useState(0);
     const location = useLocation()
     const { showRow, isShown } = useShowRow()
+    const timeIcons = [
+        "/Night.png",
+        "/Dawn.png",
+        "/Day.png",
+        "/Dusk.png"
+    ]
+
+    function displayTimeIcon(i: number) {
+        return timeIcons[i - 1]
+    }
 
     const getCampaignAction = () => {
         if (isMaster) return (
@@ -192,27 +202,6 @@ export default function CampaignRoute() {
                 temp={
                     <React.Fragment>
 
-                        <ul>
-                            <li key={-5}>
-                                {campaign.timeOfDay === 1
-                                    ? <img src={"/Night.png"} alt={"Dia"} style={{ animation: 'descend 0.3s', width: "100%", height: "100%" }} />
-                                    : ''
-                                }
-                                {campaign.timeOfDay === 2
-                                    ? <img src={"/Dawn.png"} alt={"Dia"} style={{ animation: 'descend 0.3s', width: "100%", height: "100%" }} />
-                                    : ''
-                                }
-                                {campaign.timeOfDay === 3
-                                    ? <img src={"/Day.png"} alt={"Dia"} style={{ animation: 'descend 0.3s', width: "100%", height: "100%" }} />
-                                    : ''
-                                }
-                                {campaign.timeOfDay === 4
-                                    ? <img src={"/Dusk.png"} alt={"Dia"} style={{ animation: 'descend 0.3s', width: "100%", height: "100%" }} />
-                                    : ''
-                                }
-                            </li>
-                        </ul>
-
                         {getCampaignAction()}
 
                         <ul>
@@ -244,17 +233,18 @@ export default function CampaignRoute() {
                 <h1 className="title-input" style={{ position: 'sticky', top: '64px' }}>{campaign.title}</h1>
                 <SceneCreator isHidden={showCreator === 0} onCancel={() => setShowCreator(0)} campaignId={String(campaignId)} />
 
-                {isMaster
-                    ? <h2><NavLink className={'lineBtn'} to={`/user/campaign/edit/${campaignId}/`}>Editar</NavLink></h2>
-                    : ''
-                }
+
 
                 <div className="calendar-box">
+                    <div className="col-12">
+                        <img alt={"Dia"}
+                            style={{ animation: 'fadeIn 0.3s ease-in-out', transition: "fadeIn 0.3s ease-in-out", width: '100%' }}
+                            src={displayTimeIcon(Number(campaign.timeOfDay))} />
+                    </div>
                     <h2 className="col-12"><button onClick={() => showRow(-15)} className="lineBtn">{translateWeekDays(campaign.monthDay)}</button>,
                         Dia {campaign.monthDay} de <button onClick={() => showRow(-10)} className="lineBtn">{translateMonth(campaign.month)}</button> de {campaign.year} <button onClick={() => showRow(-5)} className="lineBtn">E{campaign.era}</button></h2>
 
                 </div>
-
 
                 <GeneralExplain
                     title="Eras"
@@ -278,6 +268,11 @@ export default function CampaignRoute() {
                 <div className="container">
 
                     <div className="calendar-box" style={{ justifyContent: 'center' }}>
+
+                        {isMaster
+                            ? <h2><NavLink className={'lineBtn'} to={`/user/campaign/edit/${campaignId}/`}>Editar</NavLink></h2>
+                            : ''
+                        }
                         <p style={{ textAlign: 'justify', overflow: 'auto', display: location.pathname === `/user/campaign/${campaignId}` ? 'inherit' : 'none' }}>{campaign.description}</p>
                     </div>
 

@@ -39,7 +39,7 @@ export function GeneralGrid({ gridItems, descriptions, columns, rows, onClick }:
             {
                 gridItems.map((gi, index) => (
                     <React.Fragment key={`Explica-${gi}-${index}`}>
-                        <GeneralExplain title={gridItems[index]} description={descriptions[index]} style={'linear-gradient(to bottom, white, grey)'} color="black" isHidden={showGridItem.current !== index} onCancel={() => handleGridItemClick(-1)} />
+                        <GeneralExplain title={gridItems[index]} description={descriptions[index]} isHidden={showGridItem.current !== index} onCancel={() => handleGridItemClick(-1)} />
                     </React.Fragment>
                 ))
             }

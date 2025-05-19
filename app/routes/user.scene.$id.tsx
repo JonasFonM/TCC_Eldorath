@@ -5,8 +5,8 @@ import { NavLink, Outlet, useLoaderData } from "@remix-run/react";
 import React, { useState } from "react";
 import { DeleteConfirm } from "~/components/delete-confirmation";
 import { GridMap } from "~/components/scene/grid-map";
-import { useSidebar } from "~/components/side-bars/side-bar-context";
-import { SideBars } from "~/components/side-bars/side-bars";
+import { useSidebar } from "~/components/context-providers/side-bar-context";
+import { SideBars } from "~/components/context-providers/side-bars";
 import { getUserIdFromSession } from "~/utils/auth.server";
 import { prisma } from "~/utils/prisma.server";
 
@@ -72,8 +72,7 @@ export default function SceneRoute() {
 
 
 
-            <div className="user" style={isAllOpen ? { marginLeft: '200px', marginRight: '200px' } : isHeaderOpen ?
-                { marginLeft: '200px' } : isTempOpen ? { marginRight: '200px' } : {}}>
+            <div className="user">
 
                 <h1>{scene.title}</h1>
 

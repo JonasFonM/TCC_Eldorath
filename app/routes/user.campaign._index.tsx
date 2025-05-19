@@ -5,8 +5,9 @@ import { CampaignPanel } from "~/components/campaign/campaign-panel";
 import { getCampaignsFromUser } from "~/utils/campaign.server";
 import { prisma } from "~/utils/prisma.server";
 import { campaign, user } from "@prisma/client";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import React from "react";
+import { useShowRow } from "~/components/context-providers/showRowContext";
 
 export const loader: LoaderFunction = async ({ request }) => {
     const userId = await requireUserId(request)
@@ -31,17 +32,18 @@ export const loader: LoaderFunction = async ({ request }) => {
 
 export default function CampaignsIndexRoute() {
     const { campaigns, friends } = useLoaderData<{ campaigns: campaign[], friends: (user & { gmCampaigns: campaign[] })[] }>()
-    const [showCreations, setShowCreations] = useState<number>(0)
+    const { showRow, isShown } = useShowRow();
+
 
     return (<React.Fragment>
 
         <h1 id="Campanhas" className="title-input">
-            <button className="lineBtn" onClick={showCreations != -1 ? () => setShowCreations(-1) : () => setShowCreations(0)}>
+            <button className="lineBtn" onClick={() => showRow(-1)}>
                 Suas Campanhas
             </button>
         </h1>
 
-        <div className="container" style={showCreations != -1 ? { display: 'none' } : {}}>
+        <div className="container" style={isShown(-1) ? { display: 'none' } : {}}>
             <CampaignPanel isAuthor={true} campaigns={campaigns} />
             <h1 className="title-input"><NavLink className={'lineBtn'} to={`new`}>Criar Campanha</NavLink></h1>
         </div>
@@ -52,12 +54,12 @@ export default function CampaignsIndexRoute() {
                     <React.Fragment key={fr.id}>
 
                         <h1 className="title-input">
-                            <button className="lineBtn" onClick={showCreations != fr.id ? () => setShowCreations(fr.id) : () => setShowCreations(0)}>
+                            <button className="lineBtn" onClick={() => showRow(fr.id)}>
                                 Campanhas de {fr.username}
                             </button>
                         </h1>
 
-                        <div className="container" style={showCreations != fr.id ? { display: 'none' } : {}}>
+                        <div className="container" style={isShown(fr.id) ? { display: 'none' } : {}}>
                             <CampaignPanel isAuthor={false} campaigns={fr.gmCampaigns} />
                         </div>
 

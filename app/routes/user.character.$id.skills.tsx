@@ -3,10 +3,11 @@ import { NavLink, useOutletContext } from "@remix-run/react";
 import { lineage, lineage_skill, path, skill } from "@prisma/client";
 import { LoaderFunction } from "@remix-run/node";
 import React, { useRef, useState } from "react";
-import { TableHead } from "~/components/character-sheet/general-table";
-import { TableData } from "~/components/character-sheet/general-table-data";
+import { TableHead } from "~/components/character-sheet/table-head";
+import { TableData } from "~/components/character-sheet/table-data";
 import { GeneralExplain } from "~/components/explanations/general-explain";
 import { TableDropdown } from "~/components/character-sheet/table-dropdown";
+import { useShowRow } from "~/components/context-providers/showRowContext";
 
 export const loader: LoaderFunction = async ({ params }) => {
   const characterId = params.id;
@@ -23,19 +24,8 @@ export default function SkillsRoute() {
       lineages: lineage[], isPure: boolean
     }>();
 
-  const show = useRef<number[]>([]); // Avoid re-renders
+  const { showRow, isShown } = useShowRow();
 
-  const forceUpdate = useState(0)[1]; // Trigger minimal re-renders when necessary
-
-  const showRow = (n: number) => {
-    if (show.current.includes(n)) {
-      const newShow = show.current.filter(ns => ns != n)
-      show.current = newShow
-      return forceUpdate(n => n + 1);
-    }
-    show.current.push(n);
-    return forceUpdate(n => n + 1);
-  }
 
   return (
     <React.Fragment>
@@ -45,11 +35,9 @@ export default function SkillsRoute() {
       </div>
 
       <GeneralExplain
-        style={'linear-gradient(to bottom, white, gold)'}
-        color={'black'}
         title={'Talentos'}
         description="Talentos têm efeitos diferentes que mudam como você interage com o jogo, principalmente em Combate. Eles são divididos em Características, Técnicas e Magias."
-        isHidden={!show.current.includes(-5)}
+        isHidden={!isShown(-5)}
         onCancel={() => showRow(-5)}
       />
 
@@ -57,20 +45,20 @@ export default function SkillsRoute() {
         <TableHead
           tableTitles={['Talentos']}
           onClick={() => showRow(-1)}
-          open={show.current.includes(-1)}
+          open={isShown(-1)}
         />
         {skills.map(sk => (
           <React.Fragment key={sk.id}>
             <TableData
               key={`Data-${sk.id}`}
               tableData={[`${sk.name}`]}
-              show={show.current.includes(-1)}
+              show={isShown(-1)}
               onClick={() => showRow(sk.id)}
-              selected={show.current.includes(sk.id)}
+              selected={isShown(sk.id)}
             />
             <TableDropdown
               key={`Drop-${sk.id}`}
-              show={show.current.includes(sk.id) && show.current.includes(-1)}
+              show={isShown(sk.id) && isShown(-1)}
               categories={["", "Tipo", "Requisitos"]}
               subtitleIndexes={[1, 2]}
               items={[
@@ -88,7 +76,7 @@ export default function SkillsRoute() {
           ? <TableHead
             tableTitles={['Talentos de Linhagem']}
             onClick={() => showRow(-2)}
-            open={show.current.includes(-2)}
+            open={isShown(-2)}
           />
           : ''
         }
@@ -97,13 +85,13 @@ export default function SkillsRoute() {
             <TableData
               key={`Data-${ls.id}`}
               tableData={[`${ls.skill.name}`]}
-              show={show.current.includes(-2)}
+              show={isShown(-2)}
               onClick={() => showRow(ls.skill.id)}
-              selected={show.current.includes(ls.skill.id)}
+              selected={isShown(ls.skill.id)}
             />
             <TableDropdown
               key={`Drop-${ls.skill.id}`}
-              show={show.current.includes(ls.skill.id) && show.current.includes(-2)}
+              show={isShown(ls.skill.id) && isShown(-2)}
               categories={["", "Linhagem", "Tipo", "Requisitos"]}
               subtitleIndexes={[1, 2, 3]}
               items={[
@@ -123,7 +111,7 @@ export default function SkillsRoute() {
           ? <TableHead
             tableTitles={['Talentos de Linhagem Pura']}
             onClick={() => showRow(-3)}
-            open={show.current.includes(-3)}
+            open={isShown(-3)}
           />
           : ''}
 
@@ -132,13 +120,13 @@ export default function SkillsRoute() {
             <TableData
               key={ls.id}
               tableData={[`${ls.skill.name}`]}
-              show={show.current.includes(-3)}
+              show={isShown(-3)}
               onClick={() => showRow(ls.skill.id)}
-              selected={show.current.includes(ls.skill.id)}
+              selected={isShown(ls.skill.id)}
             />
             <TableDropdown
               key={`Drop-${ls.skill.id}`}
-              show={show.current.includes(ls.skill.id) && show.current.includes(-2)}
+              show={isShown(ls.skill.id) && isShown(-2)}
               categories={["", "Linhagem", "Tipo", "Requisitos"]}
               subtitleIndexes={[1, 2, 3]}
               items={[

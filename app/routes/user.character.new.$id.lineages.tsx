@@ -2,9 +2,10 @@ import { lineage } from "@prisma/client";
 import { ActionFunction, json, redirect } from "@remix-run/node";
 import { NavLink, useOutletContext } from "@remix-run/react";
 import React, { useRef, useState } from "react";
-import { TableHead } from "~/components/character-sheet/general-table";
-import { TableData } from "~/components/character-sheet/general-table-data";
+import { TableHead } from "~/components/character-sheet/table-head";
+import { TableData } from "~/components/character-sheet/table-data";
 import { TableDropdown } from "~/components/character-sheet/table-dropdown";
+import { useShowRow } from "~/components/context-providers/showRowContext";
 import { submitCharLineages } from "~/utils/character.server";
 
 
@@ -32,21 +33,9 @@ export default function LineageSelection() {
     const { characterId, lineages, maxSelectableLineages } = useOutletContext<{ characterId: string, lineages: lineage[], maxSelectableLineages: number }>();
     const [selectedLineages, setSelectedLineages] = useState<number[]>([]);
     const [isPure, setPure] = useState<boolean>(false);
-    const isMaxSelected = selectedLineages.length >= maxSelectableLineages;
 
-    const show = useRef<number[]>([]); // Avoid re-renders
+    const { showRow, isShown } = useShowRow();
 
-    const forceUpdate = useState(0)[1]; // Trigger minimal re-renders when necessary
-
-    const showRow = (n: number) => {
-        if (show.current.includes(n)) {
-            const newShow = show.current.filter(ns => ns != n)
-            show.current = newShow
-            return forceUpdate(n => n + 1);
-        }
-        show.current.push(n);
-        return forceUpdate(n => n + 1);
-    }
 
     const handleLineageClick = (lineageId: number) => {
 
@@ -86,7 +75,7 @@ export default function LineageSelection() {
                             <TableHead
                                 tableTitles={['Linhagem']}
                                 onClick={() => showRow(-2)}
-                                open={show.current.includes(-2)}
+                                open={isShown(-2)}
                             />
 
                             {lineages.map(ln => (
@@ -96,7 +85,7 @@ export default function LineageSelection() {
                                     <TableData
                                         key={ln.id}
                                         tableData={!isPure && selectedLineages.includes(ln.id) ? ['Meio ' + String(ln.name)] : [String(ln.name)]}
-                                        show={show.current.includes(-2)}
+                                        show={isShown(-2)}
                                         onClick={selectedLineages.length < maxSelectableLineages || selectedLineages.includes(ln.id)
                                             ? () => handleLineageClick(Number(ln.id))
                                             : () => null}
@@ -104,7 +93,7 @@ export default function LineageSelection() {
                                     />
                                     <TableDropdown
                                         key={`Drop-${ln.id}`}
-                                        show={show.current.includes(-2) && selectedLineages.includes(ln.id)}
+                                        show={isShown(-2) && selectedLineages.includes(ln.id)}
                                         categories={[]}
                                         subtitleIndexes={[]}
                                         items={[String(ln.description)]}

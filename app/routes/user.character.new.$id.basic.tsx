@@ -149,7 +149,7 @@ export default function NewCharacterRoute() {
     return (
         <form method="post" autoComplete="off" onSubmit={handleSubmit}>
 
-            <div className="container">
+            <div className="container" style={{position: 'sticky', top: '64px', zIndex: '3'}}>
                 <input className="title-input"
                     id="Nome"
                     autoComplete="off"
@@ -166,43 +166,43 @@ export default function NewCharacterRoute() {
             {errors.level && <p>{errors.level}</p>}
 
             <h1 className="title-container">Atributos<button type="button" onClick={() => setShowAtr(1)} className="question-button">?</button></h1>
-            <GeneralExplain style={'linear-gradient(to bottom, white, gold)'} color={'black'} title={'Atributos'} description="Atributos são os valores que representam seus limites e capacidades." isHidden={showAtr != 1} onCancel={() => setShowAtr(0)} />
+            <GeneralExplain title={'Atributos'} description="Atributos são os valores que representam seus limites e capacidades." isHidden={showAtr != 1} onCancel={() => setShowAtr(0)} />
 
             <h3>Pontos: {limit}</h3>
             {formError && <p className="error">{formError}</p>}
 
             <div className="container">
-                <div className="col-4">
+                <div className="col-12">
                     <label style={{ fontVariant: 'small-caps', fontFamily: 'serif', fontSize: '1.3rem' }}>
                         Agilidade: {formData.agility}
                         <input hidden type="number" name="agility" value={formData.agility} onChange={handleChange} />
                         <div className="container">
-                            <button className="col-5 button" type="button" onClick={() => adjustAttribute('agility', -1)}>-</button>
-                            <button className="col-5 button" type="button" onClick={() => adjustAttribute('agility', 1)}>+</button>
+                            <button className="col-3 button" style={{marginRight: '1%'}} type="button" onClick={() => adjustAttribute('agility', -1)}>-</button>
+                            <button className="col-3 button" style={{marginLeft: '1%'}} type="button" onClick={() => adjustAttribute('agility', 1)}>+</button>
                         </div>
                     </label>
                     {errors.agility && <p className="error">{errors.agility}</p>}
                 </div>
 
-                <div className="col-4">
+                <div className="col-12">
                     <label style={{ fontVariant: 'small-caps', fontFamily: 'serif', fontSize: '1.3rem' }}>
                         Corpo: {formData.body}
                         <input hidden type="number" name="body" value={formData.body} onChange={handleChange} />
                         <div className="container">
-                            <button className="col-5 button" type="button" onClick={() => adjustAttribute('body', -1)}>-</button>
-                            <button className="col-5 button" type="button" onClick={() => adjustAttribute('body', 1)}>+</button>
+                            <button className="col-3 button" style={{marginRight: '1%'}} type="button" onClick={() => adjustAttribute('body', -1)}>-</button>
+                            <button className="col-3 button" style={{marginLeft: '1%'}} type="button" onClick={() => adjustAttribute('body', 1)}>+</button>
                         </div>
                     </label>
                     {errors.body && <p className="error">{errors.body}</p>}
                 </div>
 
-                <div className="col-4">
+                <div className="col-12">
                     <label style={{ fontVariant: 'small-caps', fontFamily: 'serif', fontSize: '1.3rem' }}>
                         Mente: {formData.mind}
                         <input hidden type="number" name="mind" value={formData.mind} onChange={handleChange} />
                         <div className="container">
-                            <button className="col-5 button" type="button" onClick={() => adjustAttribute('mind', -1)}>-</button>
-                            <button className="col-5 button" type="button" onClick={() => adjustAttribute('mind', 1)}>+</button>
+                            <button className="col-3 button" style={{marginRight: '1%'}} type="button" onClick={() => adjustAttribute('mind', -1)}>-</button>
+                            <button className="col-3 button" style={{marginLeft: '1%'}} type="button" onClick={() => adjustAttribute('mind', 1)}>+</button>
                         </div>
                     </label>
                     {errors.mind && <p className="error">{errors.mind}</p>}

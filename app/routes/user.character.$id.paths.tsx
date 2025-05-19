@@ -1,11 +1,12 @@
 import { useOutletContext } from "@remix-run/react";
 import { path } from "@prisma/client";
 import { LoaderFunction } from "@remix-run/node";
-import { TableData } from "~/components/character-sheet/general-table-data";
-import { TableHead } from "~/components/character-sheet/general-table";
+import { TableData } from "~/components/character-sheet/table-data";
+import { TableHead } from "~/components/character-sheet/table-head";
 import React, { useRef, useState } from "react";
 import { GeneralExplain } from "~/components/explanations/general-explain";
 import { TableDropdown } from "~/components/character-sheet/table-dropdown";
+import { useShowRow } from "~/components/context-providers/showRowContext";
 
 export const loader: LoaderFunction = async ({ params }) => {
   const characterId = params.id;
@@ -14,19 +15,8 @@ export const loader: LoaderFunction = async ({ params }) => {
 
 export default function PathsRoute() {
   const { characterId, paths, isAuthor } = useOutletContext<{ characterId: string, paths: path[], isAuthor: boolean }>();
-  const show = useRef<number[]>([]);
+  const { showRow, isShown } = useShowRow();
 
-  const forceUpdate = useState(0)[1];
-
-  const showRow = (n: number) => {
-    if (show.current.includes(n)) {
-      const newShow = show.current.filter(ns => ns != n)
-      show.current = newShow
-      return forceUpdate(n => n + 1);
-    }
-    show.current.push(n);
-    return forceUpdate(n => n + 1);
-  }
 
   const tier1 = paths.filter(p => p.pathTier == 1);
   const tier2 = paths.filter(p => p.pathTier == 2);
@@ -45,7 +35,7 @@ export default function PathsRoute() {
         color={'black'}
         title={'Caminhos'}
         description="Caminhos são especializações que agregam nas suas capacidades, e determinam uma parcela importante da sua Vitalidade e do seu Poder. Alguns Caminhos dão acesso a Talentos exclusivos."
-        isHidden={!show.current.includes(-5)}
+        isHidden={!isShown(-5)}
         onCancel={() => showRow(-5)}
       />
 
@@ -53,20 +43,20 @@ export default function PathsRoute() {
         <TableHead
           tableTitles={["Iniciante"]}
           onClick={() => showRow(-1)}
-          open={show.current.includes(-1)}
+          open={isShown(-1)}
         />
         {tier1.map(p => (
           <React.Fragment key={p.id}>
             <TableData
               key={`Data-${p.id}`}
               tableData={[`${p.name}`]}
-              show={show.current.includes(-1)}
+              show={isShown(-1)}
               onClick={() => showRow(p.id)}
-              selected={show.current.includes(p.id)}
+              selected={isShown(p.id)}
             />
             <TableDropdown
               key={`Drop-${p.id}`}
-              show={show.current.includes(-1) && show.current.includes(p.id)}
+              show={isShown(-1) && isShown(p.id)}
               categories={[`Benefícios`]}
               subtitleIndexes={[1]}
               items={[
@@ -87,20 +77,20 @@ export default function PathsRoute() {
           <TableHead
             tableTitles={['Veterano']}
             onClick={() => showRow(-2)}
-            open={show.current.includes(-2)}
+            open={isShown(-2)}
           />
           {tier2.map(p => (
             <React.Fragment key={p.id}>
               <TableData
                 key={`Data-${p.id}`}
                 tableData={[`${p.name}`]}
-                show={show.current.includes(-2)}
+                show={isShown(-2)}
                 onClick={() => showRow(p.id)}
-                selected={show.current.includes(p.id)}
+                selected={isShown(p.id)}
               />
               <TableDropdown
                 key={`Drop-${p.id}`}
-                show={show.current.includes(-2) && show.current.includes(p.id)}
+                show={isShown(-2) && isShown(p.id)}
                 categories={[`Benefícios`]}
                 subtitleIndexes={[1]}
                 items={[
@@ -123,20 +113,20 @@ export default function PathsRoute() {
           <TableHead
             tableTitles={['Mestre']}
             onClick={() => showRow(-3)}
-            open={show.current.includes(-3)}
+            open={isShown(-3)}
           />
           {tier3.map(p => (
             <React.Fragment key={p.id}>
               <TableData
                 key={`Data-${p.id}`}
                 tableData={[`${p.name}`]}
-                show={show.current.includes(-3)}
+                show={isShown(-3)}
                 onClick={() => showRow(p.id)}
-                selected={show.current.includes(p.id)}
+                selected={isShown(p.id)}
               />
               <TableDropdown
                 key={`Drop-${p.id}`}
-                show={show.current.includes(-3) && show.current.includes(p.id)}
+                show={isShown(-3) && isShown(p.id)}
                 categories={[`Benefícios`]}
                 subtitleIndexes={[1]}
                 items={[
@@ -159,20 +149,20 @@ export default function PathsRoute() {
           <TableHead
             tableTitles={['Lenda']}
             onClick={() => showRow(-4)}
-            open={show.current.includes(-4)}
+            open={isShown(-4)}
           />
           {tier4.map(p => (
             <React.Fragment key={p.id}>
               <TableData
                 key={`Data-${p.id}`}
                 tableData={[`${p.name}`]}
-                show={show.current.includes(-4)}
+                show={isShown(-4)}
                 onClick={() => showRow(p.id)}
-                selected={show.current.includes(p.id)}
+                selected={isShown(p.id)}
               />
               <TableDropdown
                 key={`Drop-${p.id}`}
-                show={show.current.includes(-4) && show.current.includes(p.id)}
+                show={isShown(-4) && isShown(p.id)}
                 categories={[`Benefícios`]}
                 subtitleIndexes={[1]}
                 items={[

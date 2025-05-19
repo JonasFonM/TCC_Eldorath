@@ -2,9 +2,10 @@ import { lineage, lineage_skill, skill } from "@prisma/client";
 import { ActionFunction, redirect } from "@remix-run/node";
 import { NavLink, useOutletContext } from "@remix-run/react";
 import React, { useRef, useState } from "react";
-import { TableHead } from "~/components/character-sheet/general-table";
-import { TableData } from "~/components/character-sheet/general-table-data";
+import { TableHead } from "~/components/character-sheet/table-head";
+import { TableData } from "~/components/character-sheet/table-data";
 import { TableDropdown } from "~/components/character-sheet/table-dropdown";
+import { useShowRow } from "~/components/context-providers/showRowContext";
 import { submitCharSkills, updateMagicPendencies, updateManeuverPendencies, updateSkillPendencies } from "~/utils/character.server";
 
 
@@ -55,20 +56,8 @@ export default function SkillSelectionRoute() {
   const isMaxMagics = selectedMagics.length >= maxMagics;
   const isMaxManeuvers = selectedManeuvers.length >= maxManeuvers;
 
+  const { showRow, isShown } = useShowRow();
 
-  const show = useRef<number[]>([]); // Avoid re-renders
-
-  const forceUpdate = useState(0)[1]; // Trigger minimal re-renders when necessary
-
-  const showRow = (n: number) => {
-    if (show.current.includes(n)) {
-      const newShow = show.current.filter(ns => ns != n)
-      show.current = newShow
-      return forceUpdate(n => n + 1);
-    }
-    show.current.push(n);
-    return forceUpdate(n => n + 1);
-  }
 
   const handleSkillClick = (skillId: number, skillType: string) => {
 
@@ -143,7 +132,7 @@ export default function SkillSelectionRoute() {
               <TableHead
                 tableTitles={['Talentos']}
                 onClick={() => showRow(1)}
-                open={show.current.includes(1)}
+                open={isShown(1)}
               />
 
               {selectableSkills.map(sk => (
@@ -160,7 +149,7 @@ export default function SkillSelectionRoute() {
                   <TableData
                     key={sk.id}
                     tableData={[`${sk.name}`]}
-                    show={show.current.includes(1)}
+                    show={isShown(1)}
                     onClick={() => handleSkillClick(sk.id, sk.type)}
                     selected={
                       selectedSkills.includes(sk.id)
@@ -169,7 +158,7 @@ export default function SkillSelectionRoute() {
                   />
                   <TableDropdown
                     key={`Drop-${sk.id}`}
-                    show={show.current.includes(1)
+                    show={isShown(1)
                       && (selectedSkills.includes(sk.id)
                         || selectedMagics.includes(sk.id)
                         || selectedManeuvers.includes(sk.id))
@@ -192,7 +181,7 @@ export default function SkillSelectionRoute() {
                   <TableHead
                     tableTitles={['Talentos de Linhagem']}
                     onClick={() => showRow(2)}
-                    open={show.current.includes(2)}
+                    open={isShown(2)}
                   />
                 </thead>
                 : ''
@@ -206,14 +195,14 @@ export default function SkillSelectionRoute() {
                   <TableData
                     key={ls.id}
                     tableData={[`${ls.skill.name}`]}
-                    show={show.current.includes(2)}
+                    show={isShown(2)}
                     onClick={() => handleSkillClick(ls.skill.id, ls.skill.type)}
                     selected={selectedSkills.includes(ls.skill.id)}
                   />
 
                   <TableDropdown
                     key={`Drop-${ls.skill.id}`}
-                    show={show.current.includes(2)
+                    show={isShown(2)
                       && (selectedSkills.includes(ls.skill.id)
                         || selectedMagics.includes(ls.skill.id)
                         || selectedManeuvers.includes(ls.skill.id))
@@ -236,7 +225,7 @@ export default function SkillSelectionRoute() {
                 ? <TableHead
                   tableTitles={['Talentos de Linhagem Única']}
                   onClick={() => showRow(3)}
-                  open={show.current.includes(3)}
+                  open={isShown(3)}
                 />
                 : ''}
 
@@ -246,7 +235,7 @@ export default function SkillSelectionRoute() {
                     key={ls.id}
                     //className={!isMaxSelected || selectedSkills.includes(ls.skill.id) ? '' : 'error'}
                     tableData={[`${ls.skill.name}`]}
-                    show={show.current.includes(3)}
+                    show={isShown(3)}
                     onClick={() => handleSkillClick(ls.skill.id, ls.skill.type)}
                     selected={selectedSkills.includes(ls.skill.id)}
                   />
@@ -254,7 +243,7 @@ export default function SkillSelectionRoute() {
                   <TableDropdown
                     key={`Drop-${ls.skill.id}`}
                     show=
-                    {show.current.includes(3)
+                    {isShown(3)
                       && (selectedSkills.includes(ls.skill.id)
                         || selectedMagics.includes(ls.skill.id)
                         || selectedManeuvers.includes(ls.skill.id))}

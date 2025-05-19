@@ -1,7 +1,8 @@
 import { friendship, user } from "@prisma/client";
 import { LoaderFunction } from "@remix-run/node";
 import { NavLink, Outlet, useLoaderData } from "@remix-run/react";
-import { SidebarProvider } from "~/components/side-bars/side-bar-context";
+import { ShowRowProvider } from "~/components/context-providers/showRowContext";
+import { SidebarProvider } from "~/components/context-providers/side-bar-context";
 import { getUserIdFromSession, requireUserId } from "~/utils/auth.server";
 import { prisma } from "~/utils/prisma.server";
 
@@ -69,9 +70,11 @@ export default function UserRoute() {
       </ul>
 
       <SidebarProvider>
-        <div className="user">
-          <Outlet context={{ userId, user, friends, pendingInvites }} />
-        </div>
+        <ShowRowProvider>
+          <div className="user">
+            <Outlet context={{ userId, user, friends, pendingInvites }} />
+          </div>
+        </ShowRowProvider>
       </SidebarProvider>
     </>
   );

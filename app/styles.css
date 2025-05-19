@@ -1,3 +1,5 @@
+/*Parchment color #e3e2a6*/
+
 * {
   box-sizing: border-box;
   font-family: sans-serif;
@@ -25,8 +27,8 @@ body {
 }
 
 .user {
-  margin-top: 64px;
   transition: 0.3s ease-in-out;
+  margin-top: 64px;
 }
 
 @keyframes spawn {
@@ -129,7 +131,8 @@ ul {
   gap: 8px;
 }
 
-.container .title-container {
+.container .title-container,
+.container .title-input {
   border-bottom: solid gold 1px;
   animation: descend 0.4s;
 }
@@ -198,9 +201,6 @@ ul {
   padding: 16px
 }
 
-.character-sheet {
-  transition: 0.3s ease-in-out;
-}
 
 .Atr {
   color: #FFFFFF;
@@ -777,9 +777,9 @@ td:last-child {
   width: 101%;
   border-bottom: 2px solid goldenrod;
   border-top: 2px solid goldenrod;
-  background: transparent;
+  background-color: black;
   padding: 10px;
-  outline: none;
+  outline: gold;
   transition: 0.3s;
   margin: 0;
 }
@@ -809,7 +809,7 @@ td:last-child {
   padding: 15px;
   border-radius: 10px;
   box-shadow: 1px 0px 8px 1px gold;
-  width: 100%;
+  width: 98%;
 }
 
 .calendar-field {
@@ -911,10 +911,6 @@ button:hover {
     grid-template-columns: auto auto auto auto;
   }
 
-  .button {
-    width: 30%;
-  }
-
   .block {
     width: 46%;
   }
@@ -928,7 +924,9 @@ button:hover {
   }
 }
 
-@media (max-width: 600px) {
+@media (max-width: 700px) {
+
+
   .modal-content .grid {
     max-width: 350px;
     grid-template-columns: auto auto;
@@ -954,7 +952,7 @@ button:hover {
     font-size: 28px;
   }
 
-   .col-4 {
+  .col-4 {
     width: 100%
   }
 }

@@ -3,9 +3,10 @@ import { lineage } from "@prisma/client";
 import { LoaderFunction } from "@remix-run/node";
 import { GeneralExplain } from "~/components/explanations/general-explain";
 import React, { useRef, useState } from "react";
-import { TableData } from "~/components/character-sheet/general-table-data";
-import { TableHead } from "~/components/character-sheet/general-table";
+import { TableData } from "~/components/character-sheet/table-data";
+import { TableHead } from "~/components/character-sheet/table-head";
 import { TableDropdown } from "~/components/character-sheet/table-dropdown";
+import { useShowRow } from "~/components/context-providers/showRowContext";
 
 export const loader: LoaderFunction = async ({ params }) => {
   const characterId = params.id;
@@ -16,19 +17,8 @@ export const loader: LoaderFunction = async ({ params }) => {
 export default function LineagesRoute() {
   const { lineages, isPure, isAuthor, characterId } = useOutletContext<{ lineages: lineage[], isPure: boolean, isAuthor: boolean, characterId: string }>();
 
-  const show = useRef<number[]>([]); // Avoid re-renders
+  const { showRow, isShown } = useShowRow();
 
-  const forceUpdate = useState(0)[1]; // Trigger minimal re-renders when necessary
-
-  const showRow = (n: number) => {
-    if (show.current.includes(n)) {
-      const newShow = show.current.filter(ns => ns != n)
-      show.current = newShow
-      return forceUpdate(n => n + 1);
-    }
-    show.current.push(n);
-    return forceUpdate(n => n + 1);
-  }
 
   return (
     <>
@@ -42,7 +32,7 @@ export default function LineagesRoute() {
         color={'black'}
         title={'Linhagens'}
         description="Linhagens são sua descendência, sua origem. Geralmente representam a quais espécies ou raças você e os seus pais pertencem, mas existem exceções."
-        isHidden={!show.current.includes(-3)}
+        isHidden={!isShown(-3)}
         onCancel={() => showRow(-3)}
       />
 
@@ -50,20 +40,20 @@ export default function LineagesRoute() {
         <TableHead
           tableTitles={['Linhagem']}
           onClick={() => showRow(-2)}
-          open={show.current.includes(-2)}
+          open={isShown(-2)}
         />
         {lineages.map(ln => (
           <React.Fragment key={ln.id}>
             <TableData
               key={`Data-${ln.id}`}
               tableData={isPure ? [String(ln.name) + ' Pura'] : [String(ln.name)]}
-              show={show.current.includes(-2)}
+              show={isShown(-2)}
               onClick={() => showRow(ln.id)}
-              selected={show.current.includes(ln.id)}
+              selected={isShown(ln.id)}
             />
             <TableDropdown
               key={`Drop-${ln.id}`}
-              show={show.current.includes(-2) && show.current.includes(ln.id)}
+              show={isShown(-2) && isShown(ln.id)}
               categories={[]}
               subtitleIndexes={[]}
               items={[String(ln.description)]}

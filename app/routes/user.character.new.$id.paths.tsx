@@ -2,9 +2,10 @@ import { character, path } from "@prisma/client";
 import { ActionFunction, json, redirect } from "@remix-run/node";
 import { NavLink, useOutletContext } from "@remix-run/react";
 import React, { useRef, useState } from "react";
-import { TableHead } from "~/components/character-sheet/general-table";
-import { TableData } from "~/components/character-sheet/general-table-data";
+import { TableHead } from "~/components/character-sheet/table-head";
+import { TableData } from "~/components/character-sheet/table-data";
 import { TableDropdown } from "~/components/character-sheet/table-dropdown";
+import { useShowRow } from "~/components/context-providers/showRowContext";
 import { submitCharPaths } from "~/utils/character.server";
 
 export const action: ActionFunction = async ({ request, params }) => {
@@ -30,21 +31,9 @@ export const action: ActionFunction = async ({ request, params }) => {
 export default function PathSelection() {
     const { paths, maxSelectablePaths, character, characterId } = useOutletContext<{ paths: path[], characterId: string, maxSelectablePaths: number, character: character }>();
     const [selectedPaths, setSelectedPaths] = useState<number[]>([]);
-    const isMaxSelected = selectedPaths.length >= maxSelectablePaths;
 
-    const show = useRef<number[]>([]); // Avoid re-renders
+    const { showRow, isShown } = useShowRow();
 
-    const forceUpdate = useState(0)[1]; // Trigger minimal re-renders when necessary
-
-    const showRow = (n: number) => {
-        if (show.current.includes(n)) {
-            const newShow = show.current.filter(ns => ns != n)
-            show.current = newShow
-            return forceUpdate(n => n + 1);
-        }
-        show.current.push(n);
-        return forceUpdate(n => n + 1);
-    }
 
 
     const tier1 = paths.filter(p => p.pathTier == 1);
@@ -87,7 +76,7 @@ export default function PathSelection() {
                             <TableHead
                                 tableTitles={["Iniciante"]}
                                 onClick={() => showRow(1)}
-                                open={show.current.includes(1)}
+                                open={isShown(1)}
                             />
                             {tier1.map(p => (
                                 <React.Fragment key={p.id}>
@@ -97,7 +86,7 @@ export default function PathSelection() {
                                     <TableData
                                         key={p.id}
                                         tableData={[`${p.name}`]}
-                                        show={show.current.includes(p.pathTier)}
+                                        show={isShown(p.pathTier)}
                                         onClick={selectedPaths.length < maxSelectablePaths || selectedPaths.includes(p.id)
                                             ? () => handlePathClick(p.id, 1)
                                             : () => null}
@@ -105,7 +94,7 @@ export default function PathSelection() {
                                     />
                                     <TableDropdown
                                         key={`Drop-${p.id}`}
-                                        show={show.current.includes(p.pathTier) && selectedPaths.includes(p.id)}
+                                        show={isShown(p.pathTier) && selectedPaths.includes(p.id)}
                                         categories={[`Benefícios`]}
                                         subtitleIndexes={[1]}
                                         items={[
@@ -126,14 +115,14 @@ export default function PathSelection() {
                                 <TableHead
                                     tableTitles={['Veterano']}
                                     onClick={() => showRow(2)}
-                                    open={show.current.includes(2)}
+                                    open={isShown(2)}
                                 />
                                 {tier2.map(p => (
                                     <React.Fragment key={p.id}>
                                         <TableData
                                             key={p.id}
                                             tableData={[`${p.name}`]}
-                                            show={show.current.includes(p.pathTier) && (selectedPaths.includes(p.id) || selectedPaths.length === 0)}
+                                            show={isShown(p.pathTier) && (selectedPaths.includes(p.id) || selectedPaths.length === 0)}
                                             onClick={selectedPaths.length < maxSelectablePaths || selectedPaths.includes(p.id)
                                                 ? () => handlePathClick(p.id, 1)
                                                 : () => null}
@@ -141,7 +130,7 @@ export default function PathSelection() {
                                         />
                                         <TableDropdown
                                             key={`Drop-${p.id}`}
-                                            show={show.current.includes(p.pathTier) && selectedPaths.includes(p.id)}
+                                            show={isShown(p.pathTier) && selectedPaths.includes(p.id)}
                                             categories={[`Benefícios`]}
                                             subtitleIndexes={[1]}
                                             items={[
@@ -164,14 +153,14 @@ export default function PathSelection() {
                                 <TableHead
                                     tableTitles={['Mestre']}
                                     onClick={() => showRow(3)}
-                                    open={show.current.includes(3)}
+                                    open={isShown(3)}
                                 />
                                 {tier3.map(p => (
                                     <React.Fragment key={p.id}>
                                         <TableData
                                             key={p.id}
                                             tableData={[`${p.name}`]}
-                                            show={show.current.includes(p.pathTier) && (selectedPaths.includes(p.id) || selectedPaths.length === 0)}
+                                            show={isShown(p.pathTier) && (selectedPaths.includes(p.id) || selectedPaths.length === 0)}
                                             onClick={selectedPaths.length < maxSelectablePaths || selectedPaths.includes(p.id)
                                                 ? () => handlePathClick(p.id, 1)
                                                 : () => alert("Você não pode escolher mais Caminhos.")}
@@ -179,7 +168,7 @@ export default function PathSelection() {
                                         />
                                         <TableDropdown
                                             key={`Drop-${p.id}`}
-                                            show={show.current.includes(p.pathTier) && selectedPaths.includes(p.id)}
+                                            show={isShown(p.pathTier) && selectedPaths.includes(p.id)}
                                             categories={[`Benefícios`]}
                                             subtitleIndexes={[1]}
                                             items={[
@@ -201,7 +190,7 @@ export default function PathSelection() {
                                 <TableHead
                                     tableTitles={['Lenda']}
                                     onClick={() => showRow(4)}
-                                    open={show.current.includes(4)}
+                                    open={isShown(4)}
                                 />
 
                                 {tier4.map(p => (
@@ -209,7 +198,7 @@ export default function PathSelection() {
                                         <TableData
                                             key={p.id}
                                             tableData={[`${p.name}`]}
-                                            show={show.current.includes(p.pathTier) && (selectedPaths.includes(p.id) || selectedPaths.length === 0)}
+                                            show={isShown(p.pathTier) && (selectedPaths.includes(p.id) || selectedPaths.length === 0)}
                                             onClick={selectedPaths.length < maxSelectablePaths || selectedPaths.includes(p.id)
                                                 ? () => handlePathClick(p.id, 1)
                                                 : () => alert("Você não pode escolher mais Caminhos.")}
@@ -217,7 +206,7 @@ export default function PathSelection() {
                                         />
                                         <TableDropdown
                                             key={`Drop-${p.id}`}
-                                            show={show.current.includes(p.pathTier) && selectedPaths.includes(p.id)}
+                                            show={isShown(p.pathTier) && selectedPaths.includes(p.id)}
                                             categories={[`Benefícios`]}
                                             subtitleIndexes={[1]}
                                             items={[

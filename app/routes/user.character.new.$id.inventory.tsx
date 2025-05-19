@@ -2,9 +2,10 @@ import { character, item } from "@prisma/client";
 import { ActionFunction, json, redirect } from "@remix-run/node";
 import { useOutletContext } from "@remix-run/react";
 import React, { useRef, useState } from "react";
-import { TableHead } from "~/components/character-sheet/general-table";
+import { TableHead } from "~/components/character-sheet/table-head";
 import { submitStartingCharItems } from "~/utils/inventory.server";
 import { translateSlotTypes } from "./user.character";
+import { useShowRow } from "~/components/context-providers/showRowContext";
 
 export const action: ActionFunction = async ({ request, params }) => {
     const form = await request.formData();
@@ -30,20 +31,8 @@ export default function ItemSelection() {
     const [selectedCost, setSelectedCost] = useState<number>(0);
     const [error, setError] = useState<string | null>(null);
     const maxCost = character.gold;
-    const show = useRef<number[]>([]);
+    const { showRow, isShown } = useShowRow();
 
-    const forceUpdate = useState(0)[1];
-
-    const showRow = (n: number) => {
-        if (show.current.includes(n)) {
-            const newShow = show.current.filter(ns => ns != n)
-            show.current = newShow
-            return forceUpdate(n => n + 1);
-        }
-        show.current.push(n);
-        return forceUpdate(n => n + 1);
-
-    }
 
     const slotTypes = [
         'slotAccessory',
@@ -99,7 +88,7 @@ export default function ItemSelection() {
                                 <TableHead
                                     tableTitles={[translateSlotTypes[st]]}
                                     onClick={() => showRow(index)}
-                                    open={show.current.includes(index)}
+                                    open={isShown(index)}
                                 />
                             </table>
                             {items.filter(i => i.type === st).map(item => (
@@ -107,7 +96,7 @@ export default function ItemSelection() {
                                     key={item.id}
                                     className='container'
                                     style={{
-                                        display: show.current.includes(index) ? '' : 'none',
+                                        display: isShown(index) ? '' : 'none',
                                         border: selectedItems.includes(item.id) ? '1px solid green' : '1px solid gray',
                                         borderRadius: '2%'
                                     }}>

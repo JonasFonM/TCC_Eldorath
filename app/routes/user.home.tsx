@@ -2,8 +2,8 @@ import { user } from "@prisma/client";
 import { json, LoaderFunction } from "@remix-run/node";
 import { Outlet, useOutletContext, useFetcher } from "@remix-run/react";
 import React, { useEffect } from "react";
-import { useSidebar } from "~/components/side-bars/side-bar-context";
-import { SideBars } from "~/components/side-bars/side-bars";
+import { useSidebar } from "~/components/context-providers/side-bar-context";
+import { SideBars } from "~/components/context-providers/side-bars";
 import { UserPanel } from "~/components/user-panel";
 import { searchUsers } from "~/utils/user.server";
 
@@ -53,8 +53,8 @@ export default function UserRoute() {
                 tableHeaders={[]}
                 tableDatas={[]}
                 tableExplain={[]}
-                links={[`/user/campaign/new/`, `/user/character/new/basic/` , `/user/home/profile/${String(userId)}/`].concat(pendingInvites.map((pi) => `/user/home/profile/${String(pi.id)}/`)).concat(friends.map((fr) => `/user/home/profile/${String(fr.id)}/`))}
-                linkNames={[`Criar Campanha`,`Criar Personagem`, "Meu Perfil"].concat(pendingInvites.map((pi) => '! ' + String(pi.username) + ' !')).concat(friends.map((fr) => String(fr.username)))}
+                links={[`/user/campaign/new/`, `/user/character/new/basic/`, `/user/home/profile/${String(userId)}/`].concat(pendingInvites.map((pi) => `/user/home/profile/${String(pi.id)}/`)).concat(friends.map((fr) => `/user/home/profile/${String(fr.id)}/`))}
+                linkNames={[`Criar Campanha`, `Criar Personagem`, "Meu Perfil"].concat(pendingInvites.map((pi) => '! ' + String(pi.username) + ' !')).concat(friends.map((fr) => String(fr.username)))}
                 temp={
                     <React.Fragment>
                         <fetcher.Form id="search-form" role="search">
@@ -85,18 +85,7 @@ export default function UserRoute() {
                 }
             />
 
-            <div
-                className="user"
-                style={
-                    isAllOpen
-                        ? { marginLeft: "200px", marginRight: "200px" }
-                        : isHeaderOpen
-                            ? { marginLeft: "200px" }
-                            : isTempOpen
-                                ? { marginRight: "200px" }
-                                : {}
-                }
-            >
+            <div className="user">
                 <Outlet context={{ userId, user, friends }} />
             </div>
         </>

@@ -3,11 +3,14 @@ import { LoaderFunction } from "@remix-run/node";
 import { NavLink, Outlet, useLoaderData, useLocation } from "@remix-run/react";
 import { prisma } from "~/utils/prisma.server";
 import React, { useRef, useState } from "react";
-import { SideBars } from "~/components/side-bars/side-bars";
-import { useSidebar } from "~/components/side-bars/side-bar-context";
+import { SideBars } from "~/components/context-providers/side-bars";
+import { useSidebar } from "~/components/context-providers/side-bar-context";
 import { SceneCreator } from "~/components/campaign/scene-creator";
 import { getUserIdFromSession } from "~/utils/auth.server";
 import { getCharactersFromUser } from "~/utils/character.server";
+import { translateMonth, translateWeekDays } from "./user.campaign";
+import { GeneralExplain } from "~/components/explanations/general-explain";
+import { useShowRow } from "~/components/context-providers/showRowContext";
 
 export const loader: LoaderFunction = async ({ params, request }) => {
     const campaignId = Number(params.id);
@@ -22,6 +25,7 @@ export const loader: LoaderFunction = async ({ params, request }) => {
         where:
             { id: { in: campaign?.players.map(pl => pl.userId) } }
     })
+
 
     const characters = await getCharactersFromUser(Number(userId))
 
@@ -41,6 +45,7 @@ export default function CampaignRoute() {
     const [showCreator, setShowCreator] = useState(0);
     const [showPlayers, setShowPlayers] = useState(0);
     const location = useLocation()
+    const { showRow, isShown } = useShowRow()
 
     const getCampaignAction = () => {
         if (isMaster) return (
@@ -91,6 +96,7 @@ export default function CampaignRoute() {
                 return (
                     <React.Fragment>
                         <ul>
+                            <li key={-5}><h3>Seu Personagem</h3></li>
                             <li key={1}>
                                 <NavLink to={`/user/character/${campaignCharacter.id}/stats`}>
                                     {campaignCharacter.name}
@@ -126,8 +132,6 @@ export default function CampaignRoute() {
                                 </NavLink>
                             </li>
                         </ul>
-
-
 
                     </React.Fragment>
                 );
@@ -179,24 +183,40 @@ export default function CampaignRoute() {
             <SideBars entity={campaign}
                 title={campaign.title}
                 subtitle=""
-                tableHeaders={["Era", "Ano", "Mês", "Dia", "Fase"]}
-                tableDatas={[campaign.era, campaign.year, campaign.month, campaign.monthDay, campaign.timeOfDay]}
-                tableExplain={[
-                    "Eras são as maiores medidas de tempo usadas em Eldorath. A mudança de uma Era só ocorre em eventos cataclismicos onde paradigmas importantes da própria realidade são afetados.",
-                    "Eldorath segue um calendário solar de 360 dias, dividido em 12 meses de 30 dias cada.",
-                    "Cada mês em Eldorath é carregado de simbologia e ligado às tradições e fenômenos que ocorrem no seu decorrer.",
-                    "Uma semana em Eldorath tem 6 Dias. Os dias da semana são nomeados em honra a divindades e forças ancestrais.",
-                    "Um Dia em Eldorath é separado em Fases: A Madrugada que se inicia à meia-noite, a Alvorada, às 6 horas da manhã, a Tarde, ao meio-dia e a Noite, às 18 horas."
-                ]}
+                tableHeaders={[]}
+                tableDatas={[]}
+                tableExplain={[]}
 
                 links={isMaster ? [`/user/campaign/${campaignId}/rtn/timeOfDay`, `/user/campaign/${campaignId}/rtn/monthDay`, `/user/campaign/${campaignId}/rtn/month`, `/user/campaign/${campaignId}/rtn/year`, `/user/campaign/${campaignId}/rtn/era`] : []}
                 linkNames={isMaster ? [`Voltar Fase`, `Voltar Dia`, `Voltar Mês`, `Voltar Ano`, `Voltar Era`] : []}
                 temp={
                     <React.Fragment>
 
+                        <ul>
+                            <li key={-5}>
+                                {campaign.timeOfDay === 1
+                                    ? <img src={"/Night.png"} alt={"Dia"} style={{ animation: 'descend 0.3s', width: "100%", height: "100%" }} />
+                                    : ''
+                                }
+                                {campaign.timeOfDay === 2
+                                    ? <img src={"/Dawn.png"} alt={"Dia"} style={{ animation: 'descend 0.3s', width: "100%", height: "100%" }} />
+                                    : ''
+                                }
+                                {campaign.timeOfDay === 3
+                                    ? <img src={"/Day.png"} alt={"Dia"} style={{ animation: 'descend 0.3s', width: "100%", height: "100%" }} />
+                                    : ''
+                                }
+                                {campaign.timeOfDay === 4
+                                    ? <img src={"/Dusk.png"} alt={"Dia"} style={{ animation: 'descend 0.3s', width: "100%", height: "100%" }} />
+                                    : ''
+                                }
+                            </li>
+                        </ul>
+
                         {getCampaignAction()}
 
                         <ul>
+
                             <li key={-3}>
                                 <button onClick={showPlayers != 1 ? () => setShowPlayers(1) : () => setShowPlayers(0)}>Jogadores</button>
                             </li>
@@ -219,15 +239,48 @@ export default function CampaignRoute() {
 
             />
 
-            <div className="user" style={isAllOpen ? { marginLeft: '200px', marginRight: '200px' } : isHeaderOpen ?
-                { marginLeft: '200px' } : isTempOpen ? { marginRight: '200px' } : {}}>
+            <div className="user" >
 
-                <h1>{campaign.title}</h1>
+                <h1 className="title-input" style={{ position: 'sticky', top: '64px' }}>{campaign.title}</h1>
                 <SceneCreator isHidden={showCreator === 0} onCancel={() => setShowCreator(0)} campaignId={String(campaignId)} />
 
-                <h2><NavLink className={'lineBtn'} to={`/user/campaign/edit/${campaignId}/`}>Editar</NavLink></h2>
+                {isMaster
+                    ? <h2><NavLink className={'lineBtn'} to={`/user/campaign/edit/${campaignId}/`}>Editar</NavLink></h2>
+                    : ''
+                }
+
+                <div className="calendar-box">
+                    <h2 className="col-12"><button onClick={() => showRow(-15)} className="lineBtn">{translateWeekDays(campaign.monthDay)}</button>,
+                        Dia {campaign.monthDay} de <button onClick={() => showRow(-10)} className="lineBtn">{translateMonth(campaign.month)}</button> de {campaign.year} <button onClick={() => showRow(-5)} className="lineBtn">E{campaign.era}</button></h2>
+
+                </div>
+
+
+                <GeneralExplain
+                    title="Eras"
+                    isHidden={!isShown(-5)}
+                    description="Eras são as maiores medidas de tempo usadas em Eldorath. A mudança de uma Era só ocorre em eventos cataclismicos onde paradigmas importantes da própria realidade são afetados. Como muitas espécies extremamente longevas compõem a demografia de Eldorath, a Era é mais importante que o Ano para determinar períodos históricos."
+                    onCancel={() => showRow(-5)}
+                />
+                <GeneralExplain
+                    title="Meses"
+                    isHidden={!isShown(-10)}
+                    description="Cada mês em Eldorath é carregado de simbologia, tradições e fenômenos que se repetem anualmente. Um ano em Eldorath dura 12 meses, e cada mês dura 5 semanas de 6 dias cada."
+                    onCancel={() => showRow(-10)}
+                />
+                <GeneralExplain
+                    title="Dias"
+                    isHidden={!isShown(-15)}
+                    description="Os dias da semana em Eldorath homenageiam divindades e forças ancestrais. Um Dia em Eldorath é separado em Fases: A Madrugada que se inicia à meia-noite, a Alvorada, às 6 horas da manhã, a Tarde, ao meio-dia e a Noite, às 18 horas."
+                    onCancel={() => showRow(-15)}
+                />
+
                 <div className="container">
-                    <p style={{ textAlign: 'justify', display: location.pathname === `/user/campaign/${campaignId}` ? 'inherit' : 'none' }}>{campaign.description}</p>
+
+                    <div className="calendar-box" style={{ justifyContent: 'center' }}>
+                        <p style={{ textAlign: 'justify', overflow: 'auto', display: location.pathname === `/user/campaign/${campaignId}` ? 'inherit' : 'none' }}>{campaign.description}</p>
+                    </div>
+
                     <Outlet context={{ isMaster, isPlayer, campaignCharacter, characters, campaign, party, campaignId }} />
                 </div>
 

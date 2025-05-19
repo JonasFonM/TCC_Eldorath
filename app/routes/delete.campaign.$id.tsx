@@ -28,37 +28,8 @@ export const loader: LoaderFunction = async ({ params, request }) => {
 
     const sceneIdList = scenes.map(sc => sc.id)
 
-    const logs = await prisma.log.findMany({
-        where: { sceneId: { in: sceneIdList } }
-    })
-
-    const logIdList = logs.map(lg => lg.id)
-
     //DELETES
 
-    await prisma.damageLog.deleteMany({
-        where: {
-            logId: { in: logIdList },
-        },
-    });
-
-    await prisma.logEffect.deleteMany({
-        where: {
-            logId: { in: logIdList },
-        },
-    });
-
-    await prisma.logAction.deleteMany({
-        where: {
-            logId: { in: logIdList },
-        },
-    });
-
-    await prisma.log.deleteMany({
-        where: {
-            sceneId: { in: sceneIdList },
-        },
-    });
 
     await prisma.characterScene.deleteMany({
         where: {

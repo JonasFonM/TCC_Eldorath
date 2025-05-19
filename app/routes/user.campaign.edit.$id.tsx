@@ -43,7 +43,7 @@ export const action: ActionFunction = async ({ request, params }) => {
     const campaign = await updateCampaign({ title, description, masterId, era, year, month, monthDay, weekDay }, campaignId);
     return (
       json({ campaign }, { status: 201 }),
-      redirect(`/user/campaign/${campaign}`)
+      redirect(`/user/campaign/${campaignId}`)
     );
   } catch (error) {
     console.error(error);
@@ -245,7 +245,7 @@ export default function NewCampaignRoute() {
             <select name="monthDay" value={formData.monthDay} onChange={handleMonthDayChange}>
               {[...Array(30)].map((_, i) => (
                 <option key={i + 1} value={i + 1}>
-                  {i + 1}  -  {translateWeekDays(i)}
+                  {i + 1}  -  {translateWeekDays(i + 1)}
                 </option>
               ))}
             </select>

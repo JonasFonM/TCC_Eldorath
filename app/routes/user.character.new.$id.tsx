@@ -2,8 +2,8 @@
 import { character, character_item, character_lineage, character_path, character_skill, item, lineage, lineage_skill, path, skill } from "@prisma/client"
 import { LoaderFunction, redirect } from "@remix-run/node"
 import { Outlet, useLoaderData } from "@remix-run/react"
-import { useSidebar } from "~/components/side-bars/side-bar-context"
-import { SideBars } from "~/components/side-bars/side-bars"
+import { useSidebar } from "~/components/context-providers/side-bar-context"
+import { SideBars } from "~/components/context-providers/side-bars"
 import { requireUserId } from '~/utils/auth.server'
 import { prisma } from "~/utils/prisma.server"
 
@@ -191,7 +191,6 @@ export default function NewCharacterRoute() {
         }>()
 
     return (
-
         <>
             <SideBars
                 entity={character} title={character.name}
@@ -221,31 +220,31 @@ export default function NewCharacterRoute() {
                     'Finalizar'
                 ]}
                 temp={
-                    <>
+                    <ul>
+                        <li style={{height: "120px"}}>
+                            <img src={"/Action Surge.png"} alt={"Capa de Perfil"} style={{ width: "100%", height: "100%", margin: '0', padding: '0' }} />
+                        </li>
 
-                    </>
+                    </ul>
                 }
 
             />
 
-            <div className="character-sheet" style={isAllOpen ? { marginLeft: '200px', marginRight: '200px' } : isHeaderOpen ? { marginLeft: '200px' } : isTempOpen ? { marginRight: '200px' } : {}}>
-
-                <Outlet context={{
-                    userId,
-                    character, characterId,
-                    character_lineages, character_paths, character_skills, character_items,
-                    maxSelectableSkills, maxMagics, maxManeuvers,
-                    skills, selectableSkills,
-                    selectablePureLineageSkills,
-                    pureLineageSkills,
-                    selectableNonPureLineageSkills,
-                    nonPureLineageSkills,
-                    isPure,
-                    lineages, maxSelectableLineages,
-                    paths, maxSelectablePaths,
-                    items
-                }} />
-            </div>
+            <Outlet context={{
+                userId,
+                character, characterId,
+                character_lineages, character_paths, character_skills, character_items,
+                maxSelectableSkills, maxMagics, maxManeuvers,
+                skills, selectableSkills,
+                selectablePureLineageSkills,
+                pureLineageSkills,
+                selectableNonPureLineageSkills,
+                nonPureLineageSkills,
+                isPure,
+                lineages, maxSelectableLineages,
+                paths, maxSelectablePaths,
+                items
+            }} />
         </>
 
     );

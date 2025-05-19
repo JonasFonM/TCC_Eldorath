@@ -4,6 +4,8 @@ import { LoaderFunction } from '@remix-run/node'
 import { requireUserId } from '~/utils/auth.server'
 import { CharacterPanel } from "~/components/character-panel";
 import { getCharactersFromUser } from "~/utils/character.server";
+import React, { useRef, useState } from "react";
+import { useShowRow } from "~/components/context-providers/showRowContext";
 
 export const loader: LoaderFunction = async ({ request }) => {
     const userId = await requireUserId(request)
@@ -14,15 +16,28 @@ export const loader: LoaderFunction = async ({ request }) => {
 
 export default function CharactersIndexRoute() {
     const { characters } = useLoaderData<any>()
+    const { showRow, isShown } = useShowRow();
 
 
     return (
         <>
-            <h1 className="title-container" style={{ fontSize: '2rem' }}>Seus Personagens<NavLink style={{ color: 'blue' }} className="question-button" to={`new/basic`}>+</NavLink></h1>
 
-            <div className="container">
-                <CharacterPanel isAuthor={true} characters={characters} />
-            </div>
+            <React.Fragment>
+
+                <h1 className="title-input">
+
+                    <button className="lineBtn" onClick={() => showRow(-1)}>
+                        Seus Personagens
+                    </button>
+                </h1>
+
+                <div className="container" style={isShown(-1) ? { display: 'none' } : {}}>
+                    <CharacterPanel isAuthor={true} characters={characters} />
+                    <h1 className="title-input"><NavLink className={'lineBtn'} to={`new/basic`}>Criar Personagem</NavLink></h1>
+
+                </div>
+
+            </React.Fragment>
 
         </>);
 }

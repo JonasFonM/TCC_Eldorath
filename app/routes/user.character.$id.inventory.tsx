@@ -2,9 +2,10 @@ import { character, character_item, item } from "@prisma/client";
 import { LoaderFunction } from "@remix-run/node";
 import { useLoaderData, useOutletContext } from "@remix-run/react";
 import React, { useRef, useState } from "react";
-import { TableHead } from "~/components/character-sheet/general-table";
-import { TableData } from "~/components/character-sheet/general-table-data";
+import { TableHead } from "~/components/character-sheet/table-head";
+import { TableData } from "~/components/character-sheet/table-data";
 import { TableDropdown } from "~/components/character-sheet/table-dropdown";
+import { useShowRow } from "~/components/context-providers/showRowContext";
 import { GeneralExplain } from "~/components/explanations/general-explain";
 
 import { prisma } from "~/utils/prisma.server";
@@ -34,20 +35,7 @@ export const loader: LoaderFunction = async ({ request, params }) => {
 export default function InventoryRoute() {
     const { items, availableItems } = useLoaderData<{ items: (character_item & { item: item })[]; equippedItems: (character_item & { item: item })[]; availableItems: (character_item & { item: item })[] }>();
     const { character } = useOutletContext<{ character: character, isAuthor: boolean }>();
-
-    const show = useRef<number[]>([]);
-
-    const forceUpdate = useState(0)[1];
-
-    const showRow = (n: number) => {
-        if (show.current.includes(n)) {
-            const newShow = show.current.filter(ns => ns != n)
-            show.current = newShow
-            return forceUpdate(n => n + 1);
-        }
-        show.current.push(n);
-        return forceUpdate(n => n + 1);
-    }
+    const { showRow, isShown } = useShowRow();
 
     return (
         <React.Fragment>
@@ -57,7 +45,7 @@ export default function InventoryRoute() {
                 <TableHead
                     tableTitles={['Acessórios']}
                     onClick={() => showRow(-2)}
-                    open={show.current.includes(-2)}
+                    open={isShown(-2)}
                 />
 
                 {items.filter(i => i.item.type === 'slotAccessory').map(i => (
@@ -67,13 +55,13 @@ export default function InventoryRoute() {
                             tableData={[i.material
                                 ? String(i.item.name) + ' de ' + String(i.material)
                                 : String(i.item.name)]}
-                            show={show.current.includes(-2)}
+                            show={isShown(-2)}
                             onClick={() => showRow(i.id)}
-                            selected={show.current.includes(i.id)}
+                            selected={isShown(i.id)}
                         />
                         <TableDropdown
                             key={`Drop-${i.id}`}
-                            show={show.current.includes(-2) && show.current.includes(i.id)}
+                            show={isShown(-2) && isShown(i.id)}
                             categories={[String(i.item.subType)]}
                             subtitleIndexes={[0]}
                             items={[String(i.item.description)]}
@@ -86,7 +74,7 @@ export default function InventoryRoute() {
                 <TableHead
                     tableTitles={['Armaduras']}
                     onClick={() => showRow(-3)}
-                    open={show.current.includes(-3)}
+                    open={isShown(-3)}
                 />
 
                 {items.filter(i => i.item.type === 'slotArmor').map(i => (
@@ -96,13 +84,13 @@ export default function InventoryRoute() {
                             tableData={[i.material
                                 ? String(i.item.name) + ' de ' + String(i.material)
                                 : String(i.item.name)]}
-                            show={show.current.includes(-3)}
+                            show={isShown(-3)}
                             onClick={() => showRow(i.id)}
-                            selected={show.current.includes(i.id)}
+                            selected={isShown(i.id)}
                         />
                         <TableDropdown
                             key={`Drop-${i.id}`}
-                            show={show.current.includes(-3) && show.current.includes(i.id)}
+                            show={isShown(-3) && isShown(i.id)}
                             categories={[String(i.item.subType)]}
                             subtitleIndexes={[0]}
                             items={[String(i.item.description)]}
@@ -115,7 +103,7 @@ export default function InventoryRoute() {
                 <TableHead
                     tableTitles={['Armas']}
                     onClick={() => showRow(-4)}
-                    open={show.current.includes(-4)}
+                    open={isShown(-4)}
                 />
 
                 {items.filter(i => i.item.type === 'slotWeapon').map(i => (
@@ -125,13 +113,13 @@ export default function InventoryRoute() {
                             tableData={[i.material
                                 ? String(i.item.name) + ' de ' + String(i.material)
                                 : String(i.item.name)]}
-                            show={show.current.includes(-4)}
+                            show={isShown(-4)}
                             onClick={() => showRow(i.id)}
-                            selected={show.current.includes(i.id)}
+                            selected={isShown(i.id)}
                         />
                         <TableDropdown
                             key={`Drop-${i.id}`}
-                            show={show.current.includes(-4) && show.current.includes(i.id)}
+                            show={isShown(-4) && isShown(i.id)}
                             categories={[String(i.item.subType)]}
                             subtitleIndexes={[0]}
                             items={[String(i.item.description)]}
@@ -145,7 +133,7 @@ export default function InventoryRoute() {
                 <TableHead
                     tableTitles={['Consumíveis']}
                     onClick={() => showRow(-5)}
-                    open={show.current.includes(-5)}
+                    open={isShown(-5)}
                 />
 
                 {items.filter(i => i.item.type === 'consumable').map(i => (
@@ -155,13 +143,13 @@ export default function InventoryRoute() {
                             tableData={[i.material
                                 ? String(i.item.name) + ' de ' + String(i.material)
                                 : String(i.item.name)]}
-                            show={show.current.includes(-5)}
+                            show={isShown(-5)}
                             onClick={() => showRow(i.id)}
-                            selected={show.current.includes(i.id)}
+                            selected={isShown(i.id)}
                         />
                         <TableDropdown
                             key={`Drop-${i.id}`}
-                            show={show.current.includes(-5) && show.current.includes(i.id)}
+                            show={isShown(-5) && isShown(i.id)}
                             categories={[String(i.item.subType)]}
                             subtitleIndexes={[0]}
                             items={[String(i.item.description)]}

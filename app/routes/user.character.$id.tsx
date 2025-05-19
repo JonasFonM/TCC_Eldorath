@@ -6,8 +6,8 @@ import { prisma } from "~/utils/prisma.server";
 import { character, character_item, lineage, path, skill, item, lineage_skill } from "@prisma/client";
 import React from "react";
 
-import { SideBars } from "~/components/side-bars/side-bars";
-import { useSidebar } from "~/components/side-bars/side-bar-context";
+import { SideBars } from "~/components/context-providers/side-bars";
+import { useSidebar } from "~/components/context-providers/side-bar-context";
 import { getUserIdFromSession } from "~/utils/auth.server";
 
 
@@ -107,7 +107,7 @@ export default function CharacterRoute() {
         tableDatas={[character.level, character.tier, character.experience, character.gold]}
         tableExplain={[
           "Seu Nível é um indicador geral de quão poderoso você é no momento. Você sobe de nível conforme ganha Experiência.",
-          "Sua Categoria representa em qual patamar da sua jornada você está. Você pode ser Iniciante, Profissional, Mestre ou Lendário.",
+          "Sua Categoria representa em qual patamar da sua jornada você está. Ela determina quais Caminhos você pode seguir. Você começa na categoria Iniciante e progride para Profissional, Mestre e Lendário, nesta sequência.",
           "Seus Pontos de Experiência determinam quando você pode subir de nível. Você pode receber Experiência de várias formas, como derrotar inimigos, ou passar por um treinamento árduo.",
           "Drakas são a moeda corrente principal em Eldorath. Cunhadas a partir de uma liga metálica especial chamada Orivélio, resistente ao desgaste e capaz de manter seu brilho por séculos. O nome vem das antigas tradições do Império de Zarethia, onde os primeiros imperadores usavam escamas de dragão como lastro para suas riquezas.",
         ]}
@@ -145,7 +145,7 @@ export default function CharacterRoute() {
 
       />
 
-      <div className="character-sheet" style={isAllOpen ? { marginLeft: '200px', marginRight: '200px' } : isHeaderOpen ? { marginLeft: '200px' } : isTempOpen ? { marginRight: '200px' } : {}}>
+      <div className="character-sheet" >
         <Outlet context={{
           characterId, isAuthor,
           character, skills, paths,

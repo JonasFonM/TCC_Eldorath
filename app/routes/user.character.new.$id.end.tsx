@@ -3,8 +3,8 @@ import { character, character_item, character_lineage, character_path, character
 import { LoaderFunction } from "@remix-run/node";
 import { GeneralExplain } from "~/components/explanations/general-explain";
 import React, { useRef, useState } from "react";
-import { TableData } from "~/components/character-sheet/general-table-data";
-import { TableHead } from "~/components/character-sheet/general-table";
+import { TableData } from "~/components/character-sheet/table-data";
+import { TableHead } from "~/components/character-sheet/table-head";
 import { TableDropdown } from "~/components/character-sheet/table-dropdown";
 
 export const loader: LoaderFunction = async ({ params }) => {
@@ -25,17 +25,17 @@ export default function LineagesRoute() {
             skills: skill[];
         }>();
 
-    const show = useRef<string[]>([]); // Avoid re-renders
+    const stringShow = useRef<string[]>([]);
 
-    const forceUpdate = useState(0)[1]; // Trigger minimal re-renders when necessary
+    const forceUpdate = useState(0)[1];
 
-    const showRow = (n: string) => {
-        if (show.current.includes(n)) {
-            const newShow = show.current.filter(ns => ns != n)
-            show.current = newShow
+    const stringShowRow = (n: string) => {
+        if (stringShow.current.includes(n)) {
+            const newShow = stringShow.current.filter(ns => ns != n)
+            stringShow.current = newShow
             return forceUpdate(n => n + 1);
         }
-        show.current.push(n);
+        stringShow.current.push(n);
         return forceUpdate(n => n + 1);
     }
 
@@ -75,8 +75,8 @@ export default function LineagesRoute() {
 
                 <TableHead
                     tableTitles={['Linhagens']}
-                    onClick={() => showRow("L")}
-                    open={show.current.includes("L")}
+                    onClick={() => stringShowRow("L")}
+                    open={stringShow.current.includes("L")}
                 />
                 {character_lineages.length < 1
                     ? <tbody>
@@ -93,13 +93,13 @@ export default function LineagesRoute() {
                             <TableData
                                 key={String(ln.lineage.name) + ln.id}
                                 tableData={ln.pure ? [String(ln.lineage.name) + ' Pura'] : [String(ln.lineage.name)]}
-                                show={show.current.includes("L")}
-                                onClick={() => showRow(`L${ln.id}`)}
-                                selected={show.current.includes(`L${ln.id}`)}
+                                show={stringShow.current.includes("L")}
+                                onClick={() => stringShowRow(`L${ln.id}`)}
+                                selected={stringShow.current.includes(`L${ln.id}`)}
                             />
                             <TableDropdown
                                 key={`Drop-${ln.id}`}
-                                show={show.current.includes("L") && show.current.includes(`L${ln.id}`)}
+                                show={stringShow.current.includes("L") && stringShow.current.includes(`L${ln.id}`)}
                                 categories={[]}
                                 subtitleIndexes={[]}
                                 items={[String(ln.lineage.description)]}
@@ -110,8 +110,8 @@ export default function LineagesRoute() {
 
                 <TableHead
                     tableTitles={['Caminhos']}
-                    onClick={() => showRow("C")}
-                    open={show.current.includes("C")}
+                    onClick={() => stringShowRow("C")}
+                    open={stringShow.current.includes("C")}
                 />
                 {character_paths.length < 1
                     ? <tbody>
@@ -128,13 +128,13 @@ export default function LineagesRoute() {
                             <TableData
                                 key={String(p.path.name) + p.id}
                                 tableData={[String(p.path.name)]}
-                                show={show.current.includes("C")}
-                                onClick={() => showRow(`C${p.id}`)}
-                                selected={show.current.includes(`C${p.id}`)}
+                                show={stringShow.current.includes("C")}
+                                onClick={() => stringShowRow(`C${p.id}`)}
+                                selected={stringShow.current.includes(`C${p.id}`)}
                             />
                             <TableDropdown
                                 key={`Drop-${p.id}`}
-                                show={show.current.includes("C") && show.current.includes(`C${p.id}`)}
+                                show={stringShow.current.includes("C") && stringShow.current.includes(`C${p.id}`)}
                                 categories={[`Benefícios`]}
                                 subtitleIndexes={[1]}
                                 items={[
@@ -151,8 +151,8 @@ export default function LineagesRoute() {
 
                 <TableHead
                     tableTitles={['Talentos']}
-                    onClick={() => showRow(`T`)}
-                    open={show.current.includes(`T`)}
+                    onClick={() => stringShowRow(`T`)}
+                    open={stringShow.current.includes(`T`)}
                 />
                 {character_skills.length < 1
                     ? <tbody>
@@ -172,13 +172,13 @@ export default function LineagesRoute() {
                             <TableData
                                 key={String(sk.skill.name) + sk.id}
                                 tableData={[String(sk.skill.name)]}
-                                show={show.current.includes(`T`)}
-                                onClick={() => showRow(`T${sk.id}`)}
-                                selected={show.current.includes(`T${sk.id}`)}
+                                show={stringShow.current.includes(`T`)}
+                                onClick={() => stringShowRow(`T${sk.id}`)}
+                                selected={stringShow.current.includes(`T${sk.id}`)}
                             />
                             <TableDropdown
                                 key={`Drop-${sk.id}`}
-                                show={show.current.includes(`T`) && show.current.includes(`T${sk.id}`)}
+                                show={stringShow.current.includes(`T`) && stringShow.current.includes(`T${sk.id}`)}
                                 categories={["", "Tipo", "Requisitos"]}
                                 subtitleIndexes={[1, 2]}
                                 items={[
@@ -199,8 +199,8 @@ export default function LineagesRoute() {
 
                 <TableHead
                     tableTitles={['Itens']}
-                    onClick={() => showRow(`I`)}
-                    open={show.current.includes(`I`)}
+                    onClick={() => stringShowRow(`I`)}
+                    open={stringShow.current.includes(`I`)}
                 />
                 {character_items.map(it => (
                     <React.Fragment key={it.id}>
@@ -209,13 +209,13 @@ export default function LineagesRoute() {
                             tableData={[it.material
                                 ? String(it.item.name) + ' de ' + String(it.material)
                                 : String(it.item.name)]}
-                            show={show.current.includes(`I`)}
-                            onClick={() => showRow(`I${it.id}`)}
-                            selected={show.current.includes(`I${it.id}`)}
+                            show={stringShow.current.includes(`I`)}
+                            onClick={() => stringShowRow(`I${it.id}`)}
+                            selected={stringShow.current.includes(`I${it.id}`)}
                         />
                         <TableDropdown
                             key={`Drop-${it.id}`}
-                            show={show.current.includes("I") && show.current.includes(`I${it.id}`)}
+                            show={stringShow.current.includes("I") && stringShow.current.includes(`I${it.id}`)}
                             categories={[]}
                             subtitleIndexes={[]}
                             items={[String(it.item.description)]}

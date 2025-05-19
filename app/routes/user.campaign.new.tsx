@@ -186,7 +186,7 @@ export default function NewCampaignRoute() {
         </h1>
       </label>
 
-      <div style={title.current < 1 ? {display: 'inherit'} : { display: 'none' }} className="container">
+      <div style={title.current < 1 ? { display: 'inherit' } : { display: 'none' }} className="container">
         <textarea
           style={{ minHeight: '50vh' }}
           className="calendar-box"
@@ -198,7 +198,7 @@ export default function NewCampaignRoute() {
         {errors.description && <p className="error">{errors.description}</p>}
       </div>
 
-      <div style={title.current < 1 ? { display: 'none' } : {display: 'inherit'}} className="container">
+      <div style={title.current < 1 ? { display: 'none' } : { display: 'inherit' }} className="container">
         <div className="calendar-box">
           <div className="calendar-field">
 
@@ -234,7 +234,7 @@ export default function NewCampaignRoute() {
             <select name="monthDay" value={formData.monthDay} onChange={handleMonthDayChange}>
               {[...Array(30)].map((_, i) => (
                 <option key={i + 1} value={i + 1}>
-                  {i + 1}  -  {translateWeekDays(i)}
+                  {i + 1}  -  {translateWeekDays(i + 1)}
                 </option>
               ))}
             </select>

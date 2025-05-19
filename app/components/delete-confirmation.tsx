@@ -26,11 +26,13 @@ export function DeleteConfirm({ name, isHidden, onShow, onCancel, entity, id }: 
 
           <div className="modal-buttons">
 
-            <input placeholder="Digite DELETAR" value={confirmText} onChange={(e) => setConfirmText(e.target.value)}></input>
+            <div className="container">
+              <input className="col-12 title-input" placeholder="Digite DELETAR" value={confirmText} onChange={(e) => setConfirmText(e.target.value)}></input>
 
-            <NavLink to={`/delete/${entity}/${id}`}> <button className="btn-delete" disabled={!isConfirmed}>DELETAR</button></NavLink>
+              <NavLink className={"col-12"} to={`/delete/${entity}/${id}`}> <button className="col-12 btn-delete" disabled={!isConfirmed}>DELETAR</button></NavLink>
 
-            <button onClick={onCancel} className="btn-cancel">CANCELAR</button>
+              <button onClick={onCancel} className="btn-cancel col-12">CANCELAR</button>
+            </div>
           </div>
 
         </div>

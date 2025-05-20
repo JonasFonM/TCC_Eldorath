@@ -61,7 +61,7 @@ export default function LineagesRoute() {
 
             <table>
                 {character.agility + character.body + character.mind < 7
-                    ? <tbody>
+                    ? <thead>
                         <tr className="error">
                             <td>
                                 <NavLink to={`/user/character/new/${characterId}/basic/`}
@@ -69,7 +69,7 @@ export default function LineagesRoute() {
                                     style={{ color: 'inherit' }}>Você precisa usar seus Pontos de Atributo</NavLink>
                             </td>
                         </tr>
-                    </tbody>
+                    </thead>
                     : ''
                 }
 

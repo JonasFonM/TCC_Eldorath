@@ -64,8 +64,6 @@ export default function UserRoute() {
     <>
       <ul className="topnav">
         <li key={0}><NavLink to={`/user/home/profile/`}>Perfil</NavLink></li>
-        <li key={1}><NavLink to={`/user/character/`}>Personagens</NavLink></li>
-        <li key={2}><NavLink to={`/user/campaign/`}>Campanhas</NavLink></li>
         <li key={9} style={{ float: 'right' }}><NavLink className={'logout'} to={`/logout`}>Logout</NavLink></li>
       </ul>
 

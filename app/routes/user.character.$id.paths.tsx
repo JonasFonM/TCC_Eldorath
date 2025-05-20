@@ -31,8 +31,6 @@ export default function PathsRoute() {
       </div>
 
       <GeneralExplain
-        style={'linear-gradient(to bottom, white, gold)'}
-        color={'black'}
         title={'Caminhos'}
         description="Caminhos são especializações que agregam nas suas capacidades, e determinam uma parcela importante da sua Vitalidade e do seu Poder. Alguns Caminhos dão acesso a Talentos exclusivos."
         isHidden={!isShown(-5)}
@@ -57,8 +55,8 @@ export default function PathsRoute() {
             <TableDropdown
               key={`Drop-${p.id}`}
               show={isShown(-1) && isShown(p.id)}
-              categories={[`Benefícios`]}
-              subtitleIndexes={[1]}
+              categories={['Descrição', `Benefícios`]}
+              subtitleIndexes={[0, 1]}
               items={[
                 String(p.description),
                 `Vitalidade: ${String(p.vitality)}`,

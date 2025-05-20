@@ -2,7 +2,7 @@ import { friendship, user } from "@prisma/client";
 import { LoaderFunction } from "@remix-run/node";
 import { NavLink, Outlet, useLoaderData } from "@remix-run/react";
 import { ShowRowProvider } from "~/components/context-providers/showRowContext";
-import { SidebarProvider } from "~/components/context-providers/side-bar-context";
+import { SidebarProvider, useSidebar } from "~/components/context-providers/side-bar-context";
 import { getUserIdFromSession, requireUserId } from "~/utils/auth.server";
 import { prisma } from "~/utils/prisma.server";
 

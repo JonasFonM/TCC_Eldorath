@@ -71,8 +71,6 @@ export function SideBars({ title, subtitle, tableHeaders, tableDatas, tableExpla
             {tableHeaders.map((th, index) => (
                 <GeneralExplain
                     key={th + index}
-                    style={'linear-gradient(to bottom, white, gold)'}
-                    color={'black'}
                     title={characterTH.includes(th)
                         ? translateTH[th]
                         : th}

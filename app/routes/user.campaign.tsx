@@ -35,9 +35,7 @@ export function translateMonth(i: number) {
 export default function CampaignsRoute() {
 
   return (
-    <div>
       <Outlet />
-    </div>
   );
 }
 

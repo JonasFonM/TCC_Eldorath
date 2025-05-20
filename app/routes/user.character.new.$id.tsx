@@ -221,7 +221,7 @@ export default function NewCharacterRoute() {
                 ]}
                 temp={
                     <ul>
-                        <li style={{height: "120px"}}>
+                        <li style={{ height: "120px" }}>
                             <img src={"/Action Surge.png"} alt={"Capa de Perfil"} style={{ width: "100%", height: "100%", margin: '0', padding: '0' }} />
                         </li>
 
@@ -230,21 +230,24 @@ export default function NewCharacterRoute() {
 
             />
 
-            <Outlet context={{
-                userId,
-                character, characterId,
-                character_lineages, character_paths, character_skills, character_items,
-                maxSelectableSkills, maxMagics, maxManeuvers,
-                skills, selectableSkills,
-                selectablePureLineageSkills,
-                pureLineageSkills,
-                selectableNonPureLineageSkills,
-                nonPureLineageSkills,
-                isPure,
-                lineages, maxSelectableLineages,
-                paths, maxSelectablePaths,
-                items
-            }} />
+            <div style={isAllOpen ? { marginLeft: '200px', marginRight: '200px' } : isHeaderOpen ?
+                { marginLeft: '200px' } : isTempOpen ? { marginRight: '200px' } : {}}>
+                <Outlet context={{
+                    userId,
+                    character, characterId,
+                    character_lineages, character_paths, character_skills, character_items,
+                    maxSelectableSkills, maxMagics, maxManeuvers,
+                    skills, selectableSkills,
+                    selectablePureLineageSkills,
+                    pureLineageSkills,
+                    selectableNonPureLineageSkills,
+                    nonPureLineageSkills,
+                    isPure,
+                    lineages, maxSelectableLineages,
+                    paths, maxSelectablePaths,
+                    items
+                }} />
+            </div>
         </>
 
     );

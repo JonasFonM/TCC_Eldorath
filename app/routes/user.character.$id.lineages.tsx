@@ -28,8 +28,6 @@ export default function LineagesRoute() {
       </div>
 
       <GeneralExplain
-        style={'linear-gradient(to bottom, white, gold)'}
-        color={'black'}
         title={'Linhagens'}
         description="Linhagens são sua descendência, sua origem. Geralmente representam a quais espécies ou raças você e os seus pais pertencem, mas existem exceções."
         isHidden={!isShown(-3)}
@@ -41,6 +39,7 @@ export default function LineagesRoute() {
           tableTitles={['Linhagem']}
           onClick={() => showRow(-2)}
           open={isShown(-2)}
+          error={false}
         />
         {lineages.map(ln => (
           <React.Fragment key={ln.id}>
@@ -50,6 +49,7 @@ export default function LineagesRoute() {
               show={isShown(-2)}
               onClick={() => showRow(ln.id)}
               selected={isShown(ln.id)}
+              error={false}
             />
             <TableDropdown
               key={`Drop-${ln.id}`}

@@ -199,7 +199,6 @@ export const createScene = async (campaign: SceneForm, campaignId: number, title
     month: campaign.month,
     monthDay: campaign.monthDay,
     weekDay: campaign.weekDay
-
   }
 };
 

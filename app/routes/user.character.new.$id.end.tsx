@@ -77,6 +77,7 @@ export default function LineagesRoute() {
                     tableTitles={['Linhagens']}
                     onClick={() => stringShowRow("L")}
                     open={stringShow.current.includes("L")}
+                    error={character_lineages.length < 1}
                 />
                 {character_lineages.length < 1
                     ? <tbody>
@@ -96,6 +97,7 @@ export default function LineagesRoute() {
                                 show={stringShow.current.includes("L")}
                                 onClick={() => stringShowRow(`L${ln.id}`)}
                                 selected={stringShow.current.includes(`L${ln.id}`)}
+                                error={false}
                             />
                             <TableDropdown
                                 key={`Drop-${ln.id}`}
@@ -112,6 +114,7 @@ export default function LineagesRoute() {
                     tableTitles={['Caminhos']}
                     onClick={() => stringShowRow("C")}
                     open={stringShow.current.includes("C")}
+                    error={character_paths.length < 1}
                 />
                 {character_paths.length < 1
                     ? <tbody>
@@ -131,6 +134,7 @@ export default function LineagesRoute() {
                                 show={stringShow.current.includes("C")}
                                 onClick={() => stringShowRow(`C${p.id}`)}
                                 selected={stringShow.current.includes(`C${p.id}`)}
+                                error={false}
                             />
                             <TableDropdown
                                 key={`Drop-${p.id}`}
@@ -153,6 +157,7 @@ export default function LineagesRoute() {
                     tableTitles={['Talentos']}
                     onClick={() => stringShowRow(`T`)}
                     open={stringShow.current.includes(`T`)}
+                    error={character_skills.length < 1}
                 />
                 {character_skills.length < 1
                     ? <tbody>
@@ -175,6 +180,7 @@ export default function LineagesRoute() {
                                 show={stringShow.current.includes(`T`)}
                                 onClick={() => stringShowRow(`T${sk.id}`)}
                                 selected={stringShow.current.includes(`T${sk.id}`)}
+                                error={false}
                             />
                             <TableDropdown
                                 key={`Drop-${sk.id}`}
@@ -201,6 +207,7 @@ export default function LineagesRoute() {
                     tableTitles={['Itens']}
                     onClick={() => stringShowRow(`I`)}
                     open={stringShow.current.includes(`I`)}
+                    error={false}
                 />
                 {character_items.map(it => (
                     <React.Fragment key={it.id}>
@@ -212,6 +219,7 @@ export default function LineagesRoute() {
                             show={stringShow.current.includes(`I`)}
                             onClick={() => stringShowRow(`I${it.id}`)}
                             selected={stringShow.current.includes(`I${it.id}`)}
+                            error={false}
                         />
                         <TableDropdown
                             key={`Drop-${it.id}`}

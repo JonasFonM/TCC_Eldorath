@@ -326,7 +326,7 @@ export const addPathBasedStats = async (characterId: number, pathId: number) => 
   }
 }
 
-export const submitCharPaths = async (pathList: number[], characterId: number, pendingPaths: number) => {
+export const submitCharPaths = async (pathList: number[], characterId: number, pendingPaths: number, pathTiers: number) => {
   const existingPaths = await prisma.character_path.findMany({
     where: {
       pathId: { in: pathList },
@@ -338,7 +338,7 @@ export const submitCharPaths = async (pathList: number[], characterId: number, p
 
   const newPaths = pathList.filter(pathId => !existingSkillIds.includes(pathId));
 
-  const newPendingPaths = pendingPaths - newPaths.length;
+  const newPendingPaths = pendingPaths - pathTiers;
 
 
   if (newPaths.length > 0) {
@@ -355,6 +355,7 @@ export const submitCharPaths = async (pathList: number[], characterId: number, p
     newPaths.map(np => addPathBasedSkills(characterId, np))
 
     newPaths.map(np => addPathBasedStats(characterId, np))
+
 
     await prisma.character.update({
       where: { id: characterId },

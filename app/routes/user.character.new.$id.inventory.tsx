@@ -89,6 +89,7 @@ export default function ItemSelection() {
                                     tableTitles={[translateSlotTypes[st]]}
                                     onClick={() => showRow(index)}
                                     open={isShown(index)}
+                                    error={false}
                                 />
                             </table>
                             {items.filter(i => i.type === st).map(item => (
@@ -139,7 +140,7 @@ export default function ItemSelection() {
                     ))
                 }
 
-                <button type="submit" className="button"> Próximo</button>
+                <button type="submit" className="button">Avançar</button>
 
             </form>
 

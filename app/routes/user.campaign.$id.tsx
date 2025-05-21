@@ -26,7 +26,6 @@ export const loader: LoaderFunction = async ({ params, request }) => {
             { id: { in: campaign?.players.map(pl => pl.userId) } }
     })
 
-
     const characters = await getCharactersFromUser(Number(userId))
 
     const isMaster = Number(userId) === Number(campaign?.masterId)
@@ -39,11 +38,22 @@ export const loader: LoaderFunction = async ({ params, request }) => {
 }
 
 export default function CampaignRoute() {
-    const { isMaster, isPlayer, campaignCharacter, characters, campaign, party, campaignId } = useLoaderData<{ isMaster: boolean, isPlayer: boolean, campaignCharacter: character, characters: character[], campaign: (campaign & { scenes: scene[], characters: character[], players: partyMembers[] }), party: user[], campaignId: number }>()
-    const { isAllOpen, isHeaderOpen, isTempOpen } = useSidebar();
-    const [showList, setShowList] = useState(0);
-    const [showCreator, setShowCreator] = useState(0);
-    const [showPlayers, setShowPlayers] = useState(0);
+    const { isMaster,
+        isPlayer,
+        campaignCharacter,
+        characters,
+        campaign,
+        party,
+        campaignId } =
+        useLoaderData<{
+            isMaster: boolean,
+            isPlayer: boolean,
+            campaignCharacter: character,
+            characters: character[],
+            campaign: (campaign & { scenes: scene[], characters: character[], players: partyMembers[] }),
+            party: user[],
+            campaignId: number
+        }>()
     const location = useLocation()
     const { showRow, isShown } = useShowRow()
     const timeIcons = [
@@ -60,24 +70,16 @@ export default function CampaignRoute() {
     const getCampaignAction = () => {
         if (isMaster) return (
             <React.Fragment>
-                <ul>
-                    <li key={1}><NavLink to={`/user/campaign/${campaignId}/adv/timeOfDay`}>Avançar Fase</NavLink></li>
-                    <li key={2}><NavLink to={`/user/campaign/${campaignId}/adv/monthDay`}>Avançar Dia</NavLink></li>
-                    <li key={3}><NavLink to={`/user/campaign/${campaignId}/adv/month`}>Avançar Mês</NavLink></li>
-                    <li key={4}><NavLink to={`/user/campaign/${campaignId}/adv/year`}>Avançar Ano</NavLink></li>
-                    <li key={5}><NavLink to={`/user/campaign/${campaignId}/adv/era`}>Avançar Era</NavLink></li>
-                </ul>
-
                 <table>
                     <tbody>
-                        <tr onClick={() => showList === 0 ? setShowList(1) : setShowList(0)}>
+                        <tr onClick={() => showRow(-4)}>
                             <th>Listar</th>
                             <td>Cenas</td>
                         </tr>
                     </tbody>
                 </table>
 
-                <ul style={showList === 0 ? { display: 'none' } : {}}>
+                <ul style={isShown(-4) ? { display: 'none' } : {}}>
                     {campaign.scenes.map(sc =>
                         <li key={sc.id}>
                             <NavLink to={`/user/scene/${sc.id}`}>
@@ -91,7 +93,7 @@ export default function CampaignRoute() {
 
                 <table>
                     <tbody>
-                        <tr onClick={() => setShowCreator(1)}>
+                        <tr onClick={() => showRow(-8)}>
                             <th>Criar</th>
                             <td>Cena</td>
                         </tr>
@@ -151,11 +153,11 @@ export default function CampaignRoute() {
                 <React.Fragment>
                     <ul>
                         <li key={-1}>
-                            <button onClick={() => showList === 0 ? setShowList(1) : setShowList(0)}>Vincular Personagem</button>
+                            <button onClick={() => showRow(-6)}>Vincular Personagem</button>
                         </li>
                     </ul>
 
-                    <ul style={showList === 0 ? { display: 'none' } : {}}>
+                    <ul style={isShown(-6) ? { display: 'none' } : {}}>
                         {characters.map(cs =>
                             <li key={cs.id}>
                                 <NavLink to={`/user/campaign/${campaignId}/bind/${cs.id}`}>
@@ -197,8 +199,30 @@ export default function CampaignRoute() {
                 tableDatas={[]}
                 tableExplain={[]}
 
-                links={isMaster ? [`/user/campaign/${campaignId}/rtn/timeOfDay`, `/user/campaign/${campaignId}/rtn/monthDay`, `/user/campaign/${campaignId}/rtn/month`, `/user/campaign/${campaignId}/rtn/year`, `/user/campaign/${campaignId}/rtn/era`] : []}
-                linkNames={isMaster ? [`Voltar Fase`, `Voltar Dia`, `Voltar Mês`, `Voltar Ano`, `Voltar Era`] : []}
+                links={isMaster ? [
+                    `/user/campaign/${campaignId}/rtn/timeOfDay`,
+                    `/user/campaign/${campaignId}/adv/timeOfDay`,
+                    `/user/campaign/${campaignId}/rtn/monthDay`,
+                    `/user/campaign/${campaignId}/adv/monthDay`,
+                    `/user/campaign/${campaignId}/rtn/month`,
+                    `/user/campaign/${campaignId}/adv/month`,
+                    `/user/campaign/${campaignId}/rtn/year`,
+                    `/user/campaign/${campaignId}/adv/year`,
+                    `/user/campaign/${campaignId}/rtn/era`,
+                    `/user/campaign/${campaignId}/adv/era`,
+                ] : []}
+                linkNames={isMaster ? [
+                    `Voltar Fase`,
+                    `Avançar Fase`,
+                    `Voltar Dia`,
+                    `Avançar Dia`,
+                    `Voltar Mês`,
+                    `Avançar Mês`,
+                    `Voltar Ano`,
+                    `Avançar Ano`,
+                    `Voltar Era`,
+                    `Avançar Era`
+                ] : []}
                 temp={
                     <React.Fragment>
 
@@ -207,16 +231,34 @@ export default function CampaignRoute() {
                         <ul>
 
                             <li key={-3}>
-                                <button onClick={showPlayers != 1 ? () => setShowPlayers(1) : () => setShowPlayers(0)}>Jogadores</button>
+                                <button onClick={() => showRow(-12)}>Jogadores</button>
                             </li>
 
                         </ul>
 
-                        <ul style={showPlayers != 1 ? { display: 'none' } : { display: "inherit" }}>
+                        <ul style={!isShown(-12) ? { display: 'none' } : { display: "inherit" }}>
                             {party.map(
                                 pl => <li key={pl.id}>
                                     <NavLink to={`/user/home/profile/${pl.id}`}>
                                         {pl.username}
+                                    </NavLink>
+                                </li>
+                            )}
+                        </ul>
+
+                        <ul>
+
+                            <li key={-3}>
+                                <button onClick={() => showRow(-16)}>Personagens</button>
+                            </li>
+
+                        </ul>
+
+                        <ul style={!isShown(-16) ? { display: 'none' } : { display: "inherit" }}>
+                            {campaign.characters.map(
+                                cc => <li key={cc.id}>
+                                    <NavLink to={`/user/character/${cc.id}/stats`}>
+                                        {cc.name}
                                     </NavLink>
                                 </li>
                             )}
@@ -231,9 +273,7 @@ export default function CampaignRoute() {
             <div className="user" >
 
                 <h1 className="title-input" style={{ position: 'sticky', top: '64px' }}>{campaign.title}</h1>
-                <SceneCreator isHidden={showCreator === 0} onCancel={() => setShowCreator(0)} campaignId={String(campaignId)} />
-
-
+                <SceneCreator isHidden={!isShown(-8)} onCancel={() => showRow(-8)} campaignId={String(campaignId)} />
 
                 <div className="calendar-box">
                     <div className="col-12">
@@ -267,12 +307,12 @@ export default function CampaignRoute() {
 
                 <div className="container">
 
-                    <div className="calendar-box" style={{ justifyContent: 'center' }}>
+                    {isMaster
+                        ? <h2><NavLink className={'lineBtn'} to={`/user/campaign/edit/${campaignId}/`}>Editar Descrição</NavLink></h2>
+                        : ''
+                    }
 
-                        {isMaster
-                            ? <h2><NavLink className={'lineBtn'} to={`/user/campaign/edit/${campaignId}/`}>Editar</NavLink></h2>
-                            : ''
-                        }
+                    <div className="calendar-box" style={{ justifyContent: 'center' }}>
                         <p style={{ textAlign: 'justify', overflow: 'auto', display: location.pathname === `/user/campaign/${campaignId}` ? 'inherit' : 'none' }}>{campaign.description}</p>
                     </div>
 

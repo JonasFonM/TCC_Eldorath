@@ -42,6 +42,7 @@ export default function PathsRoute() {
           tableTitles={["Iniciante"]}
           onClick={() => showRow(-1)}
           open={isShown(-1)}
+          error={false}
         />
         {tier1.map(p => (
           <React.Fragment key={p.id}>
@@ -51,6 +52,7 @@ export default function PathsRoute() {
               show={isShown(-1)}
               onClick={() => showRow(p.id)}
               selected={isShown(p.id)}
+              error={false}
             />
             <TableDropdown
               key={`Drop-${p.id}`}
@@ -76,6 +78,7 @@ export default function PathsRoute() {
             tableTitles={['Veterano']}
             onClick={() => showRow(-2)}
             open={isShown(-2)}
+            error={false}
           />
           {tier2.map(p => (
             <React.Fragment key={p.id}>
@@ -85,6 +88,7 @@ export default function PathsRoute() {
                 show={isShown(-2)}
                 onClick={() => showRow(p.id)}
                 selected={isShown(p.id)}
+                error={false}
               />
               <TableDropdown
                 key={`Drop-${p.id}`}
@@ -112,6 +116,7 @@ export default function PathsRoute() {
             tableTitles={['Mestre']}
             onClick={() => showRow(-3)}
             open={isShown(-3)}
+            error={false}
           />
           {tier3.map(p => (
             <React.Fragment key={p.id}>
@@ -121,6 +126,7 @@ export default function PathsRoute() {
                 show={isShown(-3)}
                 onClick={() => showRow(p.id)}
                 selected={isShown(p.id)}
+                error={false}
               />
               <TableDropdown
                 key={`Drop-${p.id}`}
@@ -148,6 +154,7 @@ export default function PathsRoute() {
             tableTitles={['Lenda']}
             onClick={() => showRow(-4)}
             open={isShown(-4)}
+            error={false}
           />
           {tier4.map(p => (
             <React.Fragment key={p.id}>
@@ -157,6 +164,7 @@ export default function PathsRoute() {
                 show={isShown(-4)}
                 onClick={() => showRow(p.id)}
                 selected={isShown(p.id)}
+                error={false}
               />
               <TableDropdown
                 key={`Drop-${p.id}`}

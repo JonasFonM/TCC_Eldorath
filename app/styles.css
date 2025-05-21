@@ -494,6 +494,11 @@ table {
   height: 100%;
 }
 
+tbody:last-child,
+thead:last-child {
+  border-bottom: 1px solid gold;
+}
+
 tr {
   margin: 0;
   width: 100%;

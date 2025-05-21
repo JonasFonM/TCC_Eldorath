@@ -194,7 +194,7 @@ export default function NewCharacterRoute() {
         <>
             <SideBars
                 entity={character} title={character.name}
-                subtitle={''}
+                subtitle={character.boss ? 'Chefe' : ''}
                 tableHeaders={["AGI", "COR", "MEN"]}
                 tableDatas={[character.agility, character.body, character.mind]}
                 tableExplain={[
@@ -230,7 +230,7 @@ export default function NewCharacterRoute() {
 
             />
 
-            <div style={isAllOpen ? { marginLeft: '200px', marginRight: '200px' } : isHeaderOpen ?
+            <div className="user" style={isAllOpen ? { marginLeft: '200px', marginRight: '200px' } : isHeaderOpen ?
                 { marginLeft: '200px' } : isTempOpen ? { marginRight: '200px' } : {}}>
                 <Outlet context={{
                     userId,

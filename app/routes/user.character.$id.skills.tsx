@@ -46,6 +46,7 @@ export default function SkillsRoute() {
           tableTitles={['Talentos']}
           onClick={() => showRow(-1)}
           open={isShown(-1)}
+          error={false}
         />
         {skills.map(sk => (
           <React.Fragment key={sk.id}>
@@ -55,6 +56,7 @@ export default function SkillsRoute() {
               show={isShown(-1)}
               onClick={() => showRow(sk.id)}
               selected={isShown(sk.id)}
+              error={false}
             />
             <TableDropdown
               key={`Drop-${sk.id}`}
@@ -77,6 +79,7 @@ export default function SkillsRoute() {
             tableTitles={['Talentos de Linhagem']}
             onClick={() => showRow(-2)}
             open={isShown(-2)}
+            error={false}
           />
           : ''
         }
@@ -88,6 +91,7 @@ export default function SkillsRoute() {
               show={isShown(-2)}
               onClick={() => showRow(ls.skill.id)}
               selected={isShown(ls.skill.id)}
+              error={false}
             />
             <TableDropdown
               key={`Drop-${ls.skill.id}`}
@@ -112,6 +116,7 @@ export default function SkillsRoute() {
             tableTitles={['Talentos de Linhagem Pura']}
             onClick={() => showRow(-3)}
             open={isShown(-3)}
+            error={false}
           />
           : ''}
 
@@ -123,6 +128,7 @@ export default function SkillsRoute() {
               show={isShown(-3)}
               onClick={() => showRow(ls.skill.id)}
               selected={isShown(ls.skill.id)}
+              error={false}
             />
             <TableDropdown
               key={`Drop-${ls.skill.id}`}

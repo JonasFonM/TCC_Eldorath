@@ -30,6 +30,5 @@ export const loader: LoaderFunction = async ({ params, request }) => {
         weekDay: campaign.weekDay,
     }
 
-    createScene(campForm, campaignId, title)
-    return redirect(referer);
+    return redirect(`/user/scene/${(await createScene(campForm, campaignId, title)).id}`);
 };

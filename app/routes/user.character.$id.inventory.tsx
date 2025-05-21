@@ -46,6 +46,7 @@ export default function InventoryRoute() {
                     tableTitles={['Acessórios']}
                     onClick={() => showRow(-2)}
                     open={isShown(-2)}
+                    error={false}
                 />
 
                 {items.filter(i => i.item.type === 'slotAccessory').map(i => (
@@ -58,6 +59,7 @@ export default function InventoryRoute() {
                             show={isShown(-2)}
                             onClick={() => showRow(i.id)}
                             selected={isShown(i.id)}
+                            error={false}
                         />
                         <TableDropdown
                             key={`Drop-${i.id}`}
@@ -75,6 +77,7 @@ export default function InventoryRoute() {
                     tableTitles={['Armaduras']}
                     onClick={() => showRow(-3)}
                     open={isShown(-3)}
+                    error={false}
                 />
 
                 {items.filter(i => i.item.type === 'slotArmor').map(i => (
@@ -87,6 +90,7 @@ export default function InventoryRoute() {
                             show={isShown(-3)}
                             onClick={() => showRow(i.id)}
                             selected={isShown(i.id)}
+                            error={false}
                         />
                         <TableDropdown
                             key={`Drop-${i.id}`}
@@ -104,6 +108,7 @@ export default function InventoryRoute() {
                     tableTitles={['Armas']}
                     onClick={() => showRow(-4)}
                     open={isShown(-4)}
+                    error={false}
                 />
 
                 {items.filter(i => i.item.type === 'slotWeapon').map(i => (
@@ -116,6 +121,7 @@ export default function InventoryRoute() {
                             show={isShown(-4)}
                             onClick={() => showRow(i.id)}
                             selected={isShown(i.id)}
+                            error={false}
                         />
                         <TableDropdown
                             key={`Drop-${i.id}`}
@@ -134,6 +140,7 @@ export default function InventoryRoute() {
                     tableTitles={['Consumíveis']}
                     onClick={() => showRow(-5)}
                     open={isShown(-5)}
+                    error={false}
                 />
 
                 {items.filter(i => i.item.type === 'consumable').map(i => (
@@ -146,6 +153,7 @@ export default function InventoryRoute() {
                             show={isShown(-5)}
                             onClick={() => showRow(i.id)}
                             selected={isShown(i.id)}
+                            error={false}
                         />
                         <TableDropdown
                             key={`Drop-${i.id}`}

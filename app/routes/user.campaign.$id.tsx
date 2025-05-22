@@ -72,14 +72,14 @@ export default function CampaignRoute() {
             <React.Fragment>
                 <table>
                     <tbody>
-                        <tr onClick={() => showRow(-4)}>
+                        <tr onClick={() => showRow("LC")}>
                             <th>Listar</th>
                             <td>Cenas</td>
                         </tr>
                     </tbody>
                 </table>
 
-                <ul style={isShown(-4) ? { display: 'none' } : {}}>
+                <ul style={isShown("LC") ? { display: 'none' } : {}}>
                     {campaign.scenes.map(sc =>
                         <li key={sc.id}>
                             <NavLink to={`/user/scene/${sc.id}`}>
@@ -93,7 +93,7 @@ export default function CampaignRoute() {
 
                 <table>
                     <tbody>
-                        <tr onClick={() => showRow(-8)}>
+                        <tr onClick={() => showRow("CC")}>
                             <th>Criar</th>
                             <td>Cena</td>
                         </tr>
@@ -108,7 +108,7 @@ export default function CampaignRoute() {
                 return (
                     <React.Fragment>
                         <ul>
-                            <li key={-5}><h3>Seu Personagem</h3></li>
+                            <li key={"EEra"}><h3>Seu Personagem</h3></li>
                             <li key={1}>
                                 <NavLink to={`/user/character/${campaignCharacter.id}/stats`}>
                                     {campaignCharacter.name}
@@ -153,11 +153,11 @@ export default function CampaignRoute() {
                 <React.Fragment>
                     <ul>
                         <li key={-1}>
-                            <button onClick={() => showRow(-6)}>Vincular Personagem</button>
+                            <button onClick={() => showRow("VincP")}>Vincular Personagem</button>
                         </li>
                     </ul>
 
-                    <ul style={isShown(-6) ? { display: 'none' } : {}}>
+                    <ul style={isShown("VincP") ? { display: 'none' } : {}}>
                         {characters.map(cs =>
                             <li key={cs.id}>
                                 <NavLink to={`/user/campaign/${campaignId}/bind/${cs.id}`}>
@@ -231,12 +231,12 @@ export default function CampaignRoute() {
                         <ul>
 
                             <li key={-3}>
-                                <button onClick={() => showRow(-12)}>Jogadores</button>
+                                <button onClick={() => showRow("LJ")}>Jogadores</button>
                             </li>
 
                         </ul>
 
-                        <ul style={!isShown(-12) ? { display: 'none' } : { display: "inherit" }}>
+                        <ul style={!isShown("LJ") ? { display: 'none' } : { display: "inherit" }}>
                             {party.map(
                                 pl => <li key={pl.id}>
                                     <NavLink to={`/user/home/profile/${pl.id}`}>
@@ -249,12 +249,12 @@ export default function CampaignRoute() {
                         <ul>
 
                             <li key={-3}>
-                                <button onClick={() => showRow(-16)}>Personagens</button>
+                                <button onClick={() => showRow("LP")}>Personagens</button>
                             </li>
 
                         </ul>
 
-                        <ul style={!isShown(-16) ? { display: 'none' } : { display: "inherit" }}>
+                        <ul style={!isShown("LP") ? { display: 'none' } : { display: "inherit" }}>
                             {campaign.characters.map(
                                 cc => <li key={cc.id}>
                                     <NavLink to={`/user/character/${cc.id}/stats`}>
@@ -273,7 +273,7 @@ export default function CampaignRoute() {
             <div className="user" >
 
                 <h1 className="title-input" style={{ position: 'sticky', top: '64px' }}>{campaign.title}</h1>
-                <SceneCreator isHidden={!isShown(-8)} onCancel={() => showRow(-8)} campaignId={String(campaignId)} />
+                <SceneCreator isHidden={!isShown("CC")} onCancel={() => showRow("CC")} campaignId={String(campaignId)} />
 
                 <div className="calendar-box">
                     <div className="col-12">
@@ -281,28 +281,28 @@ export default function CampaignRoute() {
                             style={{ animation: 'fadeIn 0.3s ease-in-out', transition: "fadeIn 0.3s ease-in-out", width: '100%' }}
                             src={displayTimeIcon(Number(campaign.timeOfDay))} />
                     </div>
-                    <h2 className="col-12"><button onClick={() => showRow(-15)} className="lineBtn">{translateWeekDays(campaign.monthDay)}</button>,
-                        Dia {campaign.monthDay} de <button onClick={() => showRow(-10)} className="lineBtn">{translateMonth(campaign.month)}</button> de {campaign.year} <button onClick={() => showRow(-5)} className="lineBtn">E{campaign.era}</button></h2>
+                    <h2 className="col-12"><button onClick={() => showRow("EDia")} className="lineBtn">{translateWeekDays(campaign.monthDay)}</button>,
+                        Dia {campaign.monthDay} de <button onClick={() => showRow("EMes")} className="lineBtn">{translateMonth(campaign.month)}</button> de {campaign.year} <button onClick={() => showRow("EEra")} className="lineBtn">E{campaign.era}</button></h2>
 
                 </div>
 
                 <GeneralExplain
                     title="Eras"
-                    isHidden={!isShown(-5)}
+                    isHidden={!isShown("EEra")}
                     description="Eras são as maiores medidas de tempo usadas em Eldorath. A mudança de uma Era só ocorre em eventos cataclismicos onde paradigmas importantes da própria realidade são afetados. Como muitas espécies extremamente longevas compõem a demografia de Eldorath, a Era é mais importante que o Ano para determinar períodos históricos."
-                    onCancel={() => showRow(-5)}
+                    onCancel={() => showRow("EEra")}
                 />
                 <GeneralExplain
                     title="Meses"
-                    isHidden={!isShown(-10)}
+                    isHidden={!isShown("EMes")}
                     description="Cada mês em Eldorath é carregado de simbologia, tradições e fenômenos que se repetem anualmente. Um ano em Eldorath dura 12 meses, e cada mês dura 5 semanas de 6 dias cada."
-                    onCancel={() => showRow(-10)}
+                    onCancel={() => showRow("EMes")}
                 />
                 <GeneralExplain
                     title="Dias"
-                    isHidden={!isShown(-15)}
+                    isHidden={!isShown("EDia")}
                     description="Os dias da semana em Eldorath homenageiam divindades e forças ancestrais. Um Dia em Eldorath é separado em Fases: A Madrugada que se inicia à meia-noite, a Alvorada, às 6 horas da manhã, a Tarde, ao meio-dia e a Noite, às 18 horas."
-                    onCancel={() => showRow(-15)}
+                    onCancel={() => showRow("EDia")}
                 />
 
                 <div className="container">

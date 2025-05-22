@@ -44,8 +44,8 @@ export default function InventoryRoute() {
             <table>
                 <TableHead
                     tableTitles={['Acessórios']}
-                    onClick={() => showRow(-2)}
-                    open={isShown(-2)}
+                    onClick={() => showRow("Acessorios")}
+                    open={isShown("Acessorios")}
                     error={false}
                 />
 
@@ -56,14 +56,14 @@ export default function InventoryRoute() {
                             tableData={[i.material
                                 ? String(i.item.name) + ' de ' + String(i.material)
                                 : String(i.item.name)]}
-                            show={isShown(-2)}
-                            onClick={() => showRow(i.id)}
-                            selected={isShown(i.id)}
+                            show={isShown("Acessorios")}
+                            onClick={() => showRow(`Item-${i.id}`)}
+                            selected={isShown(`Item-${i.id}`)}
                             error={false}
                         />
                         <TableDropdown
                             key={`Drop-${i.id}`}
-                            show={isShown(-2) && isShown(i.id)}
+                            show={isShown("Acessorios") && isShown(`Item-${i.id}`)}
                             categories={[String(i.item.subType)]}
                             subtitleIndexes={[0]}
                             items={[String(i.item.description)]}
@@ -75,8 +75,8 @@ export default function InventoryRoute() {
             <table>
                 <TableHead
                     tableTitles={['Armaduras']}
-                    onClick={() => showRow(-3)}
-                    open={isShown(-3)}
+                    onClick={() => showRow("Armaduras")}
+                    open={isShown("Armaduras")}
                     error={false}
                 />
 
@@ -87,14 +87,14 @@ export default function InventoryRoute() {
                             tableData={[i.material
                                 ? String(i.item.name) + ' de ' + String(i.material)
                                 : String(i.item.name)]}
-                            show={isShown(-3)}
-                            onClick={() => showRow(i.id)}
-                            selected={isShown(i.id)}
+                            show={isShown("Armaduras")}
+                            onClick={() => showRow(`Item-${i.id}`)}
+                            selected={isShown(`Item-${i.id}`)}
                             error={false}
                         />
                         <TableDropdown
                             key={`Drop-${i.id}`}
-                            show={isShown(-3) && isShown(i.id)}
+                            show={isShown("Armaduras") && isShown(`Item-${i.id}`)}
                             categories={[String(i.item.subType)]}
                             subtitleIndexes={[0]}
                             items={[String(i.item.description)]}
@@ -106,8 +106,8 @@ export default function InventoryRoute() {
             <table>
                 <TableHead
                     tableTitles={['Armas']}
-                    onClick={() => showRow(-4)}
-                    open={isShown(-4)}
+                    onClick={() => showRow("Armas")}
+                    open={isShown("Armas")}
                     error={false}
                 />
 
@@ -118,14 +118,14 @@ export default function InventoryRoute() {
                             tableData={[i.material
                                 ? String(i.item.name) + ' de ' + String(i.material)
                                 : String(i.item.name)]}
-                            show={isShown(-4)}
-                            onClick={() => showRow(i.id)}
-                            selected={isShown(i.id)}
+                            show={isShown("Armas")}
+                            onClick={() => showRow(`Item-${i.id}`)}
+                            selected={isShown(`Item-${i.id}`)}
                             error={false}
                         />
                         <TableDropdown
                             key={`Drop-${i.id}`}
-                            show={isShown(-4) && isShown(i.id)}
+                            show={isShown("Armas") && isShown(`Item-${i.id}`)}
                             categories={[String(i.item.subType)]}
                             subtitleIndexes={[0]}
                             items={[String(i.item.description)]}
@@ -138,8 +138,8 @@ export default function InventoryRoute() {
             <table>
                 <TableHead
                     tableTitles={['Consumíveis']}
-                    onClick={() => showRow(-5)}
-                    open={isShown(-5)}
+                    onClick={() => showRow("Consumiveis")}
+                    open={isShown("Consumiveis")}
                     error={false}
                 />
 
@@ -150,14 +150,14 @@ export default function InventoryRoute() {
                             tableData={[i.material
                                 ? String(i.item.name) + ' de ' + String(i.material)
                                 : String(i.item.name)]}
-                            show={isShown(-5)}
-                            onClick={() => showRow(i.id)}
-                            selected={isShown(i.id)}
+                            show={isShown("Consumiveis")}
+                            onClick={() => showRow(`Item-${i.id}`)}
+                            selected={isShown(`Item-${i.id}`)}
                             error={false}
                         />
                         <TableDropdown
                             key={`Drop-${i.id}`}
-                            show={isShown(-5) && isShown(i.id)}
+                            show={isShown("Consumiveis") && isShown(`Item-${i.id}`)}
                             categories={[String(i.item.subType)]}
                             subtitleIndexes={[0]}
                             items={[String(i.item.description)]}

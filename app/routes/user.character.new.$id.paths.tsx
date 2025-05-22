@@ -37,7 +37,7 @@ export default function PathSelection() {
     const [selectedTiers, setSelectedTiers] = useState<number[]>([]);
     const { showRow, isShown } = useShowRow();
     const charPathIds = character_paths.map(cPath => cPath.path.id)
-    const chararcterPathTiers = character_paths.map(cPath => cPath.path.pathTier)
+
     const isMaxSelected = selectedPaths.length >= maxSelectablePaths
 
     const tier1 = paths.filter(p => p.pathTier === 1);
@@ -45,6 +45,7 @@ export default function PathSelection() {
     const tier3 = paths.filter(p => p.pathTier === 3);
     const tier4 = paths.filter(p => p.pathTier === 4);
 
+    const chararcterPathTiers = character_paths.map(cPath => cPath.path.pathTier)
     const allTiers = [tier1, tier2, tier3, tier4]
     const tierTitles = ["Iniciante", "Veterano", "Mestre", "Lenda"]
 
@@ -106,14 +107,14 @@ export default function PathSelection() {
                         <table key={"Tier" + index + 1}>
                             <TableHead
                                 tableTitles={[tierTitles[index]]}
-                                onClick={() => showRow(index + 1)}
-                                open={isShown(index + 1) || chararcterPathTiers.includes(index + 1)}
+                                onClick={() => showRow(`Tier-${index + 1}`)}
+                                open={isShown(`Tier-${index + 1}`) || chararcterPathTiers.includes(index + 1)}
                                 error={character.tier < index + 1}
                             />
                             {chararcterPathTiers.includes(index + 1)
                                 ? <tbody>
-                                    <tr style={{backgroundColor: 'black'}}>
-                                        <td style={{fontVariant: 'small-caps', fontWeight: 'bolder', color: 'gold'}}>Você já escolheu 1 Caminho desta Categoria</td>
+                                    <tr style={{ backgroundColor: 'black' }}>
+                                        <td style={{ fontVariant: 'small-caps', fontWeight: 'bolder', color: 'gold' }}>Você já escolheu 1 Caminho desta Categoria</td>
                                     </tr>
                                 </tbody>
 
@@ -122,14 +123,14 @@ export default function PathSelection() {
                                         <TableData
                                             key={p.id}
                                             tableData={[`${p.name}`]}
-                                            show={isShown(p.pathTier)}
+                                            show={isShown(`Tier-${p.pathTier}`)}
                                             onClick={() => handlePathClick(p.id, 1)}
                                             selected={selectedPaths.includes(p.id) || charPathIds.includes(p.id)}
                                             error={isMaxSelected && !selectedPaths.includes(p.id)}
                                         />
                                         <TableDropdown
                                             key={`Drop-${p.id}`}
-                                            show={(selectedPaths.includes(p.id) || charPathIds.includes(p.id)) && isShown(p.pathTier)}
+                                            show={(selectedPaths.includes(p.id) || charPathIds.includes(p.id)) && isShown(`Tier-${p.pathTier}`)}
                                             categories={['Descrição', `Benefícios`]}
                                             subtitleIndexes={[0, 1]}
                                             items={[

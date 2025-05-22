@@ -24,21 +24,21 @@ export default function LineagesRoute() {
     <>
       <div className="title-container">
         <h1 style={{ marginTop: '0', marginBottom: '0', padding: '0' }}>Linhagens</h1>
-        <button className="question-button" onClick={() => showRow(-3)}>?</button>
+        <button className="question-button" onClick={() => showRow("ELinhagem")}>?</button>
       </div>
 
       <GeneralExplain
         title={'Linhagens'}
         description="Linhagens são sua descendência, sua origem. Geralmente representam a quais espécies ou raças você e os seus pais pertencem, mas existem exceções."
-        isHidden={!isShown(-3)}
-        onCancel={() => showRow(-3)}
+        isHidden={!isShown("ELinhagem")}
+        onCancel={() => showRow("ELinhagem")}
       />
 
       <table>
         <TableHead
           tableTitles={['Linhagem']}
-          onClick={() => showRow(-2)}
-          open={isShown(-2)}
+          onClick={() => showRow("TBLinhagem")}
+          open={isShown("TBLinhagem")}
           error={false}
         />
         {lineages.map(ln => (
@@ -46,14 +46,14 @@ export default function LineagesRoute() {
             <TableData
               key={`Data-${ln.id}`}
               tableData={isPure ? [String(ln.name) + ' Pura'] : [String(ln.name)]}
-              show={isShown(-2)}
-              onClick={() => showRow(ln.id)}
-              selected={isShown(ln.id)}
+              show={isShown("TBLinhagem")}
+              onClick={() => showRow(`Linhagem-${ln.id}`)}
+              selected={isShown(`Linhagem-${ln.id}`)}
               error={false}
             />
             <TableDropdown
               key={`Drop-${ln.id}`}
-              show={isShown(-2) && isShown(ln.id)}
+              show={isShown("TBLinhagem") && isShown(`Linhagem-${ln.id}`)}
               categories={[]}
               subtitleIndexes={[]}
               items={[String(ln.description)]}

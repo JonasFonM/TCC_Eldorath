@@ -74,8 +74,8 @@ export default function LineageSelection() {
                         <table>
                             <TableHead
                                 tableTitles={['Linhagem']}
-                                onClick={() => showRow(-2)}
-                                open={isShown(-2)}
+                                onClick={() => showRow('TBLinhagem')}
+                                open={isShown('TBLinhagem')}
                                 error={false}
                             />
 
@@ -86,7 +86,7 @@ export default function LineageSelection() {
                                     <TableData
                                         key={ln.id}
                                         tableData={!isPure && selectedLineages.includes(ln.id) ? ['Meio ' + String(ln.name)] : [String(ln.name)]}
-                                        show={isShown(-2)}
+                                        show={isShown('TBLinhagem')}
                                         onClick={selectedLineages.length < maxSelectableLineages || selectedLineages.includes(ln.id)
                                             ? () => handleLineageClick(Number(ln.id))
                                             : () => null}
@@ -95,7 +95,7 @@ export default function LineageSelection() {
                                     />
                                     <TableDropdown
                                         key={`Drop-${ln.id}`}
-                                        show={isShown(-2) && selectedLineages.includes(ln.id)}
+                                        show={isShown('TBLinhagem') && selectedLineages.includes(ln.id)}
                                         categories={[]}
                                         subtitleIndexes={[]}
                                         items={[String(ln.description)]}

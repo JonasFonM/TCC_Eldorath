@@ -45,11 +45,7 @@ export default function SceneRoute() {
     const isMaster = scene.campaign.masterId === userId;
     const { showRow, isShown } = useShowRow()
 
-    const handleGridClick = async (event: React.FormEvent) => {
-        isMaster
-            ? null
-            : showRow(1)
-    }
+    
     const timeIcons = [
         "/Night.png",
         "/Dawn.png",
@@ -96,21 +92,13 @@ export default function SceneRoute() {
 
                 <h1 className="title-input" style={{ position: 'sticky', top: '64px' }}>{scene.title}</h1>
 
-                <GridMap onClick={() => showRow(availableChars.map(ac => ac.id)[0])} rows={10} columns={10} />
+                <GridMap onClick={() => null} rows={10} columns={10} />
 
                 <Outlet />
 
             </div >
 
 
-            {availableChars.map(ac =>
-                <GeneralExplain
-                    title={ac.name}
-                    description={String(ac.level)}
-                    isHidden={isShown(ac.id)}
-                    onCancel={() => showRow(ac.id)}
-                />)
-            }
         </React.Fragment>
     )
 }

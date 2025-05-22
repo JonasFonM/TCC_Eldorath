@@ -87,8 +87,8 @@ export default function ItemSelection() {
                             <table>
                                 <TableHead
                                     tableTitles={[translateSlotTypes[st]]}
-                                    onClick={() => showRow(index)}
-                                    open={isShown(index)}
+                                    onClick={() => showRow(`TipoSlot-${index}`)}
+                                    open={isShown(`TipoSlot-${index}`)}
                                     error={false}
                                 />
                             </table>
@@ -97,7 +97,7 @@ export default function ItemSelection() {
                                     key={item.id}
                                     className='container'
                                     style={{
-                                        display: isShown(index) ? '' : 'none',
+                                        display: isShown(`TipoSlot-${index}`) ? '' : 'none',
                                         border: selectedItems.includes(item.id) ? '1px solid green' : '1px solid gray',
                                         borderRadius: '2%'
                                     }}>

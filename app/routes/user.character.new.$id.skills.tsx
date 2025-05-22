@@ -66,6 +66,8 @@ export default function SkillSelectionRoute() {
 
   const handleSkillClick = (skillId: number, skillType: string) => {
 
+    if (!selectableSkills.map(sk => sk.id).includes(skillId)) return;
+
     if (skillType === 'Magia' && !isMaxMagics || selectedMagics.includes(skillId)) {
       setSelectedMagics((prevSkills) => {
 
@@ -140,8 +142,8 @@ export default function SkillSelectionRoute() {
             <table>
               <TableHead
                 tableTitles={['Talentos']}
-                onClick={() => showRow(1)}
-                open={isShown(1)}
+                onClick={() => showRow("Talentos")}
+                open={isShown("Talentos")}
                 error={false}
               />
 
@@ -150,7 +152,7 @@ export default function SkillSelectionRoute() {
                   <TableData
                     key={sk.id}
                     tableData={[`${sk.name}`]}
-                    show={isShown(1)}
+                    show={isShown("Talentos")}
                     onClick={() => handleSkillClick(sk.id, sk.type)}
                     selected={
                       selectedSkills.includes(sk.id)
@@ -166,7 +168,7 @@ export default function SkillSelectionRoute() {
                   />
                   <TableDropdown
                     key={`Drop-${sk.id}`}
-                    show={isShown(1)
+                    show={isShown("Talentos")
                       && (selectedSkills.includes(sk.id)
                         || selectedMagics.includes(sk.id)
                         || selectedManeuvers.includes(sk.id))
@@ -188,8 +190,8 @@ export default function SkillSelectionRoute() {
                 ? <thead>
                   <TableHead
                     tableTitles={['Talentos de Linhagem']}
-                    onClick={() => showRow(2)}
-                    open={isShown(2)}
+                    onClick={() => showRow("TLinhagem")}
+                    open={isShown("TLinhagem")}
                     error={false}
                   />
                 </thead>
@@ -200,7 +202,7 @@ export default function SkillSelectionRoute() {
                   <TableData
                     key={ls.id}
                     tableData={[`${ls.skill.name}`]}
-                    show={isShown(2)}
+                    show={isShown("TLinhagem")}
                     onClick={() => handleSkillClick(ls.skill.id, ls.skill.type)}
                     selected={selectedSkills.includes(ls.skill.id)}
                     error={
@@ -210,7 +212,7 @@ export default function SkillSelectionRoute() {
 
                   <TableDropdown
                     key={`Drop-${ls.skill.id}`}
-                    show={isShown(2)
+                    show={isShown("TLinhagem")
                       && (selectedSkills.includes(ls.skill.id)
                         || selectedMagics.includes(ls.skill.id)
                         || selectedManeuvers.includes(ls.skill.id))
@@ -232,8 +234,8 @@ export default function SkillSelectionRoute() {
               {isPure && selectablePureLineageSkills.length > 0
                 ? <TableHead
                   tableTitles={['Talentos de Linhagem Única']}
-                  onClick={() => showRow(3)}
-                  open={isShown(3)}
+                  onClick={() => showRow("TLinhagemUnica")}
+                  open={isShown("TLinhagemUnica")}
                   error={false}
                 />
                 : ''}
@@ -243,7 +245,7 @@ export default function SkillSelectionRoute() {
                   <TableData
                     key={ls.id}
                     tableData={[`${ls.skill.name}`]}
-                    show={isShown(3)}
+                    show={isShown("TLinhagemUnica")}
                     onClick={() => handleSkillClick(ls.skill.id, ls.skill.type)}
                     selected={selectedSkills.includes(ls.skill.id)}
                     error={
@@ -254,7 +256,7 @@ export default function SkillSelectionRoute() {
                   <TableDropdown
                     key={`Drop-${ls.skill.id}`}
                     show=
-                    {isShown(3)
+                    {isShown("TLinhagemUnica")
                       && (selectedSkills.includes(ls.skill.id)
                         || selectedMagics.includes(ls.skill.id)
                         || selectedManeuvers.includes(ls.skill.id))}

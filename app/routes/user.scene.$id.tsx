@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { campaign, scene, user } from "@prisma/client";
+import { campaign, character, scene, user } from "@prisma/client";
 import { LoaderFunction } from "@remix-run/node";
 import { NavLink, Outlet, useLoaderData } from "@remix-run/react";
 import React, { useState } from "react";
@@ -9,6 +9,8 @@ import { useSidebar } from "~/components/context-providers/side-bar-context";
 import { SideBars } from "~/components/context-providers/side-bars";
 import { getUserIdFromSession } from "~/utils/auth.server";
 import { prisma } from "~/utils/prisma.server";
+import { GeneralExplain } from "~/components/explanations/general-explain";
+import { useShowRow } from "~/components/context-providers/showRowContext";
 
 export const loader: LoaderFunction = async ({ params, request }) => {
 
@@ -38,11 +40,22 @@ export const loader: LoaderFunction = async ({ params, request }) => {
 };
 
 export default function SceneRoute() {
-    const { scene, userId } = useLoaderData<{ scene: scene & { campaign: campaign }, userId: number }>();
-    const [selectedDelete, setSelectedDelete] = useState<number>(0);
+    const { scene, userId, availableChars } = useLoaderData<{ scene: scene & { campaign: campaign }, userId: number, availableChars: character[] }>();
     const { isAllOpen, isHeaderOpen, isTempOpen } = useSidebar();
     const isMaster = scene.campaign.masterId === userId;
+    const { showRow, isShown } = useShowRow()
 
+    
+    const timeIcons = [
+        "/Night.png",
+        "/Dawn.png",
+        "/Day.png",
+        "/Dusk.png"
+    ]
+
+    function displayTimeIcon(i: number) {
+        return timeIcons[i - 1]
+    }
     return (
         <React.Fragment>
 
@@ -62,6 +75,9 @@ export default function SceneRoute() {
                 linkNames={[]}
                 temp={
                     <ul>
+                        <img alt={"Dia"}
+                            style={{ animation: 'fadeIn 0.3s ease-in-out', transition: "fadeIn 0.3s ease-in-out", width: '100%' }}
+                            src={displayTimeIcon(Number(scene.campaign.timeOfDay))} />
                         <li key={-1}>
                             <NavLink to={`/user/campaign/${scene.campaignId}`}>Campanha</NavLink>
                         </li>
@@ -74,7 +90,7 @@ export default function SceneRoute() {
 
             <div className="user">
 
-                <h1>{scene.title}</h1>
+                <h1 className="title-input" style={{ position: 'sticky', top: '64px' }}>{scene.title}</h1>
 
                 <GridMap onClick={() => null} rows={10} columns={10} />
 

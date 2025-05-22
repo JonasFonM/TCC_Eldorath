@@ -1,5 +1,3 @@
-import { lineage_skill, skill } from "@prisma/client"
-
 export type RegisterForm = {
   email: string
   password: string
@@ -9,6 +7,18 @@ export type RegisterForm = {
 export type LoginForm = {
   email: string
   password: string
+}
+
+export type NPCForm = {
+  name: string
+  level: number
+  tier: number
+  agility: number
+  body: number
+  mind: number
+  npc: boolean
+  boss: boolean
+  authorId: number
 }
 
 export type CharacterForm = {

@@ -18,6 +18,7 @@ export const translateSlotTypes: { [key: string]: any } = {
 
 
 export default function CharactersRoute() {
+
   return (
     <Outlet />
   );

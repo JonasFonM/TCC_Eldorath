@@ -1,7 +1,7 @@
 import { lineage, lineage_skill, skill } from "@prisma/client";
-import { ActionFunction, redirect } from "@remix-run/node";
+import { ActionFunction, json, redirect } from "@remix-run/node";
 import { NavLink, useOutletContext } from "@remix-run/react";
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 import { TableHead } from "~/components/character-sheet/table-head";
 import { TableData } from "~/components/character-sheet/table-data";
 import { TableDropdown } from "~/components/character-sheet/table-dropdown";
@@ -21,12 +21,17 @@ export const action: ActionFunction = async ({ request, params }) => {
 
   const selectedSkillIds = selectedSkills.map(id => parseInt(id)).concat(selectedMagics.map(id => parseInt(id))).concat(selectedManeuvers.map(id => parseInt(id)))
   const characterId = params.id
+  try {
+    await submitCharSkills(selectedSkillIds, Number(characterId))
+    await updateSkillPendencies(Number(characterId), selectedSkills.length, Number(pendingSkills))
+    await updateManeuverPendencies(Number(characterId), selectedManeuvers.length, Number(pendingManeuvers))
+    await updateMagicPendencies(Number(characterId), selectedMagics.length, Number(pendingMagics))
+    return redirect(`/user/character/new/${characterId}/inventory/`)
 
-  await submitCharSkills(selectedSkillIds, Number(characterId))
-  await updateSkillPendencies(Number(characterId), selectedSkills.length, Number(pendingSkills))
-  await updateManeuverPendencies(Number(characterId), selectedManeuvers.length, Number(pendingManeuvers))
-  await updateMagicPendencies(Number(characterId), selectedMagics.length, Number(pendingMagics))
-  return redirect(`/user/character/new/${characterId}/inventory/`)
+  } catch (error) {
+    console.error(error);
+    return json({ error: "Falha ao salvar Talentos." }, { status: 500 });
+  }
 }
 export default function SkillSelectionRoute() {
   const {
@@ -60,6 +65,8 @@ export default function SkillSelectionRoute() {
 
 
   const handleSkillClick = (skillId: number, skillType: string) => {
+
+    if (!selectableSkills.map(sk => sk.id).includes(skillId)) return;
 
     if (skillType === 'Magia' && !isMaxMagics || selectedMagics.includes(skillId)) {
       setSelectedMagics((prevSkills) => {
@@ -116,7 +123,8 @@ export default function SkillSelectionRoute() {
 
   return (
     <>
-      <h1>Talentos</h1>
+
+      <h1 className="title-input" style={{ position: 'sticky', top: '64px', backgroundColor: 'black' }}>Talentos</h1>
       {maxSelectableSkills > 0
         || maxMagics > 0
         || maxManeuvers > 0
@@ -125,40 +133,42 @@ export default function SkillSelectionRoute() {
 
           <form method="post" onSubmit={handleSubmit}>
 
-            <h2>Escolha seus Talentos</h2>
-            <h3>Você pode escolher {maxManeuvers} Manobras, {maxMagics} Magias e {maxSelectableSkills} Talentos quaisquer</h3>
+            <div className="container" style={{ position: 'sticky', top: '140px', backgroundColor: 'black', borderBottom: '1px solid gold' }}>
+              <h3 className="col-12" style={{ margin: "2px" }}>Talentos: {maxSelectableSkills - selectedSkills.length} </h3>
+              <h3 className="col-12" style={{ margin: "2px" }}>Manobras: {maxManeuvers - selectedManeuvers.length}</h3>
+              <h3 className="col-12" style={{ margin: "2px" }}>Magias: {maxMagics - selectedMagics.length}</h3>
+            </div>
 
             <table>
               <TableHead
                 tableTitles={['Talentos']}
-                onClick={() => showRow(1)}
-                open={isShown(1)}
+                onClick={() => showRow("Talentos")}
+                open={isShown("Talentos")}
+                error={false}
               />
 
-              {selectableSkills.map(sk => (
+              {skills.map(sk => (
                 <React.Fragment key={sk.id}>
-                  {/*
-                   className={!isMaxSelected
-                    || sk.type === 'Magia' && !isMaxMagics
-                    || sk.type === 'Manobra' && !isMaxManeuvers
-                    || selectedSkills.includes(sk.id)
-                    || selectedMagics.includes(sk.id)
-                    || selectedManeuvers.includes(sk.id)
-                    ? '' : 'error'}>
-                    */}
                   <TableData
                     key={sk.id}
                     tableData={[`${sk.name}`]}
-                    show={isShown(1)}
+                    show={isShown("Talentos")}
                     onClick={() => handleSkillClick(sk.id, sk.type)}
                     selected={
                       selectedSkills.includes(sk.id)
                       || selectedMagics.includes(sk.id)
-                      || selectedManeuvers.includes(sk.id)}
+                      || selectedManeuvers.includes(sk.id)
+                    }
+                    error={
+                      isMaxSelected && !selectedSkills.includes(sk.id)
+                      || sk.type === 'Magia' && isMaxMagics && isMaxSelected && selectedMagics.includes(sk.id)
+                      || sk.type === 'Manobra' && isMaxManeuvers && isMaxSelected && selectedManeuvers.includes(sk.id)
+                      || !selectableSkills.includes(sk)
+                    }
                   />
                   <TableDropdown
                     key={`Drop-${sk.id}`}
-                    show={isShown(1)
+                    show={isShown("Talentos")
                       && (selectedSkills.includes(sk.id)
                         || selectedMagics.includes(sk.id)
                         || selectedManeuvers.includes(sk.id))
@@ -180,29 +190,29 @@ export default function SkillSelectionRoute() {
                 ? <thead>
                   <TableHead
                     tableTitles={['Talentos de Linhagem']}
-                    onClick={() => showRow(2)}
-                    open={isShown(2)}
+                    onClick={() => showRow("TLinhagem")}
+                    open={isShown("TLinhagem")}
+                    error={false}
                   />
                 </thead>
                 : ''
               }
-
               {selectableNonPureLineageSkills.map(ls => (
                 <React.Fragment key={ls.id}>
-                  {
-                    //className={!isMaxSelected || selectedSkills.includes(ls.skill.id) ? '' : 'error'}
-                  }
                   <TableData
                     key={ls.id}
                     tableData={[`${ls.skill.name}`]}
-                    show={isShown(2)}
+                    show={isShown("TLinhagem")}
                     onClick={() => handleSkillClick(ls.skill.id, ls.skill.type)}
                     selected={selectedSkills.includes(ls.skill.id)}
+                    error={
+                      isMaxSelected && !selectedSkills.includes(ls.skill.id)
+                    }
                   />
 
                   <TableDropdown
                     key={`Drop-${ls.skill.id}`}
-                    show={isShown(2)
+                    show={isShown("TLinhagem")
                       && (selectedSkills.includes(ls.skill.id)
                         || selectedMagics.includes(ls.skill.id)
                         || selectedManeuvers.includes(ls.skill.id))
@@ -224,8 +234,9 @@ export default function SkillSelectionRoute() {
               {isPure && selectablePureLineageSkills.length > 0
                 ? <TableHead
                   tableTitles={['Talentos de Linhagem Única']}
-                  onClick={() => showRow(3)}
-                  open={isShown(3)}
+                  onClick={() => showRow("TLinhagemUnica")}
+                  open={isShown("TLinhagemUnica")}
+                  error={false}
                 />
                 : ''}
 
@@ -233,17 +244,19 @@ export default function SkillSelectionRoute() {
                 <React.Fragment key={ls.id}>
                   <TableData
                     key={ls.id}
-                    //className={!isMaxSelected || selectedSkills.includes(ls.skill.id) ? '' : 'error'}
                     tableData={[`${ls.skill.name}`]}
-                    show={isShown(3)}
+                    show={isShown("TLinhagemUnica")}
                     onClick={() => handleSkillClick(ls.skill.id, ls.skill.type)}
                     selected={selectedSkills.includes(ls.skill.id)}
+                    error={
+                      isMaxSelected && !selectedSkills.includes(ls.skill.id)
+                    }
                   />
 
                   <TableDropdown
                     key={`Drop-${ls.skill.id}`}
                     show=
-                    {isShown(3)
+                    {isShown("TLinhagemUnica")
                       && (selectedSkills.includes(ls.skill.id)
                         || selectedMagics.includes(ls.skill.id)
                         || selectedManeuvers.includes(ls.skill.id))}
@@ -286,7 +299,7 @@ export default function SkillSelectionRoute() {
 
             <input type="hidden" key={"pendingMagics"} name="pendingMagics" value={maxMagics} />
 
-            <button type="submit" className="button">Próximo</button>
+            <button type="submit" className="button">Avançar</button>
 
           </form>
 

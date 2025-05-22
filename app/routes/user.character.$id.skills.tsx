@@ -31,34 +31,36 @@ export default function SkillsRoute() {
     <React.Fragment>
       <div className="title-container">
         <h1 style={{ marginTop: '0', marginBottom: '0', padding: '0' }}>Talentos</h1>
-        <button className="question-button" onClick={() => showRow(-5)}>?</button>
+        <button className="question-button" onClick={() => showRow("ETalentos")}>?</button>
       </div>
 
       <GeneralExplain
         title={'Talentos'}
         description="Talentos têm efeitos diferentes que mudam como você interage com o jogo, principalmente em Combate. Eles são divididos em Características, Técnicas e Magias."
-        isHidden={!isShown(-5)}
-        onCancel={() => showRow(-5)}
+        isHidden={!isShown("ETalentos")}
+        onCancel={() => showRow("ETalentos")}
       />
 
       <table>
         <TableHead
           tableTitles={['Talentos']}
-          onClick={() => showRow(-1)}
-          open={isShown(-1)}
+          onClick={() => showRow("TBTalentos")}
+          open={isShown("TBTalentos")}
+          error={false}
         />
         {skills.map(sk => (
           <React.Fragment key={sk.id}>
             <TableData
               key={`Data-${sk.id}`}
               tableData={[`${sk.name}`]}
-              show={isShown(-1)}
-              onClick={() => showRow(sk.id)}
-              selected={isShown(sk.id)}
+              show={isShown("TBTalentos")}
+              onClick={() => showRow(`Talento-${sk.id}`)}
+              selected={isShown(`Talento-${sk.id}`)}
+              error={false}
             />
             <TableDropdown
               key={`Drop-${sk.id}`}
-              show={isShown(sk.id) && isShown(-1)}
+              show={isShown(`Talento-${sk.id}`) && isShown("TBTalentos")}
               categories={["", "Tipo", "Requisitos"]}
               subtitleIndexes={[1, 2]}
               items={[
@@ -75,8 +77,9 @@ export default function SkillsRoute() {
         {nonPureLineageSkills.length > 0
           ? <TableHead
             tableTitles={['Talentos de Linhagem']}
-            onClick={() => showRow(-2)}
-            open={isShown(-2)}
+            onClick={() => showRow("TBLinhagem")}
+            open={isShown("TBLinhagem")}
+            error={false}
           />
           : ''
         }
@@ -85,13 +88,14 @@ export default function SkillsRoute() {
             <TableData
               key={`Data-${ls.id}`}
               tableData={[`${ls.skill.name}`]}
-              show={isShown(-2)}
-              onClick={() => showRow(ls.skill.id)}
-              selected={isShown(ls.skill.id)}
+              show={isShown("TBLinhagem")}
+              onClick={() => showRow(`TalentoL-${ls.skill.id}`)}
+              selected={isShown(`TalentoL-${ls.skill.id}`)}
+              error={false}
             />
             <TableDropdown
               key={`Drop-${ls.skill.id}`}
-              show={isShown(ls.skill.id) && isShown(-2)}
+              show={isShown(`TalentoL-${ls.skill.id}`) && isShown("TBLinhagem")}
               categories={["", "Linhagem", "Tipo", "Requisitos"]}
               subtitleIndexes={[1, 2, 3]}
               items={[
@@ -110,8 +114,9 @@ export default function SkillsRoute() {
         {pureLineageSkills.length > 0
           ? <TableHead
             tableTitles={['Talentos de Linhagem Pura']}
-            onClick={() => showRow(-3)}
-            open={isShown(-3)}
+            onClick={() => showRow("TBLinhagemPura")}
+            open={isShown("TBLinhagemPura")}
+            error={false}
           />
           : ''}
 
@@ -120,13 +125,14 @@ export default function SkillsRoute() {
             <TableData
               key={ls.id}
               tableData={[`${ls.skill.name}`]}
-              show={isShown(-3)}
-              onClick={() => showRow(ls.skill.id)}
-              selected={isShown(ls.skill.id)}
+              show={isShown("TBLinhagemPura")}
+              onClick={() => showRow(`TalentoL-${ls.skill.id}`)}
+              selected={isShown(`TalentoL-${ls.skill.id}`)}
+              error={false}
             />
             <TableDropdown
               key={`Drop-${ls.skill.id}`}
-              show={isShown(ls.skill.id) && isShown(-2)}
+              show={isShown(`TalentoL-${ls.skill.id}`) && isShown("TBLinhagemPura")}
               categories={["", "Linhagem", "Tipo", "Requisitos"]}
               subtitleIndexes={[1, 2, 3]}
               items={[

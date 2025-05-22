@@ -73,7 +73,7 @@ export default function NewCharacterRoute() {
                 body: character.body,
                 mind: character.mind
             });
-            setLimit(6 + character.tier - character.mind - character.body - character.agility)
+            setLimit(6 + character.tier - character.mind - character.body - character.agility + (character.boss ? 4 : 0))
         }
     }, [character]);
 
@@ -211,7 +211,7 @@ export default function NewCharacterRoute() {
 
 
             <div className="container">
-                <button className="button" type="submit">Próximo</button>
+                <button className="button" type="submit">Avançar</button>
             </div>
         </form>
     );

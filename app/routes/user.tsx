@@ -2,7 +2,7 @@ import { friendship, user } from "@prisma/client";
 import { LoaderFunction } from "@remix-run/node";
 import { NavLink, Outlet, useLoaderData } from "@remix-run/react";
 import { ShowRowProvider } from "~/components/context-providers/showRowContext";
-import { SidebarProvider } from "~/components/context-providers/side-bar-context";
+import { SidebarProvider, useSidebar } from "~/components/context-providers/side-bar-context";
 import { getUserIdFromSession, requireUserId } from "~/utils/auth.server";
 import { prisma } from "~/utils/prisma.server";
 
@@ -64,8 +64,6 @@ export default function UserRoute() {
     <>
       <ul className="topnav">
         <li key={0}><NavLink to={`/user/home/profile/`}>Perfil</NavLink></li>
-        <li key={1}><NavLink to={`/user/character/`}>Personagens</NavLink></li>
-        <li key={2}><NavLink to={`/user/campaign/`}>Campanhas</NavLink></li>
         <li key={9} style={{ float: 'right' }}><NavLink className={'logout'} to={`/logout`}>Logout</NavLink></li>
       </ul>
 

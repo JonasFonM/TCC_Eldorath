@@ -17,7 +17,7 @@ export const action: ActionFunction = async ({ request, params }) => {
     const characterId = params.id
 
     if (!selectedLineages || selectedLineages.length === 0) {
-        return json({ error: "You must select at least one lineage." }, { status: 400 });
+        return redirect(`/user/character/new/${characterId}/paths/`);
     }
     try {
         await submitCharLineages(selectedLineageIds, Number(characterId), pure)
@@ -74,8 +74,9 @@ export default function LineageSelection() {
                         <table>
                             <TableHead
                                 tableTitles={['Linhagem']}
-                                onClick={() => showRow(-2)}
-                                open={isShown(-2)}
+                                onClick={() => showRow('TBLinhagem')}
+                                open={isShown('TBLinhagem')}
+                                error={false}
                             />
 
                             {lineages.map(ln => (
@@ -85,15 +86,16 @@ export default function LineageSelection() {
                                     <TableData
                                         key={ln.id}
                                         tableData={!isPure && selectedLineages.includes(ln.id) ? ['Meio ' + String(ln.name)] : [String(ln.name)]}
-                                        show={isShown(-2)}
+                                        show={isShown('TBLinhagem')}
                                         onClick={selectedLineages.length < maxSelectableLineages || selectedLineages.includes(ln.id)
                                             ? () => handleLineageClick(Number(ln.id))
                                             : () => null}
                                         selected={selectedLineages.includes(ln.id)}
+                                        error={selectedLineages.length >= maxSelectableLineages && !selectedLineages.includes(ln.id)}
                                     />
                                     <TableDropdown
                                         key={`Drop-${ln.id}`}
-                                        show={isShown(-2) && selectedLineages.includes(ln.id)}
+                                        show={isShown('TBLinhagem') && selectedLineages.includes(ln.id)}
                                         categories={[]}
                                         subtitleIndexes={[]}
                                         items={[String(ln.description)]}
@@ -110,7 +112,7 @@ export default function LineageSelection() {
                         <input type="hidden" key='pure' name="pure" value={isPure ? 'true' : 'false'} />
 
 
-                        <button type="submit" className="button">Próximo</button>
+                        <button type="submit" className="button">Avançar</button>
                     </form>
                 </>
 

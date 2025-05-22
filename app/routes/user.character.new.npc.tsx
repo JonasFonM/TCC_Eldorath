@@ -1,13 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { json, LoaderFunction, redirect } from "@remix-run/node"
 import { requireUserId } from '~/utils/auth.server'
-import { submitCharacter } from "~/utils/character.server"
+import { submitNPC } from "~/utils/npc.server"
 
 export const loader: LoaderFunction = async ({ request }) => {
   const userId = await requireUserId(request)
 
   try {
-    const character = await submitCharacter({ name: 'Nome', level: 1, tier: 1, agility: 1, body: 1, mind: 1, authorId: userId });
+    const character = await submitNPC({ name: 'Nome', boss: false, npc: true, level: 1, tier: 1, agility: 1, body: 1, mind: 1, authorId: userId });
 
     return (
       json({ character }, { status: 201 }),

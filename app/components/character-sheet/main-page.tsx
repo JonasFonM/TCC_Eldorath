@@ -48,7 +48,7 @@ export function CharacterSheet({ character, isAuthor }: Props) {
             <h1 className="title-container">Básicos<button onClick={() => setShowAtr(2)} className="question-button">?</button></h1>
             <GeneralExplain title={'Básicos'} description="Atributos Básicos são os valores principais para determinar as suas aptidões. Eles afetam seus Atributos Derivados e cada um tem funções especiais." isHidden={showAtr != 2} onCancel={() => setShowAtr(0)} />
 
-            <div className="container">
+            <div className="calendar-box">
                 <button onClick={() => setShowAtr(3)} className="block"><h1>{character.agility}</h1><p className="Atr">AGI</p></button>
                 <GeneralExplain title={'Agilidade'} description="Agilidade é usada para Acertar Ataques Físicos, além de ser a base principal da sua Defesa." isHidden={showAtr != 3} onCancel={() => setShowAtr(0)} />
 
@@ -70,7 +70,7 @@ export function CharacterSheet({ character, isAuthor }: Props) {
             <GeneralExplain title={'Recursos'} description="Recursos são Atributos que: ou você gasta para fazer algumas Ações, ou você perde quando for Alvo de um Ataque ou Efeito." isHidden={showAtr != 7} onCancel={() => setShowAtr(0)} />
 
 
-            <div className="container">
+            <div className="calendar-box">
 
                 <button onClick={() => setShowAtr(8)} className="block"><h1>{character.vitality}</h1><p className="Atr">VIT</p></button>
                 <GeneralExplain title={'Vitalidade'} description="Vitalidade representa quantos pontos de Dano você pode sofrer antes de morrer. Ela é baseada no seu Corpo, Categoria, Tamanho Efetivo e suas escolhas de Caminho." isHidden={showAtr != 8} onCancel={() => setShowAtr(0)} />
@@ -87,7 +87,7 @@ export function CharacterSheet({ character, isAuthor }: Props) {
             <GeneralExplain title={'Combate'} description="Atributos usados principalmente em Combate." isHidden={showAtr != 11} onCancel={() => setShowAtr(0)} />
 
 
-            <div className="container">
+            <div className="calendar-box">
 
                 <button onClick={() => setShowAtr(12)} className="block"><h1>{character.defense}</h1><p className="Atr">DF</p></button>
                 <GeneralExplain title={'Defesa'} description="Defesa reduz o Dano Físico que você recebe em um valor fixo. Ela é baseada na sua Agilidade e Itens Equipados." isHidden={showAtr != 12} onCancel={() => setShowAtr(0)} />
@@ -107,7 +107,7 @@ export function CharacterSheet({ character, isAuthor }: Props) {
 
             <GeneralExplain title={'Carga'} description="Cargas são unidades arbitrárias que representam uma combinação de volume e peso, a fim de simplificar o uso do Inventário." isHidden={showAtr != 16} onCancel={() => setShowAtr(0)} />
 
-            <div className="container">
+            <div className="calendar-box">
 
                 <button onClick={() => setShowAtr(17)} className="block"><h1>{character.baseWeight}</h1><p className="Atr">PE</p></button>
                 <GeneralExplain title={'Peso'} description="Peso representa quantas Cargas você ocupa em um Inventário caso alguém tente Carregar ou Levantar você." isHidden={showAtr != 17} onCancel={() => setShowAtr(0)} />

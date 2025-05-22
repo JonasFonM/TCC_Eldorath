@@ -26,7 +26,6 @@ export const loader: LoaderFunction = async ({ params, request }) => {
             { id: { in: campaign?.players.map(pl => pl.userId) } }
     })
 
-
     const characters = await getCharactersFromUser(Number(userId))
 
     const isMaster = Number(userId) === Number(campaign?.masterId)
@@ -39,35 +38,48 @@ export const loader: LoaderFunction = async ({ params, request }) => {
 }
 
 export default function CampaignRoute() {
-    const { isMaster, isPlayer, campaignCharacter, characters, campaign, party, campaignId } = useLoaderData<{ isMaster: boolean, isPlayer: boolean, campaignCharacter: character, characters: character[], campaign: (campaign & { scenes: scene[], characters: character[], players: partyMembers[] }), party: user[], campaignId: number }>()
-    const { isAllOpen, isHeaderOpen, isTempOpen } = useSidebar();
-    const [showList, setShowList] = useState(0);
-    const [showCreator, setShowCreator] = useState(0);
-    const [showPlayers, setShowPlayers] = useState(0);
+    const { isMaster,
+        isPlayer,
+        campaignCharacter,
+        characters,
+        campaign,
+        party,
+        campaignId } =
+        useLoaderData<{
+            isMaster: boolean,
+            isPlayer: boolean,
+            campaignCharacter: character,
+            characters: character[],
+            campaign: (campaign & { scenes: scene[], characters: character[], players: partyMembers[] }),
+            party: user[],
+            campaignId: number
+        }>()
     const location = useLocation()
     const { showRow, isShown } = useShowRow()
+    const timeIcons = [
+        "/Night.png",
+        "/Dawn.png",
+        "/Day.png",
+        "/Dusk.png"
+    ]
+
+    function displayTimeIcon(i: number) {
+        return timeIcons[i - 1]
+    }
 
     const getCampaignAction = () => {
         if (isMaster) return (
             <React.Fragment>
-                <ul>
-                    <li key={1}><NavLink to={`/user/campaign/${campaignId}/adv/timeOfDay`}>Avançar Fase</NavLink></li>
-                    <li key={2}><NavLink to={`/user/campaign/${campaignId}/adv/monthDay`}>Avançar Dia</NavLink></li>
-                    <li key={3}><NavLink to={`/user/campaign/${campaignId}/adv/month`}>Avançar Mês</NavLink></li>
-                    <li key={4}><NavLink to={`/user/campaign/${campaignId}/adv/year`}>Avançar Ano</NavLink></li>
-                    <li key={5}><NavLink to={`/user/campaign/${campaignId}/adv/era`}>Avançar Era</NavLink></li>
-                </ul>
-
                 <table>
                     <tbody>
-                        <tr onClick={() => showList === 0 ? setShowList(1) : setShowList(0)}>
+                        <tr onClick={() => showRow("LC")}>
                             <th>Listar</th>
                             <td>Cenas</td>
                         </tr>
                     </tbody>
                 </table>
 
-                <ul style={showList === 0 ? { display: 'none' } : {}}>
+                <ul style={isShown("LC") ? { display: 'none' } : {}}>
                     {campaign.scenes.map(sc =>
                         <li key={sc.id}>
                             <NavLink to={`/user/scene/${sc.id}`}>
@@ -81,7 +93,7 @@ export default function CampaignRoute() {
 
                 <table>
                     <tbody>
-                        <tr onClick={() => setShowCreator(1)}>
+                        <tr onClick={() => showRow("CC")}>
                             <th>Criar</th>
                             <td>Cena</td>
                         </tr>
@@ -96,7 +108,7 @@ export default function CampaignRoute() {
                 return (
                     <React.Fragment>
                         <ul>
-                            <li key={-5}><h3>Seu Personagem</h3></li>
+                            <li key={"EEra"}><h3>Seu Personagem</h3></li>
                             <li key={1}>
                                 <NavLink to={`/user/character/${campaignCharacter.id}/stats`}>
                                     {campaignCharacter.name}
@@ -141,11 +153,11 @@ export default function CampaignRoute() {
                 <React.Fragment>
                     <ul>
                         <li key={-1}>
-                            <button onClick={() => showList === 0 ? setShowList(1) : setShowList(0)}>Vincular Personagem</button>
+                            <button onClick={() => showRow("VincP")}>Vincular Personagem</button>
                         </li>
                     </ul>
 
-                    <ul style={showList === 0 ? { display: 'none' } : {}}>
+                    <ul style={isShown("VincP") ? { display: 'none' } : {}}>
                         {characters.map(cs =>
                             <li key={cs.id}>
                                 <NavLink to={`/user/campaign/${campaignId}/bind/${cs.id}`}>
@@ -187,47 +199,66 @@ export default function CampaignRoute() {
                 tableDatas={[]}
                 tableExplain={[]}
 
-                links={isMaster ? [`/user/campaign/${campaignId}/rtn/timeOfDay`, `/user/campaign/${campaignId}/rtn/monthDay`, `/user/campaign/${campaignId}/rtn/month`, `/user/campaign/${campaignId}/rtn/year`, `/user/campaign/${campaignId}/rtn/era`] : []}
-                linkNames={isMaster ? [`Voltar Fase`, `Voltar Dia`, `Voltar Mês`, `Voltar Ano`, `Voltar Era`] : []}
+                links={isMaster ? [
+                    `/user/campaign/${campaignId}/rtn/timeOfDay`,
+                    `/user/campaign/${campaignId}/adv/timeOfDay`,
+                    `/user/campaign/${campaignId}/rtn/monthDay`,
+                    `/user/campaign/${campaignId}/adv/monthDay`,
+                    `/user/campaign/${campaignId}/rtn/month`,
+                    `/user/campaign/${campaignId}/adv/month`,
+                    `/user/campaign/${campaignId}/rtn/year`,
+                    `/user/campaign/${campaignId}/adv/year`,
+                    `/user/campaign/${campaignId}/rtn/era`,
+                    `/user/campaign/${campaignId}/adv/era`,
+                ] : []}
+                linkNames={isMaster ? [
+                    `Voltar Fase`,
+                    `Avançar Fase`,
+                    `Voltar Dia`,
+                    `Avançar Dia`,
+                    `Voltar Mês`,
+                    `Avançar Mês`,
+                    `Voltar Ano`,
+                    `Avançar Ano`,
+                    `Voltar Era`,
+                    `Avançar Era`
+                ] : []}
                 temp={
                     <React.Fragment>
-
-                        <ul>
-                            <li key={-5}>
-                                {campaign.timeOfDay === 1
-                                    ? <img src={"/Night.png"} alt={"Dia"} style={{ animation: 'descend 0.3s', width: "100%", height: "100%" }} />
-                                    : ''
-                                }
-                                {campaign.timeOfDay === 2
-                                    ? <img src={"/Dawn.png"} alt={"Dia"} style={{ animation: 'descend 0.3s', width: "100%", height: "100%" }} />
-                                    : ''
-                                }
-                                {campaign.timeOfDay === 3
-                                    ? <img src={"/Day.png"} alt={"Dia"} style={{ animation: 'descend 0.3s', width: "100%", height: "100%" }} />
-                                    : ''
-                                }
-                                {campaign.timeOfDay === 4
-                                    ? <img src={"/Dusk.png"} alt={"Dia"} style={{ animation: 'descend 0.3s', width: "100%", height: "100%" }} />
-                                    : ''
-                                }
-                            </li>
-                        </ul>
 
                         {getCampaignAction()}
 
                         <ul>
 
                             <li key={-3}>
-                                <button onClick={showPlayers != 1 ? () => setShowPlayers(1) : () => setShowPlayers(0)}>Jogadores</button>
+                                <button onClick={() => showRow("LJ")}>Jogadores</button>
                             </li>
 
                         </ul>
 
-                        <ul style={showPlayers != 1 ? { display: 'none' } : { display: "inherit" }}>
+                        <ul style={!isShown("LJ") ? { display: 'none' } : { display: "inherit" }}>
                             {party.map(
                                 pl => <li key={pl.id}>
                                     <NavLink to={`/user/home/profile/${pl.id}`}>
                                         {pl.username}
+                                    </NavLink>
+                                </li>
+                            )}
+                        </ul>
+
+                        <ul>
+
+                            <li key={-3}>
+                                <button onClick={() => showRow("LP")}>Personagens</button>
+                            </li>
+
+                        </ul>
+
+                        <ul style={!isShown("LP") ? { display: 'none' } : { display: "inherit" }}>
+                            {campaign.characters.map(
+                                cc => <li key={cc.id}>
+                                    <NavLink to={`/user/character/${cc.id}/stats`}>
+                                        {cc.name}
                                     </NavLink>
                                 </li>
                             )}
@@ -242,40 +273,44 @@ export default function CampaignRoute() {
             <div className="user" >
 
                 <h1 className="title-input" style={{ position: 'sticky', top: '64px' }}>{campaign.title}</h1>
-                <SceneCreator isHidden={showCreator === 0} onCancel={() => setShowCreator(0)} campaignId={String(campaignId)} />
-
-                {isMaster
-                    ? <h2><NavLink className={'lineBtn'} to={`/user/campaign/edit/${campaignId}/`}>Editar</NavLink></h2>
-                    : ''
-                }
+                <SceneCreator isHidden={!isShown("CC")} onCancel={() => showRow("CC")} campaignId={String(campaignId)} />
 
                 <div className="calendar-box">
-                    <h2 className="col-12"><button onClick={() => showRow(-15)} className="lineBtn">{translateWeekDays(campaign.monthDay)}</button>,
-                        Dia {campaign.monthDay} de <button onClick={() => showRow(-10)} className="lineBtn">{translateMonth(campaign.month)}</button> de {campaign.year} <button onClick={() => showRow(-5)} className="lineBtn">E{campaign.era}</button></h2>
+                    <div className="col-12">
+                        <img alt={"Dia"}
+                            style={{ animation: 'fadeIn 0.3s ease-in-out', transition: "fadeIn 0.3s ease-in-out", width: '100%' }}
+                            src={displayTimeIcon(Number(campaign.timeOfDay))} />
+                    </div>
+                    <h2 className="col-12"><button onClick={() => showRow("EDia")} className="lineBtn">{translateWeekDays(campaign.monthDay)}</button>,
+                        Dia {campaign.monthDay} de <button onClick={() => showRow("EMes")} className="lineBtn">{translateMonth(campaign.month)}</button> de {campaign.year} <button onClick={() => showRow("EEra")} className="lineBtn">E{campaign.era}</button></h2>
 
                 </div>
 
-
                 <GeneralExplain
                     title="Eras"
-                    isHidden={!isShown(-5)}
+                    isHidden={!isShown("EEra")}
                     description="Eras são as maiores medidas de tempo usadas em Eldorath. A mudança de uma Era só ocorre em eventos cataclismicos onde paradigmas importantes da própria realidade são afetados. Como muitas espécies extremamente longevas compõem a demografia de Eldorath, a Era é mais importante que o Ano para determinar períodos históricos."
-                    onCancel={() => showRow(-5)}
+                    onCancel={() => showRow("EEra")}
                 />
                 <GeneralExplain
                     title="Meses"
-                    isHidden={!isShown(-10)}
+                    isHidden={!isShown("EMes")}
                     description="Cada mês em Eldorath é carregado de simbologia, tradições e fenômenos que se repetem anualmente. Um ano em Eldorath dura 12 meses, e cada mês dura 5 semanas de 6 dias cada."
-                    onCancel={() => showRow(-10)}
+                    onCancel={() => showRow("EMes")}
                 />
                 <GeneralExplain
                     title="Dias"
-                    isHidden={!isShown(-15)}
+                    isHidden={!isShown("EDia")}
                     description="Os dias da semana em Eldorath homenageiam divindades e forças ancestrais. Um Dia em Eldorath é separado em Fases: A Madrugada que se inicia à meia-noite, a Alvorada, às 6 horas da manhã, a Tarde, ao meio-dia e a Noite, às 18 horas."
-                    onCancel={() => showRow(-15)}
+                    onCancel={() => showRow("EDia")}
                 />
 
                 <div className="container">
+
+                    {isMaster
+                        ? <h2><NavLink className={'lineBtn'} to={`/user/campaign/edit/${campaignId}/`}>Editar Descrição</NavLink></h2>
+                        : ''
+                    }
 
                     <div className="calendar-box" style={{ justifyContent: 'center' }}>
                         <p style={{ textAlign: 'justify', overflow: 'auto', display: location.pathname === `/user/campaign/${campaignId}` ? 'inherit' : 'none' }}>{campaign.description}</p>

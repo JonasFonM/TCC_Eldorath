@@ -87,8 +87,9 @@ export default function ItemSelection() {
                             <table>
                                 <TableHead
                                     tableTitles={[translateSlotTypes[st]]}
-                                    onClick={() => showRow(index)}
-                                    open={isShown(index)}
+                                    onClick={() => showRow(`TipoSlot-${index}`)}
+                                    open={isShown(`TipoSlot-${index}`)}
+                                    error={false}
                                 />
                             </table>
                             {items.filter(i => i.type === st).map(item => (
@@ -96,36 +97,32 @@ export default function ItemSelection() {
                                     key={item.id}
                                     className='container'
                                     style={{
-                                        display: isShown(index) ? '' : 'none',
+                                        display: isShown(`TipoSlot-${index}`) ? '' : 'none',
                                         border: selectedItems.includes(item.id) ? '1px solid green' : '1px solid gray',
                                         borderRadius: '2%'
                                     }}>
 
-                                    <div className="col-12">
-                                        <h3 style={{ color: 'gold' }}>{item.name}</h3>
-                                        <p>{item.description}</p>
+                                    <div className="col-3">
+                                        <button style={{ fontSize: '2rem' }} type="button" className="button" onClick={() => handleItemMinus(item.id, item.baseCost)}>-</button>
                                     </div>
 
-                                    <div className='col-12'>
-                                        <p>Custo: {item.baseCost}</p>
-                                        <p>Peso: {item.baseWeight}</p>
+                                    <div className="col-6">
+                                        <div className="col-12">
+                                            <h3 style={{ color: 'gold' }}>{item.name} {`(` + selectedItems.filter(i => i === item.id).length + `)`}</h3>
+                                            <p>{item.description}</p>
+                                        </div>
+                                        <h1 className="col-4" style={{ fontSize: "1.1rem" }}>Custo: {item.baseCost}</h1>
+                                        <h1 className="col-4" style={{ fontSize: "1.1rem" }}>Peso: {item.baseWeight}</h1>
                                         {item.type === 'slotWeapon'
-                                            ? <p>Alcance: {item.baseReach}</p>
-                                            : <p>Defesa: {item.baseDefense}</p>
+                                            ? <h1 className="col-4" style={{ fontSize: "1.1rem" }}>Alcance: {item.baseReach}</h1>
+                                            : <h1 className="col-4" style={{ fontSize: "1.1rem" }}>Defesa: {item.baseDefense}</h1>
                                         }
                                     </div>
 
-                                    <div className="col-5">
-                                        <button type="button" className="button" onClick={() => handleItemMinus(item.id, item.baseCost)}>-</button>
+                                    <div className="col-3">
+                                        <button style={{ fontSize: '2rem' }} type="button" className="button" onClick={() => handleItemPlus(item.id, item.baseCost)}>+</button>
                                     </div>
 
-                                    <div className="col-2">
-                                        {selectedItems.filter(i => i === item.id).length || 0}
-                                    </div>
-
-                                    <div className="col-5">
-                                        <button type="button" className="button" onClick={() => handleItemPlus(item.id, item.baseCost)}>+</button>
-                                    </div>
                                     {item.baseCost > maxCost - selectedCost ? error && <p className="error" >{error}</p> : ''}
 
 
@@ -143,7 +140,7 @@ export default function ItemSelection() {
                     ))
                 }
 
-                <button type="submit" className="button"> Próximo</button>
+                <button type="submit" className="button">Avançar</button>
 
             </form>
 

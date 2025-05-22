@@ -64,7 +64,7 @@ export default function LineageSelection() {
 
     return (
         <>
-            <h1>Linhagens</h1>
+            <h1 className="title-input" style={{ position: 'sticky', top: '64px', backgroundColor: 'black' }}>Linhagens</h1>
             {maxSelectableLineages > 0 ?
                 <>
                     <form method="post" onSubmit={handleSubmit}>

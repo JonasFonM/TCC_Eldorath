@@ -41,7 +41,7 @@ export default function LineagesRoute() {
 
     return (
         <>
-            <h1 style={{ marginTop: '0', marginBottom: '0', padding: '0' }}>Resumo Final</h1>
+            <h1 className="title-input" style={{ position: 'sticky', top: '64px', backgroundColor: 'black' }}>Resumo Final</h1>
             <h2>Suas Escolhas</h2>
 
             <table>

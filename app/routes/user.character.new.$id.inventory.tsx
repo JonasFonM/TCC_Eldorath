@@ -75,11 +75,12 @@ export default function ItemSelection() {
 
     return (
         <>
+            <h1 className="title-input" style={{ position: 'sticky', top: '64px', backgroundColor: 'black' }}>Itens Iniciais</h1>
+            <div className="container" style={{ position: 'sticky', top: '139px', backgroundColor: 'black', borderBottom: '1px solid gold' }}>
+                <h3 className="col-12" style={{ margin: "2px" }}>Drakas : {character.gold - selectedCost}</h3>
+                <h3 className="col-12" style={{ margin: "2px" }}>*Drakas não gastos podem ser usados em jogo</h3>
+            </div>
             <form method="post">
-                <h1 className="title-container">Itens Iniciais</h1>
-                <h2>Escolha seus itens iniciais</h2>
-                <h3>*Drakas não gastos podem ser usados em jogo</h3>
-                <h2>Drakas : {character.gold - selectedCost}</h2>
 
                 <div className="items-grid">
                     {slotTypes.map((st, index) =>
@@ -111,11 +112,23 @@ export default function ItemSelection() {
                                             <h3 style={{ color: 'gold' }}>{item.name} {`(` + selectedItems.filter(i => i === item.id).length + `)`}</h3>
                                             <p>{item.description}</p>
                                         </div>
-                                        <h1 className="col-4" style={{ fontSize: "1.1rem" }}>Custo: {item.baseCost}</h1>
-                                        <h1 className="col-4" style={{ fontSize: "1.1rem" }}>Peso: {item.baseWeight}</h1>
+                                        <div className="col-4" >
+                                            <h2 style={{ fontSize: "1.1rem" }}>Custo: </h2>
+                                            <h1 style={{ fontSize: "1.1rem" }}>{item.baseCost}</h1>
+                                        </div>
+                                        <div className="col-4" >
+                                            <h2 style={{ fontSize: "1.1rem" }}>Peso: </h2>
+                                            <h1 style={{ fontSize: "1.1rem" }}>{item.baseWeight}</h1>
+                                        </div>
                                         {item.type === 'slotWeapon'
-                                            ? <h1 className="col-4" style={{ fontSize: "1.1rem" }}>Alcance: {item.baseReach}</h1>
-                                            : <h1 className="col-4" style={{ fontSize: "1.1rem" }}>Defesa: {item.baseDefense}</h1>
+                                            ? <div className="col-4" >
+                                                <h2 style={{ fontSize: "1.1rem" }}>Alcance: </h2>
+                                                <h1 style={{ fontSize: "1.1rem" }}>{item.baseReach}</h1>
+                                            </div>
+                                            : <div className="col-4" >
+                                                <h2 style={{ fontSize: "1.1rem" }}>Defesa: </h2>
+                                                <h1 style={{ fontSize: "1.1rem" }}>{item.baseDefense}</h1>
+                                            </div>
                                         }
                                     </div>
 

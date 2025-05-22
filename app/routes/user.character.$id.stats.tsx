@@ -6,10 +6,12 @@ export default function StatsRoute() {
     const { character, isAuthor } = useOutletContext<{ character: any, isAuthor: boolean }>();
 
     return (
-        <CharacterSheet
-            key={character.id}
-            character={character}
-            isAuthor={isAuthor}
-        />
+        <div style={{marginLeft: '200px', marginRight: '200px'}}>
+            <CharacterSheet
+                key={character.id}
+                character={character}
+                isAuthor={isAuthor}
+            />
+        </div>
     )
 }

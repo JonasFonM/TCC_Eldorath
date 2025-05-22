@@ -96,11 +96,11 @@ export default function PathSelection() {
 
     return (
         <>
-            <h1>Caminhos</h1>
+            <h1 className="title-input" style={{ position: 'sticky', top: '64px', backgroundColor: 'black' }}>Caminhos</h1>
 
             <form method="post" onSubmit={handleSubmit}>
 
-                <h2>Escolha seu Caminho {selectedTiers}</h2>
+                <h2>Escolha seu Caminho</h2>
                 <div style={{ marginBottom: '120px' }}>
 
                     {allTiers.map((t, index) =>

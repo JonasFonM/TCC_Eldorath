@@ -16,7 +16,6 @@ export type NPCForm = {
   agility: number
   body: number
   mind: number
-  npc: boolean
   boss: boolean
   authorId: number
 }

@@ -814,7 +814,6 @@ td:last-child {
   padding: 15px;
   border-radius: 10px;
   box-shadow: 1px 0px 8px 1px gold;
-  width: 98%;
 }
 
 .calendar-field {
@@ -830,6 +829,10 @@ td:last-child {
   font-family: serif;
   font-variant: small-caps;
   font-weight: bold;
+}
+
+textarea {
+  width: 97%;
 }
 
 select {

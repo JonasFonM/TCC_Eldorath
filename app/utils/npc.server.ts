@@ -11,6 +11,8 @@ export const createNPC = async (npc: NPCForm) => {
     const weight = 10 + (2 * npc.body)
     const defense = npc.agility;
     const magicdefense = npc.mind;
+    const gold = npc.boss ? 1500 : 150
+
 
     const newNPC = await prisma.character.create({
         data: {
@@ -18,6 +20,8 @@ export const createNPC = async (npc: NPCForm) => {
             level: npc.level,
             tier: npc.tier,
             boss: npc.boss,
+            npc: true,
+            gold: gold,
             agility: npc.agility,
             body: npc.body,
             mind: npc.mind,
@@ -41,6 +45,8 @@ export const createNPC = async (npc: NPCForm) => {
         level: npc.level,
         tier: npc.tier,
         boss: npc.boss,
+        npc: true,
+        gold: gold,
         agility: npc.agility,
         body: npc.body,
         mind: npc.mind,
@@ -68,7 +74,6 @@ export const updateNPC = async (npc: NPCForm, npcId: number) => {
     const weight = 10 + (2 * npc.body)
     const defense = npc.agility;
     const magicdefense = npc.mind;
-    const gold = npc.boss ? 1500 : 150
 
 
     const updatedNPC = await prisma.character.update({
@@ -81,7 +86,6 @@ export const updateNPC = async (npc: NPCForm, npcId: number) => {
             level: npc.level,
             tier: npc.tier,
             boss: npc.boss,
-            gold: gold,
             agility: npc.agility,
             body: npc.body,
             mind: npc.mind,
@@ -106,7 +110,6 @@ export const updateNPC = async (npc: NPCForm, npcId: number) => {
         level: npc.level,
         tier: npc.tier,
         boss: npc.boss,
-        gold: gold,
         agility: npc.agility,
         body: npc.body,
         mind: npc.mind,

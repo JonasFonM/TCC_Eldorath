@@ -47,13 +47,13 @@ export default function UserProfileRoute() {
                 </thead>
             </table>
 
-            <h1 id="Campanhas" className="title-input" style={isShown(1) ? { backgroundColor: 'black', boxShadow: '1px 1px 8px 1px gold' } : {}}>
-                <button className="lineBtn" onClick={() => showRow(1)} >
+            <h1 id="Campanhas" className="title-input" style={isShown("Campanhas") ? { backgroundColor: 'black', boxShadow: '1px 1px 8px 1px gold' } : {}}>
+                <button className="lineBtn" onClick={() => showRow("Campanhas")} >
                     {isOwnProfile ? 'Suas Campanhas' : `Campanhas de ${profileUser.username}`}
                 </button>
             </h1>
 
-            <div className="container" style={isShown(1) ? { display: 'inherit' } : { display: 'none' }}>
+            <div className="container" style={isShown("Campanhas") ? { display: 'inherit' } : { display: 'none' }}>
                 <CampaignPanel isAuthor={isOwnProfile} campaigns={profileCampaigns} />
                 {isOwnProfile
                     ? <div className="col-12">
@@ -68,13 +68,13 @@ export default function UserProfileRoute() {
             </div>
 
 
-            <h1 id="Personagens" className="title-input" style={isShown(2) ? { backgroundColor: 'black', boxShadow: '1px 1px 8px 1px gold' } : {}}>
-                <button className="lineBtn" onClick={() => showRow(2)}>
+            <h1 id="Personagens" className="title-input" style={isShown("Personagens") ? { backgroundColor: 'black', boxShadow: '1px 1px 8px 1px gold' } : {}}>
+                <button className="lineBtn" onClick={() => showRow("Personagens")}>
                     {isOwnProfile ? 'Seus Personagens' : `Personagens de ${profileUser.username}`}
                 </button>
             </h1>
 
-            <div className="container" style={isShown(2) ? { display: 'inherit' } : { display: 'none' }}>
+            <div className="container" style={isShown("Personagens") ? { display: 'inherit' } : { display: 'none' }}>
                 <CharacterPanel isAuthor={isOwnProfile} characters={profileCharacters} />
                 {isOwnProfile
                     ? <div className="col-12">

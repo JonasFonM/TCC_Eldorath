@@ -1,4 +1,4 @@
-import { lineage, lineage_skill, skill } from "@prisma/client";
+import { character, character_skill, lineage, lineage_skill, skill } from "@prisma/client";
 import { ActionFunction, json, redirect } from "@remix-run/node";
 import { NavLink, useOutletContext } from "@remix-run/react";
 import React, { useState } from "react";
@@ -36,7 +36,10 @@ export const action: ActionFunction = async ({ request, params }) => {
 export default function SkillSelectionRoute() {
   const {
     characterId,
+    character,
     skills,
+    nonPureLineageSkills,
+    pureLineageSkills,
     selectableNonPureLineageSkills,
     selectablePureLineageSkills,
     isPure,
@@ -45,7 +48,10 @@ export default function SkillSelectionRoute() {
     =
     useOutletContext<{
       characterId: string,
+      character: (character & { skills: character_skill[] }),
       skills: skill[],
+      pureLineageSkills: (lineage_skill & { skill: skill, lineage: lineage })[],
+      nonPureLineageSkills: (lineage_skill & { skill: skill, lineage: lineage })[],
       selectablePureLineageSkills: (lineage_skill & { skill: skill, lineage: lineage })[],
       selectableNonPureLineageSkills: (lineage_skill & { skill: skill, lineage: lineage })[],
       isPure: boolean,
@@ -63,10 +69,16 @@ export default function SkillSelectionRoute() {
 
   const { showRow, isShown } = useShowRow();
 
+  const isPreSelected = (skillId: number) => {
+    return character.skills.map(cs => cs.skillId).includes(skillId)
+  }
 
   const handleSkillClick = (skillId: number, skillType: string) => {
 
-    if (!selectableSkills.map(sk => sk.id).includes(skillId)) return;
+    if (!selectableSkills.map(sk => sk.id).includes(skillId)
+      && !selectableNonPureLineageSkills.map(sk => sk.skillId).includes(skillId)
+      && !selectablePureLineageSkills.map(sk => sk.skillId).includes(skillId)
+    ) return;
 
     if (skillType === 'Magia' && !isMaxMagics || selectedMagics.includes(skillId)) {
       setSelectedMagics((prevSkills) => {
@@ -95,7 +107,7 @@ export default function SkillSelectionRoute() {
       )
     }
 
-    if (skillType === 'Passiva' && !isMaxSelected
+    if (skillType !== 'Manobra' && skillType !== 'Magia' && !isMaxSelected
       || !isMaxSelected && (skillType === 'Manobra' && isMaxManeuvers && !selectedManeuvers.includes(skillId))
       || !isMaxSelected && (skillType === 'Magia' && isMaxMagics && !selectedMagics.includes(skillId))
       || selectedSkills.includes(skillId)
@@ -114,7 +126,7 @@ export default function SkillSelectionRoute() {
   };
 
   const handleSubmit = async (event: React.FormEvent) => {
-    if (selectedSkills.length + selectedMagics.length + selectedManeuvers.length === 0) {
+    if (selectedSkills.length + selectedMagics.length + selectedManeuvers.length < 1 && character.skills.length < 1) {
       event.preventDefault();
       return alert("Selecione pelo menos um Talento.")
     }
@@ -131,13 +143,13 @@ export default function SkillSelectionRoute() {
         || maxManeuvers > 0
         ? <>
 
-          <form method="post" onSubmit={handleSubmit}>
+          <div className="container" style={{ position: 'sticky', top: '139px', backgroundColor: 'black', borderBottom: '1px solid gold' }}>
+            <h3 className="col-12" style={{ margin: "2px" }}>Talentos: {maxSelectableSkills - selectedSkills.length} </h3>
+            <h3 className="col-12" style={{ margin: "2px" }}>Manobras: {maxManeuvers - selectedManeuvers.length}</h3>
+            <h3 className="col-12" style={{ margin: "2px" }}>Magias: {maxMagics - selectedMagics.length}</h3>
+          </div>
 
-            <div className="container" style={{ position: 'sticky', top: '140px', backgroundColor: 'black', borderBottom: '1px solid gold' }}>
-              <h3 className="col-12" style={{ margin: "2px" }}>Talentos: {maxSelectableSkills - selectedSkills.length} </h3>
-              <h3 className="col-12" style={{ margin: "2px" }}>Manobras: {maxManeuvers - selectedManeuvers.length}</h3>
-              <h3 className="col-12" style={{ margin: "2px" }}>Magias: {maxMagics - selectedMagics.length}</h3>
-            </div>
+          <form method="post" onSubmit={handleSubmit}>
 
             <table>
               <TableHead
@@ -158,12 +170,12 @@ export default function SkillSelectionRoute() {
                       selectedSkills.includes(sk.id)
                       || selectedMagics.includes(sk.id)
                       || selectedManeuvers.includes(sk.id)
+                      || isPreSelected(sk.id)
                     }
                     error={
-                      isMaxSelected && !selectedSkills.includes(sk.id)
+                      !isPreSelected(sk.id) && isMaxSelected && !selectedSkills.includes(sk.id)
                       || sk.type === 'Magia' && isMaxMagics && isMaxSelected && selectedMagics.includes(sk.id)
                       || sk.type === 'Manobra' && isMaxManeuvers && isMaxSelected && selectedManeuvers.includes(sk.id)
-                      || !selectableSkills.includes(sk)
                     }
                   />
                   <TableDropdown
@@ -171,7 +183,8 @@ export default function SkillSelectionRoute() {
                     show={isShown("Talentos")
                       && (selectedSkills.includes(sk.id)
                         || selectedMagics.includes(sk.id)
-                        || selectedManeuvers.includes(sk.id))
+                        || selectedManeuvers.includes(sk.id)
+                        || isPreSelected(sk.id))
                     }
                     categories={["", "Tipo", "Requisitos"]}
                     subtitleIndexes={[1, 2]}
@@ -186,27 +199,23 @@ export default function SkillSelectionRoute() {
               ))
               }
 
-              {selectableNonPureLineageSkills.length > 0
-                ? <thead>
-                  <TableHead
-                    tableTitles={['Talentos de Linhagem']}
-                    onClick={() => showRow("TLinhagem")}
-                    open={isShown("TLinhagem")}
-                    error={false}
-                  />
-                </thead>
-                : ''
-              }
-              {selectableNonPureLineageSkills.map(ls => (
+              <TableHead
+                tableTitles={['Talentos de Linhagem']}
+                onClick={() => showRow("TLinhagem")}
+                open={isShown("TLinhagem")}
+                error={false}
+              />
+              {nonPureLineageSkills.map(ls => (
                 <React.Fragment key={ls.id}>
                   <TableData
                     key={ls.id}
-                    tableData={[`${ls.skill.name}`]}
+                    tableData={[`${ls.skill.name} | ${ls.lineage.name}`]}
                     show={isShown("TLinhagem")}
                     onClick={() => handleSkillClick(ls.skill.id, ls.skill.type)}
-                    selected={selectedSkills.includes(ls.skill.id)}
+                    selected={selectedSkills.includes(ls.skill.id) || isPreSelected(ls.skill.id)}
                     error={
-                      isMaxSelected && !selectedSkills.includes(ls.skill.id)
+                      !isPreSelected(ls.skill.id) && isMaxSelected && !selectedSkills.includes(ls.skill.id)
+                      || !selectableNonPureLineageSkills.includes(ls) && !isPreSelected(ls.skill.id)
                     }
                   />
 
@@ -215,7 +224,8 @@ export default function SkillSelectionRoute() {
                     show={isShown("TLinhagem")
                       && (selectedSkills.includes(ls.skill.id)
                         || selectedMagics.includes(ls.skill.id)
-                        || selectedManeuvers.includes(ls.skill.id))
+                        || selectedManeuvers.includes(ls.skill.id)
+                        || isPreSelected(ls.skill.id))
                     }
                     categories={["", "Linhagem", "Tipo", "Requisitos"]}
                     subtitleIndexes={[1, 2, 3]}
@@ -223,7 +233,7 @@ export default function SkillSelectionRoute() {
                     String(ls.lineage.name),
                     String(ls.skill.type),
                     `Agilidade: ${String(ls.skill.agi)} | Corpo: ${String(ls.skill.bdy)} | Mente: ${String(ls.skill.mnd)} | Nível: ${String(ls.skill.lvl)} | Tamanho Real: ${String(ls.skill.trSiz)} 
-                                    | Tamanho Efetivo: ${String(ls.skill.efSiz)} | ${ls.skill.prerequisiteId
+                    | Tamanho Efetivo: ${String(ls.skill.efSiz)} | ${ls.skill.prerequisiteId
                       ? `Talento: ${String(skills.filter(s => s.id === ls.skill.prerequisiteId).map(s => s.name))}`
                       : `Não Requer outro Talento`}`]}
                   />
@@ -231,26 +241,24 @@ export default function SkillSelectionRoute() {
               ))
               }
 
-              {isPure && selectablePureLineageSkills.length > 0
-                ? <TableHead
-                  tableTitles={['Talentos de Linhagem Única']}
-                  onClick={() => showRow("TLinhagemUnica")}
-                  open={isShown("TLinhagemUnica")}
-                  error={false}
-                />
-                : ''}
+              <TableHead
+                tableTitles={['Talentos de Linhagem Única']}
+                onClick={() => showRow("TLinhagemUnica")}
+                open={isShown("TLinhagemUnica")}
+                error={false}
+              />
 
-              {selectablePureLineageSkills.map(ls => (
+              {pureLineageSkills.map(ls => (
                 <React.Fragment key={ls.id}>
                   <TableData
                     key={ls.id}
-                    tableData={[`${ls.skill.name}`]}
+                    tableData={[`${ls.skill.name} | ${ls.lineage.name} Única`]}
                     show={isShown("TLinhagemUnica")}
                     onClick={() => handleSkillClick(ls.skill.id, ls.skill.type)}
-                    selected={selectedSkills.includes(ls.skill.id)}
+                    selected={selectedSkills.includes(ls.skill.id) || isPreSelected(ls.skill.id)}
                     error={
-                      isMaxSelected && !selectedSkills.includes(ls.skill.id)
-                    }
+                      !isPreSelected(ls.skill.id) && isMaxSelected && !selectedSkills.includes(ls.skill.id)
+                      || !selectablePureLineageSkills.includes(ls) && !isPreSelected(ls.skill.id)}
                   />
 
                   <TableDropdown
@@ -259,15 +267,16 @@ export default function SkillSelectionRoute() {
                     {isShown("TLinhagemUnica")
                       && (selectedSkills.includes(ls.skill.id)
                         || selectedMagics.includes(ls.skill.id)
-                        || selectedManeuvers.includes(ls.skill.id))}
-
+                        || selectedManeuvers.includes(ls.skill.id)
+                        || isPreSelected(ls.skill.id))
+                    }
                     categories={["", "Linhagem", "Tipo", "Requisitos"]}
                     subtitleIndexes={[1, 2, 3]}
                     items={[String(ls.skill.description),
                     String(ls.lineage.name),
                     String(ls.skill.type),
                     `Agilidade: ${String(ls.skill.agi)} | Corpo: ${String(ls.skill.bdy)} | Mente: ${String(ls.skill.mnd)} | Nível: ${String(ls.skill.lvl)} | Tamanho Real: ${String(ls.skill.trSiz)} 
-                                    | Tamanho Efetivo: ${String(ls.skill.efSiz)} | ${ls.skill.prerequisiteId
+                    | Tamanho Efetivo: ${String(ls.skill.efSiz)} | ${ls.skill.prerequisiteId
                       ? `Talento: ${String(skills.filter(s => s.id === ls.skill.prerequisiteId).map(s => s.name))}`
                       : `Não Requer outro Talento`}`]}
                   />

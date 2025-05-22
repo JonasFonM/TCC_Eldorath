@@ -27,7 +27,6 @@ export const action: ActionFunction = async ({ params, request }) => {
     const mind = parseInt(form.get('mind') as string, 10);
     const authorId = await getUserIdFromSession(request);
 
-
     if (!authorId) {
         return json({ error: "Unauthorized" }, { status: 401 });
     }
@@ -54,6 +53,9 @@ export default function NewCharacterRoute() {
     const { character } = useLoaderData<{ character: character }>();
     const [limit, setLimit] = useState(0);
     const [showAtr, setShowAtr] = useState<number>();
+    const baseLimit = character.npc === true
+        ? 4
+        : 6
 
     const firstLoad = useRef(true);
     const [formData, setFormData] = useState({
@@ -73,7 +75,7 @@ export default function NewCharacterRoute() {
                 body: character.body,
                 mind: character.mind
             });
-            setLimit(6 + character.tier - character.mind - character.body - character.agility + (character.boss ? 4 : 0))
+            setLimit(baseLimit + character.tier - character.mind - character.body - character.agility + (character.boss ? 8 : 0))
         }
     }, [character]);
 
@@ -149,11 +151,11 @@ export default function NewCharacterRoute() {
     return (
         <form method="post" autoComplete="off" onSubmit={handleSubmit}>
 
-            <div className="container" style={{position: 'sticky', top: '64px', zIndex: '3'}}>
+            <div className="container" style={{ position: 'sticky', top: '64px', zIndex: '3' }}>
                 <input className="title-input"
                     id="Nome"
                     autoComplete="off"
-                    style={{ fontFamily: 'serif', fontSize: '2rem', color: "gold", textAlign: 'center' }}
+                    style={{ fontFamily: 'serif', fontSize: '2.3rem', color: "gold", textAlign: 'center' }}
                     type="text"
                     name="name"
                     placeholder="Nome"
@@ -177,8 +179,8 @@ export default function NewCharacterRoute() {
                         Agilidade: {formData.agility}
                         <input hidden type="number" name="agility" value={formData.agility} onChange={handleChange} />
                         <div className="container">
-                            <button className="col-3 button" style={{marginRight: '1%'}} type="button" onClick={() => adjustAttribute('agility', -1)}>-</button>
-                            <button className="col-3 button" style={{marginLeft: '1%'}} type="button" onClick={() => adjustAttribute('agility', 1)}>+</button>
+                            <button className="col-3 button" style={{ marginRight: '1%' }} type="button" onClick={() => adjustAttribute('agility', -1)}>-</button>
+                            <button className="col-3 button" style={{ marginLeft: '1%' }} type="button" onClick={() => adjustAttribute('agility', 1)}>+</button>
                         </div>
                     </label>
                     {errors.agility && <p className="error">{errors.agility}</p>}
@@ -189,8 +191,8 @@ export default function NewCharacterRoute() {
                         Corpo: {formData.body}
                         <input hidden type="number" name="body" value={formData.body} onChange={handleChange} />
                         <div className="container">
-                            <button className="col-3 button" style={{marginRight: '1%'}} type="button" onClick={() => adjustAttribute('body', -1)}>-</button>
-                            <button className="col-3 button" style={{marginLeft: '1%'}} type="button" onClick={() => adjustAttribute('body', 1)}>+</button>
+                            <button className="col-3 button" style={{ marginRight: '1%' }} type="button" onClick={() => adjustAttribute('body', -1)}>-</button>
+                            <button className="col-3 button" style={{ marginLeft: '1%' }} type="button" onClick={() => adjustAttribute('body', 1)}>+</button>
                         </div>
                     </label>
                     {errors.body && <p className="error">{errors.body}</p>}
@@ -201,8 +203,8 @@ export default function NewCharacterRoute() {
                         Mente: {formData.mind}
                         <input hidden type="number" name="mind" value={formData.mind} onChange={handleChange} />
                         <div className="container">
-                            <button className="col-3 button" style={{marginRight: '1%'}} type="button" onClick={() => adjustAttribute('mind', -1)}>-</button>
-                            <button className="col-3 button" style={{marginLeft: '1%'}} type="button" onClick={() => adjustAttribute('mind', 1)}>+</button>
+                            <button className="col-3 button" style={{ marginRight: '1%' }} type="button" onClick={() => adjustAttribute('mind', -1)}>-</button>
+                            <button className="col-3 button" style={{ marginLeft: '1%' }} type="button" onClick={() => adjustAttribute('mind', 1)}>+</button>
                         </div>
                     </label>
                     {errors.mind && <p className="error">{errors.mind}</p>}

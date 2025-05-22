@@ -72,8 +72,6 @@ export const loader: LoaderFunction = async ({ request, params }) => {
 
     const pureLineageSkills = await prisma.lineage_skill.findMany({
         where: {
-            skillId: { notIn: character?.skills.map(skill => skill.skillId) },
-            lineageId: { in: character_lineages.map(cl => cl.lineageId) },
             pureSkill: true,
         },
         include: { skill: true, lineage: true },
@@ -81,6 +79,7 @@ export const loader: LoaderFunction = async ({ request, params }) => {
 
     const selectablePureLineageSkills = pureLineageSkills.filter(ls =>
         !character_skills.some(cs => cs.skill.id === ls.skill.id) &&
+        character_lineages.filter(cl => cl.pure === true).map(cl => cl.lineageId).includes(ls.lineageId) &&
         Number(character?.agility) >= ls.skill.agi &&
         Number(character?.body) >= ls.skill.bdy &&
         Number(character?.mind) >= ls.skill.mnd &&
@@ -97,8 +96,6 @@ export const loader: LoaderFunction = async ({ request, params }) => {
 
     const nonPureLineageSkills = await prisma.lineage_skill.findMany({
         where: {
-            skillId: { notIn: character?.skills.map(skill => skill.skillId) },
-            lineageId: { in: character_lineages.map(cl => cl.lineageId) },
             pureSkill: false
         },
         include: { skill: true, lineage: true },
@@ -106,6 +103,7 @@ export const loader: LoaderFunction = async ({ request, params }) => {
 
     const selectableNonPureLineageSkills = nonPureLineageSkills.filter(ls =>
         !character_skills.some(cs => cs.skill.id === ls.skill.id) &&
+        character_lineages.map(cl => cl.lineageId).includes(ls.lineageId) &&
         Number(character?.agility) >= ls.skill.agi &&
         Number(character?.body) >= ls.skill.bdy &&
         Number(character?.mind) >= ls.skill.mnd &&
@@ -147,6 +145,7 @@ export const loader: LoaderFunction = async ({ request, params }) => {
         skills, selectableSkills,
         selectablePureLineageSkills,
         selectableNonPureLineageSkills, isPure,
+        pureLineageSkills, nonPureLineageSkills,
         lineages, maxSelectableLineages,
         paths, maxSelectablePaths,
         items
@@ -176,7 +175,7 @@ export default function NewCharacterRoute() {
         =
         useLoaderData<{
             userId: string,
-            character: character, characterId: string,
+            character: (character & { skills: character_skill[] }), characterId: string,
             character_lineages: (character_lineage & { lineage: lineage })[], character_paths: (character_path & { path: path })[], character_skills: (character_skill & { skill: skill })[], character_items: (character_item & { item: item })[],
             maxSelectableSkills: number, maxMagics: number, maxManeuvers: number
             skills: skill[], selectableSkills: skill[],

@@ -49,28 +49,31 @@ export default function InventoryRoute() {
                     error={false}
                 />
 
-                {items.filter(i => i.item.type === 'slotAccessory').map(i => (
-                    <React.Fragment key={i.id}>
-                        <TableData
-                            key={`Data-${i.id}`}
-                            tableData={[i.material
-                                ? String(i.item.name) + ' de ' + String(i.material)
-                                : String(i.item.name)]}
-                            show={isShown("Acessorios")}
-                            onClick={() => showRow(`Item-${i.id}`)}
-                            selected={isShown(`Item-${i.id}`)}
-                            error={false}
-                        />
-                        <TableDropdown
-                            key={`Drop-${i.id}`}
-                            show={isShown("Acessorios") && isShown(`Item-${i.id}`)}
-                            categories={[String(i.item.subType)]}
-                            subtitleIndexes={[0]}
-                            items={[String(i.item.description)]}
-                        />
-                    </React.Fragment>
-                ))}
-            </table>
+                {items.filter(it => it.item.type === 'slotAccessory').map((it, index, ci) => (
+                    ci.findIndex(ci => ci.item.id === it.item.id) === index
+                        ? < React.Fragment key={it.id} >
+                            <TableData
+                                key={`Data-${it.id}`}
+                                tableData={[it.material
+                                    ? String(it.item.name) + ' de ' + String(it.material) + ` (x${ci.filter(ci => ci.item.id === it.item.id).length})`
+                                    : String(it.item.name) + ` (x${ci.filter(ci => ci.item.id === it.item.id).length})`]}
+                                show={isShown("Acessorios")}
+                                onClick={() => showRow(`Item-${it.id}`)}
+                                selected={isShown(`Item-${it.id}`)}
+                                error={false}
+                            />
+                            <TableDropdown
+                                key={`Drop-${it.id}`}
+                                show={isShown("Acessorios") && isShown(`Item-${it.id}`)}
+                                categories={[String(it.item.subType)]}
+                                subtitleIndexes={[0]}
+                                items={[String(it.item.description)]}
+                            />
+                        </React.Fragment>
+                        : null
+                ))
+                }
+            </table >
 
             <table>
                 <TableHead
@@ -80,26 +83,28 @@ export default function InventoryRoute() {
                     error={false}
                 />
 
-                {items.filter(i => i.item.type === 'slotArmor').map(i => (
-                    <React.Fragment key={i.id}>
-                        <TableData
-                            key={`Data-${i.id}`}
-                            tableData={[i.material
-                                ? String(i.item.name) + ' de ' + String(i.material)
-                                : String(i.item.name)]}
-                            show={isShown("Armaduras")}
-                            onClick={() => showRow(`Item-${i.id}`)}
-                            selected={isShown(`Item-${i.id}`)}
-                            error={false}
-                        />
-                        <TableDropdown
-                            key={`Drop-${i.id}`}
-                            show={isShown("Armaduras") && isShown(`Item-${i.id}`)}
-                            categories={[String(i.item.subType)]}
-                            subtitleIndexes={[0]}
-                            items={[String(i.item.description)]}
-                        />
-                    </React.Fragment>
+                {items.filter(it => it.item.type === 'slotArmor').map((it, index, ci) => (
+                    ci.findIndex(ci => ci.item.id === it.item.id) === index
+                        ? <React.Fragment key={it.id}>
+                            <TableData
+                                key={`Data-${it.id}`}
+                                tableData={[it.material
+                                    ? String(it.item.name) + ' de ' + String(it.material) + ` (x${ci.filter(ci => ci.item.id === it.item.id).length})`
+                                    : String(it.item.name) + ` (x${ci.filter(ci => ci.item.id === it.item.id).length})`]}
+                                show={isShown("Armaduras")}
+                                onClick={() => showRow(`Item-${it.id}`)}
+                                selected={isShown(`Item-${it.id}`)}
+                                error={false}
+                            />
+                            <TableDropdown
+                                key={`Drop-${it.id}`}
+                                show={isShown("Armaduras") && isShown(`Item-${it.id}`)}
+                                categories={[String(it.item.subType)]}
+                                subtitleIndexes={[0]}
+                                items={[String(it.item.description)]}
+                            />
+                        </React.Fragment>
+                        : null
                 ))}
             </table>
 
@@ -111,26 +116,28 @@ export default function InventoryRoute() {
                     error={false}
                 />
 
-                {items.filter(i => i.item.type === 'slotWeapon').map(i => (
-                    <React.Fragment key={i.id}>
-                        <TableData
-                            key={`Data-${i.id}`}
-                            tableData={[i.material
-                                ? String(i.item.name) + ' de ' + String(i.material)
-                                : String(i.item.name)]}
-                            show={isShown("Armas")}
-                            onClick={() => showRow(`Item-${i.id}`)}
-                            selected={isShown(`Item-${i.id}`)}
-                            error={false}
-                        />
-                        <TableDropdown
-                            key={`Drop-${i.id}`}
-                            show={isShown("Armas") && isShown(`Item-${i.id}`)}
-                            categories={[String(i.item.subType)]}
-                            subtitleIndexes={[0]}
-                            items={[String(i.item.description)]}
-                        />
-                    </React.Fragment>
+                {items.filter(it => it.item.type === 'slotWeapon').map((it, index, ci) => (
+                    ci.findIndex(ci => ci.item.id === it.item.id) === index
+                        ? <React.Fragment key={it.id}>
+                            <TableData
+                                key={`Data-${it.id}`}
+                                tableData={[it.material
+                                    ? String(it.item.name) + ' de ' + String(it.material) + ` (x${ci.filter(ci => ci.item.id === it.item.id).length})`
+                                    : String(it.item.name) + ` (x${ci.filter(ci => ci.item.id === it.item.id).length})`]}
+                                show={isShown("Armas")}
+                                onClick={() => showRow(`Item-${it.id}`)}
+                                selected={isShown(`Item-${it.id}`)}
+                                error={false}
+                            />
+                            <TableDropdown
+                                key={`Drop-${it.id}`}
+                                show={isShown("Armas") && isShown(`Item-${it.id}`)}
+                                categories={[String(it.item.subType)]}
+                                subtitleIndexes={[0]}
+                                items={[String(it.item.description)]}
+                            />
+                        </React.Fragment>
+                        : null
                 ))}
 
             </table >
@@ -143,28 +150,30 @@ export default function InventoryRoute() {
                     error={false}
                 />
 
-                {items.filter(i => i.item.type === 'consumable').map(i => (
-                    <React.Fragment key={i.id}>
-                        <TableData
-                            key={`Data-${i.id}`}
-                            tableData={[i.material
-                                ? String(i.item.name) + ' de ' + String(i.material)
-                                : String(i.item.name)]}
-                            show={isShown("Consumiveis")}
-                            onClick={() => showRow(`Item-${i.id}`)}
-                            selected={isShown(`Item-${i.id}`)}
-                            error={false}
-                        />
-                        <TableDropdown
-                            key={`Drop-${i.id}`}
-                            show={isShown("Consumiveis") && isShown(`Item-${i.id}`)}
-                            categories={[String(i.item.subType)]}
-                            subtitleIndexes={[0]}
-                            items={[String(i.item.description)]}
-                        />
-                    </React.Fragment>
+                {items.filter(it => it.item.type === 'consumable').map((it, index, ci) => (
+                    ci.findIndex(ci => ci.item.id === it.item.id) === index
+                        ? <React.Fragment key={it.id}>
+                            <TableData
+                                key={`Data-${it.id}`}
+                                tableData={[it.material
+                                    ? String(it.item.name) + ' de ' + String(it.material) + ` (x${ci.filter(ci => ci.item.id === it.item.id).length})`
+                                    : String(it.item.name) + ` (x${ci.filter(ci => ci.item.id === it.item.id).length})`]}
+                                show={isShown("Consumiveis")}
+                                onClick={() => showRow(`Item-${it.id}`)}
+                                selected={isShown(`Item-${it.id}`)}
+                                error={false}
+                            />
+                            <TableDropdown
+                                key={`Drop-${it.id}`}
+                                show={isShown("Consumiveis") && isShown(`Item-${it.id}`)}
+                                categories={[String(it.item.subType)]}
+                                subtitleIndexes={[0]}
+                                items={[String(it.item.description)]}
+                            />
+                        </React.Fragment>
+                        : null
                 ))}
             </table>
-        </React.Fragment>
+        </React.Fragment >
     );
 }

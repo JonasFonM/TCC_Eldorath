@@ -57,6 +57,8 @@ export default function NewCharacterRoute() {
         ? 4
         : 6
 
+    const totalLimit = baseLimit + character.tier - character.mind - character.body - character.agility + (character.boss ? 8 : 0)
+
     const firstLoad = useRef(true);
     const [formData, setFormData] = useState({
         name: '',
@@ -75,7 +77,7 @@ export default function NewCharacterRoute() {
                 body: character.body,
                 mind: character.mind
             });
-            setLimit(baseLimit + character.tier - character.mind - character.body - character.agility + (character.boss ? 8 : 0))
+            setLimit(totalLimit)
         }
     }, [character]);
 

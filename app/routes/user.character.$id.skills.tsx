@@ -29,9 +29,11 @@ export default function SkillsRoute() {
 
   return (
     <React.Fragment>
-      <div className="title-container">
-        <h1 style={{ marginTop: '0', marginBottom: '0', padding: '0' }}>Talentos</h1>
-        <button className="question-button" onClick={() => showRow("ETalentos")}>?</button>
+      <div style={{ position: "sticky", top: '64px', zIndex: '1' }} className="title-input">
+        <h1 className="title-container">
+          Talentos
+          <button className="question-button" onClick={() => showRow("ETalentos")}>?</button>
+        </h1>
       </div>
 
       <GeneralExplain

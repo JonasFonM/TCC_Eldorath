@@ -27,29 +27,40 @@ export function CharacterSheet({ character, isAuthor }: Props) {
 
     return (
         <>
-            <h1 className="title-container">
-                {isAuthor ?
-                    <NavLink to={`/user/character/new/${String(character.id)}/basic`} className={'lineBtn'}>Atributos</NavLink>
-                    :
-                    'Atributos'
-                }
+            <div style={{ position: "sticky", top: '64px', zIndex: '1' }} className="title-input">
+                <h1 className="title-container">
+                    {isAuthor ?
+                        <NavLink to={`/user/character/new/${String(character.id)}/basic`} className={'lineBtn'}>Atributos</NavLink>
+                        :
+                        'Atributos'
+                    }
 
-                <button onClick={() => setShowAtr(1)} className="question-button">?</button>
+                    <button onClick={() => setShowAtr(1)} className="question-button">?</button>
 
-                {isAuthor ?
-                    <ResetConfirm name={character.name} isHidden={selectReset === 0} onShow={showReset} onCancel={cancelReset} id={String(character.id)} />
-                    :
-                    ''
-                }
-            </h1>
+                    {isAuthor ?
+                        <ResetConfirm name={character.name} isHidden={selectReset === 0} onShow={showReset} onCancel={cancelReset} id={String(character.id)} />
+                        :
+                        ''
+                    }
+                </h1>
+            </div>
 
             <GeneralExplain title={'Atributos'} description="Atributos são os valores que representam seus limites e capacidades." isHidden={showAtr != 1} onCancel={() => setShowAtr(0)} />
 
-            <h1 className="title-container">Básicos<button onClick={() => setShowAtr(2)} className="question-button">?</button></h1>
+            <div className="title-input">
+                <h1 className="title-container">
+                    Básicos
+                    <button onClick={() => setShowAtr(2)} className="question-button">?</button>
+                </h1>
+            </div>
+
             <GeneralExplain title={'Básicos'} description="Atributos Básicos são os valores principais para determinar as suas aptidões. Eles afetam seus Atributos Derivados e cada um tem funções especiais." isHidden={showAtr != 2} onCancel={() => setShowAtr(0)} />
 
             <div className="calendar-box">
-                <button onClick={() => setShowAtr(3)} className="block"><h1>{character.agility}</h1><p className="Atr">AGI</p></button>
+                <button onClick={() => setShowAtr(3)} className="block">
+                    <h1>{character.agility}</h1>
+                    <p className="Atr">AGI</p>
+                </button>
                 <GeneralExplain title={'Agilidade'} description="Agilidade é usada para Acertar Ataques Físicos, além de ser a base principal da sua Defesa." isHidden={showAtr != 3} onCancel={() => setShowAtr(0)} />
 
                 <button onClick={() => setShowAtr(4)} className="block"><h1>{character.body}</h1><p className="Atr">COR</p></button>
@@ -61,12 +72,13 @@ export function CharacterSheet({ character, isAuthor }: Props) {
             </div>
 
 
-            <h1 className="title-container">Derivados<button onClick={() => setShowAtr(6)} className="question-button">?</button></h1>
-            <GeneralExplain title={'Derivados'} description="Atributos Derivados são valores secundários. Eles são calculados a partir dos seus Atributos Básicos e podem ser afetados por outros fatores." isHidden={showAtr != 6} onCancel={() => setShowAtr(0)} />
+            <div className="title-input">
+                <h1 className="title-container">
+                    Recursos
+                    <button onClick={() => setShowAtr(7)} className="question-button">?</button>
+                </h1>
+            </div>
 
-
-
-            <h2 className="title-container">Recursos<button onClick={() => setShowAtr(7)} className="question-button">?</button></h2>
             <GeneralExplain title={'Recursos'} description="Recursos são Atributos que: ou você gasta para fazer algumas Ações, ou você perde quando for Alvo de um Ataque ou Efeito." isHidden={showAtr != 7} onCancel={() => setShowAtr(0)} />
 
 
@@ -83,7 +95,13 @@ export function CharacterSheet({ character, isAuthor }: Props) {
 
             </div>
 
-            <h2 className="title-container">Combate<button onClick={() => setShowAtr(11)} className="question-button">?</button></h2>
+            <div className="title-input">
+                <h1 className="title-container">
+                    Combate
+                    <button onClick={() => setShowAtr(11)} className="question-button">?</button>
+                </h1>
+            </div>
+
             <GeneralExplain title={'Combate'} description="Atributos usados principalmente em Combate." isHidden={showAtr != 11} onCancel={() => setShowAtr(0)} />
 
 
@@ -103,7 +121,12 @@ export function CharacterSheet({ character, isAuthor }: Props) {
 
             </div>
 
-            <h1 className="title-container">Carga<button className="question-button" onClick={() => setShowAtr(16)}>?</button></h1>
+            <div className="title-input">
+                <h1 className="title-container">
+                    Carga
+                    <button className="question-button" onClick={() => setShowAtr(16)}>?</button>
+                </h1>
+            </div>
 
             <GeneralExplain title={'Carga'} description="Cargas são unidades arbitrárias que representam uma combinação de volume e peso, a fim de simplificar o uso do Inventário." isHidden={showAtr != 16} onCancel={() => setShowAtr(0)} />
 

@@ -4,12 +4,10 @@ import { createScene } from "~/utils/campaign.server";
 import { prisma } from "~/utils/prisma.server";
 import { SceneForm } from "~/utils/types.server";
 
-export const loader: LoaderFunction = async ({ params, request }) => {
+export const loader: LoaderFunction = async ({ params }) => {
 
     //FETCHING DATA
     const campaignId = Number(params.id);
-
-    const referer = request.headers.get("Referer") || `/user/campaign/${String(campaignId)}`;
 
     const title = String(params.title);
 

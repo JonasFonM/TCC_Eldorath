@@ -278,7 +278,7 @@ export default function CampaignRoute() {
                 <div className="calendar-box">
                     <div className="col-12">
                         <img alt={"Dia"}
-                            style={{ animation: 'fadeIn 0.3s ease-in-out', transition: "fadeIn 0.3s ease-in-out", width: '100%' }}
+                            style={{ animation: 'fadeIn 0.3s ease-in-out', boxShadow: '0 0 8px 5px gold', transition: "fadeIn 0.3s ease-in-out", width: '100%' }}
                             src={displayTimeIcon(Number(campaign.timeOfDay))} />
                     </div>
                     <h2 className="col-12"><button onClick={() => showRow("EDia")} className="lineBtn">{translateWeekDays(campaign.monthDay)}</button>,
@@ -305,19 +305,18 @@ export default function CampaignRoute() {
                     onCancel={() => showRow("EDia")}
                 />
 
+
+                {isMaster
+                    ? <h2><NavLink className={'lineBtn'} to={`/user/campaign/edit/${campaignId}/`}>Editar Descrição</NavLink></h2>
+                    : ''
+                }
+
                 <div className="container">
-
-                    {isMaster
-                        ? <h2><NavLink className={'lineBtn'} to={`/user/campaign/edit/${campaignId}/`}>Editar Descrição</NavLink></h2>
-                        : ''
-                    }
-
                     <div className="calendar-box" style={{ justifyContent: 'center' }}>
                         <p style={{ textAlign: 'justify', overflow: 'auto', display: location.pathname === `/user/campaign/${campaignId}` ? 'inherit' : 'none' }}>{campaign.description}</p>
                     </div>
-
-                    <Outlet context={{ isMaster, isPlayer, campaignCharacter, characters, campaign, party, campaignId }} />
                 </div>
+                <Outlet context={{ isMaster, isPlayer, campaignCharacter, characters, campaign, party, campaignId }} />
 
             </div >
         </>

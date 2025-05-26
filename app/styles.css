@@ -904,6 +904,21 @@ button:hover {
   transition: 0.3s;
 }
 
+@keyframes pulseCritical {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.hp-bar-critical {
+  animation: pulseCritical 1s infinite;
+}
 
 @media (max-width: 900px) {
   .modal-content .grid {

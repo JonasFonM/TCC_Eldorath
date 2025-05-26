@@ -12,7 +12,7 @@ interface Props {
     links: string[];
     linkNames: string[];
     entity: any;
-    temp: any
+    temp: any;
 
 }
 

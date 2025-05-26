@@ -9,6 +9,7 @@ import React from "react";
 import { SideBars } from "~/components/context-providers/side-bars";
 import { useSidebar } from "~/components/context-providers/side-bar-context";
 import { getUserIdFromSession } from "~/utils/auth.server";
+import { ResourceBar } from "~/components/scene/resource-bar";
 
 
 export const loader: LoaderFunction = async ({ params, request }) => {
@@ -129,6 +130,34 @@ export default function CharacterRoute() {
         ]}
         temp={
           <React.Fragment>
+
+            <table>
+              <tbody>
+                <tr>
+                  <td>
+                    <ResourceBar
+                      color="darkred"
+                      halvedColor="red"
+                      currentValue={character.currentVitality}
+                      maxValue={character.vitality}
+                    />
+                    <ResourceBar
+                      color="darkgreen"
+                      halvedColor="green"
+                      currentValue={character.currentVigor}
+                      maxValue={character.vigor}
+                    />
+                    <ResourceBar
+                      color="darkcyan"
+                      halvedColor="cyan"
+                      currentValue={character.currentPower}
+                      maxValue={character.power}
+                    />
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+
             <ul>
               <li key={1}>
                 <NavLink to={

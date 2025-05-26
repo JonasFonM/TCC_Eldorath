@@ -1,4 +1,4 @@
-import { NavLink } from "@remix-run/react";
+import { Link } from "@remix-run/react";
 import { useState } from "react";
 
 interface props {
@@ -26,9 +26,9 @@ export function SceneCreator({ isHidden, onCancel, campaignId }: props) {
 
                 <div className="modal-buttons">
 
-                    <NavLink to={`/user/campaign/${campaignId}/${title.title}/scene`}> <button onClick={onCancel} className="btn">CONFIRMAR</button></NavLink>
+                    <Link to={`/user/campaign/${campaignId}/${title.title}/scene`}> <button onClick={onCancel} className="btn">Confirmar</button></Link>
 
-                    <button onClick={onCancel} className="btn-cancel">CANCELAR</button>
+                    <button onClick={onCancel} className="btn-cancel">Cancelar</button>
 
                 </div>
             </div>

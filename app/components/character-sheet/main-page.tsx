@@ -29,18 +29,16 @@ export function CharacterSheet({ character, isAuthor }: Props) {
         <>
             <div style={{ position: "sticky", top: '64px', zIndex: '1' }} className="title-input">
                 <h1 className="title-container">
-                    {isAuthor ?
-                        <NavLink to={`/user/character/new/${String(character.id)}/basic`} className={'lineBtn'}>Atributos</NavLink>
-                        :
-                        'Atributos'
+                    {isAuthor
+                        ? <NavLink to={`/user/character/new/${String(character.id)}/basic`} className={'lineBtn'}>Atributos</NavLink>
+                        : 'Atributos'
                     }
 
                     <button onClick={() => setShowAtr(1)} className="question-button">?</button>
 
-                    {isAuthor ?
-                        <ResetConfirm name={character.name} isHidden={selectReset === 0} onShow={showReset} onCancel={cancelReset} id={String(character.id)} />
-                        :
-                        ''
+                    {isAuthor
+                        ? <ResetConfirm name={character.name} isHidden={selectReset === 0} onShow={showReset} onCancel={cancelReset} id={String(character.id)} />
+                        : ''
                     }
                 </h1>
             </div>
@@ -63,10 +61,16 @@ export function CharacterSheet({ character, isAuthor }: Props) {
                 </button>
                 <GeneralExplain title={'Agilidade'} description="Agilidade é usada para Acertar Ataques Físicos, além de ser a base principal da sua Defesa." isHidden={showAtr != 3} onCancel={() => setShowAtr(0)} />
 
-                <button onClick={() => setShowAtr(4)} className="block"><h1>{character.body}</h1><p className="Atr">COR</p></button>
+                <button onClick={() => setShowAtr(4)} className="block">
+                    <h1>{character.body}</h1>
+                    <p className="Atr">COR</p>
+                </button>
                 <GeneralExplain title={'Corpo'} description="Corpo é somado no Dano dos seus Ataques Físicos, além de ser uma base da sua Vitalidade, Vigor, Peso, Capacidade de Carga e Capacidade de Levantamento" isHidden={showAtr != 4} onCancel={() => setShowAtr(0)} />
 
-                <button onClick={() => setShowAtr(5)} className="block"><h1>{character.mind}</h1><p className="Atr">MEN</p></button>
+                <button onClick={() => setShowAtr(5)} className="block">
+                    <h1>{character.mind}</h1>
+                    <p className="Atr">MEN</p>
+                </button>
                 <GeneralExplain title={'Mente'} description="Mente é usada para Acertar Ataques Mágicos, além de ser uma base do seu Vigor e do seu Poder" isHidden={showAtr != 5} onCancel={() => setShowAtr(0)} />
 
             </div>

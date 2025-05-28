@@ -198,7 +198,7 @@ export default function CampaignRoute() {
                 tableHeaders={[]}
                 tableDatas={[]}
                 tableExplain={[]}
-
+                footer={null}
                 links={isMaster ? [
                     `/user/campaign/${campaignId}/rtn/timeOfDay`,
                     `/user/campaign/${campaignId}/adv/timeOfDay`,

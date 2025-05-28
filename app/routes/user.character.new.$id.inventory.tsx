@@ -122,9 +122,10 @@ export default function ItemSelection() {
                                         </div>
                                         {item.type === 'slotWeapon'
                                             ? <div className="col-4" >
-                                                <h2 style={{ fontSize: "1.1rem" }}>Alcance: </h2>
-                                                <h1 style={{ fontSize: "1.1rem" }}>{item.baseReach}</h1>
+                                                <h2 style={{ fontSize: "1.1rem" }}>Dano: </h2>
+                                                <h1 style={{ fontSize: "1.1rem" }}>{item.baseDamageDieCount}D{Number(item.baseDamageDie)}</h1>
                                             </div>
+
                                             : <div className="col-4" >
                                                 <h2 style={{ fontSize: "1.1rem" }}>Defesa: </h2>
                                                 <h1 style={{ fontSize: "1.1rem" }}>{item.baseDefense}</h1>

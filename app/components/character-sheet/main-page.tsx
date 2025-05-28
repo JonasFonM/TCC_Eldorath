@@ -88,13 +88,22 @@ export function CharacterSheet({ character, isAuthor }: Props) {
 
             <div className="calendar-box">
 
-                <button onClick={() => setShowAtr(8)} className="block"><h1>{character.vitality}</h1><p className="Atr">VIT</p></button>
+                <button onClick={() => setShowAtr(8)} className="block">
+                    <h1>{character.currentVitality}/{character.vitality}</h1>
+                    <p className="Atr">VIT</p>
+                </button>
                 <GeneralExplain title={'Vitalidade'} description="Vitalidade representa quantos pontos de Dano você pode sofrer antes de morrer. Ela é baseada no seu Corpo, Categoria, Tamanho Efetivo e suas escolhas de Caminho." isHidden={showAtr != 8} onCancel={() => setShowAtr(0)} />
 
-                <button onClick={() => setShowAtr(9)} className="block"><h1>{character.vigor}</h1><p className="Atr">VIG</p></button>
+                <button onClick={() => setShowAtr(9)} className="block">
+                    <h1>{character.currentVigor}/{character.vigor}</h1>
+                    <p className="Atr">VIG</p>
+                </button>
                 <GeneralExplain title={'Vigor'} description="Vigor limita quantas ações e/ou movimentos você pode fazer em um curto período de tempo como uma Cena ou um Turno. Ele é baseado no seu Nível, Corpo e Mente." isHidden={showAtr != 9} onCancel={() => setShowAtr(0)} />
 
-                <button onClick={() => setShowAtr(10)} className="block"><h1>{character.power}</h1><p className="Atr">POD</p></button>
+                <button onClick={() => setShowAtr(10)} className="block">
+                    <h1>{character.currentPower}/{character.power}</h1>
+                    <p className="Atr">POD</p>
+                </button>
                 <GeneralExplain title={'Poder'} description="Poder limita quantas habilidades mágicas ou sobrenaturais você pode utilizar durante longos períodos de tempo sem Descansar, como um Dia inteiro. Ele é baseado na sua Mente, Categoria e suas escolhas de Caminho." isHidden={showAtr != 10} onCancel={() => setShowAtr(0)} />
 
             </div>

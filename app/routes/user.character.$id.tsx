@@ -4,11 +4,12 @@ import { LoaderFunction, } from "@remix-run/node";
 import { NavLink, Outlet, useLoaderData, useLocation } from "@remix-run/react";
 import { prisma } from "~/utils/prisma.server";
 import { character, character_item, lineage, path, skill, item, lineage_skill } from "@prisma/client";
-import React from "react";
+import React, { useState } from "react";
 
 import { SideBars } from "~/components/context-providers/side-bars";
 import { useSidebar } from "~/components/context-providers/side-bar-context";
 import { getUserIdFromSession } from "~/utils/auth.server";
+import { ResourceBar } from "~/components/scene/resource-bar";
 
 
 export const loader: LoaderFunction = async ({ params, request }) => {
@@ -94,9 +95,22 @@ export default function CharacterRoute() {
       nonPureLineageSkills: (lineage_skill & { skill: skill, lineage: lineage })[],
       lineages: lineage[], isPure: boolean, items: (character_item & { item: item })[], paths: path[]
     }>()
-  const { isAllOpen, isHeaderOpen, isTempOpen } = useSidebar();
+  const { isAllOpen, isHeaderOpen, isTempOpen, isFooterOpen } = useSidebar();
 
   const subtitle = paths.length > 0 ? String(paths.map(p => p.name)) : "Sem Caminho"
+
+  const getStyle = () => {
+    if (isAllOpen) {
+      return { marginLeft: '200px', marginRight: '200px' }
+    }
+    if (isHeaderOpen) {
+      return { marginLeft: '200px' }
+    }
+    if (isTempOpen) {
+      return { marginRight: '200px' }
+    }
+
+  }
 
   return (
     <>
@@ -129,6 +143,7 @@ export default function CharacterRoute() {
         ]}
         temp={
           <React.Fragment>
+
             <ul>
               <li key={1}>
                 <NavLink to={
@@ -142,10 +157,32 @@ export default function CharacterRoute() {
             </ul>
           </React.Fragment>
         }
+        footer={
+          <div style={{ margin: '2%' }}>
+            <ResourceBar
+              color="darkred"
+              halvedColor="red"
+              currentValue={character.currentVitality}
+              maxValue={character.vitality}
+            />
+            <ResourceBar
+              color="darkgreen"
+              halvedColor="green"
+              currentValue={character.currentVigor}
+              maxValue={character.vigor}
+            />
+            <ResourceBar
+              color="darkcyan"
+              halvedColor="cyan"
+              currentValue={character.currentPower}
+              maxValue={character.power}
+            />
+          </div>
+        }
 
       />
 
-      <div className="character-sheet" >
+      <div className="user" style={getStyle()}>
         <Outlet context={{
           characterId, isAuthor,
           character, skills, paths,

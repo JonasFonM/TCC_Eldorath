@@ -12,7 +12,8 @@ interface Props {
     links: string[];
     linkNames: string[];
     entity: any;
-    temp: any
+    temp: any;
+    footer: any;
 
 }
 
@@ -20,8 +21,8 @@ export function GlobalSideBarContext({ }) {
 
 }
 
-export function SideBars({ title, subtitle, tableHeaders, tableDatas, tableExplain, links, linkNames, entity, temp }: Props) {
-    const { selectHeader, setHeader, selectTemp, setTemp } = useSidebar();
+export function SideBars({ title, subtitle, tableHeaders, tableDatas, tableExplain, links, linkNames, entity, temp, footer }: Props) {
+    const { selectHeader, setHeader, selectTemp, setTemp, selectFooter, setFooter, isAllOpen, isHeaderOpen, isTempOpen, isFooterOpen } = useSidebar();
 
     const showExplain = useRef<number>(-1);
 
@@ -83,12 +84,53 @@ export function SideBars({ title, subtitle, tableHeaders, tableDatas, tableExpla
                 onClick={selectHeader === 0 ? () => setHeader(Number(entity.id)) : () => setHeader(0)}>
             </button>
 
-            <div className="temp" style={selectTemp === 0 ? {} : { transform: 'translate(200px)' }}>
+            <div className="temp" style={
+                temp != null
+                    ? selectTemp === 0
+                        ? {}
+                        : { transform: 'translate(200px)' }
+                    : { display: 'none' }
+            }>
                 {temp}
             </div>
 
-            <button className="toggle-temp" style={selectTemp === 0 ? {} : { transform: 'translate(200px)' }}
-                onClick={selectTemp === 0 ? () => setTemp(Number(entity.id)) : () => setTemp(0)}>
+            <button className="toggle-temp" style={
+                temp != null
+                    ? selectTemp === 0
+                        ? {}
+                        : { transform: 'translate(200px)' }
+                    : { display: 'none' }
+            }
+                onClick={
+                    selectTemp === 0
+                        ? () => setTemp(Number(entity.id))
+                        : () => setTemp(0)}>
+            </button>
+
+            <div className="footer" style={
+                footer != null
+                    ? selectFooter === 0
+                        ? isAllOpen
+                            ? { width: 'calc(100% - 400px)', marginLeft: '200px', marginRight: '200px' }
+                            : isHeaderOpen
+                                ? { width: 'calc(100% - 200px)', marginLeft: '200px' }
+                                : isTempOpen
+                                    ? { width: 'calc(100% - 200px)', marginRight: '200px' }
+                                    : {}
+                        : { transform: 'translate(0, 150px)' }
+                    : { display: 'none' }}
+            >
+                {footer}
+            </div>
+
+            <button className="toggle-footer" style={
+                footer != null
+                    ? selectFooter === 0
+                        ? {}
+                        : { transform: 'translate(0, 150px)' }
+                    : { display: 'none' }
+            }
+                onClick={selectFooter === 0 ? () => setFooter(Number(entity.id)) : () => setFooter(0)}>
             </button>
         </div >
 

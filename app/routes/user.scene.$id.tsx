@@ -1,16 +1,16 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { campaign, character, scene, user } from "@prisma/client";
+import { campaign, character, scene } from "@prisma/client";
 import { LoaderFunction } from "@remix-run/node";
 import { NavLink, Outlet, useLoaderData } from "@remix-run/react";
-import React, { useState } from "react";
-import { DeleteConfirm } from "~/components/delete-confirmation";
-import { GridMap } from "~/components/scene/grid-map";
+import React, { } from "react";
 import { useSidebar } from "~/components/context-providers/side-bar-context";
 import { SideBars } from "~/components/context-providers/side-bars";
 import { getUserIdFromSession } from "~/utils/auth.server";
 import { prisma } from "~/utils/prisma.server";
-import { GeneralExplain } from "~/components/explanations/general-explain";
+import { TableHead } from "~/components/character-sheet/table-head";
+import { CharacterMenu } from "~/components/scene/character-menu";
 import { useShowRow } from "~/components/context-providers/showRowContext";
+import { DiceRoller } from "~/components/dice-roller";
 
 export const loader: LoaderFunction = async ({ params, request }) => {
 
@@ -45,7 +45,6 @@ export default function SceneRoute() {
     const isMaster = scene.campaign.masterId === userId;
     const { showRow, isShown } = useShowRow()
 
-    
     const timeIcons = [
         "/Night.png",
         "/Dawn.png",
@@ -76,7 +75,7 @@ export default function SceneRoute() {
                 temp={
                     <ul>
                         <img alt={"Dia"}
-                            style={{ animation: 'fadeIn 0.3s ease-in-out', transition: "fadeIn 0.3s ease-in-out", width: '100%' }}
+                            style={{ animation: 'fadeIn 0.3s ease-in-out', boxShadow: '0 0 2px 2px gold', transition: "fadeIn 0.3s ease-in-out", width: '100%' }}
                             src={displayTimeIcon(Number(scene.campaign.timeOfDay))} />
                         <li key={-1}>
                             <NavLink to={`/user/campaign/${scene.campaignId}`}>Campanha</NavLink>
@@ -91,9 +90,46 @@ export default function SceneRoute() {
             <div className="user">
 
                 <h1 className="title-input" style={{ position: 'sticky', top: '64px' }}>{scene.title}</h1>
+                <div className="container">
 
-                <GridMap onClick={() => null} rows={10} columns={10} />
+                    {isMaster
+                        ? <table>
+                            <TableHead
+                                onClick={() => showRow(`Chars`)}
+                                tableTitles={['Personagens']}
+                                open={isShown('Chars')}
+                                error={false}
+                            />
+                        </table>
+                        : null
+                    }
 
+                    {isMaster
+                        ? availableChars.map(ac =>
+                            <table key={`Char-${ac.id}`}>
+                                <CharacterMenu
+                                    onClick={() => showRow(`Char-${ac.id}`)}
+                                    character={ac}
+                                    show={isShown(`Chars`)}
+                                    selected={isShown(`Char-${ac.id}`)}
+                                />
+                                <tbody>
+                                    <tr onClick={() => (4)}>
+                                        <td>
+                                            <DiceRoller
+                                                die={6}
+                                                amountLimit={3}
+                                                flatBonus={0}
+                                            />
+                                        </td>
+                                    </tr>
+                                </tbody>
+
+                            </table>)
+                        : null
+                    }
+
+                </div>
                 <Outlet />
 
             </div >

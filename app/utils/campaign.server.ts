@@ -180,6 +180,16 @@ export const rtnCampaignEra = async (campaignId: number) => {
 
 //SCENES
 export const createScene = async (campaign: SceneForm, campaignId: number, title: string) => {
+  const characters = await prisma.character.findMany(
+    {
+      where: {
+        campaignId: campaignId
+      }
+    }
+  )
+
+
+
   const newscene = await prisma.scene.create({
     data: {
       title: title,
@@ -187,10 +197,14 @@ export const createScene = async (campaign: SceneForm, campaignId: number, title
       era: campaign.era,
       month: campaign.month,
       monthDay: campaign.monthDay,
-      weekDay: campaign.weekDay
-
+      weekDay: campaign.weekDay,
     },
   })
+
+  if (characters.length > 0) {
+    await addCharactersToScene(characters.map(c => c.id), newscene.id)
+  }
+
   return {
     id: newscene.id,
     title: title,
@@ -198,7 +212,9 @@ export const createScene = async (campaign: SceneForm, campaignId: number, title
     era: campaign.era,
     month: campaign.month,
     monthDay: campaign.monthDay,
-    weekDay: campaign.weekDay
+    weekDay: campaign.weekDay,
+    characters: characters || null
+
   }
 };
 
@@ -301,5 +317,33 @@ export const removeAllCharactersFromCampaign = async (campaignId: number) => {
   return await prisma.character.updateMany({
     where: { campaignId: campaignId },
     data: { campaignId: null },
+  });
+};
+
+
+export const addCharactersToScene = async (characterList: number[], sceneId: number) => {
+  return characterList.map(cl => prisma.characterScene.create({
+    data: {
+      characterId: cl,
+      sceneId: sceneId,
+    },
+  }));
+
+};
+
+export const removeCharacterFromScene = async (characterId: number, sceneId: number) => {
+  return await prisma.characterScene.deleteMany({
+    where: {
+      characterId: characterId,
+      sceneId: sceneId
+    },
+  });
+};
+
+export const removeAllCharactersFromScene = async (sceneId: number) => {
+  return await prisma.characterScene.deleteMany({
+    where: {
+      sceneId: sceneId
+    },
   });
 };

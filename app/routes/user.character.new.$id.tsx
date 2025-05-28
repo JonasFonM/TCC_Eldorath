@@ -155,7 +155,14 @@ export const loader: LoaderFunction = async ({ request, params }) => {
 }
 
 export default function NewCharacterRoute() {
-    const { isAllOpen, isHeaderOpen, isTempOpen } = useSidebar();
+    const { isHeaderOpen } = useSidebar();
+
+    const getStyle = () => {
+        if (isHeaderOpen) {
+            return { marginLeft: '200px' }
+        }
+
+    }
 
     const {
         userId,
@@ -218,19 +225,12 @@ export default function NewCharacterRoute() {
                     'Itens Iniciais',
                     'Finalizar'
                 ]}
-                temp={
-                    <ul>
-                        <li style={{ height: "120px" }}>
-                            <img src={"/Action Surge.png"} alt={"Capa de Perfil"} style={{ width: "100%", height: "100%", margin: '0', padding: '0' }} />
-                        </li>
-
-                    </ul>
-                }
+                temp={null}
+                footer={null}
 
             />
 
-            <div className="user" style={isAllOpen ? { marginLeft: '200px', marginRight: '200px' } : isHeaderOpen ?
-                { marginLeft: '200px' } : isTempOpen ? { marginRight: '200px' } : {}}>
+            <div className="user" style={getStyle()}>
                 <Outlet context={{
                     userId,
                     character, characterId,

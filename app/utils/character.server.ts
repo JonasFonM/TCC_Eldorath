@@ -2,17 +2,10 @@
 import type { CharacterForm } from './types.server'
 import { prisma } from './prisma.server'
 import { json } from '@remix-run/node'
+import { character } from '@prisma/client';
 
 //BASIC
 export const createCharacter = async (character: CharacterForm) => {
-  const vitality = character.body + character.tier + 1;
-  const vigor = character.level + character.body + character.mind;
-  const power = character.tier + character.mind;
-  const carryCap = 15 + (5 * character.body);
-  const liftCap = 20 + (10 * character.body);
-  const weight = 10 + (2 * character.body)
-  const defense = character.agility;
-  const magicdefense = character.mind;
 
   const newcharacter = await prisma.character.create({
     data: {
@@ -23,17 +16,6 @@ export const createCharacter = async (character: CharacterForm) => {
       body: character.body,
       mind: character.mind,
       authorId: character.authorId,
-      vitality: vitality,
-      vigor: vigor,
-      power: power,
-      currentVitality: vitality,
-      currentVigor: vigor,
-      currentPower: power,
-      carryCap: carryCap,
-      liftCap: liftCap,
-      baseWeight: weight,
-      defense: defense,
-      magicDefense: magicdefense,
     },
   })
   return {
@@ -42,31 +24,11 @@ export const createCharacter = async (character: CharacterForm) => {
     agility: character.agility,
     body: character.body,
     mind: character.mind,
-    vitality: vitality,
-    vigor: vigor,
-    power: power,
-    currentVitality: vitality,
-    currentVigor: vigor,
-    currentPower: power,
-    carryCap: carryCap,
-    liftCap: liftCap,
-    baseWeight: weight,
-    defense: defense,
-    magicDefense: magicdefense,
     authorId: character.authorId
   }
 }
 
 export const updateCharacter = async (character: CharacterForm, characterId: number) => {
-  const vitality = character.body + character.tier + 1;
-  const vigor = character.level + character.body + character.mind;
-  const power = character.tier + character.mind;
-  const carryCap = 15 + (5 * character.body);
-  const liftCap = 20 + (10 * character.body);
-  const weight = 10 + (2 * character.body)
-  const defense = character.agility;
-  const magicdefense = character.mind;
-
 
   const updatedCharacter = await prisma.character.update({
     where: {
@@ -80,6 +42,45 @@ export const updateCharacter = async (character: CharacterForm, characterId: num
       agility: character.agility,
       body: character.body,
       mind: character.mind,
+
+
+    },
+  })
+  return {
+    id: updatedCharacter.id,
+    name: character.name,
+    tier: character.tier,
+    agility: character.agility,
+    body: character.body,
+    mind: character.mind,
+    authorId: character.authorId
+  }
+}
+
+export async function prepareCharacterStats(characterId: number) {
+  const character = await prisma.character.findUnique({
+    where: {
+      id: characterId
+    }
+  })
+
+  if (character === null) return;
+
+  const vitality = (character.body + character.tier + character.effectiveSize) * (character.boss ? 2 : 1);
+  const vigor = (character.level + character.body + character.mind) * (character.boss ? 2 : 1);
+  const power = (character.tier + character.mind) * (character.boss ? 2 : 1);
+  const carryCap = 10 + (5 * character.effectiveSize) + (5 * character.body);
+  const liftCap = 10 + (10 * character.effectiveSize) + (10 * character.body);
+  const weight = 5 + ((character.body * character.trueSize))
+  const defense = character.agility;
+  const magicdefense = character.mind;
+
+  const updatedCharacter = await prisma.character.update({
+    where: {
+      id: characterId
+    }
+    ,
+    data: {
       vitality: vitality,
       vigor: vigor,
       power: power,
@@ -93,11 +94,6 @@ export const updateCharacter = async (character: CharacterForm, characterId: num
   })
   return {
     id: updatedCharacter.id,
-    name: character.name,
-    tier: character.tier,
-    agility: character.agility,
-    body: character.body,
-    mind: character.mind,
     vitality: vitality,
     vigor: vigor,
     power: power,
@@ -106,8 +102,8 @@ export const updateCharacter = async (character: CharacterForm, characterId: num
     baseWeight: weight,
     defense: defense,
     magicDefense: magicdefense,
-    authorId: character.authorId
   }
+
 }
 
 export async function submitCharacter(character: CharacterForm) {
@@ -127,7 +123,17 @@ export async function submitCharacter(character: CharacterForm) {
 
 export const getCharactersFromUser = async (userId: number) => {
   return prisma.character.findMany({
-    where: { authorId: userId },
+    where: { authorId: userId, npc: false },
+    select: { id: true, name: true, authorId: true },
+    orderBy: {
+      createdAt: 'desc'
+    }
+  })
+}
+
+export const getNPCsFromUser = async (userId: number) => {
+  return prisma.character.findMany({
+    where: { authorId: userId, npc: true },
     select: { id: true, name: true, authorId: true },
     orderBy: {
       createdAt: 'desc'
@@ -136,22 +142,20 @@ export const getCharactersFromUser = async (userId: number) => {
 }
 
 export function tierByLevel(level: any) {
-  if (level < 5) {
+  if (level >= 17 && level > 16) {
+    return '4';
+  }
+  if (level <= 16 && level > 10) {
+    return '3';
+  }
+  if (level <= 10 && level > 4) {
+    return '2';
+  }
+  if (level <= 4) {
     return '1';
-  } else {
-    if (level < 11) {
-      return '2';
-    } else {
-      if (level < 17) {
-        return '3';
-      } else {
-        if (level >= 17) {
-          return '4';
-        }
-      }
-    }
   }
 }
+
 
 //SKILLS
 export const updateSkillPendencies = async (characterId: number, skillQuantity: number, pendingSkills: number) => {
@@ -351,11 +355,6 @@ export const submitCharPaths = async (pathList: number[], characterId: number, p
     });
 
     newPaths.map(np => addPendingManeuverOrMagics(characterId, np))
-
-    newPaths.map(np => addPathBasedSkills(characterId, np))
-
-    newPaths.map(np => addPathBasedStats(characterId, np))
-
 
     await prisma.character.update({
       where: { id: characterId },

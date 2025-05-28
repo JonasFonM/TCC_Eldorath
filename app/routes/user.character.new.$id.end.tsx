@@ -25,6 +25,16 @@ export default function LineagesRoute() {
             skills: skill[];
         }>();
 
+    const baseLimit = character.npc === true
+        ? 4
+        : 6
+
+    const attributeLimit = baseLimit + character.tier + (character.boss ? 8 : 0)
+
+    const spentAllPoints = character.agility + character.body + character.mind >= attributeLimit
+
+    const itemList = character_items.map(it => it.item)
+
     const stringShow = useRef<string[]>([]);
 
     const forceUpdate = useState(0)[1];
@@ -60,13 +70,13 @@ export default function LineagesRoute() {
             </table>
 
             <table>
-                {character.agility + character.body + character.mind < 7
+                {!spentAllPoints
                     ? <thead>
                         <tr className="error">
                             <td>
                                 <NavLink to={`/user/character/new/${characterId}/basic/`}
                                     className={'lineBtn'}
-                                    style={{ color: 'inherit' }}>Você precisa usar seus Pontos de Atributo</NavLink>
+                                    style={{ color: 'inherit' }}>Você precisa usar seus Pontos de Atributo: {attributeLimit}</NavLink>
                             </td>
                         </tr>
                     </thead>
@@ -209,26 +219,29 @@ export default function LineagesRoute() {
                     open={stringShow.current.includes(`I`)}
                     error={false}
                 />
-                {character_items.map(it => (
-                    <React.Fragment key={it.id}>
-                        <TableData
-                            key={String(it.item.name) + it.id}
-                            tableData={[it.material
-                                ? String(it.item.name) + ' de ' + String(it.material)
-                                : String(it.item.name)]}
-                            show={stringShow.current.includes(`I`)}
-                            onClick={() => stringShowRow(`I${it.id}`)}
-                            selected={stringShow.current.includes(`I${it.id}`)}
-                            error={false}
-                        />
-                        <TableDropdown
-                            key={`Drop-${it.id}`}
-                            show={stringShow.current.includes("I") && stringShow.current.includes(`I${it.id}`)}
-                            categories={[]}
-                            subtitleIndexes={[]}
-                            items={[String(it.item.description)]}
-                        />
-                    </React.Fragment>
+
+                {character_items.map((it, index, ci) => (
+                    ci.findIndex(ci => ci.item.id === it.item.id) === index
+                        ? <React.Fragment key={it.id}>
+                            <TableData
+                                key={String(it.item.name) + it.id}
+                                tableData={[it.material
+                                    ? String(it.item.name) + ' de ' + String(it.material) + ` (x${ci.filter(ci => ci.item.id === it.item.id).length})`
+                                    : String(it.item.name) + ` (x${ci.filter(ci => ci.item.id === it.item.id).length})`]}
+                                show={stringShow.current.includes(`I`)}
+                                onClick={() => stringShowRow(`I${it.id}`)}
+                                selected={stringShow.current.includes(`I${it.id}`)}
+                                error={false}
+                            />
+                            <TableDropdown
+                                key={`Drop-${it.id}`}
+                                show={stringShow.current.includes("I") && stringShow.current.includes(`I${it.id}`)}
+                                categories={[]}
+                                subtitleIndexes={[]}
+                                items={[String(it.item.description)]}
+                            />
+                        </React.Fragment>
+                        : null
                 ))}
 
             </table >
@@ -241,8 +254,8 @@ export default function LineagesRoute() {
             </div>
 
             <div className="col-6">
-                {character.agility + character.body + character.mind >= 7 && character_skills.length > 0 && character_paths.length > 0 && character_lineages.length > 0
-                    ? <Link to={`/user/character/${characterId}/stats/`} className="button" style={{ width: '60%' }}>Finalizar</Link>
+                {spentAllPoints && character_skills.length > 0 && character_paths.length > 0 && character_lineages.length > 0
+                    ? <Link to={`/pathstats/character/${characterId}/`} className="button" style={{ width: '60%' }}>Finalizar</Link>
                     : <div style={{ visibility: 'hidden' }}>Hi</div>
                 }
             </div>

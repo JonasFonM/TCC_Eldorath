@@ -2,7 +2,7 @@
 import { redirect, LoaderFunction } from "@remix-run/node";
 import { prisma } from "~/utils/prisma.server";
 
-export const loader: LoaderFunction = async ({ params, request }) => {
+export const loader: LoaderFunction = async ({ params }) => {
     const characterId = Number(params.id);
 
     const character = await prisma.character.findUnique({
@@ -31,7 +31,5 @@ export const loader: LoaderFunction = async ({ params, request }) => {
         where: { id: characterId },
     });
 
-    const referer = request.headers.get("Referer") || '/user/character/';
-
-    return redirect(referer);
+    return redirect('/user/home/profile');
 };

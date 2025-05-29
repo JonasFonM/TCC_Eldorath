@@ -240,7 +240,7 @@ ul {
   bottom: 0;
   height: 150px;
   padding: 0;
-  background-color: #090809;
+  background-color: black;
   box-shadow: 1px 0px 8px 1px gold;
   z-index: 3;
 }
@@ -632,6 +632,15 @@ td:last-child {
   justify-content: center;
   overflow: hidden;
   transition: 0.3s ease;
+}
+
+.button.logout {
+  background-color: darkred;
+}
+
+.button.logout:hover {
+  background-color: red;
+  color: black;
 }
 
 .block .button {

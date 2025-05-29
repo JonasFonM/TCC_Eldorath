@@ -104,13 +104,18 @@ export default function ItemSelection() {
                                     }}>
 
                                     <div className="col-3">
-                                        <button style={{ fontSize: '2rem' }} type="button" className="button" onClick={() => handleItemMinus(item.id, item.baseCost)}>-</button>
                                     </div>
 
                                     <div className="col-6">
-                                        <div className="col-12">
-                                            <h3 style={{ color: 'gold' }}>{item.name} {`(` + selectedItems.filter(i => i === item.id).length + `)`}</h3>
-                                            <p>{item.description}</p>
+                                        <div className="container">
+
+                                            <button style={{ fontSize: '2rem' }} type="button" className="col-3 button" onClick={() => handleItemMinus(item.id, item.baseCost)}>-</button>
+                                            <div className="col-6">
+                                                <h3 style={{ color: 'gold' }}>{item.name} {`(` + selectedItems.filter(i => i === item.id).length + `)`}</h3>
+                                                <p>{item.description}</p>
+                                            </div>
+                                            <button style={{ fontSize: '2rem' }} type="button" className="col-3 button" onClick={() => handleItemPlus(item.id, item.baseCost)}>+</button>
+
                                         </div>
                                         <div className="col-4" >
                                             <h2 style={{ fontSize: "1.1rem" }}>Custo: </h2>
@@ -134,7 +139,6 @@ export default function ItemSelection() {
                                     </div>
 
                                     <div className="col-3">
-                                        <button style={{ fontSize: '2rem' }} type="button" className="button" onClick={() => handleItemPlus(item.id, item.baseCost)}>+</button>
                                     </div>
 
                                     {item.baseCost > maxCost - selectedCost ? error && <p className="error" >{error}</p> : ''}

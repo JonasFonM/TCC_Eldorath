@@ -7,6 +7,7 @@ import { TableData } from "~/components/character-sheet/table-data";
 import { TableDropdown } from "~/components/character-sheet/table-dropdown";
 import { useShowRow } from "~/components/context-providers/showRowContext";
 import { submitCharPaths } from "~/utils/character.server";
+import { CharacterCreationFooter } from "~/components/character-sheet/character-creator-footer";
 
 export const action: ActionFunction = async ({ request, params }) => {
     const characterId = params.id
@@ -158,8 +159,11 @@ export default function PathSelection() {
                     )}
 
                 </div>
-                <Link to={`/user/character/new/${characterId}/lineages`} type="button" className="button" style={{ marginLeft: '3%', width: '45%', float: "left" }}> Voltar</Link>
-                <button type="submit" className="button" style={{ marginRight: '3%', width: '45%', float: "right" }}>Avançar</button>
+                <CharacterCreationFooter
+                    backBtnName={'Linhagens'}
+                    backLink={`/user/character/new/${characterId}/lineages`}
+                    showAdv={true}
+                />
             </form >
         </>
 

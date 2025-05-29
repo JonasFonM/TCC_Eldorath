@@ -11,7 +11,7 @@ export const loader: LoaderFunction = async ({ params, request }) => {
     const userId = await getUserIdFromSession(request)
 
     if (!params.id) {
-        return redirect(`/user/home/profile/${String(userId)}`)
+        return redirect(`/user/home/profile/${String(userId)}/`)
     }
 
     const user = await prisma.user.findUnique({

@@ -6,6 +6,7 @@ import React, { useRef, useState } from "react";
 import { TableData } from "~/components/character-sheet/table-data";
 import { TableHead } from "~/components/character-sheet/table-head";
 import { TableDropdown } from "~/components/character-sheet/table-dropdown";
+import { CharacterCreationFooter } from "~/components/character-sheet/character-creator-footer";
 
 export const loader: LoaderFunction = async ({ params }) => {
     const characterId = params.id;
@@ -246,19 +247,12 @@ export default function LineagesRoute() {
 
             </table >
 
-            <div className="col-6">
-                {character.level === 1 && character.experience === 0
-                    ? <Link to={`/user/character/${characterId}/reset/`} className="button" style={{ width: '60%' }}>Recomeçar</Link>
-                    : <div style={{ visibility: 'hidden' }}>Hi</div>
-                }
-            </div>
-
-            <div className="col-6">
-                {spentAllPoints && character_skills.length > 0 && character_paths.length > 0 && character_lineages.length > 0
-                    ? <Link to={`/pathstats/character/${characterId}/`} className="button" style={{ width: '60%' }}>Finalizar</Link>
-                    : <div style={{ visibility: 'hidden' }}>Hi</div>
-                }
-            </div>
+            <CharacterCreationFooter
+                backBtnName={'Refazer'}
+                backLink={`/user/character/${characterId}/reset/`}
+                showAdv={spentAllPoints && character_skills.length > 0 && character_paths.length > 0 && character_lineages.length > 0}
+            />
+           
         </>
     )
 }

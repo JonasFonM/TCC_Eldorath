@@ -9,7 +9,7 @@ export function ResourceBar({ currentValue, maxValue, color, halvedColor }: Prop
     return (
         <div style={{
             fontWeight: 'bold',
-            marginBottom: '0.75%',
+            marginBottom: '6px',
             justifyItems: 'center',
 
         }}>

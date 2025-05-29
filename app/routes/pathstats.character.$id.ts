@@ -3,7 +3,7 @@
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { redirect, LoaderFunction } from "@remix-run/node";
-import { addPathBasedSkills, addPathBasedStats, prepareCharacterStats } from "~/utils/character.server";
+import { addPathBasedSkills, addPathBasedStats,  prepareCharacterStats } from "~/utils/character.server";
 import { prisma } from "~/utils/prisma.server";
 
 export const loader: LoaderFunction = async ({ params }) => {
@@ -21,11 +21,10 @@ export const loader: LoaderFunction = async ({ params }) => {
         orderBy: { pathTier: 'desc' }
     });
 
-    const char = await prepareCharacterStats(characterId)
+    await prepareCharacterStats(characterId)
 
     paths.map(p => addPathBasedSkills(characterId, p.id))
     paths.map(p => addPathBasedStats(characterId, p.id))
-
 
     return redirect(`/user/character/${characterId}/stats/`);
 };

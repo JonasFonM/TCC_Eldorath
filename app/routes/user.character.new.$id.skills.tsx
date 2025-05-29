@@ -308,7 +308,7 @@ export default function SkillSelectionRoute() {
           backLink={`/user/character/new/${characterId}/paths`}
           advBtnName="Itens"
           advLink={
-            selectedMagics.length > 0 || selectedManeuvers.length > 0 || selectedManeuvers.length > 0 || character.skills.length > 0
+            selectedMagics.length < 0 && selectedManeuvers.length < 0 && selectedManeuvers.length < 0 && character.skills.length > 0
               ? `/user/character/new/${characterId}/inventory/`
               : null
           }

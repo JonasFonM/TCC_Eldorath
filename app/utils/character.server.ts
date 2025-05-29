@@ -106,6 +106,36 @@ export async function prepareCharacterStats(characterId: number) {
 
 }
 
+export async function characterResourceTotalRecovery(characterId: number) {
+  const character = await prisma.character.findUnique({
+    where: {
+      id: characterId
+    }
+  })
+
+  if (character === null) return;
+
+  const updatedCharacter = await prisma.character.update({
+    where: {
+      id: characterId
+    }
+    ,
+    data: {
+      currentPower: character.power,
+      currentVigor: character.vigor,
+      currentVitality: character.vitality
+    },
+  })
+
+  return {
+    id: updatedCharacter.id,
+    currentPower: updatedCharacter.currentPower,
+    currentVigor: updatedCharacter.currentVigor,
+    currentVitality: updatedCharacter.currentVitality
+  }
+
+}
+
 export async function submitCharacter(character: CharacterForm) {
   const newcharacter = await createCharacter(character)
   if (!newcharacter) {

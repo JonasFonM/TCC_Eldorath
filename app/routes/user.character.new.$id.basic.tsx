@@ -5,6 +5,7 @@ import { Link, NavLink, useActionData, useLoaderData, useOutletContext } from "@
 import { useEffect, useRef, useState } from "react"
 import { AttributeHandler } from "~/components/character-sheet/attribute-handler"
 import { CharacterCreationFooter } from "~/components/character-sheet/character-creator-footer"
+import { ResetConfirm } from "~/components/character-sheet/reset-confirm"
 import { useSidebar } from "~/components/context-providers/side-bar-context"
 import { GeneralExplain } from "~/components/explanations/general-explain"
 import { getUserIdFromSession, requireUserId } from '~/utils/auth.server'
@@ -63,7 +64,8 @@ export default function NewCharacterRoute() {
     const totalLimit = baseLimit + character.tier - character.mind - character.body - character.agility + (character.boss ? 8 : 0)
 
     const canDelete =
-        character.level === 1
+        character.name === "Nome"
+        && character.level === 1
         && character.agility === 1
         && character.body === 1
         && character.mind === 1
@@ -72,6 +74,20 @@ export default function NewCharacterRoute() {
         && character.pendingLineages === 2
         && character.pendingPath === 1
         && character.pendingSkills === 2
+
+    const [selectReset, setReset] = useState<number>(0);
+
+    const showReset = () => {
+        setReset(() => {
+            return character.id;
+        });
+    };
+
+    const cancelReset = () => {
+        setReset(() => {
+            return 0
+        });
+    };
 
     const firstLoad = useRef(true);
     const [formData, setFormData] = useState({
@@ -164,6 +180,12 @@ export default function NewCharacterRoute() {
         }
     };
 
+    const advanceWithoutChange = limit === 0
+        && character.agility === formData.agility
+        && character.body === formData.body
+        && character.mind === formData.mind
+
+
     return (
         <form method="post" autoComplete="off" onSubmit={handleSubmit}>
 
@@ -186,11 +208,13 @@ export default function NewCharacterRoute() {
             <div style={{ position: "sticky", top: '130px', zIndex: '1' }} className="title-input">
                 <h1 className="title-container">Atributos
                     <button type="button" onClick={() => setShowAtr(1)} className="question-button">?</button>
+                    <button id="reset" type="button" onClick={showReset} className="question-button">R</button>
                 </h1>
                 <h3 style={{ fontSize: '1.2rem', margin: '0' }}>Pontos: {limit}</h3>
                 {formError && <p className="error" style={{ margin: '0' }}>{formError}</p>}
             </div>
             <GeneralExplain title={'Atributos'} description="Atributos são os valores que representam seus limites e capacidades." isHidden={showAtr != 1} onCancel={() => setShowAtr(0)} />
+            <ResetConfirm name={character.name} isHidden={selectReset === 0} onCancel={cancelReset} id={String(character.id)} />
 
             <div className="container" style={{ marginBottom: '150px' }}>
                 <AttributeHandler
@@ -231,7 +255,12 @@ export default function NewCharacterRoute() {
                 }
                 backLink={canDelete
                     ? `/delete/character/${character.id}/`
-                    : `/user/character/${character.id}/stats`
+                    : `/user/character/${character.id}/stats/`
+                }
+                advBtnName={'Linhagens'}
+                advLink={advanceWithoutChange
+                    ? `/user/character/new/${character.id}/lineages/`
+                    : null
                 }
                 showAdv={true}
             />

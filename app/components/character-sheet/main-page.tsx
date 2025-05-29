@@ -37,13 +37,14 @@ export function CharacterSheet({ character, isAuthor }: Props) {
                     <button onClick={() => setShowAtr(1)} className="question-button">?</button>
 
                     {isAuthor
-                        ? <ResetConfirm name={character.name} isHidden={selectReset === 0} onShow={showReset} onCancel={cancelReset} id={String(character.id)} />
+                        ? <button id="reset" type="button" onClick={showReset} className="question-button">R</button>
                         : ''
                     }
                 </h1>
             </div>
 
             <GeneralExplain title={'Atributos'} description="Atributos são os valores que representam seus limites e capacidades." isHidden={showAtr != 1} onCancel={() => setShowAtr(0)} />
+            <ResetConfirm name={character.name} isHidden={selectReset === 0} onCancel={cancelReset} id={String(character.id)} />
 
             <div className="title-input">
                 <h1 className="title-container">

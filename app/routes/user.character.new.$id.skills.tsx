@@ -7,6 +7,7 @@ import { TableData } from "~/components/character-sheet/table-data";
 import { TableDropdown } from "~/components/character-sheet/table-dropdown";
 import { useShowRow } from "~/components/context-providers/showRowContext";
 import { submitCharSkills, updateMagicPendencies, updateManeuverPendencies, updateSkillPendencies } from "~/utils/character.server";
+import { CharacterCreationFooter } from "~/components/character-sheet/character-creator-footer";
 
 
 export const action: ActionFunction = async ({ request, params }) => {
@@ -302,11 +303,18 @@ export default function SkillSelectionRoute() {
 
         <input type="hidden" key={"pendingMagics"} name="pendingMagics" value={maxMagics} />
 
-        <button type="submit" className="button">Avançar</button>
-
+        <CharacterCreationFooter
+          backBtnName={'Caminhos'}
+          backLink={`/user/character/new/${characterId}/paths`}
+          advBtnName="Itens"
+          advLink={
+            selectedMagics.length > 0 || selectedManeuvers.length > 0 || selectedManeuvers.length > 0 || character.skills.length > 0
+              ? `/user/character/new/${characterId}/inventory/`
+              : null
+          }
+          showAdv={true}
+        />
       </form>
-
-
 
     </>
 

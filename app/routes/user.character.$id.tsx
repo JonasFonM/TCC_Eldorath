@@ -158,7 +158,7 @@ export default function CharacterRoute() {
           </React.Fragment>
         }
         footer={
-          <div style={{ margin: '2%' }}>
+          <div style={{ margin: '1%' }}>
             <ResourceBar
               color="darkred"
               halvedColor="red"

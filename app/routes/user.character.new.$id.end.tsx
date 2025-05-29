@@ -250,9 +250,11 @@ export default function LineagesRoute() {
             <CharacterCreationFooter
                 backBtnName={'Refazer'}
                 backLink={`/user/character/${characterId}/reset/`}
+                advBtnName={`Finalizar`}
+                advLink={`/user/character/${characterId}/stats/`}
                 showAdv={spentAllPoints && character_skills.length > 0 && character_paths.length > 0 && character_lineages.length > 0}
             />
-           
+
         </>
     )
 }

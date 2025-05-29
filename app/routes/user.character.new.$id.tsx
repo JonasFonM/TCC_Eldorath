@@ -155,7 +155,7 @@ export const loader: LoaderFunction = async ({ request, params }) => {
 }
 
 export default function NewCharacterRoute() {
-    const { isAllOpen } = useSidebar();
+    const { isAllOpen, isHeaderOpen } = useSidebar();
 
 
     const {
@@ -189,7 +189,16 @@ export default function NewCharacterRoute() {
             paths: path[], maxSelectablePaths: number,
             items: item[]
         }>()
-    console.log(isAllOpen)
+
+    const getStyle = () => {
+        if (isAllOpen || isHeaderOpen) {
+            return { marginLeft: '200px', marginBottom: '155px' }
+        }
+        if (!isHeaderOpen && !isAllOpen) {
+            return { marginLeft: '0', marginBottom: '155px' }
+        }
+    }
+
     return (
         <>
             <SideBars
@@ -224,10 +233,7 @@ export default function NewCharacterRoute() {
             />
 
             <div className="user"
-                style={isAllOpen
-                    ? { marginLeft: '200px', marginBottom: '155px' }
-                    : { marginBottom: '155px' }
-                }>
+                style={getStyle()}>
                 <Outlet context={{
                     userId,
                     character, characterId,

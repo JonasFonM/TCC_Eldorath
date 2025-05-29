@@ -1,32 +1,50 @@
-import { Link } from "@remix-run/react";
+import { NavLink } from "@remix-run/react";
 import { useSidebar } from "../context-providers/side-bar-context";
 
 interface props {
     backBtnName: string,
     backLink: string;
-    showAdv: boolean
+    advLink: string | null;
+    advBtnName: string;
+    showAdv: boolean;
 }
 
-export function CharacterCreationFooter({ backBtnName, backLink, showAdv }: props) {
-    const { isAllOpen } = useSidebar();
+export function CharacterCreationFooter({ backBtnName, backLink, showAdv, advLink, advBtnName }: props) {
+    const { isAllOpen, isHeaderOpen } = useSidebar();
+    const getStyle = () => {
+        if (isAllOpen || isHeaderOpen) {
+            return { width: 'calc(100% - 200px)' }
+        }
+    }
+
+    const getAdv = () => {
+        if (advLink === null) {
+            return (<button style={showAdv
+                ? {}
+                : { display: "hidden" }}
+                className="button col-3" type="submit">{advBtnName}</button>)
+        }
+
+        if (advLink != null) {
+            return (
+                <NavLink className="button col-3 " type="button"
+                    to={advLink}>
+                    {String(advBtnName)}
+                </NavLink>)
+        }
+    }
 
     return (
 
         <div className="footer container"
-            style={
-                isAllOpen
-                    ? { width: 'calc(100% - 200px)' }
-                    : {}
-            }>
-
+            style={getStyle()}>
             <div className="col-2"></div>
-            <Link className="logout button col-3 " type="button"
+            <NavLink className="logout button col-3 " type="button"
                 to={backLink}>
                 {backBtnName}
-            </Link>
-
+            </NavLink>
             <div className="col-2"></div>
-            <button style={showAdv ? {} : { display: "hidden" }} className="button col-3" type="submit">Avançar</button>
+            {getAdv()}
             <div className="col-2"></div>
 
         </div>

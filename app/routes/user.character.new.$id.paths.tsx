@@ -162,6 +162,12 @@ export default function PathSelection() {
                 <CharacterCreationFooter
                     backBtnName={'Linhagens'}
                     backLink={`/user/character/new/${characterId}/lineages`}
+                    advBtnName="Talentos"
+                    advLink={
+                        charPathIds.length > 0
+                            ? `/user/character/new/${characterId}/skills/`
+                            : null
+                    }
                     showAdv={true}
                 />
             </form >

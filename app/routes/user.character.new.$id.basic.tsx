@@ -4,7 +4,7 @@ import { ActionFunction, json, LoaderFunction, redirect } from "@remix-run/node"
 import { Link, NavLink, useActionData, useLoaderData, useOutletContext } from "@remix-run/react"
 import { useEffect, useRef, useState } from "react"
 import { AttributeHandler } from "~/components/character-sheet/attribute-handler"
-import { CharacterCreationFooter } from "~/components/character-sheet/character-creator-footer"
+import { SpecialFooter } from "~/components/special-footer"
 import { ResetConfirm } from "~/components/character-sheet/reset-confirm"
 import { useSidebar } from "~/components/context-providers/side-bar-context"
 import { GeneralExplain } from "~/components/explanations/general-explain"
@@ -248,7 +248,7 @@ export default function NewCharacterRoute() {
                 <input hidden type="number" name="mind" value={formData.mind} onChange={handleChange} />
             </div>
 
-            <CharacterCreationFooter
+            <SpecialFooter
                 backBtnName={canDelete
                     ? 'Deletar'
                     : 'Voltar'

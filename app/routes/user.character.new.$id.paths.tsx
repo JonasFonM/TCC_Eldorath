@@ -7,7 +7,7 @@ import { TableData } from "~/components/character-sheet/table-data";
 import { TableDropdown } from "~/components/character-sheet/table-dropdown";
 import { useShowRow } from "~/components/context-providers/showRowContext";
 import { submitCharPaths } from "~/utils/character.server";
-import { CharacterCreationFooter } from "~/components/character-sheet/character-creator-footer";
+import { SpecialFooter } from "~/components/special-footer";
 
 export const action: ActionFunction = async ({ request, params }) => {
     const characterId = params.id
@@ -101,7 +101,6 @@ export default function PathSelection() {
 
             <form method="post" onSubmit={handleSubmit}>
 
-                <h2>Escolha seu Caminho</h2>
                 <div style={{ marginBottom: '120px' }}>
 
                     {allTiers.map((t, index) =>
@@ -159,7 +158,7 @@ export default function PathSelection() {
                     )}
 
                 </div>
-                <CharacterCreationFooter
+                <SpecialFooter
                     backBtnName={'Linhagens'}
                     backLink={`/user/character/new/${characterId}/lineages`}
                     advBtnName="Talentos"

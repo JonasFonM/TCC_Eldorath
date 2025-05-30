@@ -84,6 +84,9 @@ export async function prepareCharacterStats(characterId: number) {
       vitality: vitality,
       vigor: vigor,
       power: power,
+      currentVitality: vitality,
+      currentVigor: vigor,
+      currentPower: power,
       carryCap: carryCap,
       liftCap: liftCap,
       baseWeight: weight,
@@ -331,20 +334,28 @@ export const addPathBasedSkills = async (characterId: number, pathId: number) =>
   }
 }
 
-export const addPathBasedStats = async (characterId: number, pathId: number) => {
-  const path = await prisma.path.findUnique({
-    where: { id: pathId },
+export const addPathBasedStats = async (characterId: number, pathIds: number[]) => {
+  const paths = await prisma.path.findMany({
+    where: { id: { in: pathIds } },
   })
 
-  const addVitality = path?.vitality || 0
-  const addPower = path?.power || 0
+  const character = await prisma.character.findUnique({
+    where: { id: characterId },
+  })
+
+  if (character === null) return
+
+  const baseVitality = (character.body + character.tier + character.effectiveSize) * (character.boss ? 2 : 1);
+  const basePower = (character.tier + character.mind) * (character.boss ? 2 : 1);
+  const addVitality = paths.map(p => p.vitality).reduce((acc, cost) => acc + cost, 0)
+  const addPower = paths.map(p => p.power).reduce((acc, cost) => acc + cost, 0)
 
   if (addVitality > 0) {
     await prisma.character.update({
       where: { id: characterId },
       data: {
-        vitality: { increment: addVitality },
-        currentVitality: { increment: addVitality }
+        vitality: baseVitality + addVitality,
+        currentVitality: baseVitality + addVitality
       }
     })
   }
@@ -353,11 +364,13 @@ export const addPathBasedStats = async (characterId: number, pathId: number) => 
     await prisma.character.update({
       where: { id: characterId },
       data: {
-        power: { increment: addPower },
-        currentPower: { increment: addPower }
+        power: basePower + addPower,
+        currentPower: basePower + addPower
       }
     })
   }
+
+  return;
 }
 
 export const submitCharPaths = async (pathList: number[], characterId: number, pendingPaths: number, pathTiers: number) => {

@@ -1,5 +1,5 @@
 import { NavLink } from "@remix-run/react";
-import { useSidebar } from "../context-providers/side-bar-context";
+import { useSidebar } from "./context-providers/side-bar-context";
 
 interface props {
     backBtnName: string,
@@ -9,7 +9,7 @@ interface props {
     showAdv: boolean;
 }
 
-export function CharacterCreationFooter({ backBtnName, backLink, showAdv, advLink, advBtnName }: props) {
+export function SpecialFooter({ backBtnName, backLink, showAdv, advLink, advBtnName }: props) {
     const { isAllOpen, isHeaderOpen } = useSidebar();
     const getStyle = () => {
         if (isAllOpen || isHeaderOpen) {

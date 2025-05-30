@@ -115,7 +115,7 @@ export default function SkillsRoute() {
 
         {pureLineageSkills.length > 0
           ? <TableHead
-            tableTitles={['Talentos de Linhagem Pura']}
+            tableTitles={['Talentos de Linhagem Única']}
             onClick={() => showRow("TBTalentosLP")}
             open={isShown("TBTalentosLP")}
             error={false}

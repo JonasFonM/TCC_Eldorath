@@ -7,7 +7,7 @@ import { TableData } from "~/components/character-sheet/table-data";
 import { TableDropdown } from "~/components/character-sheet/table-dropdown";
 import { useShowRow } from "~/components/context-providers/showRowContext";
 import { submitCharLineages } from "~/utils/character.server";
-import { CharacterCreationFooter } from "~/components/character-sheet/character-creator-footer";
+import { SpecialFooter } from "~/components/special-footer";
 
 
 export const action: ActionFunction = async ({ request, params }) => {
@@ -79,9 +79,10 @@ export default function LineageSelection() {
         <>
             <h1 className="title-input" style={{ position: 'sticky', top: '64px', backgroundColor: 'black' }}>Linhagens</h1>
             <form method="post" onSubmit={handleSubmit}>
-                <h2>Escolha até {maxSelectableLineages} Linhagens</h2>
-                <h3>Escolher apenas 1 Linhagem habilita Talentos especiais</h3>
-
+                <div className="container" style={{ position: 'sticky', top: '139px', backgroundColor: 'black', borderBottom: '1px solid gold' }}>
+                    <h3 style={{ margin: '2px' }}>Você pode ter 1 ou 2 Linhagens</h3>
+                    <h3 style={{ margin: '2px' }}>Ter apenas 1 Linhagem permite escolher Talentos Únicos</h3>
+                </div>
                 <table>
                     <TableHead
                         tableTitles={['Linhagem']}
@@ -124,7 +125,7 @@ export default function LineageSelection() {
                 ))}
 
                 <input type="hidden" key='pure' name="pure" value={isPure ? 'true' : 'false'} />
-                <CharacterCreationFooter
+                <SpecialFooter
                     backBtnName={'Atributos'}
                     backLink={`/user/character/new/${characterId}/basic`}
                     advBtnName="Caminhos"

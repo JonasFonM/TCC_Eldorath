@@ -15,7 +15,7 @@ export function AttributeHandler({ title, attributeName, attributeValue, onPlus,
                 background: 'black',
                 border: '16px solid transparent',
                 padding: '16px',
-                borderImage: 'url(/SuperBorder.png) 10% round'
+                borderImage: 'url(/SuperBorder.png) 11% round'
             }}>
             <div className='container' style={{ borderRadius: '2%' }}>
                 <div className="col-3">

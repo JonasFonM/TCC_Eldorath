@@ -244,19 +244,27 @@ ul {
   bottom: 0;
   height: 150px;
   background-color: black;
-  border: 12px solid transparent;
-  border-image: url(/TopBorder.png) 40 round;
+  border-top: 4px double gold;
   box-shadow: 1px 0px 8px 1px gold;
   align-content: center;
   z-index: 3;
+  padding-left: 2%;
+  padding-right: 2%;
+}
+
+.footer .button {
+  scale: 0.9;
+  border-width: 12px ;
 }
 
 .header {
+  border-right: 6px double gold;
   left: 0;
   z-index: 6;
 }
 
 .temp {
+  border-left: 6px double gold;
   right: 0;
   z-index: 5;
 }
@@ -454,7 +462,7 @@ li button:hover {
 .block {
   background-color: black;
   border: 12px solid;
-  border-image: url(/SuperBorder.png) 10% round;
+  border-image: url(/SuperBorder.png) 6% round;
   border-radius: 5px;
   margin: 10px auto;
   padding: auto;

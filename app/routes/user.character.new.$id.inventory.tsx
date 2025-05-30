@@ -6,7 +6,7 @@ import { TableHead } from "~/components/character-sheet/table-head";
 import { submitStartingCharItems } from "~/utils/inventory.server";
 import { translateSlotTypes } from "./user.character";
 import { useShowRow } from "~/components/context-providers/showRowContext";
-import { CharacterCreationFooter } from "~/components/character-sheet/character-creator-footer";
+import { SpecialFooter } from "~/components/special-footer";
 
 export const action: ActionFunction = async ({ request, params }) => {
     const form = await request.formData();
@@ -159,7 +159,7 @@ export default function ItemSelection() {
                     ))
                 }
 
-                <CharacterCreationFooter
+                <SpecialFooter
                     backBtnName={'Talentos'}
                     backLink={`/user/character/new/${character.id}/skills`}
                     advBtnName="Resumo"

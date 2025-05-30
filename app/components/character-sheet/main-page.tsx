@@ -1,5 +1,4 @@
 import { character } from "@prisma/client";
-import { NavLink } from "@remix-run/react";
 import { GeneralExplain } from "../explanations/general-explain";
 import { useState } from "react";
 import { ResetConfirm } from "./reset-confirm";
@@ -28,12 +27,7 @@ export function CharacterSheet({ character, isAuthor }: Props) {
     return (
         <>
             <div style={{ position: "sticky", top: '64px', zIndex: '1' }} className="title-input">
-                <h1 className="title-container">
-                    {isAuthor
-                        ? <NavLink to={`/user/character/new/${String(character.id)}/basic`} className={'lineBtn'}>Atributos</NavLink>
-                        : 'Atributos'
-                    }
-
+                <h1 className="title-container">Atributos
                     <button onClick={() => setShowAtr(1)} className="question-button">?</button>
 
                     {isAuthor

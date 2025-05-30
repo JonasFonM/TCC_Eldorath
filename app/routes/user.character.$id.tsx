@@ -101,13 +101,13 @@ export default function CharacterRoute() {
 
   const getStyle = () => {
     if (isAllOpen) {
-      return { marginLeft: '200px', marginRight: '200px' }
+      return { marginLeft: '200px', marginRight: '200px', marginBottom: isFooterOpen ? '155px' : '0' }
     }
     if (isHeaderOpen) {
-      return { marginLeft: '200px' }
+      return { marginLeft: '200px', marginBottom: isFooterOpen ? '155px' : '0' }
     }
     if (isTempOpen) {
-      return { marginRight: '200px' }
+      return { marginRight: '200px', marginBottom: isFooterOpen ? '155px' : '0' }
     }
 
   }
@@ -135,7 +135,7 @@ export default function CharacterRoute() {
         ]}
 
         linkNames={[
-          'Personagem',
+          'Atributos',
           'Linhagens',
           'Caminhos',
           'Talentos',

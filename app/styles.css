@@ -67,15 +67,15 @@ body {
   text-shadow: 0px 10px 15px #787878;
 }
 
-.title-screen #first {
+#first {
   animation: spawn 1s ease-out forwards;
 }
 
-.title-screen #second {
+#second {
   animation: spawn 2s ease-out forwards;
 }
 
-.title-screen #third {
+#third {
   animation: spawn 3s ease-out forwards;
 }
 
@@ -475,6 +475,7 @@ li button:hover {
   align-items: center;
   justify-content: center;
   transition: background-color 0.3s ease, transform 0.2s ease;
+  
 }
 
 .block:hover {
@@ -644,7 +645,7 @@ td:last-child {
   border-radius: 5px;
   border: 8px solid transparent;
   border-image: url(/TopBorder.png) 5% stretch;
-
+  box-shadow: 0px 0px 4px 1px gold;
   cursor: pointer;
   display: flex;
   justify-content: center;

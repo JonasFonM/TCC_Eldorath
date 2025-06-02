@@ -254,7 +254,7 @@ ul {
 
 .footer .button {
   scale: 0.9;
-  border-width: 12px ;
+  border-width: 12px;
 }
 
 .header {
@@ -475,7 +475,7 @@ li button:hover {
   align-items: center;
   justify-content: center;
   transition: background-color 0.3s ease, transform 0.2s ease;
-  
+
 }
 
 .block:hover {
@@ -580,6 +580,7 @@ th {
   color: gold;
   background-color: rgb(9, 8, 9);
   box-shadow: 0px 0px 16px 1px gold;
+  animation: pulseCritical 1s infinite;
 }
 
 .table-extension {

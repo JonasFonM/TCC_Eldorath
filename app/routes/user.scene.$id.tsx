@@ -11,9 +11,10 @@ import { TableHead } from "~/components/character-sheet/table-head";
 import { CharacterMenu } from "~/components/scene/character-menu";
 import { useShowRow } from "~/components/context-providers/showRowContext";
 import { DiceRoller } from "~/components/dice-roller";
+import { CreatureSelector } from "~/components/scene/creature-selector";
+import { ResourceBar } from "~/components/scene/resource-bar";
 
 export const loader: LoaderFunction = async ({ params, request }) => {
-
     const userId = await getUserIdFromSession(request)
 
     const sceneId = Number(params.id);
@@ -23,6 +24,12 @@ export const loader: LoaderFunction = async ({ params, request }) => {
         include: { campaign: true }
     });
 
+    const charScenes = await prisma.characterScene.findMany({
+        where: {
+            sceneId: sceneId
+        }
+    })
+
     const availableChars = await prisma.character.findMany(
         {
             where: {
@@ -31,17 +38,46 @@ export const loader: LoaderFunction = async ({ params, request }) => {
         }
     )
 
+    const npcs = await prisma.character.findMany(
+        { where: { npc: true } }
+    )
+
+    const selectedNpcs = npcs.filter(npc => charScenes.map(cs => cs.characterId).includes(npc.id))
+
+    const playerCharacters = availableChars.filter(ac => ac.authorId === userId)
+
 
     if (!scene) {
         throw new Response("Cena não encontrada", { status: 404 });
     }
 
-    return ({ scene, availableChars, userId });
+    return ({ scene, availableChars, playerCharacters, userId, npcs, selectedNpcs });
 };
 
 export default function SceneRoute() {
-    const { scene, userId, availableChars } = useLoaderData<{ scene: scene & { campaign: campaign }, userId: number, availableChars: character[] }>();
-    const { isAllOpen, isHeaderOpen, isTempOpen } = useSidebar();
+    const { scene, userId, availableChars, playerCharacters, npcs, selectedNpcs } = useLoaderData<{
+        scene: scene & { campaign: campaign },
+        userId: number,
+        availableChars: character[],
+        playerCharacters: character[],
+        npcs: character[]
+        selectedNpcs: character[]
+    }>();
+    const { isAllOpen, isHeaderOpen, isTempOpen, isFooterOpen } = useSidebar();
+
+    const getStyle = () => {
+        if (isAllOpen) {
+            return { marginLeft: '200px', marginRight: '200px', marginBottom: isFooterOpen ? '155px' : '0' }
+        }
+        if (isHeaderOpen) {
+            return { marginLeft: '200px', marginBottom: isFooterOpen ? '155px' : '0' }
+        }
+        if (isTempOpen) {
+            return { marginRight: '200px', marginBottom: isFooterOpen ? '155px' : '0' }
+        }
+
+    }
+
     const isMaster = scene.campaign.masterId === userId;
     const { showRow, isShown } = useShowRow()
 
@@ -62,12 +98,10 @@ export default function SceneRoute() {
                 entity={scene}
                 title={scene.title}
                 subtitle={scene.campaign.title}
-                tableHeaders={["Mês", "Dia", "Fase"]}
-                tableDatas={[scene.month, scene.monthDay, scene.timeOfDay]}
+                tableHeaders={["Rodada"]}
+                tableDatas={[scene.currentRound]}
                 tableExplain={[
-                    "Cada mês em Eldorath é carregado de simbologia e ligado às tradições e fenômenos que ocorrem no seu decorrer.",
-                    "Uma semana em Eldorath tem 6 Dias. Os dias da semana são nomeados em honra a divindades e forças ancestrais.",
-                    "Um Dia em Eldorath é separado em Fases: A Madrugada que se inicia à meia-noite, a Alvorada, às 6 horas da manhã, a Tarde, ao meio-dia e a Noite, às 18 horas."
+                    "Uma Rodada representa aproximadamente 10 segundos dentro de uma Cena. Durante cada Rodada, o Mestre e os Jogadores podem preparar suas Ações, que serão resolvidas quando todos estiverem prontos."
                 ]}
 
                 links={[]}
@@ -83,13 +117,19 @@ export default function SceneRoute() {
                     </ul>
                 }
 
+                footer={
+                    !isMaster
+                        ? ''
+                        : ''
+                }
+
             />
 
 
 
-            <div className="user">
+            <div className="user" style={getStyle()}>
 
-                <h1 className="title-input" style={{ position: 'sticky', top: '64px' }}>{scene.title}</h1>
+                <h1 className="title-input" style={{ zIndex: '1', position: 'sticky', top: '64px' }}>{scene.title}</h1>
                 <div className="container">
 
                     {isMaster
@@ -105,7 +145,8 @@ export default function SceneRoute() {
                     }
 
                     {isMaster
-                        ? availableChars.map(ac =>
+                        ?
+                        <>{availableChars.map(ac =>
                             <table key={`Char-${ac.id}`}>
                                 <CharacterMenu
                                     onClick={() => showRow(`Char-${ac.id}`)}
@@ -125,8 +166,66 @@ export default function SceneRoute() {
                                     </tr>
                                 </tbody>
 
-                            </table>)
-                        : null
+                            </table>)}
+
+                            <div className="container calendar-box">
+
+                                {selectedNpcs.map(snpc =>
+                                    <div key={snpc.id} className="calendar-box container">
+                                        <h1>{snpc.name}</h1>
+                                    </div>
+
+                                )}
+                            </div>
+
+                            <CreatureSelector
+                                npcs={true}
+                                creatures={npcs}
+                                isHidden={!isShown('NPC-S')}
+                                sceneId={String(scene.id)}
+                                onShow={() => showRow('NPC-S')}
+                                onCancel={() => showRow('NPC-S')}
+                            />
+
+                        </>
+
+                        : <div className="container calendar-box">
+
+                            {selectedNpcs.map(snpc =>
+                                <React.Fragment key={snpc.id}>
+                                    <div onClick={() => showRow(`Block-${snpc.id}`)} className={
+                                        isShown(`Block-${snpc.id}`)
+                                            ? `block container selected`
+                                            : `block container`
+                                    }>
+
+                                        <h1 className="col-12">{snpc.name}</h1>
+                                        <h2 className="col-12">Nível {snpc.level}</h2>
+                                    </div>
+
+                                    <div className="col-12">
+                                        <ResourceBar
+                                            color="darkred"
+                                            halvedColor="red"
+                                            currentValue={snpc.currentVitality}
+                                            maxValue={snpc.vitality}
+                                        />
+                                        <ResourceBar
+                                            color="darkgreen"
+                                            halvedColor="green"
+                                            currentValue={snpc.currentVigor}
+                                            maxValue={snpc.vigor}
+                                        />
+                                        <ResourceBar
+                                            color="darkcyan"
+                                            halvedColor="cyan"
+                                            currentValue={snpc.currentPower}
+                                            maxValue={snpc.power}
+                                        />
+                                    </div>
+                                </React.Fragment>
+                            )}
+                        </div>
                     }
 
                 </div>

@@ -4,7 +4,7 @@ import { LoaderFunction, } from "@remix-run/node";
 import { NavLink, Outlet, useLoaderData, useLocation } from "@remix-run/react";
 import { prisma } from "~/utils/prisma.server";
 import { character, character_item, lineage, path, skill, item, lineage_skill } from "@prisma/client";
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 import { SideBars } from "~/components/context-providers/side-bars";
 import { useSidebar } from "~/components/context-providers/side-bar-context";
@@ -112,6 +112,27 @@ export default function CharacterRoute() {
 
   }
 
+  const rollDice = (sides: number) => Math.floor(Math.random() * sides) + 1;
+
+
+  const [logs, setLogs] = useState<string[]>([]);
+
+  const logEndRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    const el = logEndRef.current;
+    if (el) {
+      el.scrollTop = el.scrollHeight;
+    }
+  }, [logs]);
+
+
+  const handleRollDice = (amount: number, diceType: number, attributeName: string, attributeMod: number) => {
+    const result = (rollDice(diceType) * amount);
+    const newLog = (`${character.name} rolou: ${result + attributeMod} (${amount}d${diceType} + ${attributeMod}) em uma rolagem de ${attributeName}`);
+    setLogs((prevLogs) => [...prevLogs, newLog]);
+  };
+
   return (
     <>
       <SideBars
@@ -141,9 +162,9 @@ export default function CharacterRoute() {
           'Talentos',
           'Inventário'
         ]}
-        temp={
-          <React.Fragment>
-
+        temp={<React.Fragment>
+          {character.campaignId
+            ?
             <ul>
               <li key={1}>
                 <NavLink to={
@@ -153,9 +174,27 @@ export default function CharacterRoute() {
                     `/user/home/profile`}
                 >Campanha</NavLink>
               </li>
+            </ul>
+            : null
+          }
+
+          <div style={{ maxHeight: '92vh', overflowY: 'auto' }} ref={logEndRef}>
+            <h1>Log</h1>
+            <h3 style={{ boxShadow: '1px 3px 3px 0 gold' }}>Resultados</h3>
+
+            <ul>
+              {logs.map((log, index) => (
+                <li key={index}>
+                  <p style={{ lineHeight: '1rem', marginTop: '10px', marginBottom: '10px', fontVariant: 'initial' }}>
+                    {log}
+                  </p>
+                </li>
+              ))}
 
             </ul>
-          </React.Fragment>
+          </div>
+
+        </React.Fragment>
         }
         footer={
           <div style={{ margin: '2px' }}>
@@ -186,7 +225,7 @@ export default function CharacterRoute() {
         <Outlet context={{
           characterId, isAuthor,
           character, skills, paths,
-          lineages, pureLineageSkills, nonPureLineageSkills, isPure, items
+          lineages, pureLineageSkills, nonPureLineageSkills, isPure, items, handleRollDice
         }} />
       </div >
     </>

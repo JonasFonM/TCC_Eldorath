@@ -4,7 +4,7 @@ import { LoaderFunction, } from "@remix-run/node";
 import { NavLink, Outlet, useLoaderData, useLocation } from "@remix-run/react";
 import { prisma } from "~/utils/prisma.server";
 import { character, character_item, lineage, path, skill, item, lineage_skill } from "@prisma/client";
-import React, { useState } from "react";
+import React from "react";
 
 import { SideBars } from "~/components/context-providers/side-bars";
 import { useSidebar } from "~/components/context-providers/side-bar-context";

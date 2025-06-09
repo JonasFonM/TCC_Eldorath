@@ -91,24 +91,21 @@ model effectApplication {
 }
 
 model action {
-  id          Int        @id @default(autoincrement())
-  name        String
-  description String
-  actionType  actionType
+  id                  Int     @id @default(autoincrement())
+  name                String
+  vigorCost           Int     @default(1)
+  powerCost           Int     @default(0)
+  useEquipedWeapon    Boolean @default(false)
+  useEquipedAccessory Boolean @default(false)
+  useConsumable       Boolean @default(false)
 
-  vigorCost Int @default(0)
-  powerCost Int @default(0)
-
-  requiresTest Boolean @default(false)
-  useItem      Boolean @default(false)
-  reaction     Boolean @default(false)
-
-  baseDice     actionDie[]
-  direction    String
-  baseMovement Int         @default(0)
-  baseRange    Int         @default(1)
-  baseAoERange Int         @default(0)
-  rangeType    rangeType   @default(Pessoal)
+  baseAttribute     attributeType @default(body)
+  minDieAmount      Int           @default(1)
+  minDieType        Int           @default(4)
+  baseTargetAmount  Int           @default(1)
+  targetType        targetType    @default(Inimigo)
+  targetedAttribute String        @default("currentVitality")
+  baseRange         Int           @default(1)
 
   skillId Int?
   skill   skill? @relation(fields: [skillId], references: [id], onDelete: SetNull)
@@ -116,46 +113,24 @@ model action {
   actionUpgrade actionUpgrade[]
 }
 
-model actionDie {
-  id              Int            @id @default(autoincrement())
-  actionId        Int
-  action          action         @relation(fields: [actionId], references: [id])
-  dieType         Int            @default(3)
-  count           Int            @default(1)
-  actionUpgrade   actionUpgrade? @relation(fields: [actionUpgradeId], references: [id], onDelete: SetNull)
-  actionUpgradeId Int?
-}
-
 model actionUpgrade {
-  id           Int         @id @default(autoincrement())
-  actionId     Int
-  action       action      @relation(fields: [actionId], references: [id])
-  vigorCost    Int?
-  powerCost    Int?
-  newDirection String?
-  newMovement  Int?
-  newRange     Int?
-  newAoERange  Int?
-  newDice      actionDie[]
+  id              Int    @id @default(autoincrement())
+  actionId        Int
+  action          action @relation(fields: [actionId], references: [id])
+  vigorCost       Int?
+  powerCost       Int?
+  newTargetAmount Int?
 }
 
-enum actionType {
-  UnarmedATK
-  PhysicalMeleeATK
-  PhysicalRangedATK
-  MagicMeleeATK
-  MagicRangedATK
-  Movement
-  Interaction
+enum targetType {
+  Aliado
+  Inimigo
 }
 
-enum rangeType {
-  Pessoal
-  Linha
-  Raio
-  Pulso
-  Cone
-  Ponto
+enum attributeType {
+  agility
+  body
+  mind
 }
 
 model character {
@@ -349,8 +324,7 @@ model item {
   baseDamageDie      Int?
   baseDamageDieCount Int?
 
-  baseDefense Int?
-
+  baseDefense      Int?
   baseMagicDefense Int?
 
   characters character_item[] @relation

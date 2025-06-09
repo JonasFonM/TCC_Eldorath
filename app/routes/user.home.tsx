@@ -93,7 +93,9 @@ export default function UserRoute() {
                         </fetcher.Form>
                         <UserPanel users={users} />
                     </React.Fragment>
+
                 }
+                footer={null}
             />
 
             <div className="user" style={isAllOpen ? { marginLeft: '200px', marginRight: '200px' } : isHeaderOpen ?

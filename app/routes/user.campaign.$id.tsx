@@ -2,10 +2,8 @@ import { campaign, character, partyMembers, scene, user } from "@prisma/client";
 import { LoaderFunction } from "@remix-run/node";
 import { NavLink, Outlet, useLoaderData, useLocation } from "@remix-run/react";
 import { prisma } from "~/utils/prisma.server";
-import React, { useRef, useState } from "react";
+import React from "react";
 import { SideBars } from "~/components/context-providers/side-bars";
-import { useSidebar } from "~/components/context-providers/side-bar-context";
-import { SceneCreator } from "~/components/campaign/scene-creator";
 import { getUserIdFromSession } from "~/utils/auth.server";
 import { getCharactersFromUser } from "~/utils/character.server";
 import { translateMonth, translateWeekDays } from "./user.campaign";
@@ -69,47 +67,14 @@ export default function CampaignRoute() {
     }
 
     const getCampaignAction = () => {
-        if (isMaster) return (
-            <React.Fragment>
-                <table>
-                    <tbody>
-                        <tr onClick={() => showRow("LC")}>
-                            <th>Listar</th>
-                            <td>Cenas</td>
-                        </tr>
-                    </tbody>
-                </table>
-
-                <ul style={isShown("LC") ? { display: 'none' } : {}}>
-                    {campaign.scenes.map(sc =>
-                        <li key={sc.id}>
-                            <NavLink to={`/user/scene/${sc.id}`}>
-                                {sc.title}
-                            </NavLink>
-                        </li>
-
-                    )}
-
-                </ul>
-
-                <table>
-                    <tbody>
-                        <tr onClick={() => showRow("CC")}>
-                            <th>Criar</th>
-                            <td>Cena</td>
-                        </tr>
-                    </tbody>
-                </table>
-
-            </React.Fragment>
-        );
+        if (isMaster) return (null);
         if (isPlayer) {
             if (campaignCharacter) {
 
                 return (
                     <React.Fragment>
                         <ul>
-                            <li key={"EEra"}><h3>Seu Personagem</h3></li>
+                            <li key={"EChar"}><h3>Seu Personagem</h3></li>
                             <li key={1}>
                                 <NavLink to={`/user/character/${campaignCharacter.id}/stats`}>
                                     {campaignCharacter.name}
@@ -146,27 +111,7 @@ export default function CampaignRoute() {
                             </li>
                         </ul>
 
-                        <table>
-                            <tbody>
-                                <tr onClick={() => showRow("LC")}>
-                                    <th>Listar</th>
-                                    <td>Cenas</td>
-                                </tr>
-                            </tbody>
-                        </table>
-
-                        <ul style={isShown("LC") ? { display: 'none' } : {}}>
-                            {campaign.scenes.map(sc =>
-                                <li key={sc.id}>
-                                    <NavLink to={`/user/scene/${sc.id}`}>
-                                        {sc.title}
-                                    </NavLink>
-                                </li>
-
-                            )}
-
-                        </ul>
-
+                        
                     </React.Fragment>
                 );
             }
@@ -295,7 +240,6 @@ export default function CampaignRoute() {
             <div className="user" >
 
                 <h1 className="title-input" style={{ position: 'sticky', top: '64px' }}>{campaign.title}</h1>
-                <SceneCreator isHidden={!isShown("CC")} onCancel={() => showRow("CC")} campaignId={String(campaignId)} />
 
                 <div className="calendar-box container">
                     <div className="col-12">

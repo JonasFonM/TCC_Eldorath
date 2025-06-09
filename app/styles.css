@@ -227,7 +227,7 @@ ul {
   position: fixed;
   display: block;
   width: 200px;
-  height: 100vh;
+  height: 93vh;
   top: 64px;
   padding: 0;
   background-color: #090809;
@@ -331,7 +331,7 @@ ul {
   position: fixed;
   border: 0;
   top: 62px;
-  height: 100vh;
+  height: 93vh;
   width: 12px;
   background-color: gold;
   opacity: 0;

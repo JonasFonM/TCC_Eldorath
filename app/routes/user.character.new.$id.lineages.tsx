@@ -1,4 +1,4 @@
-import { lineage } from "@prisma/client";
+import { character_lineage, lineage } from "@prisma/client";
 import { ActionFunction, json, redirect } from "@remix-run/node";
 import { NavLink, useOutletContext } from "@remix-run/react";
 import React, { useRef, useState } from "react";
@@ -7,6 +7,7 @@ import { TableData } from "~/components/character-sheet/table-data";
 import { TableDropdown } from "~/components/character-sheet/table-dropdown";
 import { useShowRow } from "~/components/context-providers/showRowContext";
 import { submitCharLineages } from "~/utils/character.server";
+import { SpecialFooter } from "~/components/special-footer";
 
 
 export const action: ActionFunction = async ({ request, params }) => {
@@ -30,12 +31,23 @@ export const action: ActionFunction = async ({ request, params }) => {
 }
 
 export default function LineageSelection() {
-    const { characterId, lineages, maxSelectableLineages } = useOutletContext<{ characterId: string, lineages: lineage[], maxSelectableLineages: number }>();
+    const { characterId,
+        lineages,
+        character_lineages,
+        maxSelectableLineages } =
+        useOutletContext<{
+            characterId: string,
+            lineages: lineage[],
+            character_lineages: (character_lineage & { lineage: lineage })[],
+            maxSelectableLineages: number
+        }>();
+
     const [selectedLineages, setSelectedLineages] = useState<number[]>([]);
     const [isPure, setPure] = useState<boolean>(false);
 
     const { showRow, isShown } = useShowRow();
 
+    const confirmedPreviousLineageIds = character_lineages.map(cl => cl.lineage.id)
 
     const handleLineageClick = (lineageId: number) => {
 
@@ -53,6 +65,7 @@ export default function LineageSelection() {
     };
 
     const handleSubmit = async (event: React.FormEvent) => {
+        if (character_lineages.length > 0) return;
 
         if (!selectedLineages && maxSelectableLineages != 0 || selectedLineages.length <= 0 && maxSelectableLineages != 0) {
             event.preventDefault();
@@ -65,64 +78,65 @@ export default function LineageSelection() {
     return (
         <>
             <h1 className="title-input" style={{ position: 'sticky', top: '64px', backgroundColor: 'black' }}>Linhagens</h1>
-            {maxSelectableLineages > 0 ?
-                <>
-                    <form method="post" onSubmit={handleSubmit}>
-                        <h2>Escolha até {maxSelectableLineages} Linhagens</h2>
-                        <h3>Escolher apenas 1 Linhagem habilita Talentos especiais</h3>
+            <form method="post" onSubmit={handleSubmit}>
+                <div className="container" style={{ position: 'sticky', top: '139px', backgroundColor: 'black', borderBottom: '1px solid gold' }}>
+                    <h3 style={{ margin: '2px' }}>Você pode ter 1 ou 2 Linhagens</h3>
+                    <h3 style={{ margin: '2px' }}>Ter apenas 1 Linhagem permite escolher Talentos Únicos</h3>
+                </div>
+                <table>
+                    <TableHead
+                        tableTitles={['Linhagem']}
+                        onClick={() => showRow('TBLinhagem')}
+                        open={isShown('TBLinhagem')}
+                        error={false}
+                    />
 
-                        <table>
-                            <TableHead
-                                tableTitles={['Linhagem']}
-                                onClick={() => showRow('TBLinhagem')}
-                                open={isShown('TBLinhagem')}
-                                error={false}
+                    {lineages.map(ln => (
+                        <React.Fragment key={ln.id}>
+                            <TableData
+                                key={ln.id}
+                                tableData={
+                                    !isPure && selectedLineages.includes(ln.id)
+                                        || confirmedPreviousLineageIds.length > 1 && confirmedPreviousLineageIds.includes(ln.id)
+                                        ? ['Meio ' + String(ln.name)]
+                                        : [String(ln.name)]
+                                }
+                                show={isShown('TBLinhagem')}
+                                onClick={selectedLineages.length < maxSelectableLineages || selectedLineages.includes(ln.id)
+                                    ? () => handleLineageClick(Number(ln.id))
+                                    : () => null}
+                                selected={selectedLineages.includes(ln.id) || confirmedPreviousLineageIds.includes(ln.id)}
+                                error={selectedLineages.length >= maxSelectableLineages && !selectedLineages.includes(ln.id) && !confirmedPreviousLineageIds.includes(ln.id)}
                             />
+                            <TableDropdown
+                                key={`Drop-${ln.id}`}
+                                show={isShown('TBLinhagem') && selectedLineages.includes(ln.id) || isShown('TBLinhagem') && confirmedPreviousLineageIds.includes(ln.id)}
+                                categories={[]}
+                                subtitleIndexes={[]}
+                                items={[String(ln.description)]}
+                            />
+                        </React.Fragment>
+                    ))}
 
-                            {lineages.map(ln => (
-                                <React.Fragment key={ln.id}>
-                                    {/*<tbody className={!isMaxSelected || selectedLineages.includes(ln.id) ? '' : 'error'}></tbody>*/}
+                </table >
 
-                                    <TableData
-                                        key={ln.id}
-                                        tableData={!isPure && selectedLineages.includes(ln.id) ? ['Meio ' + String(ln.name)] : [String(ln.name)]}
-                                        show={isShown('TBLinhagem')}
-                                        onClick={selectedLineages.length < maxSelectableLineages || selectedLineages.includes(ln.id)
-                                            ? () => handleLineageClick(Number(ln.id))
-                                            : () => null}
-                                        selected={selectedLineages.includes(ln.id)}
-                                        error={selectedLineages.length >= maxSelectableLineages && !selectedLineages.includes(ln.id)}
-                                    />
-                                    <TableDropdown
-                                        key={`Drop-${ln.id}`}
-                                        show={isShown('TBLinhagem') && selectedLineages.includes(ln.id)}
-                                        categories={[]}
-                                        subtitleIndexes={[]}
-                                        items={[String(ln.description)]}
-                                    />
-                                </React.Fragment>
-                            ))}
+                {selectedLineages.map(lineageId => (
+                    <input type="hidden" key={lineageId} name="lineages" value={lineageId} />
+                ))}
 
-                        </table >
-
-                        {selectedLineages.map(lineageId => (
-                            <input type="hidden" key={lineageId} name="lineages" value={lineageId} />
-                        ))}
-
-                        <input type="hidden" key='pure' name="pure" value={isPure ? 'true' : 'false'} />
-
-
-                        <button type="submit" className="button">Avançar</button>
-                    </form>
-                </>
-
-                :
-                <>
-                    <h2>Você já escolheu uma Linhagem</h2>
-                    <NavLink to={`/user/character/new/${characterId}/paths`}><button type="button" className="button">Caminhos</button></NavLink>
-
-                </>
-            }
+                <input type="hidden" key='pure' name="pure" value={isPure ? 'true' : 'false'} />
+                <SpecialFooter
+                    backBtnName={'Atributos'}
+                    backLink={`/user/character/new/${characterId}/basic`}
+                    advBtnName="Caminhos"
+                    advLink={
+                        confirmedPreviousLineageIds.length > 0
+                            ? `/user/character/new/${characterId}/paths/`
+                            : null
+                    }
+                    showAdv={true}
+                />
+            </form>
 
         </>
     );

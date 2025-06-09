@@ -47,7 +47,7 @@ export default function LineagesRoute() {
           <React.Fragment key={ln.id}>
             <TableData
               key={`Data-${ln.id}`}
-              tableData={isPure ? [String(ln.name) + ' Pura'] : [String(ln.name)]}
+              tableData={isPure ? [String(ln.name)] : ['Meio ' + String(ln.name)]}
               show={isShown("TBLinhagem")}
               onClick={() => showRow(`Linhagem-${ln.id}`)}
               selected={isShown(`Linhagem-${ln.id}`)}

@@ -21,11 +21,10 @@ export const loader: LoaderFunction = async ({ params }) => {
         orderBy: { pathTier: 'desc' }
     });
 
-    const char = await prepareCharacterStats(characterId)
+    await prepareCharacterStats(characterId)
 
     paths.map(p => addPathBasedSkills(characterId, p.id))
-    paths.map(p => addPathBasedStats(characterId, p.id))
-
+    addPathBasedStats(characterId, paths.map(p => p.id))
 
     return redirect(`/user/character/${characterId}/stats/`);
 };

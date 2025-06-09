@@ -169,14 +169,16 @@ export default function NewCampaignRoute() {
     <form method="post" onSubmit={handleSubmit}>
       <input
         className="title-input"
+        style={{ position: "sticky", top: '64px', zIndex: '1' }}
         type="text"
         name="title"
         placeholder="Título"
         value={formData.title}
         onChange={handleChange}
       />
-      {errors.title && <p className="error">{errors.title}</p>}
-
+      <div className="title-container" style={{ position: "sticky", top: '128px', zIndex: '1', backgroundColor: 'black' }}>
+        {errors.title && <p className="error">{errors.title}</p>}
+      </div>
       <label>
         <h1>
           <button
@@ -277,7 +279,6 @@ export default function NewCampaignRoute() {
       </div>
 
       <button className="button" type="submit">Confirmar</button>
-
-    </form>
+    </form >
   );
 }

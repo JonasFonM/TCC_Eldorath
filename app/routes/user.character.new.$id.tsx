@@ -155,14 +155,8 @@ export const loader: LoaderFunction = async ({ request, params }) => {
 }
 
 export default function NewCharacterRoute() {
-    const { isHeaderOpen } = useSidebar();
+    const { isAllOpen, isHeaderOpen } = useSidebar();
 
-    const getStyle = () => {
-        if (isHeaderOpen) {
-            return { marginLeft: '200px' }
-        }
-
-    }
 
     const {
         userId,
@@ -196,6 +190,15 @@ export default function NewCharacterRoute() {
             items: item[]
         }>()
 
+    const getStyle = () => {
+        if (isAllOpen || isHeaderOpen) {
+            return { marginLeft: '200px', marginBottom: '155px' }
+        }
+        if (!isHeaderOpen && !isAllOpen) {
+            return { marginLeft: '0', marginBottom: '155px' }
+        }
+    }
+
     return (
         <>
             <SideBars
@@ -214,7 +217,6 @@ export default function NewCharacterRoute() {
                     `/user/character/new/${characterId}/skills/`,
                     `/user/character/new/${characterId}/inventory/`,
                     `/user/character/new/${characterId}/end/`
-
                 ]}
 
                 linkNames={[
@@ -230,7 +232,8 @@ export default function NewCharacterRoute() {
 
             />
 
-            <div className="user" style={getStyle()}>
+            <div className="user"
+                style={getStyle()}>
                 <Outlet context={{
                     userId,
                     character, characterId,
@@ -244,9 +247,10 @@ export default function NewCharacterRoute() {
                     isPure,
                     lineages, maxSelectableLineages,
                     paths, maxSelectablePaths,
-                    items
+                    items,
                 }} />
-            </div>
+
+            </div >
         </>
 
     );

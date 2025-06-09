@@ -4,7 +4,7 @@ import { LoaderFunction, } from "@remix-run/node";
 import { NavLink, Outlet, useLoaderData, useLocation } from "@remix-run/react";
 import { prisma } from "~/utils/prisma.server";
 import { character, character_item, lineage, path, skill, item, lineage_skill } from "@prisma/client";
-import React, { useState } from "react";
+import React from "react";
 
 import { SideBars } from "~/components/context-providers/side-bars";
 import { useSidebar } from "~/components/context-providers/side-bar-context";
@@ -101,13 +101,13 @@ export default function CharacterRoute() {
 
   const getStyle = () => {
     if (isAllOpen) {
-      return { marginLeft: '200px', marginRight: '200px' }
+      return { marginLeft: '200px', marginRight: '200px', marginBottom: isFooterOpen ? '155px' : '0' }
     }
     if (isHeaderOpen) {
-      return { marginLeft: '200px' }
+      return { marginLeft: '200px', marginBottom: isFooterOpen ? '155px' : '0' }
     }
     if (isTempOpen) {
-      return { marginRight: '200px' }
+      return { marginRight: '200px', marginBottom: isFooterOpen ? '155px' : '0' }
     }
 
   }
@@ -135,7 +135,7 @@ export default function CharacterRoute() {
         ]}
 
         linkNames={[
-          'Personagem',
+          'Atributos',
           'Linhagens',
           'Caminhos',
           'Talentos',
@@ -158,7 +158,7 @@ export default function CharacterRoute() {
           </React.Fragment>
         }
         footer={
-          <div style={{ margin: '2%' }}>
+          <div style={{ margin: '2px' }}>
             <ResourceBar
               color="darkred"
               halvedColor="red"

@@ -6,6 +6,7 @@ import React, { useRef, useState } from "react";
 import { TableData } from "~/components/character-sheet/table-data";
 import { TableHead } from "~/components/character-sheet/table-head";
 import { TableDropdown } from "~/components/character-sheet/table-dropdown";
+import { SpecialFooter } from "~/components/special-footer";
 
 export const loader: LoaderFunction = async ({ params }) => {
     const characterId = params.id;
@@ -103,7 +104,7 @@ export default function LineagesRoute() {
                         <React.Fragment key={ln.id}>
                             <TableData
                                 key={String(ln.lineage.name) + ln.id}
-                                tableData={ln.pure ? [String(ln.lineage.name) + ' Pura'] : [String(ln.lineage.name)]}
+                                tableData={ln.pure ? [String(ln.lineage.name)] : ['Meio ' + String(ln.lineage.name)]}
                                 show={stringShow.current.includes("L")}
                                 onClick={() => stringShowRow(`L${ln.id}`)}
                                 selected={stringShow.current.includes(`L${ln.id}`)}
@@ -149,7 +150,7 @@ export default function LineagesRoute() {
                             <TableDropdown
                                 key={`Drop-${p.id}`}
                                 show={stringShow.current.includes("C") && stringShow.current.includes(`C${p.id}`)}
-                                categories={[`Benefícios`]}
+                                categories={['', `Benefícios`]}
                                 subtitleIndexes={[1]}
                                 items={[
                                     String(p.path.description),
@@ -236,8 +237,8 @@ export default function LineagesRoute() {
                             <TableDropdown
                                 key={`Drop-${it.id}`}
                                 show={stringShow.current.includes("I") && stringShow.current.includes(`I${it.id}`)}
-                                categories={[]}
-                                subtitleIndexes={[]}
+                                categories={[`${it.cost} DK`]}
+                                subtitleIndexes={[0]}
                                 items={[String(it.item.description)]}
                             />
                         </React.Fragment>
@@ -246,19 +247,14 @@ export default function LineagesRoute() {
 
             </table >
 
-            <div className="col-6">
-                {character.level === 1 && character.experience === 0
-                    ? <Link to={`/user/character/${characterId}/reset/`} className="button" style={{ width: '60%' }}>Recomeçar</Link>
-                    : <div style={{ visibility: 'hidden' }}>Hi</div>
-                }
-            </div>
+            <SpecialFooter
+                backBtnName={'Itens'}
+                backLink={`/user/character/new/${characterId}/inventory/`}
+                advBtnName={`Finalizar`}
+                advLink={`/pathstats/character/${characterId}/`}
+                showAdv={spentAllPoints && character_skills.length > 0 && character_paths.length > 0 && character_lineages.length > 0}
+            />
 
-            <div className="col-6">
-                {spentAllPoints && character_skills.length > 0 && character_paths.length > 0 && character_lineages.length > 0
-                    ? <Link to={`/pathstats/character/${characterId}/`} className="button" style={{ width: '60%' }}>Finalizar</Link>
-                    : <div style={{ visibility: 'hidden' }}>Hi</div>
-                }
-            </div>
         </>
     )
 }

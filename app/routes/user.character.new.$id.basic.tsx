@@ -1,8 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { character } from "@prisma/client"
 import { ActionFunction, json, LoaderFunction, redirect } from "@remix-run/node"
-import { NavLink, useActionData, useLoaderData } from "@remix-run/react"
+import { Link, NavLink, useActionData, useLoaderData, useOutletContext } from "@remix-run/react"
 import { useEffect, useRef, useState } from "react"
+import { AttributeHandler } from "~/components/character-sheet/attribute-handler"
+import { SpecialFooter } from "~/components/special-footer"
+import { ResetConfirm } from "~/components/character-sheet/reset-confirm"
+import { useSidebar } from "~/components/context-providers/side-bar-context"
 import { GeneralExplain } from "~/components/explanations/general-explain"
 import { getUserIdFromSession, requireUserId } from '~/utils/auth.server'
 import { tierByLevel, updateCharacter } from "~/utils/character.server"
@@ -58,6 +62,32 @@ export default function NewCharacterRoute() {
         : 6
 
     const totalLimit = baseLimit + character.tier - character.mind - character.body - character.agility + (character.boss ? 8 : 0)
+
+    const canDelete =
+        character.name === "Nome"
+        && character.level === 1
+        && character.agility === 1
+        && character.body === 1
+        && character.mind === 1
+        && character.campaignId === null
+        && character.experience === 0
+        && character.pendingLineages === 2
+        && character.pendingPath === 1
+        && character.pendingSkills === 2
+
+    const [selectReset, setReset] = useState<number>(0);
+
+    const showReset = () => {
+        setReset(() => {
+            return character.id;
+        });
+    };
+
+    const cancelReset = () => {
+        setReset(() => {
+            return 0
+        });
+    };
 
     const firstLoad = useRef(true);
     const [formData, setFormData] = useState({
@@ -121,7 +151,7 @@ export default function NewCharacterRoute() {
     const adjustAttribute = (attribute: 'agility' | 'body' | 'mind', adjustment: number) => {
         setFormData((prev) => {
             const newValue = prev[attribute] + adjustment;
-            if (newValue >= 0 && limit - adjustment >= 0) {
+            if (newValue >= 1 && limit - adjustment >= 0) {
                 setLimit(limit - adjustment);
                 return { ...prev, [attribute]: newValue };
             }
@@ -150,6 +180,12 @@ export default function NewCharacterRoute() {
         }
     };
 
+    const advanceWithoutChange = limit === 0
+        && character.agility === formData.agility
+        && character.body === formData.body
+        && character.mind === formData.mind
+
+
     return (
         <form method="post" autoComplete="off" onSubmit={handleSubmit}>
 
@@ -169,54 +205,65 @@ export default function NewCharacterRoute() {
             <input hidden type="number" name="level" value={formData.level} onChange={handleChange} />
             {errors.level && <p>{errors.level}</p>}
 
-            <h1 className="title-container">Atributos<button type="button" onClick={() => setShowAtr(1)} className="question-button">?</button></h1>
+            <div style={{ position: "sticky", top: '130px', zIndex: '1' }} className="title-input">
+                <h1 className="title-container">Atributos
+                    <button type="button" onClick={() => setShowAtr(1)} className="question-button">?</button>
+                    <button id="reset" type="button" onClick={showReset} className="question-button">R</button>
+                </h1>
+                <h3 style={{ fontSize: '1.2rem', margin: '0' }}>Pontos: {limit}</h3>
+                {formError && <p className="error" style={{ margin: '0' }}>{formError}</p>}
+            </div>
             <GeneralExplain title={'Atributos'} description="Atributos são os valores que representam seus limites e capacidades." isHidden={showAtr != 1} onCancel={() => setShowAtr(0)} />
+            <ResetConfirm name={character.name} isHidden={selectReset === 0} onCancel={cancelReset} id={String(character.id)} />
 
-            <h3>Pontos: {limit}</h3>
-            {formError && <p className="error">{formError}</p>}
+            <div className="container" style={{ marginBottom: '150px' }}>
+                <AttributeHandler
+                    title="Agilidade"
+                    attributeName="agility"
+                    attributeValue={formData.agility}
+                    onPlus={() => adjustAttribute('agility', +1)}
+                    onMinus={() => adjustAttribute('agility', -1)}
+                />
 
-            <div className="container">
-                <div className="col-12">
-                    <label style={{ fontVariant: 'small-caps', fontFamily: 'serif', fontSize: '1.3rem' }}>
-                        Agilidade: {formData.agility}
-                        <input hidden type="number" name="agility" value={formData.agility} onChange={handleChange} />
-                        <div className="container">
-                            <button className="col-3 button" style={{ marginRight: '1%' }} type="button" onClick={() => adjustAttribute('agility', -1)}>-</button>
-                            <button className="col-3 button" style={{ marginLeft: '1%' }} type="button" onClick={() => adjustAttribute('agility', 1)}>+</button>
-                        </div>
-                    </label>
-                    {errors.agility && <p className="error">{errors.agility}</p>}
-                </div>
+                <input hidden type="number" name="agility" value={formData.agility} onChange={handleChange} />
 
-                <div className="col-12">
-                    <label style={{ fontVariant: 'small-caps', fontFamily: 'serif', fontSize: '1.3rem' }}>
-                        Corpo: {formData.body}
-                        <input hidden type="number" name="body" value={formData.body} onChange={handleChange} />
-                        <div className="container">
-                            <button className="col-3 button" style={{ marginRight: '1%' }} type="button" onClick={() => adjustAttribute('body', -1)}>-</button>
-                            <button className="col-3 button" style={{ marginLeft: '1%' }} type="button" onClick={() => adjustAttribute('body', 1)}>+</button>
-                        </div>
-                    </label>
-                    {errors.body && <p className="error">{errors.body}</p>}
-                </div>
+                <AttributeHandler
+                    title="Corpo"
+                    attributeName="body"
+                    attributeValue={formData.body}
+                    onPlus={() => adjustAttribute('body', +1)}
+                    onMinus={() => adjustAttribute('body', -1)}
+                />
 
-                <div className="col-12">
-                    <label style={{ fontVariant: 'small-caps', fontFamily: 'serif', fontSize: '1.3rem' }}>
-                        Mente: {formData.mind}
-                        <input hidden type="number" name="mind" value={formData.mind} onChange={handleChange} />
-                        <div className="container">
-                            <button className="col-3 button" style={{ marginRight: '1%' }} type="button" onClick={() => adjustAttribute('mind', -1)}>-</button>
-                            <button className="col-3 button" style={{ marginLeft: '1%' }} type="button" onClick={() => adjustAttribute('mind', 1)}>+</button>
-                        </div>
-                    </label>
-                    {errors.mind && <p className="error">{errors.mind}</p>}
-                </div>
+                <input hidden type="number" name="body" value={formData.body} onChange={handleChange} />
+
+                <AttributeHandler
+                    title="Mente"
+                    attributeName="mind"
+                    attributeValue={formData.mind}
+                    onPlus={() => adjustAttribute('mind', +1)}
+                    onMinus={() => adjustAttribute('mind', -1)}
+                />
+
+                <input hidden type="number" name="mind" value={formData.mind} onChange={handleChange} />
             </div>
 
-
-            <div className="container">
-                <button className="button" type="submit">Avançar</button>
-            </div>
-        </form>
+            <SpecialFooter
+                backBtnName={canDelete
+                    ? 'Deletar'
+                    : 'Voltar'
+                }
+                backLink={canDelete
+                    ? `/delete/character/${character.id}/`
+                    : `/user/character/${character.id}/stats/`
+                }
+                advBtnName={'Linhagens'}
+                advLink={advanceWithoutChange
+                    ? `/user/character/new/${character.id}/lineages/`
+                    : null
+                }
+                showAdv={true}
+            />
+        </form >
     );
 }

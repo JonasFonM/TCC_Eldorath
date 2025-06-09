@@ -9,7 +9,7 @@ export function ResourceBar({ currentValue, maxValue, color, halvedColor }: Prop
     return (
         <div style={{
             fontWeight: 'bold',
-            marginBottom: '0.75%',
+            marginBottom: '6px',
             justifyItems: 'center',
 
         }}>
@@ -20,16 +20,14 @@ export function ResourceBar({ currentValue, maxValue, color, halvedColor }: Prop
                     backgroundColor: 'black',
                     padding: '6px',
                     border: '8px solid transparent',
-                    borderImage: 'url(/SuperBorder.png) 25 round',
+                    borderImage: 'url(/SuperBorder.png) 24 round',
                     overflow: 'hidden',
                 }}>
                 <div
                     style={{
                         width: `${(currentValue / maxValue) * 100}%`,
                         height: '100%',
-                        backgroundImage: currentValue > maxValue
-                            ? `linear-gradient(to right, ${color}, ${halvedColor}, gold, gold, white, white)`
-                            : `linear-gradient(to right,${color}, ${halvedColor})`,
+                        backgroundImage: `linear-gradient(to right,${color}, ${halvedColor})`,
                         transition: 'width 0.3s ease'
                     }}
                     className={

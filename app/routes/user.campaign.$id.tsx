@@ -2,10 +2,8 @@ import { campaign, character, partyMembers, scene, user } from "@prisma/client";
 import { LoaderFunction } from "@remix-run/node";
 import { NavLink, Outlet, useLoaderData, useLocation } from "@remix-run/react";
 import { prisma } from "~/utils/prisma.server";
-import React, { useRef, useState } from "react";
+import React from "react";
 import { SideBars } from "~/components/context-providers/side-bars";
-import { useSidebar } from "~/components/context-providers/side-bar-context";
-import { SceneCreator } from "~/components/campaign/scene-creator";
 import { getUserIdFromSession } from "~/utils/auth.server";
 import { getCharactersFromUser } from "~/utils/character.server";
 import { translateMonth, translateWeekDays } from "./user.campaign";
@@ -18,8 +16,9 @@ export const loader: LoaderFunction = async ({ params, request }) => {
 
     const campaign = await prisma.campaign.findUnique({
         where: { id: campaignId },
-        include: { scenes: true, characters: true, players: true },
+        include: { master: true, scenes: true, characters: true, players: true },
     });
+
 
     const party = await prisma.user.findMany({
         where:
@@ -50,7 +49,7 @@ export default function CampaignRoute() {
             isPlayer: boolean,
             campaignCharacter: character,
             characters: character[],
-            campaign: (campaign & { scenes: scene[], characters: character[], players: partyMembers[] }),
+            campaign: (campaign & { master: user, scenes: scene[], characters: character[], players: partyMembers[] }),
             party: user[],
             campaignId: number
         }>()
@@ -68,47 +67,14 @@ export default function CampaignRoute() {
     }
 
     const getCampaignAction = () => {
-        if (isMaster) return (
-            <React.Fragment>
-                <table>
-                    <tbody>
-                        <tr onClick={() => showRow("LC")}>
-                            <th>Listar</th>
-                            <td>Cenas</td>
-                        </tr>
-                    </tbody>
-                </table>
-
-                <ul style={isShown("LC") ? { display: 'none' } : {}}>
-                    {campaign.scenes.map(sc =>
-                        <li key={sc.id}>
-                            <NavLink to={`/user/scene/${sc.id}`}>
-                                {sc.title}
-                            </NavLink>
-                        </li>
-
-                    )}
-
-                </ul>
-
-                <table>
-                    <tbody>
-                        <tr onClick={() => showRow("CC")}>
-                            <th>Criar</th>
-                            <td>Cena</td>
-                        </tr>
-                    </tbody>
-                </table>
-
-            </React.Fragment>
-        );
+        if (isMaster) return (null);
         if (isPlayer) {
             if (campaignCharacter) {
 
                 return (
                     <React.Fragment>
                         <ul>
-                            <li key={"EEra"}><h3>Seu Personagem</h3></li>
+                            <li key={"EChar"}><h3>Seu Personagem</h3></li>
                             <li key={1}>
                                 <NavLink to={`/user/character/${campaignCharacter.id}/stats`}>
                                     {campaignCharacter.name}
@@ -145,6 +111,7 @@ export default function CampaignRoute() {
                             </li>
                         </ul>
 
+                        
                     </React.Fragment>
                 );
             }
@@ -194,7 +161,7 @@ export default function CampaignRoute() {
         <>
             <SideBars entity={campaign}
                 title={campaign.title}
-                subtitle=""
+                subtitle={`Por ${campaign.master.username}`}
                 tableHeaders={[]}
                 tableDatas={[]}
                 tableExplain={[]}
@@ -273,12 +240,17 @@ export default function CampaignRoute() {
             <div className="user" >
 
                 <h1 className="title-input" style={{ position: 'sticky', top: '64px' }}>{campaign.title}</h1>
-                <SceneCreator isHidden={!isShown("CC")} onCancel={() => showRow("CC")} campaignId={String(campaignId)} />
 
-                <div className="calendar-box">
+                <div className="calendar-box container">
                     <div className="col-12">
                         <img alt={"Dia"}
-                            style={{ animation: 'fadeIn 0.3s ease-in-out', boxShadow: '0 0 8px 5px gold', transition: "fadeIn 0.3s ease-in-out", width: '100%' }}
+                            style={{
+                                animation: 'fadeIn 0.3s ease-in-out',
+                                boxShadow: '0 0 8px 5px gold',
+                                transition: "fadeIn 0.3s ease-in-out",
+                                width: '100%',
+                                maxWidth: '550px'
+                            }}
                             src={displayTimeIcon(Number(campaign.timeOfDay))} />
                     </div>
                     <h2 className="col-12"><button onClick={() => showRow("EDia")} className="lineBtn">{translateWeekDays(campaign.monthDay)}</button>,
@@ -311,10 +283,8 @@ export default function CampaignRoute() {
                     : ''
                 }
 
-                <div className="container">
-                    <div className="calendar-box" style={{ justifyContent: 'center' }}>
-                        <p style={{ textAlign: 'justify', overflow: 'auto', display: location.pathname === `/user/campaign/${campaignId}` ? 'inherit' : 'none' }}>{campaign.description}</p>
-                    </div>
+                <div className="calendar-box container" style={{ justifyContent: 'center' }}>
+                    <p style={{ textAlign: 'justify', overflowX: 'hidden', overflowY: 'auto', display: location.pathname === `/user/campaign/${campaignId}` ? 'inherit' : 'none' }}>{campaign.description}</p>
                 </div>
                 <Outlet context={{ isMaster, isPlayer, campaignCharacter, characters, campaign, party, campaignId }} />
 

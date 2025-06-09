@@ -331,6 +331,16 @@ export const addCharactersToScene = async (characterList: number[], sceneId: num
 
 };
 
+export const addSingleCharacterToScene = async (characterId: number, sceneId: number) => {
+  return await prisma.characterScene.create({
+    data: {
+      characterId: characterId,
+      sceneId: sceneId,
+    },
+  });
+
+};
+
 export const removeCharacterFromScene = async (characterId: number, sceneId: number) => {
   return await prisma.characterScene.deleteMany({
     where: {

@@ -6,6 +6,9 @@
 }
 
 a {
+  height: 100%;
+  align-items: center;
+
   text-decoration: none;
   font-family: sans-serif;
   color: gold;
@@ -64,15 +67,15 @@ body {
   text-shadow: 0px 10px 15px #787878;
 }
 
-.title-screen #first {
+#first {
   animation: spawn 1s ease-out forwards;
 }
 
-.title-screen #second {
+#second {
   animation: spawn 2s ease-out forwards;
 }
 
-.title-screen #third {
+#third {
   animation: spawn 3s ease-out forwards;
 }
 
@@ -163,7 +166,7 @@ ul {
   align-items: center;
   line-height: 24px;
   border-radius: 50%;
-
+  transition: ease-in-out 0.3s;
   cursor: pointer;
   text-decoration: none;
 }
@@ -178,7 +181,8 @@ ul {
 
 .question-button:hover,
 .upgrade-button:hover {
-  background-color: #bbb;
+  background-color: #333333;
+  color: white;
 }
 
 .temp .question-button {
@@ -239,18 +243,28 @@ ul {
   width: 100%;
   bottom: 0;
   height: 150px;
-  padding: 0;
-  background-color: #090809;
+  background-color: black;
+  border-top: 4px double gold;
   box-shadow: 1px 0px 8px 1px gold;
+  align-content: center;
   z-index: 3;
+  padding-left: 2%;
+  padding-right: 2%;
+}
+
+.footer .button {
+  scale: 0.9;
+  border-width: 12px;
 }
 
 .header {
+  border-right: 6px double gold;
   left: 0;
   z-index: 6;
 }
 
 .temp {
+  border-left: 6px double gold;
   right: 0;
   z-index: 5;
 }
@@ -446,8 +460,9 @@ li button:hover {
 }
 
 .block {
-  background-color: #1f1f1f;
-  border: 1px solid #333;
+  background-color: black;
+  border: 12px solid;
+  border-image: url(/SuperBorder.png) 6% round;
   border-radius: 5px;
   margin: 10px auto;
   padding: auto;
@@ -460,10 +475,11 @@ li button:hover {
   align-items: center;
   justify-content: center;
   transition: background-color 0.3s ease, transform 0.2s ease;
+
 }
 
 .block:hover {
-  background-color: #575757;
+  background-color: #444444;
   transform: scale(1.02);
   cursor: pointer;
 }
@@ -564,6 +580,7 @@ th {
   color: gold;
   background-color: rgb(9, 8, 9);
   box-shadow: 0px 0px 16px 1px gold;
+  animation: pulseCritical 1s infinite;
 }
 
 .table-extension {
@@ -613,7 +630,7 @@ td:last-child {
 }
 
 .button {
-  background-color: goldenrod;
+  background-color: black;
   font-family: serif;
   font-variant: small-caps;
   border: none;
@@ -627,11 +644,20 @@ td:last-child {
   font-size: 20px;
   margin: 10px auto;
   border-radius: 5px;
+  border: 8px solid transparent;
+  border-image: url(/TopBorder.png) 5% stretch;
+  box-shadow: 0px 0px 4px 1px gold;
   cursor: pointer;
   display: flex;
   justify-content: center;
   overflow: hidden;
   transition: 0.3s ease;
+}
+
+
+.button.logout:hover {
+  background-color: darkred;
+  color: black;
 }
 
 .block .button {
@@ -887,6 +913,8 @@ select {
 }
 
 button {
+  height: 100%;
+  align-items: center;
   background-color: goldenrod;
   color: white;
   font-family: serif;

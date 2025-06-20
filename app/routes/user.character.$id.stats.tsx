@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useOutletContext } from "@remix-run/react";
 import { useState } from "react";
-import { CharacterSheet } from "~/components/character-sheet/main-page";
 import { ResetConfirm } from "~/components/character-sheet/reset-confirm";
 import { GeneralExplain } from "~/components/explanations/general-explain";
 

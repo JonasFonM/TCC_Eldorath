@@ -129,14 +129,15 @@ export default function CharacterRoute() {
 
   const handleRollDice = (amount: number, diceType: number, attributeName: string, attributeMod: number) => {
     const result = (rollDice(diceType) * amount);
-    const newLog = (`${character.name} rolou: ${result + attributeMod} (${amount}d${diceType} + ${attributeMod}) em uma rolagem de ${attributeName}`);
+    const newLog = (`${character.name} rolou: ${result + attributeMod} (${amount}d${diceType} + ${attributeMod}) em um Teste de ${attributeName}`);
     setLogs((prevLogs) => [...prevLogs, newLog]);
   };
 
   return (
     <>
       <SideBars
-        entity={character} title={character.name}
+        entity={character}
+        title={character.name}
         subtitle={subtitle}
         tableHeaders={["NV", "CT", "XP", "DK"]}
         tableDatas={[character.level, character.tier, character.experience, character.gold]}
@@ -152,7 +153,6 @@ export default function CharacterRoute() {
           `/user/character/${characterId}/paths/`,
           `/user/character/${characterId}/skills/`,
           `/user/character/${characterId}/inventory/`
-
         ]}
 
         linkNames={[
@@ -164,8 +164,7 @@ export default function CharacterRoute() {
         ]}
         temp={<React.Fragment>
           {character.campaignId
-            ?
-            <ul>
+            ? <ul>
               <li key={1}>
                 <NavLink to={
                   character.campaignId ?

@@ -19,12 +19,20 @@ export function FormField({ htmlFor, label, type = 'text', value, onChange = () 
 
   return (
     <React.Fragment>
-      <input autoComplete="new-password" className="block" onChange={e => {
-        onChange(e)
-        setErrorText('')
-      }} type={type} id={htmlFor} name={htmlFor} placeholder={label} style={{ fontFamily: 'serif', fontSize: '2rem', color: "gold", textAlign: 'center' }} value={value} />
+      <input autoComplete="new-password"
+        className="block"
+        onChange={e => {
+          onChange(e)
+          setErrorText('')
+        }}
+        type={type}
+        id={htmlFor}
+        name={htmlFor}
+        placeholder={label}
+        style={{ fontFamily: 'serif', fontSize: '2rem', color: "gold", textAlign: 'center' }}
+        value={value} />
       <div className="container">
-        <p>{errorText || ''}</p>
+        <p className="error">{errorText || ''}</p>
       </div>
     </React.Fragment>
   )

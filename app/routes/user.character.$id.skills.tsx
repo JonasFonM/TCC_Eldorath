@@ -1,12 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { NavLink, useOutletContext } from "@remix-run/react";
-import { lineage, path, skill } from "@prisma/client";
-import { LSrelations } from "~/utils/types.server";
+import { lineage, lineage_skill, path, skill } from "@prisma/client";
 import { LoaderFunction } from "@remix-run/node";
-import { SkillTableHead } from "~/components/character-sheet/skill-table";
-import { SkillTableData } from "~/components/character-sheet/skill-table-data";
-import React, { useState } from "react";
-import { SkillExplain } from "~/components/explanations/skill-explain";
+import React, { useRef, useState } from "react";
+import { TableHead } from "~/components/character-sheet/table-head";
+import { TableData } from "~/components/character-sheet/table-data";
+import { GeneralExplain } from "~/components/explanations/general-explain";
+import { TableDropdown } from "~/components/character-sheet/table-dropdown";
+import { useShowRow } from "~/components/context-providers/showRowContext";
 
 export const loader: LoaderFunction = async ({ params }) => {
   const characterId = params.id;
@@ -14,124 +15,140 @@ export const loader: LoaderFunction = async ({ params }) => {
 }
 
 export default function SkillsRoute() {
-  const { characterId, isAuthor, skills, pureLineageSkills, nonPureLineageSkills } = useOutletContext<{ characterId: string, isAuthor: boolean, skills: skill[], pureLineageSkills: LSrelations, nonPureLineageSkills: LSrelations, paths: path[], lineages: lineage[], isPure: boolean }>();
-  const [show, setShow] = useState<number>();
-  const [showSkill, setShowSkill] = useState<number>();
+  const { characterId, isAuthor,
+    skills, pureLineageSkills, nonPureLineageSkills } =
+    useOutletContext<{
+      characterId: string, isAuthor: boolean,
+      skills: skill[], pureLineageSkills: (lineage_skill & { skill: skill, lineage: lineage })[],
+      nonPureLineageSkills: (lineage_skill & { skill: skill, lineage: lineage })[], paths: path[],
+      lineages: lineage[], isPure: boolean
+    }>();
 
-  const showRow = () => {
-    show != 1 ?
-      setShow(() => {
-        return 1;
-      })
-      :
-      setShow(() => {
-        return 0;
-      })
-  }
+  const { showRow, isShown } = useShowRow();
 
-  const explainSkill = (id: number) => {
-    showSkill != id ?
-      setShowSkill(() => {
-        return id;
-      })
-      :
-      setShowSkill(() => {
-        return 0;
-      })
-  }
 
   return (
     <React.Fragment>
-      <div className="title-container">
-        {
-          isAuthor ?
-            <NavLink to={`../../new/${characterId}/skills/`}> <h1 style={{ marginTop: '0', marginBottom: '0', padding: '0' }}>Talentos</h1></NavLink>
-            :
-            <h1 style={{ marginTop: '0', marginBottom: '0', padding: '0' }}>Talentos</h1>
-        }
-        <NavLink className="question-button" to={`/user/home/atr/`}>?</NavLink>
+      <div style={{ position: "sticky", top: '64px', zIndex: '1' }} className="title-input">
+        <h1 className="title-container">
+          Talentos
+          <button className="question-button" onClick={() => showRow("ETalentos")}>?</button>
+        </h1>
       </div>
 
+      <GeneralExplain
+        title={'Talentos'}
+        description="Talentos têm efeitos diferentes que mudam como você interage com o jogo, principalmente em Combate. Eles são divididos em Características, Técnicas e Magias."
+        isHidden={!isShown("ETalentos")}
+        onCancel={() => showRow("ETalentos")}
+      />
+
       <table>
-        <tbody>
+        <TableHead
+          tableTitles={['Talentos']}
+          onClick={() => showRow("TBTalentos")}
+          open={isShown("TBTalentos")}
+          error={false}
+        />
+        {skills.map(sk => (
+          <React.Fragment key={sk.id}>
+            <TableData
+              key={`Data-${sk.id}`}
+              tableData={[`${sk.name}`]}
+              show={isShown("TBTalentos")}
+              onClick={() => showRow(`Talento-${sk.id}`)}
+              selected={isShown(`Talento-${sk.id}`)}
+              error={false}
+            />
+            <TableDropdown
+              key={`Drop-${sk.id}`}
+              show={isShown(`Talento-${sk.id}`) && isShown("TBTalentos")}
+              categories={["", "Tipo", "Requisitos"]}
+              subtitleIndexes={[1, 2]}
+              items={[
+                String(sk.description),
+                String(sk.type),
+                `Agilidade: ${String(sk.agi)} | Corpo: ${String(sk.bdy)} | Mente: ${String(sk.mnd)} | Nível: ${String(sk.lvl)} | Tamanho Real: ${String(sk.trSiz)} 
+                | Tamanho Efetivo: ${String(sk.efSiz)} | ${sk.prerequisiteId
+                  ? `Talento: ${String(skills.filter(s => s.id === sk.prerequisiteId).map(s => s.name))}`
+                  : `Não Requer outro Talento`}`]}
+            />
+          </React.Fragment>
+        ))}
 
-          <SkillTableHead onClick={() => showRow()} />
-          {pureLineageSkills.map(pls => (
-            <React.Fragment key={pls.skill.id}>
-              <SkillTableData
-                skill={pls.skill}
-                show={show === 1}
-                onClick={() => explainSkill(pls.skill.id)}
-                selected={false}
-              />
+        {nonPureLineageSkills.length > 0
+          ? <TableHead
+            tableTitles={['Talentos de Linhagem']}
+            onClick={() => showRow("TBTalentosL")}
+            open={isShown("TBTalentosL")}
+            error={false}
+          />
+          : ''
+        }
+        {nonPureLineageSkills.map(ls => (
+          <React.Fragment key={ls.id}>
+            <TableData
+              key={`Data-${ls.id}`}
+              tableData={[`${ls.skill.name}`]}
+              show={isShown("TBTalentosL")}
+              onClick={() => showRow(`TalentoL-${ls.skill.id}`)}
+              selected={isShown(`TalentoL-${ls.skill.id}`)}
+              error={false}
+            />
+            <TableDropdown
+              key={`Drop-${ls.skill.id}`}
+              show={isShown(`TalentoL-${ls.skill.id}`) && isShown("TBTalentosL")}
+              categories={["", "Linhagem", "Tipo", "Requisitos"]}
+              subtitleIndexes={[1, 2, 3]}
+              items={[
+                String(ls.skill.description),
+                String(ls.lineage.name),
+                String(ls.skill.type),
+                `Agilidade: ${String(ls.skill.agi)} | Corpo: ${String(ls.skill.bdy)} | Mente: ${String(ls.skill.mnd)} | Nível: ${String(ls.skill.lvl)} | Tamanho Real: ${String(ls.skill.trSiz)} 
+                | Tamanho Efetivo: ${String(ls.skill.efSiz)} | ${ls.skill.prerequisiteId
+                  ? `Talento: ${String(skills.filter(s => s.id === ls.skill.prerequisiteId).map(s => s.name))}`
+                  : `Não Requer outro Talento`}`]}
+            />
 
-            </React.Fragment>
-          ))}
+          </React.Fragment>
+        ))}
 
+        {pureLineageSkills.length > 0
+          ? <TableHead
+            tableTitles={['Talentos de Linhagem Única']}
+            onClick={() => showRow("TBTalentosLP")}
+            open={isShown("TBTalentosLP")}
+            error={false}
+          />
+          : ''}
 
-          {nonPureLineageSkills.map(npls => (
-            <React.Fragment key={npls.skill.id}>
-              <SkillTableData
-                skill={npls.skill}
-                show={show === 1}
-                onClick={() => explainSkill(npls.skill.id)}
-                selected={false}
-
-              />
-            </React.Fragment>
-          ))}
-
-          {skills.map(skill => (
-            <React.Fragment key={skill.id}>
-              <SkillTableData
-                skill={skill}
-                show={show === 1}
-                onClick={() => explainSkill(skill.id)}
-                selected={false}
-              />
-            </React.Fragment>
-          ))}
-
-        </tbody>
-
+        {pureLineageSkills.map(ls => (
+          <React.Fragment key={ls.id}>
+            <TableData
+              key={ls.id}
+              tableData={[`${ls.skill.name}`]}
+              show={isShown("TBTalentosLP")}
+              onClick={() => showRow(`TalentoL-${ls.skill.id}`)}
+              selected={isShown(`TalentoL-${ls.skill.id}`)}
+              error={false}
+            />
+            <TableDropdown
+              key={`Drop-${ls.skill.id}`}
+              show={isShown(`TalentoL-${ls.skill.id}`) && isShown("TBTalentosLP")}
+              categories={["", "Linhagem", "Tipo", "Requisitos"]}
+              subtitleIndexes={[1, 2, 3]}
+              items={[
+                String(ls.skill.description),
+                String(ls.lineage.name),
+                String(ls.skill.type),
+                `Agilidade: ${String(ls.skill.agi)} | Corpo: ${String(ls.skill.bdy)} | Mente: ${String(ls.skill.mnd)} | Nível: ${String(ls.skill.lvl)} | Tamanho Real: ${String(ls.skill.trSiz)} 
+                | Tamanho Efetivo: ${String(ls.skill.efSiz)} | ${ls.skill.prerequisiteId
+                  ? `Talento: ${String(skills.filter(s => s.id === ls.skill.prerequisiteId).map(s => s.name))}`
+                  : `Não Requer outro Talento`}`]}
+            />
+          </React.Fragment>
+        ))}
       </table>
-
-      {pureLineageSkills.map(pls => (
-        <React.Fragment key={pls.skill.id}>
-          <SkillExplain
-            style={'linear-gradient(to bottom right, gold, goldenrod)'}
-            skill={pls.skill}
-            isHidden={showSkill != pls.skill.id}
-            onCancel={() => setShowSkill(0)}
-          />
-
-        </React.Fragment>
-      ))}
-
-      {nonPureLineageSkills.map(npls => (
-        <React.Fragment key={npls.skill.id}>
-
-          <SkillExplain style={'linear-gradient(to bottom right, goldenrod, darkgoldenrod)'}
-            skill={npls.skill}
-            isHidden={showSkill != npls.skill.id}
-            onCancel={() => setShowSkill(0)}
-          />
-
-        </React.Fragment>
-      ))}
-
-      {skills.map(skill => (
-        <React.Fragment key={skill.id}>
-          <SkillExplain
-            style={'linear-gradient(to bottom right, darkgoldenrod, darkyellow )'}
-            skill={skill}
-            isHidden={showSkill != skill.id}
-            onCancel={() => setShowSkill(0)} />
-
-        </React.Fragment>
-      ))}
-
-
     </React.Fragment>
   )
 }

@@ -1,15 +1,27 @@
+/*Parchment color #e3e2a6*/
+
 * {
   box-sizing: border-box;
   font-family: sans-serif;
 }
 
 a {
+  height: 100%;
+  align-items: center;
+
   text-decoration: none;
+  font-family: sans-serif;
+  color: gold;
 }
 
 a :hover {
   color: white;
   transition: color 0.3s ease;
+}
+
+p {
+  text-align: 'justify';
+  text-indent: '30px'
 }
 
 body {
@@ -23,8 +35,8 @@ body {
 }
 
 .user {
-  margin-top: 64px;
   transition: 0.3s ease-in-out;
+  margin-top: 64px;
 }
 
 @keyframes spawn {
@@ -60,20 +72,21 @@ body {
   text-shadow: 0px 10px 15px #787878;
 }
 
-.title-screen #first {
+#first {
   animation: spawn 1s ease-out forwards;
 }
 
-.title-screen #second {
+#second {
   animation: spawn 2s ease-out forwards;
 }
 
-.title-screen #third {
+#third {
   animation: spawn 3s ease-out forwards;
 }
 
 h1 {
   color: gold;
+  font-size: 1.7em
 }
 
 h1,
@@ -95,8 +108,7 @@ a h3 {
   color: gold;
 }
 
-button.lineBtn,
-a.lineBtn {
+.lineBtn {
   background: none;
   border: none;
   padding: 0;
@@ -107,9 +119,9 @@ a.lineBtn {
   cursor: pointer
 }
 
-button.lineBtn:hover,
-a.lineBtn:hover {
-  color: #FFFFFF
+.lineBtn:hover {
+  color: white;
+  background-color: initial;
 }
 
 ul {
@@ -127,7 +139,8 @@ ul {
   gap: 8px;
 }
 
-.container .title-container {
+.container .title-container,
+.container .title-input {
   border-bottom: solid gold 1px;
   animation: descend 0.4s;
 }
@@ -136,6 +149,11 @@ ul {
   background-color: rgb(0, 0, 0);
   box-shadow: 1px 1px 8px 1px gold;
   transition: 0.3s;
+}
+
+.title-input .title-container {
+  font-size: 2.1rem;
+  margin: 0
 }
 
 .question-button,
@@ -153,7 +171,7 @@ ul {
   align-items: center;
   line-height: 24px;
   border-radius: 50%;
-
+  transition: ease-in-out 0.3s;
   cursor: pointer;
   text-decoration: none;
 }
@@ -168,7 +186,8 @@ ul {
 
 .question-button:hover,
 .upgrade-button:hover {
-  background-color: #bbb;
+  background-color: #333333;
+  color: white;
 }
 
 .temp .question-button {
@@ -192,9 +211,10 @@ ul {
   border-bottom: 1.5px solid goldenrod;
 }
 
-.character-sheet {
-  transition: 0.3s ease-in-out;
+.topnav li a {
+  padding: 16px
 }
+
 
 .Atr {
   color: #FFFFFF;
@@ -206,25 +226,52 @@ ul {
 
 .header,
 .temp {
-  overflow: auto;
+  overflow-y: auto;
+  overflow-x: hidden;
   transition: 0.3s ease-in-out;
   position: fixed;
   display: block;
   width: 200px;
-  height: calc(100% - 64px);
+  height: 93vh;
   top: 64px;
   padding: 0;
   background-color: #090809;
   box-shadow: 1px 0px 8px 1px gold;
-  z-index: 5;
+}
+
+.footer {
+  overflow-y: hidden;
+  overflow-x: auto;
+  transition: 0.3s ease-in-out;
+  position: fixed;
+  display: block;
+  width: 100%;
+  bottom: 0;
+  height: 150px;
+  background-color: black;
+  border-top: 4px double gold;
+  box-shadow: 1px 0px 8px 1px gold;
+  align-content: center;
+  z-index: 3;
+  padding-left: 2%;
+  padding-right: 2%;
+}
+
+.footer .button {
+  scale: 0.9;
+  border-width: 12px;
 }
 
 .header {
+  border-right: 6px double gold;
   left: 0;
+  z-index: 6;
 }
 
 .temp {
+  border-left: 6px double gold;
   right: 0;
+  z-index: 5;
 }
 
 .header h1,
@@ -234,8 +281,15 @@ ul {
   width: 100%;
 }
 
+.header h3,
+.temp h3 {
+  font-size: 1.15rem;
+}
+
 .header p,
-.temp p {
+.temp p,
+.header a,
+.temp a {
   text-align: center;
   font-variant: small-caps;
   font-family: serif;
@@ -255,8 +309,13 @@ ul {
   font-family: serif;
   border-collapse: collapse;
   width: 100%;
-  height: 12px;
+  height: 3vh;
   box-shadow: 1px 0px 4px 1px gold;
+}
+
+.header tr,
+.temp tr {
+  animation: none !important;
 }
 
 .header td,
@@ -277,27 +336,40 @@ ul {
   position: fixed;
   border: 0;
   top: 62px;
-  height: calc(100% + 900px);
-  width: 10px;
+  height: 93vh;
+  width: 12px;
   background-color: gold;
   opacity: 0;
   transition: 0.3s ease-in-out;
   z-index: 4;
-  box-shadow: 1px 0px 4px 1px gold;
+  box-shadow: 1px 1px 4px 1px gold;
+}
+
+.toggle-footer {
+  bottom: 150px;
+  position: fixed;
+  height: 16px;
+  width: 100%;
+  z-index: 2;
+  transition: 0.3s ease-in-out;
+  background-color: gold;
+  box-shadow: 1px 1px 4px 1px gold;
+  opacity: 0;
 }
 
 .toggle-temp {
   right: 0;
-  margin-right: 196px;
+  margin-right: 200px;
 
 }
 
 .toggle-menu {
-  margin-left: 196px;
+  margin-left: 200px;
 }
 
 .toggle-menu:hover,
-.toggle-temp:hover {
+.toggle-temp:hover,
+.toggle-footer:hover {
   opacity: 0.5;
   cursor: pointer;
 }
@@ -336,7 +408,7 @@ li button {
   display: block;
   color: white;
   text-align: center;
-  padding: 16px 16px;
+  padding: 16px;
   text-decoration: none;
   font-weight: bold;
   font-family: serif;
@@ -345,6 +417,11 @@ li button {
   cursor: pointer;
   background: none;
 
+}
+
+li a.active {
+  color: gold;
+  scale: 1.1
 }
 
 .header table button {
@@ -363,7 +440,7 @@ li a:hover,
 li button:hover {
   color: gold;
   cursor: pointer;
-  background-color: rgb(0, 0, 0);
+  background-color: black;
   box-shadow: 1px 1px 8px 1px gold;
   transition: 0.3s;
 }
@@ -375,6 +452,7 @@ li button:hover {
 
 
 .topnav a.active {
+  color: white;
   background-color: goldenrod;
 }
 
@@ -387,8 +465,9 @@ li button:hover {
 }
 
 .block {
-  background-color: #1f1f1f;
-  border: 1px solid #333;
+  background-color: black;
+  border: 12px solid;
+  border-image: url(/SuperBorder.png) 6% round;
   border-radius: 5px;
   margin: 10px auto;
   padding: auto;
@@ -401,10 +480,11 @@ li button:hover {
   align-items: center;
   justify-content: center;
   transition: background-color 0.3s ease, transform 0.2s ease;
+
 }
 
 .block:hover {
-  background-color: #575757;
+  background-color: #444444;
   transform: scale(1.02);
   cursor: pointer;
 }
@@ -468,32 +548,65 @@ table {
   height: 100%;
 }
 
+tbody:last-child,
+thead:last-child {
+  border-bottom: 1px solid gold;
+}
+
 tr {
   margin: 0;
   width: 100%;
   transition: 0.3s ease-in-out;
+  animation: descend 0.3s;
 }
 
 td,
 th {
-  font-size: 1.1rem;
-  font-family: serif;
-  font-variant: small-caps;
   border: 2px solid #dddddd;
   border-left: 0;
   text-align: center;
-  padding: 18px;
+  padding: 16px;
+}
+
+td {
+  font-family: serif;
+  font-size: 1.1rem;
 }
 
 th {
+  font-family: serif;
+  font-variant: small-caps;
   font-size: 1.25rem;
-  font-weight: bold;
+  font-weight: 700;
+  letter-spacing: 0.07rem;
 }
 
 .selected {
-  background-color: darkgoldenrod;
+  color: gold;
+  background-color: rgb(9, 8, 9);
   box-shadow: 0px 0px 16px 1px gold;
+  animation: pulseCritical 1s infinite;
+}
 
+.table-extension {
+  color: gold;
+  background-color: rgb(9, 8, 9);
+}
+
+.table-extension :hover {
+  box-shadow: none;
+  background-color: initial;
+  cursor: default;
+}
+
+.table-extension tr th,
+.table-extension tr td {
+  border: 0;
+  padding: 8px;
+}
+
+.table-extension tr td {
+  color: white
 }
 
 tr:hover {
@@ -522,22 +635,34 @@ td:last-child {
 }
 
 .button {
-  background-color: goldenrod;
+  background-color: black;
+  font-family: serif;
+  font-variant: small-caps;
   border: none;
-  color: rgb(255, 255, 255);
+  color: white;
   width: 25%;
-  min-height: 80px;
-  padding: 39px 15px;
+  min-height: 64px;
+  padding: 40px 15px;
   text-align: center;
   text-decoration: none;
   font-weight: bold;
   font-size: 20px;
   margin: 10px auto;
   border-radius: 5px;
+  border: 8px solid transparent;
+  border-image: url(/TopBorder.png) 5% round;
+  box-shadow: 0px 0px 4px 1px gold;
   cursor: pointer;
   display: flex;
   justify-content: center;
+  overflow: hidden;
   transition: 0.3s ease;
+}
+
+
+.button.logout:hover {
+  background-color: darkred;
+  color: black;
 }
 
 .block .button {
@@ -562,6 +687,7 @@ td:last-child {
   justify-content: center;
   align-items: center;
   overflow: auto;
+  cursor: default;
   z-index: 15;
 }
 
@@ -650,6 +776,11 @@ td:last-child {
   transition: background-color 0.3s ease;
 }
 
+[class*="col-"] p {
+  text-align: justify;
+  text-indent: 30px
+}
+
 [class*="col-"] {
   float: left;
 }
@@ -711,18 +842,6 @@ td:last-child {
   padding: 10px;
 }
 
-.pure-lineage-skills,
-.nonpure-lineage-skills {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-}
-
-.pure-lineage-skills>*,
-.nonpure-lineage-skills>* {
-  margin: 10px;
-}
-
 /*CALENDARIO*/
 .title-input {
   font-family: serif;
@@ -732,9 +851,9 @@ td:last-child {
   width: 101%;
   border-bottom: 2px solid goldenrod;
   border-top: 2px solid goldenrod;
-  background: transparent;
+  background-color: black;
   padding: 10px;
-  outline: none;
+  outline: gold;
   transition: 0.3s;
   margin: 0;
 }
@@ -759,11 +878,11 @@ td:last-child {
   display: flex;
   flex-wrap: wrap;
   margin: 10px;
+  color: white;
   background-color: #090809;
   padding: 15px;
   border-radius: 10px;
   box-shadow: 1px 0px 8px 1px gold;
-  width: 100%;
 }
 
 .calendar-field {
@@ -775,11 +894,21 @@ td:last-child {
   color: gold;
 }
 
+.calendar-field label {
+  font-family: serif;
+  font-variant: small-caps;
+  font-weight: bold;
+}
+
+textarea {
+  width: 97%;
+}
+
 select {
   width: 100%;
   background: #222;
   color: gold;
-  border: 1px solid gold;
+  border: 1px solid white;
   padding: 5px;
   text-align: center;
 }
@@ -793,19 +922,22 @@ select {
   gap: 5px;
 }
 
-textarea {
-  background-color: #090809;
-  color: white;
-  min-height: 64px;
-  min-width: 400px;
-}
-
 button {
-  background: gold;
+  height: 100%;
+  align-items: center;
+  background-color: goldenrod;
+  color: white;
+  font-family: serif;
+  font-variant: small-caps;
   border: none;
   padding: 5px 10px;
   cursor: pointer;
   font-weight: bold;
+}
+
+button:hover {
+  transition: ease-in-out 0.3s;
+  background-color: darkgoldenrod;
 }
 
 .submit-container {
@@ -830,12 +962,34 @@ button {
   color: red;
   text-align: center;
   margin-top: 5px;
+  font-family: serif;
   font-size: 1.1rem;
   font-weight: bold;
   font-variant: small-caps;
-
 }
 
+.error:hover,
+.error :hover {
+  color: red;
+  box-shadow: none;
+  transition: 0.3s;
+}
+
+@keyframes pulseCritical {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.hp-bar-critical {
+  animation: pulseCritical 1s infinite;
+}
 
 @media (max-width: 900px) {
   .modal-content .grid {
@@ -847,8 +1001,8 @@ button {
     max-width: 550px;
   }
 
-  .button {
-    width: 30%;
+  .grid {
+    grid-template-columns: auto auto auto auto;
   }
 
   .block {
@@ -864,7 +1018,9 @@ button {
   }
 }
 
-@media (max-width: 600px) {
+@media (max-width: 700px) {
+
+
   .modal-content .grid {
     max-width: 350px;
     grid-template-columns: auto auto;
@@ -872,6 +1028,10 @@ button {
 
   .modal-content {
     max-width: 400px;
+  }
+
+  .grid {
+    grid-template-columns: auto auto auto;
   }
 
   .button {

@@ -7,10 +7,10 @@ interface Props {
     columns: number;
     gridItems: string[];
     descriptions: string[];
-
+    onClick: () => void;
 }
 
-export function GeneralGrid({ gridItems, descriptions, columns, rows }: Props) {
+export function GeneralGrid({ gridItems, descriptions, columns, rows, onClick }: Props) {
     const showGridItem = useRef<number>(-1); // Avoid re-renders
 
     const forceUpdate = useState(0)[1]; // Trigger minimal re-renders when necessary
@@ -21,28 +21,31 @@ export function GeneralGrid({ gridItems, descriptions, columns, rows }: Props) {
             : showGridItem.current;
         forceUpdate(n => n + 1); // Minimal re-render
     };
+    const gridSquares: JSX.Element[] = [];
 
-    let templateColumns = ''
-    let templateRows = ''
+    const renderGridSquares = () => {
+        gridItems.map((gi, index) => (
+            gridSquares.push(<button key={`Ocupado-${gi}-${index}`} className="grid-item" onClick={() => handleGridItemClick(index)}  >{gi}</button>
+            )))
 
-
-    for (let index = 0; index < columns; index++) {
-        templateColumns = templateColumns.concat('auto ');
-    }
-
-    for (let index = 0; index < rows; index++) {
-        templateRows = templateRows.concat('auto ');
+        for (let index = 0; index < ((rows * columns) - gridItems.length); index++) {
+            gridSquares.push(<button key={`Vazio-${index}`} onClick={onClick} className="grid-item"></button>)
+        }
+        return (gridSquares)
     }
 
     return (
-        <div className="grid" style={{ gridTemplateColumns: `${templateColumns}`, gridTemplateRows: `${templateRows}` }}>
-            {gridItems.map((gi, index) => (
-                <React.Fragment key={gi + index}>
-                    <button className="grid-item" onClick={() => handleGridItemClick(index)}  >{gi}</button>
+        <div className="grid">
+            {
+                gridItems.map((gi, index) => (
+                    <React.Fragment key={`Explica-${gi}-${index}`}>
+                        <GeneralExplain title={gridItems[index]} description={descriptions[index]} isHidden={showGridItem.current !== index} onCancel={() => handleGridItemClick(-1)} />
+                    </React.Fragment>
+                ))
+            }
 
-                    <GeneralExplain title={gridItems[index]} description={descriptions[index]} style={'linear-gradient(to bottom, white, grey)'} color="black" isHidden={showGridItem.current !== index} onCancel={() => handleGridItemClick(-1)} />
-                </React.Fragment>
-            ))}
+            {renderGridSquares()}
+
         </div>
     )
 }

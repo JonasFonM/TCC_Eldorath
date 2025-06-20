@@ -9,17 +9,8 @@ export const loader: LoaderFunction = async ({ request }) => {
 }
 
 export const translateSlotTypes: { [key: string]: any } = {
-  'slotAmulet': 'Pingente',
-  'slotBelt': 'Cinturão',
-  'slotCloak': 'Manto',
-  'slotCuirass': 'Peitoral',
-  'slotEarings': 'Brinco',
-  'slotGauntlet': 'Manopla',
-  'slotGreaves': 'Bota',
-  'slotHelm': 'Elmo',
-  'slotPauldron': 'Ombreira',
-  'slotRings': 'Anel',
-  'slotUpperLegs': 'Calças',
+  'slotAccessory': 'Acessório',
+  'slotArmor': 'Armadura',
   'slotWeapon': 'Arma',
   'consumable': 'Consumível'
 };
@@ -27,6 +18,7 @@ export const translateSlotTypes: { [key: string]: any } = {
 
 
 export default function CharactersRoute() {
+
   return (
     <Outlet />
   );

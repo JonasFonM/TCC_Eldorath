@@ -1,217 +1,176 @@
-import { character, path } from "@prisma/client";
+import { character, character_path, path } from "@prisma/client";
 import { ActionFunction, json, redirect } from "@remix-run/node";
-import { NavLink, useOutletContext } from "@remix-run/react";
+import { Link, NavLink, useOutletContext } from "@remix-run/react";
 import React, { useState } from "react";
-import { TableHead } from "~/components/character-sheet/general-table";
-import { TableData } from "~/components/character-sheet/general-table-data";
+import { TableHead } from "~/components/character-sheet/table-head";
+import { TableData } from "~/components/character-sheet/table-data";
+import { TableDropdown } from "~/components/character-sheet/table-dropdown";
+import { useShowRow } from "~/components/context-providers/showRowContext";
 import { submitCharPaths } from "~/utils/character.server";
+import { SpecialFooter } from "~/components/special-footer";
 
 export const action: ActionFunction = async ({ request, params }) => {
+    const characterId = params.id
     const form = await request.formData();
     const selectedPaths = form.getAll('paths') as string[];
     const pendingPaths = form.get('pendingPaths') as string;
+    const selectedTiers = form.get('selectedTiers') as string;
     const selectedPathIds = selectedPaths.map(id => parseInt(id))
-    const characterId = params.id
 
     if (!selectedPaths || selectedPaths.length === 0) {
-        return json({ error: "You must select at least one path." }, { status: 400 });
+        return redirect(`/user/character/new/${characterId}/skills/`);
     }
-    try {
-        await submitCharPaths(selectedPathIds, Number(characterId), Number(pendingPaths))
-        return redirect(`/user/character/${characterId}/paths`)
-    } catch (error) {
-        console.error(error);
-        return json({ error: "Failed to save paths." }, { status: 500 });
+    if (selectedPaths.length > 0) {
+        try {
+            await submitCharPaths(selectedPathIds, Number(characterId), Number(pendingPaths), Number(selectedTiers))
+            return redirect(`/user/character/new/${characterId}/skills/`)
+        } catch (error) {
+            console.error(error);
+            return json({ error: "Falha ao salvar Caminhos." }, { status: 500 });
+        }
     }
 
 }
 
 export default function PathSelection() {
-    const { paths, maxSelectablePaths, character, characterId } = useOutletContext<{ paths: path[], characterId: string, maxSelectablePaths: number, character: character }>();
+    const { paths, maxSelectablePaths, character, characterId, character_paths } = useOutletContext<{ paths: path[], characterId: string, maxSelectablePaths: number, character: character, character_paths: (character_path & { path: path })[] }>();
     const [selectedPaths, setSelectedPaths] = useState<number[]>([]);
-    const [error, setError] = useState<string | null>(null);
+    const [selectedTiers, setSelectedTiers] = useState<number[]>([]);
+    const { showRow, isShown } = useShowRow();
+    const charPathIds = character_paths.map(cPath => cPath.path.id)
 
-    const [show, setShow] = useState<number>();
+    const isMaxSelected = selectedPaths.length >= maxSelectablePaths
 
-    const tier1 = paths.filter(p => p.pathTier == 1);
-    const tier2 = paths.filter(p => p.pathTier == 2);
-    const tier3 = paths.filter(p => p.pathTier == 3);
-    const tier4 = paths.filter(p => p.pathTier == 4);
+    const tier1 = paths.filter(p => p.pathTier === 1);
+    const tier2 = paths.filter(p => p.pathTier === 2);
+    const tier3 = paths.filter(p => p.pathTier === 3);
+    const tier4 = paths.filter(p => p.pathTier === 4);
 
-    const showRow = (tier: number) => {
-        show != tier ?
-            setShow(() => {
-                return tier;
-            })
-            :
-            setShow(() => {
-                return 0;
-            })
-    }
+    const chararcterPathTiers = character_paths.map(cPath => cPath.path.pathTier)
+    const allTiers = [tier1, tier2, tier3, tier4]
+    const tierTitles = ["Iniciante", "Veterano", "Mestre", "Lenda"]
 
     const handlePathClick = (pathId: number, pathTier: number) => {
+
+        if (charPathIds.includes(pathId)) {
+            return;
+        }
+
+        if (pathTier > character.tier) {
+            return;
+        }
+
+        if ((chararcterPathTiers.includes(pathTier) && !selectedPaths.includes(pathId))
+            || (selectedTiers.includes(pathTier) && !selectedPaths.includes(pathId))
+        ) {
+            return;
+        }
+
         setSelectedPaths((prevPaths) => {
             const isSelected = prevPaths.includes(pathId);
-
-            const newSelectedPaths = isSelected
-                ? prevPaths.filter(id => id !== pathId)
-                : [...prevPaths, pathId];
-
-            if (newSelectedPaths.length * pathTier > maxSelectablePaths) {
-                setError("Você selecionou o máximo de caminhos.");
-                return prevPaths;
-            } else {
-                setError(null);
-            }
-
+            let newSelectedPaths;
+            isSelected
+                ? newSelectedPaths = prevPaths.filter(id => id !== pathId)
+                : newSelectedPaths = [...prevPaths, pathId];
             return newSelectedPaths;
         });
+
+        setSelectedTiers((prevTiers) => {
+            const isSelected = prevTiers.includes(pathTier);
+            let newSelectedTiers;
+            isSelected
+                ? newSelectedTiers = prevTiers.filter(id => id !== pathTier)
+                : newSelectedTiers = [...prevTiers, pathTier];
+            return newSelectedTiers;
+        });
+
+        return;
     };
 
-    const tableTitles = ["Caminho", "Vit", "Pod", "Tec", "Man", "Jur", "Tru", "Mag"]
+    const handleSubmit = async (event: React.FormEvent) => {
+        if (!selectedPaths || selectedPaths.length === 0 && maxSelectablePaths > 0) {
+            event.preventDefault();
+            return alert("Selecione pelo menos um Caminho.")
+        }
+
+    };
 
     return (
         <>
+            <h1 className="title-input" style={{ position: 'sticky', top: '64px', backgroundColor: 'black' }}>Caminhos</h1>
 
-            {maxSelectablePaths > 0 ?
-                <>
-                    <form method="post">
+            <form method="post" onSubmit={handleSubmit}>
 
-                        <h1 className="title-container">Escolha seu Caminho<NavLink to={`/user/character/${characterId}/paths`} style={{ color: 'red' }} className="question-button">X</NavLink></h1>
+                <div style={{ marginBottom: '120px' }}>
 
-                        <h2 style={{ fontVariant: 'small-caps' }}>Caminhos Iniciantes</h2>
+                    {allTiers.map((t, index) =>
+                        <table key={"Tier" + index + 1}>
+                            <TableHead
+                                tableTitles={[tierTitles[index]]}
+                                onClick={() => showRow(`Tier-${index + 1}`)}
+                                open={isShown(`Tier-${index + 1}`) || chararcterPathTiers.includes(index + 1)}
+                                error={character.tier < index + 1}
+                            />
+                            {chararcterPathTiers.includes(index + 1)
+                                ? <tbody>
+                                    <tr style={{ backgroundColor: 'black' }}>
+                                        <td style={{ fontVariant: 'small-caps', fontWeight: 'bolder', color: 'gold' }}>Você já escolheu 1 Caminho desta Categoria</td>
+                                    </tr>
+                                </tbody>
 
-                        <table>
-                            <tbody>
-                                <TableHead tableTitles={tableTitles} onClick={() => showRow(1)} />
-
-                                {tier1.map(p => (
+                                : t.map(p => (
                                     <React.Fragment key={p.id}>
                                         <TableData
                                             key={p.id}
-                                            tableData={[p.name, String(p.vitality), String(p.power), String(p.addTechniques), String(p.addManeuvers), String(p.addOaths), String(p.addTricks), String(p.addMagics)]}
-                                            show={show === (p.pathTier)}
+                                            tableData={[`${p.name}`]}
+                                            show={isShown(`Tier-${p.pathTier}`)}
                                             onClick={() => handlePathClick(p.id, 1)}
-                                            selected={selectedPaths.includes(p.id)}
-
+                                            selected={selectedPaths.includes(p.id) || charPathIds.includes(p.id)}
+                                            error={isMaxSelected && !selectedPaths.includes(p.id)}
+                                        />
+                                        <TableDropdown
+                                            key={`Drop-${p.id}`}
+                                            show={(selectedPaths.includes(p.id) || charPathIds.includes(p.id)) && isShown(`Tier-${p.pathTier}`)}
+                                            categories={['Descrição', `Benefícios`]}
+                                            subtitleIndexes={[0, 1]}
+                                            items={[
+                                                String(p.description),
+                                                `Vitalidade: ${String(p.vitality)}`,
+                                                `Poder: ${String(p.power)}`,
+                                                `Manobras: ${String(p.addManeuvers)}`,
+                                                `Magias: ${String(p.addMagics)}`
+                                            ]}
                                         />
                                     </React.Fragment>
-
                                 ))
-                                }
-                            </tbody>
+                            }
                         </table>
+                    )}
 
+                    {selectedPaths.map(pathId => (
+                        <input type="hidden" key={pathId} id={String(pathId)} name="paths" value={pathId} />
+                    ))}
 
-                        {character.tier >= 2 ?
-                            <>
-                                <h2 style={{ fontVariant: 'small-caps' }}>Caminhos Veteranos</h2>
+                    <input type="hidden" key={maxSelectablePaths} name="pendingPaths" value={maxSelectablePaths} />
 
-                                <table>
-                                    <tbody>
+                    {selectedPaths.map(sp =>
+                        <input type="hidden" key={sp} name="selectedTiers" value={sp} />
+                    )}
 
-                                        <TableHead tableTitles={tableTitles} onClick={() => showRow(2)} />
-                                        {tier2.map(p => (
-                                            <React.Fragment key={p.id}>
-                                                <TableData
-                                                    key={p.id}
-                                                    tableData={[p.name, String(p.vitality), String(p.power), String(p.addTechniques), String(p.addManeuvers), String(p.addOaths), String(p.addTricks), String(p.addMagics)]}
-                                                    show={show === (p.pathTier)}
-                                                    onClick={() => handlePathClick(p.id, 2)}
-                                                    selected={selectedPaths.includes(p.id)}
-
-                                                />
-                                            </React.Fragment>
-                                        ))
-                                        }
-                                    </tbody>
-
-                                </table>
-
-                            </>
-                            : ''
-                        }
-
-                        {character.tier >= 3 ?
-                            <>
-                                <h2 style={{ fontVariant: 'small-caps' }}>Caminhos Mestres</h2>
-
-                                <table>
-                                    <tbody>
-
-                                        <TableHead tableTitles={tableTitles} onClick={() => showRow(3)} />
-
-                                        {tier3.map(p => (
-                                            <React.Fragment key={p.id}>
-                                                <TableData
-                                                    key={p.id}
-                                                    tableData={[p.name, String(p.vitality), String(p.power), String(p.addTechniques), String(p.addManeuvers), String(p.addOaths), String(p.addTricks), String(p.addMagics)]}
-                                                    show={show === (p.pathTier)}
-                                                    onClick={() => handlePathClick(p.id, 3)}
-                                                    selected={selectedPaths.includes(p.id)}
-                                                />
-                                            </React.Fragment>
-                                        ))
-                                        }
-                                    </tbody>
-
-                                </table>
-                            </>
-                            : ''}
-
-                        {character.tier >= 4 ?
-                            <>
-                                <h2 style={{ fontVariant: 'small-caps' }}>Caminhos Lendários</h2>
-
-                                <table>
-                                    <tbody>
-
-                                        <TableHead tableTitles={tableTitles} onClick={() => showRow(4)} />
-
-                                        {tier4.map(p => (
-                                            <React.Fragment key={p.id}>
-                                                <TableData
-                                                    key={p.id}
-                                                    tableData={[p.name, String(p.vitality), String(p.power), String(p.addTechniques), String(p.addManeuvers), String(p.addOaths), String(p.addTricks), String(p.addMagics)]}
-                                                    show={show === (p.pathTier)}
-                                                    onClick={() => handlePathClick(p.id, 4)}
-                                                    selected={selectedPaths.includes(p.id)}
-
-                                                />
-                                            </React.Fragment>
-                                        ))
-                                        }
-                                    </tbody>
-
-                                </table>
-                            </>
-                            : ''
-                        }
-
-                        {selectedPaths.map(pathId => (
-                            <input type="hidden" key={pathId} id={String(pathId)} name="paths" value={pathId} />
-                        ))}
-                        {error && <p>{error}</p>}
-
-                        <input type="hidden" key={maxSelectablePaths} name="pendingPaths" value={maxSelectablePaths} />
-
-
-                        <button type="submit" className="button">Confirmar</button>
-                    </form>
-
-                </>
-
-                :
-
-                <>
-                    <h1 className="title-container">Você já escolheu um Caminho</h1>
-                    <NavLink className='button' to={`/user/character/${characterId}/paths`}>Sair</NavLink>
-                </>
-
-            }
-
-
-
+                </div>
+                <SpecialFooter
+                    backBtnName={'Linhagens'}
+                    backLink={`/user/character/new/${characterId}/lineages`}
+                    advBtnName="Talentos"
+                    advLink={
+                        charPathIds.length > 0
+                            ? `/user/character/new/${characterId}/skills/`
+                            : null
+                    }
+                    showAdv={true}
+                />
+            </form >
         </>
+
     );
 }

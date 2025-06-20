@@ -115,41 +115,51 @@ export default function Login() {
         </h1>
 
         <form method="POST" autoComplete="new-password" onSubmit={handleSubmit}>
-          <div className='container'>{formError}</div>
-          <FormField
-            htmlFor="email"
-            label="Email"
-            value={formData.email}
-            onChange={e => handleInputChange(e, 'email')}
-            error={errors?.email}
-          />
-          <FormField
-            htmlFor="password"
-            type="password"
-            label="Senha"
-            value={formData.password}
-            onChange={e => handleInputChange(e, 'password')}
-            error={errors?.password}
-          />
 
-          {action === 'register' && (
-            <>
+          <p className='error'>{formError}</p>
+          <div className='container calendar-box'>
+
+            <div className='col-12'>
               <FormField
-                htmlFor="username"
-                label="Nome de Usuário"
-                onChange={e => handleInputChange(e, 'username')}
-                value={formData.username}
-                error={errors?.username}
+                htmlFor="email"
+                label="Email"
+                value={formData.email}
+                onChange={e => handleInputChange(e, 'email')}
+                error={errors?.email}
               />
+            </div>
+            <div className='col-12'>
 
-            </>
-          )}
+              <FormField
+                htmlFor="password"
+                type="password"
+                label="Senha"
+                value={formData.password}
+                onChange={e => handleInputChange(e, 'password')}
+                error={errors?.password}
+              />
+            </div>
+
+            {action === 'register' && (
+              <div className='col-12'>
+                <FormField
+                  htmlFor="username"
+                  label="Nome de Usuário"
+                  onChange={e => handleInputChange(e, 'username')}
+                  value={formData.username}
+                  error={errors?.username}
+                />
+              </div>
+            )}
+
+          </div>
 
           <button type="submit" name="_action" value={action} className="button">
             {
               action === 'login' ? "Entrar" : "Cadastrar"
             }
           </button>
+
         </form>
       </div>
     </>

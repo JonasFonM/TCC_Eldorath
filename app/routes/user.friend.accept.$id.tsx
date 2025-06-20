@@ -6,7 +6,7 @@ import { acceptFriendshipInvite } from "~/utils/user.server";
 export const loader: LoaderFunction = async ({ params, request }) => {
     const userId = await getUserIdFromSession(request);
 
-    const friendId = await Number(params.id)
+    const friendId = Number(params.id)
     const referer = request.headers.get("Referer") || `/user/home`;
 
     await acceptFriendshipInvite(Number(userId), friendId)

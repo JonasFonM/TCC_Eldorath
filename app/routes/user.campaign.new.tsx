@@ -45,6 +45,17 @@ export const action: ActionFunction = async ({ request }) => {
 export default function NewCampaignRoute() {
   const actionData = useActionData<ActionFunction>();
 
+  const title = useRef<number>(-1); // Avoid re-renders
+
+  const forceUpdate = useState(0)[1]; // Trigger minimal re-renders when necessary
+
+  const handleTitleClick = (index: number) => {
+    title.current = title.current != index
+      ? index
+      : title.current;
+    forceUpdate(n => n + 1); // Minimal re-render
+  };
+
   const firstLoad = useRef(true);
   const [formData, setFormData] = useState({
     title: '',
@@ -158,18 +169,39 @@ export default function NewCampaignRoute() {
     <form method="post" onSubmit={handleSubmit}>
       <input
         className="title-input"
+        style={{ position: "sticky", top: '64px', zIndex: '1' }}
         type="text"
         name="title"
         placeholder="Título"
         value={formData.title}
         onChange={handleChange}
       />
-      {errors.title && <p className="error">{errors.title}</p>}
+      <div className="title-container" style={{ position: "sticky", top: '128px', zIndex: '1', backgroundColor: 'black' }}>
+        {errors.title && <p className="error">{errors.title}</p>}
+      </div>
+      <label>
+        <h1>
+          <button
+            onClick={() => title.current !== 1 ? handleTitleClick(1) : handleTitleClick(0)}
+            className="lineBtn"
+            type="button">{title.current < 1 ? 'Descrição' : 'Calendário'}</button>
+        </h1>
+      </label>
 
-      <div className="container">
+      <div style={title.current < 1 ? { display: 'inherit' } : { display: 'none' }} className="container">
+        <textarea
+          style={{ minHeight: '50vh' }}
+          className="calendar-box"
+          name="description"
+          placeholder="Descreva os pontos básicos da sua Campanha. Você pode alterar essa descrição mais tarde!"
+          value={formData.description}
+          onChange={handleTextArea}
+        />
+        {errors.description && <p className="error">{errors.description}</p>}
+      </div>
 
+      <div style={title.current < 1 ? { display: 'none' } : { display: 'inherit' }} className="container">
         <div className="calendar-box">
-
           <div className="calendar-field">
 
             <label>Era: {formData.era}</label>
@@ -196,7 +228,6 @@ export default function NewCampaignRoute() {
               <button type="button" onClick={() => adjustYear(50)}>+50</button>
               <button type="button" onClick={() => adjustYear(250)}>+250</button>
             </div>
-
           </div>
 
           <div className="calendar-field">
@@ -205,7 +236,7 @@ export default function NewCampaignRoute() {
             <select name="monthDay" value={formData.monthDay} onChange={handleMonthDayChange}>
               {[...Array(30)].map((_, i) => (
                 <option key={i + 1} value={i + 1}>
-                  {i + 1}  -  {translateWeekDays(i)}
+                  {i + 1}  -  {translateWeekDays(i + 1)}
                 </option>
               ))}
             </select>
@@ -216,7 +247,6 @@ export default function NewCampaignRoute() {
                 </option>
               ))}
             </select>
-
           </div>
 
           <div className="calendar-field">
@@ -244,31 +274,11 @@ export default function NewCampaignRoute() {
                 <option value="12">Floravélis</option>
               </optgroup>
             </select>
-
           </div>
-
         </div>
-      </div>
-
-      <div className="container">
-
-        <div>
-          <label><h1>Descrição</h1></label>
-          <textarea
-            className="text-area"
-            name="description"
-            placeholder="Descreva os pontos básicos da sua Campanha.
-Você pode alterar essa descrição mais tarde!"
-            value={formData.description}
-            onChange={handleTextArea}
-          />
-          {errors.description && <p className="error">{errors.description}</p>}
-        </div>
-
       </div>
 
       <button className="button" type="submit">Confirmar</button>
-
-    </form>
+    </form >
   );
 }

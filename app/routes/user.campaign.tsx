@@ -10,15 +10,32 @@ export const weekDays = [
 ];
 
 export function translateWeekDays(i: number) {
-  return weekDays[i % weekDays.length]
+  return weekDays[(i - 1) % weekDays.length]
+}
+
+export const months = [
+  "Solmáris",
+  "Dracorius",
+  "Aethis",
+  "Sombríel",
+  "Véltar",
+  "Nocturnis",
+  "Glacirion",
+  "Umbraeth",
+  "Renováris",
+  "Luzális",
+  "Verthar",
+  "Floravélis"
+];
+
+export function translateMonth(i: number) {
+  return months[i - 1]
 }
 
 export default function CampaignsRoute() {
 
   return (
-    <div>
       <Outlet />
-    </div>
   );
 }
 

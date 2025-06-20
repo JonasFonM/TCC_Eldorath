@@ -2,9 +2,11 @@ import { NavLink, useOutletContext } from "@remix-run/react";
 import { lineage } from "@prisma/client";
 import { LoaderFunction } from "@remix-run/node";
 import { GeneralExplain } from "~/components/explanations/general-explain";
-import React, { useState } from "react";
-import { TableData } from "~/components/character-sheet/general-table-data";
-import { TableHead } from "~/components/character-sheet/general-table";
+import React, { useRef, useState } from "react";
+import { TableData } from "~/components/character-sheet/table-data";
+import { TableHead } from "~/components/character-sheet/table-head";
+import { TableDropdown } from "~/components/character-sheet/table-dropdown";
+import { useShowRow } from "~/components/context-providers/showRowContext";
 
 export const loader: LoaderFunction = async ({ params }) => {
   const characterId = params.id;
@@ -14,47 +16,53 @@ export const loader: LoaderFunction = async ({ params }) => {
 
 export default function LineagesRoute() {
   const { lineages, isPure, isAuthor, characterId } = useOutletContext<{ lineages: lineage[], isPure: boolean, isAuthor: boolean, characterId: string }>();
-  
-  const [showLineage, setShowLineage] = useState<number>(-3);
+
+  const { showRow, isShown } = useShowRow();
+
 
   return (
     <>
-      <div className="title-container">
-        {isAuthor ?
-          <NavLink to={`../../new/${characterId}/lineages/`}> <h1 style={{ marginTop: '0', marginBottom: '0', padding: '0' }}>Linhagens</h1></NavLink>
-          :
-          <h1 style={{ marginTop: '0', marginBottom: '0', padding: '0' }}>Linhagens</h1>
-        }
-        <button className="question-button" onClick={showLineage != -1 ? () => setShowLineage(-1) : () => setShowLineage(-3)}>?</button>
-
+      <div style={{ position: "sticky", top: '64px', zIndex: '1' }} className="title-input">
+        <h1 className="title-container">
+          Linhagens
+          <button className="question-button" onClick={() => showRow("ELinhagem")}>?</button>
+        </h1>
       </div>
-      <GeneralExplain style={'linear-gradient(to bottom, white, gold)'} color={'black'} title={'Linhagens'} description="Linhagens são sua descendência, sua origem. Geralmente representam a quais espécies ou raças você e os seus pais pertencem, mas existem exceções." isHidden={showLineage != -1} onCancel={() => setShowLineage(-3)} />
+
+      <GeneralExplain
+        title={'Linhagens'}
+        description="Linhagens são sua descendência, sua origem. Geralmente representam a quais espécies ou raças você e os seus pais pertencem, mas existem exceções."
+        isHidden={!isShown("ELinhagem")}
+        onCancel={() => showRow("ELinhagem")}
+      />
 
       <table>
-        <tbody>
-
-          <TableHead tableTitles={['Nome']} onClick={showLineage != 0 ? () => setShowLineage(0) : () => setShowLineage(-3)} />
-
-          {lineages.map(ln => (
-            <React.Fragment key={ln.id}>
-              <TableData
-                key={ln.id}
-                tableData={isPure ? [String(ln.name) + ' Pura'] : [String(ln.name)]}
-                show={showLineage >= (0)}
-                onClick={() => setShowLineage(Number(ln.id))}
-                selected={false}
-              />
-            </React.Fragment>
-          ))}
-
-        </tbody>
-      </table >
-      {lineages.map(ln => (
-        <React.Fragment key={ln.id}>
-          <GeneralExplain title={String(ln.name)} description={String(ln.description)} isHidden={showLineage != Number(ln.id)} onCancel={() => setShowLineage(0)} style={'linear-gradient(to bottom right, gold, goldenrod)'} color="black" />
-        </React.Fragment>
-      ))}
-
+        <TableHead
+          tableTitles={['Linhagem']}
+          onClick={() => showRow("TBLinhagem")}
+          open={isShown("TBLinhagem")}
+          error={false}
+        />
+        {lineages.map(ln => (
+          <React.Fragment key={ln.id}>
+            <TableData
+              key={`Data-${ln.id}`}
+              tableData={isPure ? [String(ln.name)] : ['Meio ' + String(ln.name)]}
+              show={isShown("TBLinhagem")}
+              onClick={() => showRow(`Linhagem-${ln.id}`)}
+              selected={isShown(`Linhagem-${ln.id}`)}
+              error={false}
+            />
+            <TableDropdown
+              key={`Drop-${ln.id}`}
+              show={isShown("TBLinhagem") && isShown(`Linhagem-${ln.id}`)}
+              categories={[]}
+              subtitleIndexes={[]}
+              items={[String(ln.description)]}
+            />
+          </React.Fragment>
+        ))}
+      </table>
     </>
   )
 }

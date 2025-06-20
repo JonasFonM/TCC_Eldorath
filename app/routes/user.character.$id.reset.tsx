@@ -1,16 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { redirect, LoaderFunction } from "@remix-run/node";
-import { getUserIdFromSession } from "~/utils/auth.server";
 import { prisma } from "~/utils/prisma.server";
 
-export const loader: LoaderFunction = async ({ params, request }) => {
+export const loader: LoaderFunction = async ({ params }) => {
     const characterId = Number(params.id);
-    const userId = Number(getUserIdFromSession(request))
     const character = await prisma.character.findUnique({
         where: { id: characterId },
     });
-    const isAuthor = userId === Number(character?.authorId)
-    const referer = request.headers.get("Referer") || "/"; // Fallback to "/" if no referer
 
     if (!character) {
         throw new Response("Personagem não encontrado", { status: 404 });
@@ -46,19 +42,8 @@ export const loader: LoaderFunction = async ({ params, request }) => {
             pendingLineages: 2,
             pendingPath: 1,
             pendingSkills: 2,
-            acidRes: 0,
-            arcaneRes: 0,
-            coldRes: 0,
-            cosmicRes: 0,
-            fireRes: 0,
-            fullRes: 0,
-            impactRes: 0,
-            lightningRes: 0,
-            pierceRes: 0,
-            profaneRes: 0,
-            psychicRes: 0,
-            sacredRes: 0,
-            slashRes: 0,
+            pendingMagic: 0,
+            pendingManeuver: 0,
             gold: 500,
             carryCap: 10,
             liftCap: 15,
@@ -66,5 +51,5 @@ export const loader: LoaderFunction = async ({ params, request }) => {
         }
     });
 
-    return redirect(referer);
+    return redirect(`/user/character/new/${characterId}/basic/`);
 };

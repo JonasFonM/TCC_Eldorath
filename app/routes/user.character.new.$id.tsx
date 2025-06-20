@@ -1,26 +1,25 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { character, item, lineage, path, skill } from "@prisma/client"
+import { character, character_item, character_lineage, character_path, character_skill, item, lineage, lineage_skill, path, skill } from "@prisma/client"
 import { LoaderFunction, redirect } from "@remix-run/node"
 import { Outlet, useLoaderData } from "@remix-run/react"
-import { useSidebar } from "~/components/side-bars/side-bar-context"
-import { SideBars } from "~/components/side-bars/side-bars"
+import { useSidebar } from "~/components/context-providers/side-bar-context"
+import { SideBars } from "~/components/context-providers/side-bars"
 import { requireUserId } from '~/utils/auth.server'
 import { prisma } from "~/utils/prisma.server"
-import { LSrelations } from "~/utils/types.server"
 
 export const loader: LoaderFunction = async ({ request, params }) => {
     const userId = await requireUserId(request)
     const characterId = Number(params.id)
-    const character_lineages = await prisma.character_lineage.findMany({
-        where: { characterId },
-        include: { lineage: true }
-    });
-
     const character = await prisma.character.findUnique({
         where: { id: characterId },
         include: { skills: true }
     });
 
+    //Already Chosen Values
+    const character_lineages = await prisma.character_lineage.findMany({
+        where: { characterId },
+        include: { lineage: true }
+    });
 
     const character_paths = await prisma.character_path.findMany({
         where:
@@ -28,105 +27,108 @@ export const loader: LoaderFunction = async ({ request, params }) => {
         include: { path: true }
     });
 
-    const selectMagics = character_paths.map(pss => pss.path.addMagics)
+    const character_skills = await prisma.character_skill.findMany({
+        where:
+            { characterId: characterId },
+        include: { skill: true }
+    })
 
-    const maxMagics = selectMagics.reduce((accumulator, currentValue) => accumulator + currentValue, 0)
+    const character_items = await prisma.character_item.findMany({
+        where:
+            { characterId: characterId },
+        include: { item: true }
+    })
 
-    const selectTechniques = character_paths.map(pss => pss.path.addTechniques)
+    //Skills
+    const maxMagics = character?.pendingMagic || 0
 
-    const maxTechniques = selectTechniques.reduce((accumulator, currentValue) => accumulator + currentValue, 0)
+    const maxManeuvers = character?.pendingManeuver || 0
 
-    const selectOaths = character_paths.map(pss => pss.path.addOaths)
+    const maxSelectableSkills = character?.pendingSkills || 0;
 
-    const maxOaths = selectOaths.reduce((accumulator, currentValue) => accumulator + currentValue, 0)
-
-    const selectTricks = character_paths.map(pss => pss.path.addTricks)
-
-    const maxTricks = selectTricks.reduce((accumulator, currentValue) => accumulator + currentValue, 0)
-
-    const selectManeuvers = character_paths.map(pss => pss.path.addManeuvers)
-
-    const maxManeuvers = selectManeuvers.reduce((accumulator, currentValue) => accumulator + currentValue, 0)
-
-    const maxSelectableSkills = character?.pendingSkills;
-
-    const general_skills = await prisma.skill.findMany({
+    const skills = await prisma.skill.findMany({
         where: {
-            lineages: { none: {} },
-            id: { notIn: character?.skills.map(skill => skill.skillId) },
-            agi: {
-                lte: character?.agility
-            },
-            bdy: {
-                lte: character?.body
-            },
-            mnd: {
-                lte: character?.mind
-            },
-            lvl: {
-                lte: character?.level
-            },
-            OR: [{
-                trSiz: {
-                    lte: character?.trueSize,
-                },
-                rlSiz: {
-                    lte: character?.relativeSize,
-                },
-            },
-            { trSiz: { lte: 0 } },
-            { rlSiz: { lte: 0 } },
-            ],
-            AND: [{
-                OR: [{
-                    prerequisiteId: { in: character?.skills.map(skill => skill.skillId) },
-                },
-                { prerequisiteId: null },
-                ]
-            }]
-
-        },
-
+            lineages: { none: {} }, paths: { none: {} }
+        }
     });
 
-    const characteristics = general_skills.filter(gs => gs.type == 'CHARACTERISTIC')
-    const magics = general_skills.filter(gs => gs.type == 'MAGIC')
-    const techniques = general_skills.filter(gs => gs.type == 'TECHNIQUE')
-    const oaths = general_skills.filter(gs => gs.techniqueSubtype == 'OATH')
-    const maneuvers = general_skills.filter(gs => gs.techniqueSubtype == 'MANEUVER')
-    const tricks = general_skills.filter(gs => gs.techniqueSubtype == 'TRICK')
+    const selectableSkills = skills.filter(sk =>
+        !character_skills.some(cs => cs.skill.id === sk.id) &&
+        Number(character?.agility) >= sk.agi &&
+        Number(character?.body) >= sk.bdy &&
+        Number(character?.mind) >= sk.mnd &&
+        Number(character?.level) >= sk.lvl &&
+        (
+            (Number(character?.trueSize) >= sk.trSiz || sk.trSiz <= 0) &&
+            (Number(character?.effectiveSize) >= sk.efSiz || sk.efSiz <= 0)
+        ) &&
+        (
+            sk.prerequisiteId === null ||
+            character?.skills.some(cs => cs.skillId === Number(sk.prerequisiteId))
+        )
+    );
 
     const isPure = character_lineages.length === 1;
 
     const pureLineageSkills = await prisma.lineage_skill.findMany({
         where: {
-            skillId: { notIn: character?.skills.map(skill => skill.skillId) },
-            lineageId: { in: character_lineages.map(cl => cl.lineageId) },
-            pureSkill: true
+            pureSkill: true,
         },
-        include: { skill: true },
+        include: { skill: true, lineage: true },
     });
+
+    const selectablePureLineageSkills = pureLineageSkills.filter(ls =>
+        !character_skills.some(cs => cs.skill.id === ls.skill.id) &&
+        character_lineages.filter(cl => cl.pure === true).map(cl => cl.lineageId).includes(ls.lineageId) &&
+        Number(character?.agility) >= ls.skill.agi &&
+        Number(character?.body) >= ls.skill.bdy &&
+        Number(character?.mind) >= ls.skill.mnd &&
+        Number(character?.level) >= ls.skill.lvl &&
+        (
+            (Number(character?.trueSize) >= ls.skill.trSiz || ls.skill.trSiz <= 0) &&
+            (Number(character?.effectiveSize) >= ls.skill.efSiz || ls.skill.efSiz <= 0)
+        ) &&
+        (
+            ls.skill.prerequisiteId === null ||
+            character?.skills.some(cs => cs.skillId === Number(ls.skill.prerequisiteId))
+        )
+    );
 
     const nonPureLineageSkills = await prisma.lineage_skill.findMany({
         where: {
-            skillId: { notIn: character?.skills.map(skill => skill.skillId) },
-            lineageId: { in: character_lineages.map(cl => cl.lineageId) },
             pureSkill: false
         },
-        include: { skill: true },
+        include: { skill: true, lineage: true },
     });
 
+    const selectableNonPureLineageSkills = nonPureLineageSkills.filter(ls =>
+        !character_skills.some(cs => cs.skill.id === ls.skill.id) &&
+        character_lineages.map(cl => cl.lineageId).includes(ls.lineageId) &&
+        Number(character?.agility) >= ls.skill.agi &&
+        Number(character?.body) >= ls.skill.bdy &&
+        Number(character?.mind) >= ls.skill.mnd &&
+        Number(character?.level) >= ls.skill.lvl &&
+        (
+            (Number(character?.trueSize) >= ls.skill.trSiz || ls.skill.trSiz <= 0) &&
+            (Number(character?.effectiveSize) >= ls.skill.efSiz || ls.skill.efSiz <= 0)
+        ) &&
+        (
+            ls.skill.prerequisiteId === null ||
+            character?.skills.some(cs => cs.skillId === Number(ls.skill.prerequisiteId))
+        )
+    );
 
+    //Lineages
     const lineages = await prisma.lineage.findMany()
 
     const maxSelectableLineages = character?.pendingLineages;
 
-
+    //Paths
     const paths = await prisma.path.findMany()
 
     const maxSelectablePaths = character?.pendingPath
 
-
+    //Items
     const items = await prisma.item.findMany({
         where: {
             baseCost: { lte: 500 }
@@ -138,26 +140,35 @@ export const loader: LoaderFunction = async ({ request, params }) => {
     return isAuthor ? ({
         userId,
         character, characterId,
-        maxSelectableSkills, maxMagics, maxTechniques, maxManeuvers, maxOaths, maxTricks,
-        characteristics, magics, techniques, oaths, maneuvers, tricks,
-        pureLineageSkills, nonPureLineageSkills, isPure,
+        character_lineages, character_paths, character_skills, character_items,
+        maxSelectableSkills, maxMagics, maxManeuvers,
+        skills, selectableSkills,
+        selectablePureLineageSkills,
+        selectableNonPureLineageSkills, isPure,
+        pureLineageSkills, nonPureLineageSkills,
         lineages, maxSelectableLineages,
         paths, maxSelectablePaths,
         items
     })
         :
-        redirect(`/user/character/${characterId}/skills/`);
+        redirect(`/user/character/${characterId}/stats/`);
 }
 
 export default function NewCharacterRoute() {
-    const { isAllOpen, isHeaderOpen, isTempOpen } = useSidebar();
+    const { isAllOpen, isHeaderOpen } = useSidebar();
+
 
     const {
         userId,
         character, characterId,
-        maxSelectableSkills, maxMagics, maxTechniques, maxManeuvers, maxOaths, maxTricks,
-        characteristics, magics, techniques, oaths, maneuvers, tricks,
-        pureLineageSkills, nonPureLineageSkills, isPure,
+        character_lineages, character_paths, character_skills, character_items,
+        maxSelectableSkills, maxMagics, maxManeuvers,
+        skills, selectableSkills,
+        selectablePureLineageSkills,
+        pureLineageSkills,
+        selectableNonPureLineageSkills,
+        nonPureLineageSkills,
+        isPure,
         lineages, maxSelectableLineages,
         paths, maxSelectablePaths,
         items
@@ -165,62 +176,81 @@ export default function NewCharacterRoute() {
         =
         useLoaderData<{
             userId: string,
-            character: character, characterId: string,
-            maxSelectableSkills: number, maxMagics: number, maxTechniques: number, maxManeuvers: number, maxOaths: number, maxTricks: number,
-            characteristics: skill[], magics: skill[], techniques: skill[], maneuvers: skill[], tricks: skill[], oaths: skill[]
-            pureLineageSkills: LSrelations, nonPureLineageSkills: LSrelations, isPure: boolean,
+            character: (character & { skills: character_skill[] }), characterId: string,
+            character_lineages: (character_lineage & { lineage: lineage })[], character_paths: (character_path & { path: path })[], character_skills: (character_skill & { skill: skill })[], character_items: (character_item & { item: item })[],
+            maxSelectableSkills: number, maxMagics: number, maxManeuvers: number
+            skills: skill[], selectableSkills: skill[],
+            selectablePureLineageSkills: (lineage_skill & { skill: skill, lineage: lineage })[],
+            pureLineageSkills: (lineage_skill & { skill: skill, lineage: lineage })[],
+            selectableNonPureLineageSkills: (lineage_skill & { skill: skill, lineage: lineage })[],
+            nonPureLineageSkills: (lineage_skill & { skill: skill, lineage: lineage })[],
+            isPure: boolean,
             lineages: lineage[], maxSelectableLineages: number,
             paths: path[], maxSelectablePaths: number,
             items: item[]
         }>()
 
-    return (
+    const getStyle = () => {
+        if (isAllOpen || isHeaderOpen) {
+            return { marginLeft: '200px', marginBottom: '155px' }
+        }
+        if (!isHeaderOpen && !isAllOpen) {
+            return { marginLeft: '0', marginBottom: '155px' }
+        }
+    }
 
+    return (
         <>
             <SideBars
                 entity={character} title={character.name}
-                subtitle={''}
-                tableHeaders={["NV", "CT", "XP"]}
-                tableDatas={[character.level, character.tier, character.experience]}
+                subtitle={character.boss ? 'Chefe' : ''}
+                tableHeaders={["AGI", "COR", "MEN"]}
+                tableDatas={[character.agility, character.body, character.mind]}
                 tableExplain={[
-                    "Seu Nível é um indicador geral de quão poderoso você é no momento. Você sobe de nível conforme ganha Experiência.",
-                    "Sua Categoria representa em qual patamar da sua jornada você está. Você pode ser Iniciante, Profissional, Mestre ou Lendário.",
-                    "Seus Pontos de Experiência determinam quando você pode subir de nível. Você pode receber Experiência de várias formas, como derrotar inimigos, ou passar por um treinamento árduo.",
-                ]}
+                    "Agilidade é usada para Acertar Ataques Físicos, além de ser a base principal da sua Iniciativa e da sua Esquiva.",
+                    "Corpo é somado no Dano dos seus Ataques Físicos, além de ser uma base da sua Vitalidade, Vigor, Peso, Capacidade de Carga e Capacidade de Levantamento",
+                    "Mente é usada para Acertar Ataques Mágicos, além de ser uma base do seu Vigor e do seu Poder"]}
                 links={[
-                    `/user/character/new/${characterId}/basic/`,
+                    `/user/character/new/${characterId}/basic`,
                     `/user/character/new/${characterId}/lineages/`,
                     `/user/character/new/${characterId}/paths/`,
                     `/user/character/new/${characterId}/skills/`,
-
+                    `/user/character/new/${characterId}/inventory/`,
+                    `/user/character/new/${characterId}/end/`
                 ]}
 
                 linkNames={[
-                    'Personagem',
+                    'Atributos',
                     'Linhagens',
                     'Caminhos',
                     'Talentos',
+                    'Itens Iniciais',
+                    'Finalizar'
                 ]}
-                temp={
-                    <>
-
-                    </>
-                }
+                temp={null}
+                footer={null}
 
             />
 
-            <div className="character-sheet" style={isAllOpen ? { marginLeft: '200px', marginRight: '200px' } : isHeaderOpen ? { marginLeft: '200px' } : isTempOpen ? { marginRight: '200px' } : {}}>
+            <div className="user"
+                style={getStyle()}>
                 <Outlet context={{
                     userId,
                     character, characterId,
-                    maxSelectableSkills, maxMagics, maxTechniques, maxManeuvers, maxOaths, maxTricks,
-                    characteristics, magics, techniques, oaths, maneuvers, tricks,
-                    pureLineageSkills, nonPureLineageSkills, isPure,
+                    character_lineages, character_paths, character_skills, character_items,
+                    maxSelectableSkills, maxMagics, maxManeuvers,
+                    skills, selectableSkills,
+                    selectablePureLineageSkills,
+                    pureLineageSkills,
+                    selectableNonPureLineageSkills,
+                    nonPureLineageSkills,
+                    isPure,
                     lineages, maxSelectableLineages,
                     paths, maxSelectablePaths,
-                    items
+                    items,
                 }} />
-            </div>
+
+            </div >
         </>
 
     );

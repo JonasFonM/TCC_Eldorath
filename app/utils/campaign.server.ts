@@ -180,6 +180,16 @@ export const rtnCampaignEra = async (campaignId: number) => {
 
 //SCENES
 export const createScene = async (campaign: SceneForm, campaignId: number, title: string) => {
+  const characters = await prisma.character.findMany(
+    {
+      where: {
+        campaignId: campaignId
+      }
+    }
+  )
+
+
+
   const newscene = await prisma.scene.create({
     data: {
       title: title,
@@ -188,10 +198,13 @@ export const createScene = async (campaign: SceneForm, campaignId: number, title
       month: campaign.month,
       monthDay: campaign.monthDay,
       weekDay: campaign.weekDay,
-      roundCount: 0,
-      playerTurn: false
     },
   })
+
+  if (characters.length > 0) {
+    await addCharactersToScene(characters.map(c => c.id), newscene.id)
+  }
+
   return {
     id: newscene.id,
     title: title,
@@ -200,8 +213,8 @@ export const createScene = async (campaign: SceneForm, campaignId: number, title
     month: campaign.month,
     monthDay: campaign.monthDay,
     weekDay: campaign.weekDay,
-    roundCount: 0,
-    playerTurn: false
+    characters: characters || null
+
   }
 };
 
@@ -307,48 +320,40 @@ export const removeAllCharactersFromCampaign = async (campaignId: number) => {
   });
 };
 
-//LOGS
-export const createLog = async (characterId: number, sceneId: number, round: number, turnType: string, targetIds: string) => {
-  return await prisma.log.create({
+
+export const addCharactersToScene = async (characterList: number[], sceneId: number) => {
+  return characterList.map(cl => prisma.characterScene.create({
     data: {
+      characterId: cl,
       sceneId: sceneId,
-      actorId: characterId,
-      round: round,
-      turnType: turnType,
-      targetIds: targetIds
+    },
+  }));
+
+};
+
+export const addSingleCharacterToScene = async (characterId: number, sceneId: number) => {
+  return await prisma.characterScene.create({
+    data: {
+      characterId: characterId,
+      sceneId: sceneId,
     },
   });
 
 };
 
-export const createLogAction = async (logId: number, actionId: number) => {
-  return await prisma.logAction.create({
-    data: {
-      logId: logId,
-      actionId: actionId,
+export const removeCharacterFromScene = async (characterId: number, sceneId: number) => {
+  return await prisma.characterScene.deleteMany({
+    where: {
+      characterId: characterId,
+      sceneId: sceneId
     },
   });
 };
 
-export const createLogEffect = async (logId: number, effectId: number, targetIds: string, targetType: any) => {
-  return await prisma.logEffect.create({
-    data: {
-      logId: logId,
-      effectId: effectId,
-      targetIds: targetIds,
-      targetType: targetType,
-    },
-  });
-};
-
-export const createDamageLogs = async (logId: number, actorId: number, targetIds: string, preMitigationDamage: number, critical: boolean) => {
-  return await prisma.damageLog.create({
-    data: {
-      logId: logId,
-      actorId: actorId,
-      targetIds: targetIds,
-      preMitigationDamage: preMitigationDamage,
-      critical: critical
+export const removeAllCharactersFromScene = async (sceneId: number) => {
+  return await prisma.characterScene.deleteMany({
+    where: {
+      sceneId: sceneId
     },
   });
 };

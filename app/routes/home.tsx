@@ -18,7 +18,8 @@ export default function Home() {
         </div>
       </div>
       <GeneralExplain title={'Eldorath'} description='Eldorath é um RPG "de mesa" completamente digital, centrado em um universo vasto de fantasia (principalmente) medieval inspirado em várias temáticas famosas (ou não) na cultura pop.' isHidden={showAtr != 1} onCancel={() => setShowAtr(0)} />
-      <NavLink className='button' id='third' to={`../user/home/profile`}>Entrar</NavLink>
+      <h1 id='third'><NavLink className='lineBtn' to={`../user/home/profile/`}>Entrar</NavLink></h1>
+      <h1 id='third'><NavLink className='lineBtn' to={`../intro/`}>Introdução</NavLink></h1>
     </React.Fragment>
   )
 }

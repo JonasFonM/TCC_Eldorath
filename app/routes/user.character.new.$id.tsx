@@ -192,10 +192,10 @@ export default function NewCharacterRoute() {
 
     const getStyle = () => {
         if (isAllOpen || isHeaderOpen) {
-            return { marginLeft: '200px', marginBottom: '155px' }
+            return { marginRight: '200px', marginBottom: '155px' }
         }
         if (!isHeaderOpen && !isAllOpen) {
-            return { marginLeft: '0', marginBottom: '155px' }
+            return { marginRight: '0', marginBottom: '155px' }
         }
     }
 

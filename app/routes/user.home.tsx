@@ -1,6 +1,6 @@
 import { user } from "@prisma/client";
 import { json, LoaderFunction } from "@remix-run/node";
-import { Outlet, useOutletContext, useFetcher } from "@remix-run/react";
+import { Outlet, useOutletContext, useFetcher, NavLink } from "@remix-run/react";
 import React, { useEffect } from "react";
 import { useSidebar } from "~/components/context-providers/side-bar-context";
 import { SideBars } from "~/components/context-providers/side-bars";
@@ -25,7 +25,6 @@ export default function UserRoute() {
     const fetcher = useFetcher<{ users: user[]; query: string }>();
     const users = fetcher.data?.users ?? [];
     const query = fetcher.data?.query ?? "";
-    const friendProfileLinks = (pendingInvites.map((pi) => `/user/home/profile/${String(pi.id)}/`)).concat(friends.map((fr) => `/user/home/profile/${String(fr.id)}/`))
 
     useEffect(() => {
         const searchField = document.getElementById("q");
@@ -49,25 +48,39 @@ export default function UserRoute() {
         <>
             <SideBars
                 entity={user}
-                title={user.username}
+                title={'Ações'}
                 subtitle={""}
                 tableHeaders={[]}
                 tableDatas={[]}
                 tableExplain={[]}
-                links={[`/user/campaign/new/`,
-                    `/user/character/new/basic/`,
-                    `/user/character/new/npc/`,
-                    `/user/character/new/boss/`,
-                    `/user/home/profile/${String(userId)}/`].concat(friendProfileLinks)
+                links={
+                    [`/user/campaign/new/`,
+                        `/user/character/new/basic/`,
+                        `/user/character/new/npc/`,
+                        `/user/character/new/boss/`]
                 }
-                linkNames={[`Criar Campanha`,
-                    `Criar Personagem`,
-                    `Criar NPC`,
-                    `Criar Chefe`,
-                    "Meu Perfil"].concat(pendingInvites.map((pi) => '! ' + String(pi.username) + ' !')).concat(friends.map((fr) => String(fr.username)))
+                linkNames={
+                    [`Criar Campanha`,
+                        `Criar Personagem`,
+                        `Criar NPC`,
+                        `Criar Chefe`,]
                 }
                 temp={
                     <React.Fragment>
+                        <h1>Perfis</h1>
+
+                        <ul>
+                            <li key={`Usuário Atual`}><NavLink to={`/user/home/profile/${String(userId)}/`}>Seu Perfil</NavLink></li>
+
+                            {pendingInvites.map((pi, index) => (
+                                <li key={`${pi}-${index}`} className="hp-bar-critical"><NavLink to={`/user/home/profile/${String(pi.id)}/`}>! {String(pi.username)} !</NavLink></li>
+                            ))}
+                            {friends.map((fr, index) => (
+                                <li key={`${fr}-${index}`}><NavLink to={`/user/home/profile/${String(fr.id)}/`}>{String(fr.username)}</NavLink></li>
+                            ))}
+
+                        </ul>
+
                         <fetcher.Form id="search-form" role="search">
                             <input
                                 autoComplete="off"
@@ -99,7 +112,7 @@ export default function UserRoute() {
             />
 
             <div className="user" style={isAllOpen ? { marginLeft: '200px', marginRight: '200px' } : isHeaderOpen ?
-                { marginLeft: '200px' } : isTempOpen ? { marginRight: '200px' } : {}}>
+                { marginRight: '200px' } : isTempOpen ? { marginLeft: '200px' } : {}}>
 
                 <Outlet context={{ userId, user, friends }} />
             </div>

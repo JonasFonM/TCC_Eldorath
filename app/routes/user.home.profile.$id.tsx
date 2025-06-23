@@ -16,25 +16,38 @@ export default function UserProfileRoute() {
     const getFriendAction = () => {
         if (isOwnProfile) return null;
 
-        if (isPendingInvite) return <NavLink to={`/user/friend/accept/${profileUser.id}`} className="lineBtn">Aceitar Amizade</NavLink>;
+        if (isPendingInvite) {
+            return (
+                <>
+                    <tr><th><NavLink to={`/user/friend/accept/${profileUser.id}`} className="lineBtn">Aceitar Amizade</NavLink></th></tr>
+                    <tr><th> <NavLink to={`/user/friend/unmake/${profileUser.id}/`} className="lineBtn">Negar Amizade</NavLink></th></tr>
+                </>
+            )
+        }
 
-        if (friendStatus === 'BLOCKED') return <NavLink to={`/user/friend/accept/${profileUser.id}`} className="lineBtn">Desbloquear Amizade</NavLink>;
+        if (friendStatus === 'BLOCKED') return <tr><th><NavLink to={`/user/friend/accept/${profileUser.id}`} className="lineBtn">Desbloquear Amizade</NavLink></th></tr>;
 
-        if (friendStatus === 'PENDING') return <React.Fragment>Solicitação Enviada</React.Fragment>;
+        if (friendStatus === 'PENDING') return <tr><th style={{ color: 'gold', backgroundColor: 'black' }}>Solicitação Enviada</th></tr>
 
         if (isFriend) {
             return (
-                <BlockConfirm
-                    name={profileUser.username}
-                    isHidden={blockConfirm !== 1}
-                    onShow={() => setBlockConfirm(1)}
-                    onCancel={() => setBlockConfirm(0)}
-                    userId={String(profileUser.id)}
-                />
+                <>
+                    <tr><th>
+                        <BlockConfirm
+                            name={profileUser.username}
+                            isHidden={blockConfirm !== 1}
+                            onShow={() => setBlockConfirm(1)}
+                            onCancel={() => setBlockConfirm(0)}
+                            userId={String(profileUser.id)}
+                        />
+                    </th></tr>
+
+                    <tr><th><NavLink to={`/user/friend/unmake/${profileUser.id}/`} className="lineBtn">Desfazer Amizade</NavLink></th></tr>
+                </>
             );
         }
 
-        return <NavLink to={`/user/friend/invite/${profileUser.id}`} className="lineBtn">Solicitar Amizade</NavLink>;
+        return <tr><th><NavLink to={`/user/friend/invite/${profileUser.id}`} className="lineBtn">Solicitar Amizade</NavLink></th></tr>;
     };
 
 
@@ -43,7 +56,7 @@ export default function UserProfileRoute() {
             <h1 className="title-input">{profileUser.username}</h1>
             <table>
                 <thead>
-                    <tr>{getFriendAction() && <th>{getFriendAction()}</th>}</tr>
+                    {getFriendAction()}
                 </thead>
             </table>
 
@@ -57,13 +70,14 @@ export default function UserProfileRoute() {
                 <CampaignPanel isAuthor={isOwnProfile} campaigns={profileCampaigns} />
                 {isOwnProfile
                     ? <div className="col-12">
-                        <div className='title-container' style={{ backgroundColor: 'black', boxShadow: '1px 1px 8px 1px gold' }}>
+                        <div className='title-container' style={{ boxShadow: '1px 1px 8px 1px gold' }}>
                             <NavLink className={'lineBtn'} to={`/user/campaign/new`}><h1>Criar Campanha</h1></NavLink>
                         </div>
                         <p></p> {/*Espaço */}
                     </div>
 
-                    : ''
+                    : <div className="col-12"><p></p></div>
+
                 }
             </div>
 
@@ -78,16 +92,17 @@ export default function UserProfileRoute() {
                 <CharacterPanel isAuthor={isOwnProfile} characters={profileCharacters} />
                 {isOwnProfile
                     ? <div className="col-12">
-                        <div className='title-container' style={{ backgroundColor: 'black', boxShadow: '1px 1px 8px 1px gold' }}>
+                        <div className='title-container' style={{ boxShadow: '1px 1px 8px 1px gold' }}>
                             <NavLink className={'lineBtn'} to={`/user/character/new/basic`}><h1>Criar Personagem</h1></NavLink>
                         </div>
-                        <p></p> {/*Espaço */}
+                        <p></p> {/*Espaço*/}
                     </div>
 
                     : ''
+
                 }
             </div>
 
-        </React.Fragment>
+        </React.Fragment >
     );
 }

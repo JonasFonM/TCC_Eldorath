@@ -102,6 +102,16 @@ export async function acceptFriendshipInvite(userId: number, friendId: number) {
       status: 'ACCEPTED'
     }
   })
+
+}
+export async function unmakeFriendship(userId: number, friendId: number) {
+
+  return prisma.friendship.deleteMany({
+    where: {
+      user1Id: friendId,
+      user2Id: userId
+    }
+  })
 }
 
 export async function blockFriendship(userId: number, friendId: number) {

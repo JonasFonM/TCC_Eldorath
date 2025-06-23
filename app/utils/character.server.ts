@@ -154,7 +154,17 @@ export async function submitCharacter(character: CharacterForm) {
   return (String(newcharacter.id))
 }
 
-export const getCharactersFromUser = async (userId: number) => {
+export const getPublicCharactersFromUser = async (userId: number) => {
+  return prisma.character.findMany({
+    where: { authorId: userId, npc: false, public: true },
+    select: { id: true, name: true, authorId: true },
+    orderBy: {
+      createdAt: 'desc'
+    }
+  })
+}
+
+export const getAllCharactersFromUser = async (userId: number) => {
   return prisma.character.findMany({
     where: { authorId: userId, npc: false },
     select: { id: true, name: true, authorId: true },

@@ -48,7 +48,7 @@ export function SideBars({ title, subtitle, tableHeaders, tableDatas, tableExpla
     return (
         <div id="side-bars">
 
-            <div className="header" style={selectHeader === 0 ? {} : { transform: 'translate(-200px)' }}>
+            <div className="header" style={selectHeader === 0 ? {} : { transform: 'translate(200px)' }}>
                 <h1>{title}</h1>
                 <h3>{subtitle}</h3>
                 {tableHeaders.map((th, index) => (
@@ -80,7 +80,7 @@ export function SideBars({ title, subtitle, tableHeaders, tableDatas, tableExpla
                     onCancel={() => setShowExplain(index)} />
             ))}
 
-            <button className="toggle-menu" style={selectHeader === 0 ? {} : { transform: 'translate(-200px)' }}
+            <button className="toggle-menu" style={selectHeader === 0 ? {} : { transform: 'translate(200px)' }}
                 onClick={selectHeader === 0 ? () => setHeader(Number(entity.id)) : () => setHeader(0)}>
             </button>
 
@@ -88,7 +88,7 @@ export function SideBars({ title, subtitle, tableHeaders, tableDatas, tableExpla
                 temp != null
                     ? selectTemp === 0
                         ? {}
-                        : { transform: 'translate(200px)' }
+                        : { transform: 'translate(-200px)' }
                     : { display: 'none' }
             }>
                 {temp}
@@ -98,7 +98,7 @@ export function SideBars({ title, subtitle, tableHeaders, tableDatas, tableExpla
                 temp != null
                     ? selectTemp === 0
                         ? {}
-                        : { transform: 'translate(200px)' }
+                        : { transform: 'translate(-200px)' }
                     : { display: 'none' }
             }
                 onClick={
@@ -113,9 +113,9 @@ export function SideBars({ title, subtitle, tableHeaders, tableDatas, tableExpla
                         ? isAllOpen
                             ? { width: 'calc(100% - 400px)', marginLeft: '200px', marginRight: '200px' }
                             : isHeaderOpen
-                                ? { width: 'calc(100% - 200px)', marginLeft: '200px' }
+                                ? { width: 'calc(100% - 200px)', marginRight: '200px' }
                                 : isTempOpen
-                                    ? { width: 'calc(100% - 200px)', marginRight: '200px' }
+                                    ? { width: 'calc(100% - 200px)', marginLeft: '200px' }
                                     : {}
                         : { transform: 'translate(0, 150px)' }
                     : { display: 'none' }}

@@ -35,9 +35,40 @@ export default function Lore() {
 
                     <p>
                         Para você não ficar no escuro, existem explicações sobre a maioria dos tópicos e termos importantes no jogo. Procure sempre os botões "?" se estiver com dúvidas.
+
+
                     </p>
 
-                    
+                    <h1>O que fazer como Jogador(a)?</h1>
+
+                    <p>
+                        Por enquanto, Eldorath permite que você crie Personagens de primeiro nível (aventureiros iniciantes) e com um Personagem pronto, você pode executar Testes de Atributo.
+
+                        Isto é um formato bem simples, mas já é o suficiente para cumprir com a maior parte da "gameplay" de um RPG.
+
+                        Dada uma cena, você pode pedir ao(a) seu(sua) Mestre(a) para interagir com algo ou alguém.
+
+                        Se o(a) Mestre(a) julgar necessário, ele(a) pode pedir que você jogue um Teste de Agilidade, Corpo ou Mente, e o resultado vai determinar o quão bem a sua interação se sucede.
+                    </p>
+
+                    <h1>O que fazer como Mestre?</h1>
+
+                    <p>
+                        Por enquanto, Eldorath permite que você crie Campanhas com uma Descrição e uma Data.
+
+                        Uma Campanha é o que carrega a história que você e seus Jogadores vão construir durante o jogo.
+
+                    </p>
+
+                    <p>
+                        Campanhas podem ser longas aventuras que serão jogadas por meses ou até anos(da vida real), podem ser as conhecidas "one-shots": histórias em que o início, meio e fim acontecem em apenas uma sessão de jogo, ou algo entre esses dois formatos.
+
+                        Caso queira ser um(a) Mestre(a) em Eldorath, você só precisa criar uma Campanha. 
+
+                        Seus Amigos poderão ver seu Perfil e entrar nas suas Campanhas. 
+
+                        Depois disso, seu trabalho é criar uma narrativa para os Personagens.
+                    </p>
 
                 </div>
 

@@ -22,7 +22,6 @@ export default function PathsRoute() {
   const tier3 = paths.filter(p => p.pathTier == 3);
   const tier4 = paths.filter(p => p.pathTier == 4);
 
-  const chararcterPathTiers = paths.map(cPath => cPath.pathTier)
   const allTiers = [tier1, tier2, tier3, tier4]
   const tierTitles = ["Iniciante", "Veterano", "Mestre", "Lenda"]
 
@@ -48,7 +47,7 @@ export default function PathsRoute() {
         <table key={"Tier" + index + 1}>
           <TableHead
             tableTitles={[tierTitles[index]]}
-            onClick={() => chararcterPathTiers.includes(index + 1)
+            onClick={() => character.tier >= (index + 1)
               ? showRow(`Tier-${index + 1}`)
               : null
             }

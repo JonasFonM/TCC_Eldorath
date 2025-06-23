@@ -27,13 +27,14 @@ export function ResetConfirm({ name, isHidden, onCancel, id }: props) {
     <>
       <div className="modal-overlay" style={{ display: isHidden ? 'none' : 'flex' }}>
         <div className="modal-content">
+
           <h2 style={{ color: "gold", fontSize: "1.4rem" }}>Tem certeza que quer resetar {name}?</h2>
 
           <p style={{ color: 'white', fontVariant: 'none', fontFamily: 'serif', fontSize: "1.3rem" }}>Este processo vai retornar o personagem ao nível 1 além de excluir todos os seus Caminhos, Linhagens, Talentos e Itens</p>
 
           <div className="modal-buttons container">
 
-            <input className="title-input col-12" style={{animation: 'none', border: 'none'}} placeholder="Digite RESETAR" value={confirmText} onChange={(e) => setConfirmText(e.target.value)}></input>
+            <input className="title-input col-12" style={{ animation: 'none', border: 'none' }} placeholder="Digite RESETAR" value={confirmText} onChange={(e) => setConfirmText(e.target.value)}></input>
 
             {getConfirm()}
 

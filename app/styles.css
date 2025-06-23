@@ -262,13 +262,13 @@ ul {
   border-width: 12px;
 }
 
-.header {
+.temp {
   border-right: 6px double gold;
   left: 0;
   z-index: 6;
 }
 
-.temp {
+.header {
   border-left: 6px double gold;
   right: 0;
   z-index: 5;
@@ -357,13 +357,13 @@ ul {
   opacity: 0;
 }
 
-.toggle-temp {
+.toggle-menu {
   right: 0;
   margin-right: 200px;
 
 }
 
-.toggle-menu {
+.toggle-temp {
   margin-left: 200px;
 }
 
@@ -489,59 +489,6 @@ li button:hover {
   cursor: pointer;
 }
 
-/*GRID E INVENTÁRIO*/
-
-.grid .grid-item:hover,
-.inventory .grid-item:hover {
-  background-color: #575757;
-  cursor: pointer;
-}
-
-.inventory {
-  display: grid;
-  margin: auto;
-  text-align: center;
-  width: fit-content;
-  justify-content: center;
-}
-
-.grid {
-  grid-template-columns: auto auto auto auto auto;
-}
-
-.grid .grid-item,
-.inventory .grid-item {
-  background-color: black;
-  color: gold;
-  border: 1px solid white;
-  padding: 24px;
-  width: 100%;
-  text-align: center;
-}
-
-.inventory div {
-  justify-content: center;
-}
-
-.grid-item .question-button {
-  width: 100%;
-  height: auto;
-  border: none;
-  background-color: none;
-  display: inline;
-  float: left;
-  background-color: inherit;
-  color: inherit;
-  font-weight: bold;
-  font-size: 1rem;
-  text-align: center;
-  align-items: center;
-  line-height: auto;
-  border-radius: 0;
-  cursor: pointer;
-  text-decoration: none;
-}
-
 table {
   border-collapse: collapse;
   width: 100%;
@@ -585,7 +532,6 @@ th {
   color: gold;
   background-color: rgb(9, 8, 9);
   box-shadow: 0px 0px 16px 1px gold;
-  animation: pulseCritical 1s infinite;
 }
 
 .table-extension {
@@ -722,26 +668,12 @@ td:last-child {
 }
 
 .btn-delete {
+  background-color: red;
+  color: white;
+}
+
+.btn-delete:hover {
   background-color: darkred;
-  color: white;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-.btn-cancel {
-  background-color: darkgray;
-  color: white;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-.btn-delete:hover,
-.btn-cancel:hover {
-  opacity: 0.8;
 }
 
 
@@ -831,15 +763,6 @@ td:last-child {
 
 .col-12 {
   width: 100%;
-}
-
-.grid,
-.skills-grid,
-.weapons-grid,
-.armors-grid {
-  display: grid;
-  background: transparent;
-  padding: 10px;
 }
 
 /*CALENDARIO*/

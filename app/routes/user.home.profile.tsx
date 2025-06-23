@@ -2,7 +2,7 @@ import { campaign, character, user } from "@prisma/client";
 import { LoaderFunction, redirect } from "@remix-run/node";
 import { Outlet, useLoaderData } from "@remix-run/react";
 import { getUserIdFromSession } from "~/utils/auth.server";
-import { getCharactersFromUser } from "~/utils/character.server";
+import { getAllCharactersFromUser, getPublicCharactersFromUser } from "~/utils/character.server";
 import { prisma } from "~/utils/prisma.server";
 import { checkFriendshipStatus, checkPendingFriendInvite } from "~/utils/user.server";
 
@@ -24,19 +24,28 @@ export const loader: LoaderFunction = async ({ params, request }) => {
         where: { id: profileUserId }
     })
 
-    const profileCampaigns = await prisma.campaign.findMany({
-        where: {
-            masterId: profileUserId
-        }
-    })
-
-    const profileCharacters = await getCharactersFromUser(profileUserId)
-
-
 
     const friendStatus = await checkFriendshipStatus(Number(userId), profileUserId)
 
     const isFriend = friendStatus === 'ACCEPTED'
+
+    const profileCharacters = isFriend || profileUserId === userId
+        ? await getAllCharactersFromUser(profileUserId)
+        : await getPublicCharactersFromUser(profileUserId)
+
+    const profileCampaigns = isFriend || profileUserId === userId
+        ? await prisma.campaign.findMany({
+            where: {
+                masterId: profileUserId
+            }
+        })
+        : await prisma.campaign.findMany({
+            where: {
+                masterId: profileUserId,
+                public: true
+            }
+        })
+
 
     const isPendingInvite = await checkPendingFriendInvite(Number(userId), profileUserId)
 

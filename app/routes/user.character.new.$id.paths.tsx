@@ -1,6 +1,6 @@
 import { character, character_path, path } from "@prisma/client";
 import { ActionFunction, json, redirect } from "@remix-run/node";
-import { Link, NavLink, useOutletContext } from "@remix-run/react";
+import { useOutletContext } from "@remix-run/react";
 import React, { useState } from "react";
 import { TableHead } from "~/components/character-sheet/table-head";
 import { TableData } from "~/components/character-sheet/table-data";

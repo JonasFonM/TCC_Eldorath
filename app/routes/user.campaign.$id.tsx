@@ -5,7 +5,7 @@ import { prisma } from "~/utils/prisma.server";
 import React from "react";
 import { SideBars } from "~/components/context-providers/side-bars";
 import { getUserIdFromSession } from "~/utils/auth.server";
-import { getCharactersFromUser } from "~/utils/character.server";
+import { getAllCharactersFromUser } from "~/utils/character.server";
 import { translateMonth, translateWeekDays } from "./user.campaign";
 import { GeneralExplain } from "~/components/explanations/general-explain";
 import { useShowRow } from "~/components/context-providers/showRowContext";
@@ -25,7 +25,7 @@ export const loader: LoaderFunction = async ({ params, request }) => {
             { id: { in: campaign?.players.map(pl => pl.userId) } }
     })
 
-    const characters = await getCharactersFromUser(Number(userId))
+    const characters = await getAllCharactersFromUser(Number(userId))
 
     const isMaster = Number(userId) === Number(campaign?.masterId)
 

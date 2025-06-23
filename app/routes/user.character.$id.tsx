@@ -104,10 +104,10 @@ export default function CharacterRoute() {
       return { marginLeft: '200px', marginRight: '200px', marginBottom: isFooterOpen ? '155px' : '0' }
     }
     if (isHeaderOpen) {
-      return { marginLeft: '200px', marginBottom: isFooterOpen ? '155px' : '0' }
+      return { marginRight: '200px', marginBottom: isFooterOpen ? '155px' : '0' }
     }
     if (isTempOpen) {
-      return { marginRight: '200px', marginBottom: isFooterOpen ? '155px' : '0' }
+      return { marginLeft: '200px', marginBottom: isFooterOpen ? '155px' : '0' }
     }
 
   }
@@ -133,55 +133,47 @@ export default function CharacterRoute() {
     setLogs((prevLogs) => [...prevLogs, newLog]);
   };
 
+  const clearLog = () => {
+    setLogs([])
+  }
+
+  const links = [
+    `/user/character/${characterId}/stats/`,
+    `/user/character/${characterId}/lineages/`,
+    `/user/character/${characterId}/paths/`,
+    `/user/character/${characterId}/skills/`,
+    `/user/character/${characterId}/inventory/`,
+  ]
+
+  const linkNames = ['Atributos',
+    'Linhagens',
+    'Caminhos',
+    'Talentos',
+    'Inventário'
+  ]
+
   return (
     <>
       <SideBars
         entity={character}
         title={character.name}
         subtitle={subtitle}
-        tableHeaders={["NV", "CT", "XP", "DK"]}
-        tableDatas={[character.level, character.tier, character.experience, character.gold]}
-        tableExplain={[
-          "Seu Nível é um indicador geral de quão poderoso você é no momento. Você sobe de nível conforme ganha Experiência.",
-          "Sua Categoria representa em qual patamar da sua jornada você está. Ela determina quais Caminhos você pode seguir. Você começa na categoria Iniciante e progride para Profissional, Mestre e Lendário, nesta sequência.",
-          "Seus Pontos de Experiência determinam quando você pode subir de nível. Você pode receber Experiência de várias formas, como derrotar inimigos, ou passar por um treinamento árduo.",
-          "Drakas são a moeda corrente principal em Eldorath. Cunhadas a partir de uma liga metálica especial chamada Orivélio, resistente ao desgaste e capaz de manter seu brilho por séculos. O nome vem das antigas tradições do Império de Zarethia, onde os primeiros imperadores usavam escamas de dragão como lastro para suas riquezas.",
-        ]}
-        links={[
-          `/user/character/${characterId}/stats/`,
-          `/user/character/${characterId}/lineages/`,
-          `/user/character/${characterId}/paths/`,
-          `/user/character/${characterId}/skills/`,
-          `/user/character/${characterId}/inventory/`
-        ]}
-
-        linkNames={[
-          'Atributos',
-          'Linhagens',
-          'Caminhos',
-          'Talentos',
-          'Inventário'
-        ]}
+        tableHeaders={[]}
+        tableDatas={[]}
+        tableExplain={[]}
+        links={character.campaignId
+          ? links.concat(`/user/campaign/${character.campaignId}/`)
+          : links}
+        linkNames={character.campaignId
+          ? linkNames.concat(`Campanha`)
+          : linkNames}
         temp={<React.Fragment>
-          {character.campaignId
-            ? <ul>
-              <li key={1}>
-                <NavLink to={
-                  character.campaignId ?
-                    `/user/campaign/${character.campaignId}/`
-                    :
-                    `/user/home/profile`}
-                >Campanha</NavLink>
-              </li>
-            </ul>
-            : null
-          }
+          <div style={{ maxHeight: '92vh', overflowY: 'auto', paddingBottom: '10px' }} ref={logEndRef}>
+            <h1 key={'title'}>Log</h1>
 
-          <div style={{ maxHeight: '92vh', overflowY: 'auto' }} ref={logEndRef}>
-            <h1>Log</h1>
-            <h3 style={{ boxShadow: '1px 3px 3px 0 gold' }}>Resultados</h3>
+            <h3 key={'subtitle'}>Resultados</h3>
 
-            <ul>
+            <ul style={{ paddingBottom: '10px', marginBottom: '10px' }}>
               {logs.map((log, index) => (
                 <li key={index}>
                   <p style={{ lineHeight: '1rem', marginTop: '10px', marginBottom: '10px', fontVariant: 'initial' }}>
@@ -189,6 +181,8 @@ export default function CharacterRoute() {
                   </p>
                 </li>
               ))}
+
+              <li key={'limpar'}><button type="button" onClick={clearLog}>Limpar Log</button></li>
 
             </ul>
           </div>

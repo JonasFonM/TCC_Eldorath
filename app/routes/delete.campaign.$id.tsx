@@ -3,7 +3,7 @@ import { redirect, LoaderFunction } from "@remix-run/node";
 import { removeAllCharactersFromCampaign, removeAllPlayersFromCampaign } from "~/utils/campaign.server";
 import { prisma } from "~/utils/prisma.server";
 
-export const loader: LoaderFunction = async ({ params, request }) => {
+export const loader: LoaderFunction = async ({ params }) => {
 
     //FETCHING DATA
     const campaignId = Number(params.id);
@@ -15,12 +15,6 @@ export const loader: LoaderFunction = async ({ params, request }) => {
     if (!campaign) {
         throw new Response("Campaign not found", { status: 404 });
     }
-
-    const partyMembers = await prisma.character.findMany({
-        where: { campaignId: campaignId }
-    })
-
-    const partyIdList = partyMembers.map(pm => pm.id)
 
     const scenes = await prisma.scene.findMany({
         where: { campaignId: campaignId }
@@ -49,7 +43,6 @@ export const loader: LoaderFunction = async ({ params, request }) => {
         where: { id: campaignId },
     });
 
-    const referer = request.headers.get("Referer") || '/user/campaign/';
+    return redirect('/user/home/profile/');
 
-    return redirect(referer);
 };

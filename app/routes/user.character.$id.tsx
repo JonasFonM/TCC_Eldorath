@@ -3,13 +3,14 @@
 import { LoaderFunction, } from "@remix-run/node";
 import { NavLink, Outlet, useLoaderData, useLocation } from "@remix-run/react";
 import { prisma } from "~/utils/prisma.server";
-import { character, character_item, lineage, path, skill, item, lineage_skill } from "@prisma/client";
+import { character, character_item, lineage, path, skill, item, lineage_skill, user } from "@prisma/client";
 import React, { useEffect, useRef, useState } from "react";
 
 import { SideBars } from "~/components/context-providers/side-bars";
 import { useSidebar } from "~/components/context-providers/side-bar-context";
 import { getUserIdFromSession } from "~/utils/auth.server";
 import { ResourceBar } from "~/components/scene/resource-bar";
+import { UserPanel } from "~/components/user-panel";
 
 
 export const loader: LoaderFunction = async ({ params, request }) => {
@@ -22,6 +23,10 @@ export const loader: LoaderFunction = async ({ params, request }) => {
   });
 
   const isAuthor = Number(userId) === Number(character?.authorId)
+
+  const author = await prisma.user.findUnique({
+    where: { id: Number(character?.authorId) }
+  })
 
   const character_lineages = await prisma.character_lineage.findMany({
     where: { characterId },
@@ -81,16 +86,16 @@ export const loader: LoaderFunction = async ({ params, request }) => {
     include: { item: true }
   })
 
-  return ({ userId, isAuthor, skills, pureLineageSkills, nonPureLineageSkills, character, characterId, lineages, isPure, paths, items });
+  return ({ userId, isAuthor, author, skills, pureLineageSkills, nonPureLineageSkills, character, characterId, lineages, isPure, paths, items });
 };
 
 export default function CharacterRoute() {
-  const { isAuthor, character, characterId,
+  const { author, isAuthor, character, characterId,
     skills, pureLineageSkills, nonPureLineageSkills,
     lineages, isPure, items, paths }
     =
     useLoaderData<{
-      isAuthor: boolean, character: character, characterId: string,
+      author: user, isAuthor: boolean, character: character, characterId: string,
       skills: skill[], pureLineageSkills: (lineage_skill & { skill: skill, lineage: lineage })[],
       nonPureLineageSkills: (lineage_skill & { skill: skill, lineage: lineage })[],
       lineages: lineage[], isPure: boolean, items: (character_item & { item: item })[], paths: path[]
@@ -167,27 +172,34 @@ export default function CharacterRoute() {
         linkNames={character.campaignId
           ? linkNames.concat(`Campanha`)
           : linkNames}
-        temp={<React.Fragment>
-          <div style={{ maxHeight: '92vh', overflowY: 'auto', paddingBottom: '10px' }} ref={logEndRef}>
-            <h1 key={'title'}>Log</h1>
+        temp={
+          isAuthor
+            ? <React.Fragment>
 
-            <h3 key={'subtitle'}>Resultados</h3>
+              <div style={{ maxHeight: '92vh', overflowY: 'auto', paddingBottom: '10px' }} ref={logEndRef}>
+                <h1 key={'title'}>Log</h1>
 
-            <ul style={{ paddingBottom: '10px', marginBottom: '10px' }}>
-              {logs.map((log, index) => (
-                <li key={index}>
-                  <p style={{ lineHeight: '1rem', marginTop: '10px', marginBottom: '10px', fontVariant: 'initial' }}>
-                    {log}
-                  </p>
-                </li>
-              ))}
+                <h3 key={'subtitle'}>Resultados</h3>
 
-              <li key={'limpar'}><button type="button" onClick={clearLog}>Limpar Log</button></li>
+                <ul style={{ paddingBottom: '10px', marginBottom: '10px' }}>
+                  {logs.map((log, index) => (
+                    <li key={index}>
+                      <p style={{ lineHeight: '1rem', marginTop: '10px', marginBottom: '10px', fontVariant: 'initial' }}>
+                        {log}
+                      </p>
+                    </li>
+                  ))}
 
-            </ul>
-          </div>
+                  <li key={'limpar'}><button type="button" onClick={clearLog}>Limpar Log</button></li>
 
-        </React.Fragment>
+                </ul>
+              </div>
+
+            </React.Fragment>
+            : <>
+              <h3>Criado por:</h3>
+              <UserPanel users={[author]} />
+            </>
         }
         footer={
           <div style={{ margin: '2px' }}>

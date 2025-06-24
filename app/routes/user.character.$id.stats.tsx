@@ -47,17 +47,25 @@ export default function StatsRoute() {
             <GeneralExplain title={'Básicos'} description="Atributos Básicos são os valores principais para determinar as suas aptidões. Agilidade é usada para Acertar Ataques Físicos, além de ser a base principal da sua Defesa. Corpo é somado no Dano dos seus Ataques Físicos, além de ser uma base da sua Vitalidade, Vigor, Peso, Capacidade de Carga e Capacidade de Levantamento. Mente é usada para Acertar Ataques Mágicos, além de ser uma base do seu Vigor e do seu Poder" isHidden={showAtr != 2} onCancel={() => setShowAtr(0)} />
 
             <div className="calendar-box">
-                <button onClick={() => handleRollDice(1, 6, 'Agilidade', character.agility)} className="block">
+                <button onClick={
+                    isAuthor
+                        ? () => handleRollDice(1, 6, 'Agilidade', character.agility)
+                        : () => null
+                } className="block">
                     <h1>{character.agility}</h1>
                     <p className="Atr">AGI</p>
                 </button>
 
-                <button onClick={() => handleRollDice(1, 6, 'Corpo', character.body)} className="block">
+                <button onClick={isAuthor
+                    ? () => handleRollDice(1, 6, 'Corpo', character.body)
+                    : () => null} className="block">
                     <h1>{character.body}</h1>
                     <p className="Atr">COR</p>
                 </button>
 
-                <button onClick={() => handleRollDice(1, 6, 'Mente', character.mind)} className="block">
+                <button onClick={isAuthor
+                    ? () => handleRollDice(1, 6, 'Mente', character.mind)
+                    : () => null} className="block">
                     <h1>{character.mind}</h1>
                     <p className="Atr">MEN</p>
                 </button>

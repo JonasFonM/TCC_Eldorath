@@ -12,9 +12,7 @@ export function UserCircle({ user }: props) {
   return (
     <li key={user.id}>
       <NavLink to={`/user/home/profile/${String(user.id)}`}>
-        <h1>
-          {user.username}
-        </h1>
+        {user.username}
       </NavLink>
     </li>
   )

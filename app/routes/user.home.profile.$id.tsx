@@ -14,49 +14,50 @@ export default function UserProfileRoute() {
 
 
     const getFriendAction = () => {
-        if (isOwnProfile) return null;
+        if (isPendingInvite) return <NavLink to={`/user/friend/accept/${profileUser.id}`} className="lineBtn col-12" style={{ padding: '16px' }}>Aceitar Amizade</NavLink>;
 
-        if (isPendingInvite) {
-            return (
-                <>
-                    <tr><th><NavLink to={`/user/friend/accept/${profileUser.id}`} className="lineBtn">Aceitar Amizade</NavLink></th></tr>
-                    <tr><th> <NavLink to={`/user/friend/unmake/${profileUser.id}/`} className="lineBtn">Negar Amizade</NavLink></th></tr>
-                </>
-            )
-        }
+        if (friendStatus === 'BLOCKED') return <NavLink to={`/user/friend/unmake/${profileUser.id}`} className="lineBtn col-12" style={{ padding: '16px' }}>Desbloquear Usuário</NavLink>;
 
-        if (friendStatus === 'BLOCKED') return <tr><th><NavLink to={`/user/friend/accept/${profileUser.id}`} className="lineBtn">Desbloquear Amizade</NavLink></th></tr>;
+        if (friendStatus === 'PENDING') return 'Solicitação Enviada';
 
-        if (friendStatus === 'PENDING') return <tr><th style={{ color: 'gold', backgroundColor: 'black' }}>Solicitação Enviada</th></tr>
+        if (isFriend) return <NavLink to={`/user/friend/unmake/${profileUser.id}/`} className="lineBtn col-12" style={{ padding: '16px' }}>Desfazer Amizade</NavLink>;
 
-        if (isFriend) {
-            return (
-                <>
-                    <tr><th>
-                        <BlockConfirm
-                            name={profileUser.username}
-                            isHidden={blockConfirm !== 1}
-                            onShow={() => setBlockConfirm(1)}
-                            onCancel={() => setBlockConfirm(0)}
-                            userId={String(profileUser.id)}
-                        />
-                    </th></tr>
-
-                    <tr><th><NavLink to={`/user/friend/unmake/${profileUser.id}/`} className="lineBtn">Desfazer Amizade</NavLink></th></tr>
-                </>
-            );
-        }
-
-        return <tr><th><NavLink to={`/user/friend/invite/${profileUser.id}`} className="lineBtn">Solicitar Amizade</NavLink></th></tr>;
+        return <NavLink to={`/user/friend/invite/${profileUser.id}`} className="lineBtn col-12" style={{ padding: '16px' }}>Solicitar Amizade</NavLink>;
     };
 
+    const getUnmakeFriendship = () => {
+        if (isPendingInvite) return <NavLink to={`/user/friend/unmake/${profileUser.id}/`} className="lineBtn col-12" style={{ padding: '16px' }}>Negar Amizade</NavLink>;
+
+        if (friendStatus === 'PENDING') return <NavLink to={`/user/friend/unmake/${profileUser.id}/`} className="lineBtn col-12" style={{ padding: '16px' }}>Cancelar Solicitação</NavLink>;
+    }
 
     return (
         <React.Fragment>
             <h1 className="title-input">{profileUser.username}</h1>
             <table>
                 <thead>
-                    {getFriendAction()}
+                    {!isOwnProfile
+                        ? <tr><th style={friendStatus === 'PENDING' && !isPendingInvite ? { color: 'gold' } : { padding: '0' }}>{getFriendAction()}</th></tr>
+                        : null
+                    }
+
+                    {!isOwnProfile
+                        ? <tr><th style={{ padding: '0' }}>{getUnmakeFriendship()}</th></tr>
+                        : null
+                    }
+
+                    {!isOwnProfile && friendStatus !== 'BLOCKED'
+                        ? <tr><th style={{ padding: '0' }}>
+                            <BlockConfirm
+                                name={profileUser.username}
+                                isHidden={blockConfirm !== 1}
+                                onShow={() => setBlockConfirm(1)}
+                                onCancel={() => setBlockConfirm(0)}
+                                userId={String(profileUser.id)}
+                            />
+                        </th></tr>
+                        : null
+                    }
                 </thead>
             </table>
 

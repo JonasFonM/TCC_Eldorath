@@ -7,9 +7,8 @@ export const loader: LoaderFunction = async ({ params, request }) => {
     const userId = await getUserIdFromSession(request);
 
     const friendId = Number(params.id)
-    const referer = request.headers.get("Referer") || `/user/home`;
 
     await unmakeFriendship(Number(userId), friendId)
 
-    return redirect(referer);
+    return redirect(`/user/home/profile/${friendId}/`);
 };

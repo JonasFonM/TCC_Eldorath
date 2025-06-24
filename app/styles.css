@@ -116,7 +116,7 @@ a h3 {
   font: inherit;
   color: gold;
   text-align: inherit;
-  cursor: pointer
+  cursor: pointer;
 }
 
 .lineBtn:hover {
@@ -450,6 +450,10 @@ li button:hover {
   color: black;
 }
 
+.disabled:hover {
+  background-color: #444 !important; 
+  color: black;
+}
 
 .topnav a.active {
   color: white;

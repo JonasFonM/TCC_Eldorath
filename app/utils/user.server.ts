@@ -52,6 +52,7 @@ export async function checkFriendshipExistance(userId: number, friendId: number)
   return (alreadyFriend)
 
 }
+
 export async function checkFriendshipStatus(userId: number, friendId: number) {
   const friendship = await prisma.friendship.findMany({
     where: {
@@ -107,9 +108,12 @@ export async function acceptFriendshipInvite(userId: number, friendId: number) {
 export async function unmakeFriendship(userId: number, friendId: number) {
 
   return prisma.friendship.deleteMany({
-    where: {
-      user1Id: friendId,
-      user2Id: userId
+    where:
+    {
+      OR: [
+        { user1Id: userId, user2Id: friendId },
+        { user2Id: userId, user1Id: friendId }
+      ],
     }
   })
 }

@@ -72,13 +72,14 @@ export default function UserRoute() {
                         <ul>
                             <li key={`Usuário Atual`}><NavLink to={`/user/home/profile/${String(userId)}/`}>Seu Perfil</NavLink></li>
 
-                            {pendingInvites.map((pi, index) => (
-                                <li key={`${pi}-${index}`} className="hp-bar-critical"><NavLink to={`/user/home/profile/${String(pi.id)}/`}>! {String(pi.username)} !</NavLink></li>
-                            ))}
-                            {friends.map((fr, index) => (
-                                <li key={`${fr}-${index}`}><NavLink to={`/user/home/profile/${String(fr.id)}/`}>{String(fr.username)}</NavLink></li>
-                            ))}
-
+                            <div className="hp-bar-critical">
+                                <UserPanel
+                                    users={pendingInvites}
+                                />
+                            </div>
+                            <UserPanel
+                                users={friends}
+                            />
                         </ul>
 
                         <fetcher.Form id="search-form" role="search">

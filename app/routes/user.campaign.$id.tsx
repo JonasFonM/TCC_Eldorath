@@ -9,6 +9,7 @@ import { getAllCharactersFromUser } from "~/utils/character.server";
 import { translateMonth, translateWeekDays } from "./user.campaign";
 import { GeneralExplain } from "~/components/explanations/general-explain";
 import { useShowRow } from "~/components/context-providers/showRowContext";
+import { UserPanel } from "~/components/user-panel";
 
 export const loader: LoaderFunction = async ({ params, request }) => {
     const campaignId = Number(params.id);
@@ -111,7 +112,7 @@ export default function CampaignRoute() {
                             </li>
                         </ul>
 
-                        
+
                     </React.Fragment>
                 );
             }
@@ -204,13 +205,7 @@ export default function CampaignRoute() {
                         </ul>
 
                         <ul style={!isShown("LJ") ? { display: 'none' } : { display: "inherit" }}>
-                            {party.map(
-                                pl => <li key={pl.id}>
-                                    <NavLink to={`/user/home/profile/${pl.id}`}>
-                                        {pl.username}
-                                    </NavLink>
-                                </li>
-                            )}
+                            <UserPanel users={party}/>
                         </ul>
 
                         <ul>

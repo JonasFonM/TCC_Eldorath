@@ -105,53 +105,57 @@ export default function Login() {
 
   return (
     <>
-      <div className='title-screen'><h1 id='first'>Eldorath</h1></div>
+      <div className='title-screen' style={{ fontSize: '36px', marginBottom: '0' }}><h1 id='first'>Eldorath</h1></div>
       <div className='login'>
-        <h1>
+
+        <h2>{action === 'login' ? 'Login' : 'Cadastro'}</h2>
+        <h3>
           <button className='lineBtn'
             onClick={() => setAction(action == 'login' ? 'register' : 'login')}>
-            {action === 'login' ? 'Entrar' : 'Cadastrar'}
+            Alterar
           </button>
-        </h1>
+        </h3>
 
         <form method="POST" autoComplete="new-password" onSubmit={handleSubmit}>
 
           <p className='error'>{formError}</p>
-          <div className='container calendar-box'>
+          <div className='container'>
+            <div className=' calendar-box' style={{width: '80%'}}>
 
-            <div className='col-12'>
-              <FormField
-                htmlFor="email"
-                label="Email"
-                value={formData.email}
-                onChange={e => handleInputChange(e, 'email')}
-                error={errors?.email}
-              />
-            </div>
-            <div className='col-12'>
-
-              <FormField
-                htmlFor="password"
-                type="password"
-                label="Senha"
-                value={formData.password}
-                onChange={e => handleInputChange(e, 'password')}
-                error={errors?.password}
-              />
-            </div>
-
-            {action === 'register' && (
               <div className='col-12'>
                 <FormField
-                  htmlFor="username"
-                  label="Nome de Usuário"
-                  onChange={e => handleInputChange(e, 'username')}
-                  value={formData.username}
-                  error={errors?.username}
+                  htmlFor="email"
+                  label="Email"
+                  value={formData.email}
+                  onChange={e => handleInputChange(e, 'email')}
+                  error={errors?.email}
                 />
               </div>
-            )}
+              <div className='col-12'>
 
+                <FormField
+                  htmlFor="password"
+                  type="password"
+                  label="Senha"
+                  value={formData.password}
+                  onChange={e => handleInputChange(e, 'password')}
+                  error={errors?.password}
+                />
+              </div>
+
+              {action === 'register' && (
+                <div className='col-12'>
+                  <FormField
+                    htmlFor="username"
+                    label="Nome de Usuário"
+                    onChange={e => handleInputChange(e, 'username')}
+                    value={formData.username}
+                    error={errors?.username}
+                  />
+                </div>
+              )}
+
+            </div>
           </div>
 
           <button type="submit" name="_action" value={action} className="button">

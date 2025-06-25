@@ -257,7 +257,10 @@ export default function NewCharacterRoute() {
                     ? `/delete/character/${character.id}/`
                     : `/user/character/${character.id}/stats/`
                 }
-                advBtnName={'Linhagens'}
+                advBtnName={advanceWithoutChange
+                    ? `Linhagens`
+                    : 'Confirmar'
+                }
                 advLink={advanceWithoutChange
                     ? `/user/character/new/${character.id}/lineages/`
                     : null

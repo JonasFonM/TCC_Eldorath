@@ -128,7 +128,9 @@ export default function LineageSelection() {
                 <SpecialFooter
                     backBtnName={'Atributos'}
                     backLink={`/user/character/new/${characterId}/basic`}
-                    advBtnName="Caminhos"
+                    advBtnName={confirmedPreviousLineageIds.length > 0
+                        ? `Caminhos`
+                        : 'Confirmar'}
                     advLink={
                         confirmedPreviousLineageIds.length > 0
                             ? `/user/character/new/${characterId}/paths/`

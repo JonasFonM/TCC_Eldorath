@@ -940,9 +940,6 @@ button:hover {
     font-size: 38px;
   }
 
-  .col-4 {
-    width: 50%
-  }
 }
 
 @media (max-width: 700px) {
@@ -973,7 +970,4 @@ button:hover {
     font-size: 28px;
   }
 
-  .col-4 {
-    width: 100%
-  }
 }

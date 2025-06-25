@@ -134,6 +134,9 @@ export default function SkillSelectionRoute() {
 
   };
 
+  const advanceWithoutChange = selectedMagics.length < 0 && selectedManeuvers.length < 0 && selectedManeuvers.length < 0 && character.skills.length > 0;
+
+
   return (
     <>
       <h1 className="title-input" style={{ position: 'sticky', top: '64px', backgroundColor: 'black' }}>Talentos</h1>
@@ -247,7 +250,7 @@ export default function SkillSelectionRoute() {
             <React.Fragment key={ls.id}>
               <TableData
                 key={ls.id}
-                tableData={[`${ls.skill.name} | ${ls.lineage.name} Única`]}
+                tableData={[`${ls.skill.name} | Linhagem Única ${ls.lineage.name}`]}
                 show={isShown("TLinhagemUnica")}
                 onClick={() => handleSkillClick(ls.skill.id, ls.skill.type)}
                 selected={selectedSkills.includes(ls.skill.id) || isPreSelected(ls.skill.id)}
@@ -306,9 +309,13 @@ export default function SkillSelectionRoute() {
         <SpecialFooter
           backBtnName={'Caminhos'}
           backLink={`/user/character/new/${characterId}/paths`}
-          advBtnName="Itens"
+          advBtnName={
+            advanceWithoutChange
+              ? `Itens`
+              : 'Confirmar'
+          }
           advLink={
-            selectedMagics.length < 0 && selectedManeuvers.length < 0 && selectedManeuvers.length < 0 && character.skills.length > 0
+            advanceWithoutChange
               ? `/user/character/new/${characterId}/inventory/`
               : null
           }

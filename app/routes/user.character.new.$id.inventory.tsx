@@ -1,4 +1,4 @@
-import { character, item } from "@prisma/client";
+import { character, item, itemType } from "@prisma/client";
 import { ActionFunction, json, redirect } from "@remix-run/node";
 import { useOutletContext } from "@remix-run/react";
 import React, { useRef, useState } from "react";
@@ -7,6 +7,7 @@ import { submitStartingCharItems } from "~/utils/inventory.server";
 import { translateSlotTypes } from "./user.character";
 import { useShowRow } from "~/components/context-providers/showRowContext";
 import { SpecialFooter } from "~/components/special-footer";
+import { ItemHandler } from "~/components/character-sheet/item-handler";
 
 export const action: ActionFunction = async ({ request, params }) => {
     const form = await request.formData();
@@ -83,7 +84,10 @@ export default function ItemSelection() {
             </div>
             <form method="post">
 
-                <div className="items-grid">
+                <div style={isShown(`TipoSlot-${3}`)
+                    ? { paddingBottom: '200px' }
+                    : {}
+                }>
                     {slotTypes.map((st, index) =>
                         <React.Fragment key={st}>
                             <table>
@@ -95,76 +99,42 @@ export default function ItemSelection() {
                                 />
                             </table>
                             {items.filter(i => i.type === st).map(item => (
-                                <div
+                                <ItemHandler
                                     key={item.id}
-                                    className='container'
-                                    style={{
-                                        display: isShown(`TipoSlot-${index}`) ? '' : 'none',
-                                        border: selectedItems.includes(item.id) ? '1px solid green' : '1px solid gray',
-                                        borderRadius: '2%'
-                                    }}>
-
-                                    <div className="col-3">
-                                    </div>
-
-                                    <div className="col-6">
-
-                                        <div className="col-4" >
-                                            <h2 style={{ fontSize: "1.1rem" }}>Custo: </h2>
-                                            <h1 style={{ fontSize: "1.1rem" }}>{item.baseCost}</h1>
-                                        </div>
-                                        <div className="col-4" >
-                                            <h2 style={{ fontSize: "1.1rem" }}>Peso: </h2>
-                                            <h1 style={{ fontSize: "1.1rem" }}>{item.baseWeight}</h1>
-                                        </div>
-                                        {item.type === 'slotWeapon'
-                                            ? <div className="col-4" >
-                                                <h2 style={{ fontSize: "1.1rem" }}>Dano: </h2>
-                                                <h1 style={{ fontSize: "1.1rem" }}>{item.baseDamageDieCount}D{Number(item.baseDamageDie)}</h1>
-                                            </div>
-
-                                            : <div className="col-4" >
-                                                <h2 style={{ fontSize: "1.1rem" }}>Defesa: </h2>
-                                                <h1 style={{ fontSize: "1.1rem" }}>{item.baseDefense}</h1>
-                                            </div>
-                                        }
-                                        <div className="container">
-
-                                            <button style={{ fontSize: '2rem' }} type="button" className="col-3 button" onClick={() => handleItemMinus(item.id, item.baseCost)}>-</button>
-                                            <div className="col-6">
-                                                <h3 style={{ color: 'gold' }}>{item.name} {`(` + selectedItems.filter(i => i === item.id).length + `)`}</h3>
-                                                <p>{item.description}</p>
-                                            </div>
-                                            <button style={{ fontSize: '2rem' }} type="button" className="col-3 button" onClick={() => handleItemPlus(item.id, item.baseCost)}>+</button>
-
-                                        </div>
-
-                                    </div>
-
-                                    <div className="col-3">
-                                    </div>
-
-                                    {item.baseCost > maxCost - selectedCost ? error && <p className="error" >{error}</p> : ''}
-
-
-                                </div >
-
+                                    title={item.name}
+                                    itemName={item.name}
+                                    open={isShown(`TipoSlot-${index}`)}
+                                    typeBasedStat={item.type === 'slotWeapon'
+                                        ? 'Dano'
+                                        : 'Defesa'
+                                    }
+                                    itemCost={item.baseCost}
+                                    itemWeight={item.baseWeight}
+                                    itemStat={item.type === 'slotWeapon'
+                                        ? `De ${item.baseDamageDieCount} a ${Number(item.baseDamageDieCount) * Number(item.baseDamageDie)}`
+                                        : `${item.baseDefense}`
+                                    }
+                                    itemQuantity={selectedItems.filter(i => i === item.id).length}
+                                    onPlus={() => handleItemPlus(item.id, item.baseCost)}
+                                    onMinus={() => handleItemMinus(item.id, item.baseCost)}
+                                />
                             ))}
                         </React.Fragment>
 
                     )}
 
                 </div >
-                {
-                    selectedItems.map((itemId, index) => (
-                        <input type="hidden" key={`${index} ${itemId}`} name="items" value={itemId} />
-                    ))
-                }
+
+                {selectedItems.map((itemId, index) => (
+                    <input type="hidden" key={`${index} ${itemId}`} name="items" value={itemId} />
+                ))}
 
                 <SpecialFooter
                     backBtnName={'Talentos'}
                     backLink={`/user/character/new/${character.id}/skills`}
-                    advBtnName="Resumo"
+                    advBtnName={selectedItems.length < 1
+                        ? `Resumo`
+                        : 'Confirmar'}
                     advLink={
                         selectedItems.length < 1
                             ? `/user/character/new/${character.id}/end/`

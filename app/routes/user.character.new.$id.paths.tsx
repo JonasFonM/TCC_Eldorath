@@ -161,7 +161,9 @@ export default function PathSelection() {
                 <SpecialFooter
                     backBtnName={'Linhagens'}
                     backLink={`/user/character/new/${characterId}/lineages`}
-                    advBtnName="Talentos"
+                    advBtnName={charPathIds.length > 0
+                            ? `Talentos`
+                            : 'Confirmar'}
                     advLink={
                         charPathIds.length > 0
                             ? `/user/character/new/${characterId}/skills/`

@@ -8,6 +8,7 @@ import { TableDropdown } from "~/components/character-sheet/table-dropdown";
 import { useShowRow } from "~/components/context-providers/showRowContext";
 import { submitCharPaths } from "~/utils/character.server";
 import { SpecialFooter } from "~/components/special-footer";
+import { GeneralExplain } from "~/components/explanations/general-explain";
 
 export const action: ActionFunction = async ({ request, params }) => {
     const characterId = params.id
@@ -97,7 +98,17 @@ export default function PathSelection() {
 
     return (
         <>
-            <h1 className="title-input" style={{ position: 'sticky', top: '64px', backgroundColor: 'black' }}>Caminhos</h1>
+            <h1 className="title-input title-container" style={{ position: 'sticky', top: '64px', backgroundColor: 'black' }}>
+                Caminhos
+                <button className="question-button" onClick={() => showRow("ECaminhos")}>?</button>
+            </h1>
+
+            <GeneralExplain
+                title={'Caminhos'}
+                description="Caminhos são especializações que agregam nas suas capacidades, e determinam uma parcela importante da sua Vitalidade e do seu Poder. Alguns Caminhos dão acesso a Talentos exclusivos."
+                isHidden={!isShown("ECaminhos")}
+                onCancel={() => showRow("ECaminhos")}
+            />
 
             <form method="post" onSubmit={handleSubmit}>
 
@@ -162,8 +173,8 @@ export default function PathSelection() {
                     backBtnName={'Linhagens'}
                     backLink={`/user/character/new/${characterId}/lineages`}
                     advBtnName={charPathIds.length > 0
-                            ? `Talentos`
-                            : 'Confirmar'}
+                        ? `Talentos`
+                        : 'Confirmar'}
                     advLink={
                         charPathIds.length > 0
                             ? `/user/character/new/${characterId}/skills/`

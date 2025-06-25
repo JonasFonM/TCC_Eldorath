@@ -8,6 +8,7 @@ import { TableDropdown } from "~/components/character-sheet/table-dropdown";
 import { useShowRow } from "~/components/context-providers/showRowContext";
 import { submitCharLineages } from "~/utils/character.server";
 import { SpecialFooter } from "~/components/special-footer";
+import { GeneralExplain } from "~/components/explanations/general-explain";
 
 
 export const action: ActionFunction = async ({ request, params }) => {
@@ -77,7 +78,18 @@ export default function LineageSelection() {
 
     return (
         <>
-            <h1 className="title-input" style={{ position: 'sticky', top: '64px', backgroundColor: 'black' }}>Linhagens</h1>
+            <h1 className="title-input title-container" style={{ position: 'sticky', top: '64px', backgroundColor: 'black' }}>
+                Linhagens
+                <button className="question-button" onClick={() => showRow("ELinhagem")}>?</button>
+            </h1>
+
+            <GeneralExplain
+                title={'Linhagens'}
+                description="Linhagens são sua descendência, sua origem. Geralmente representam a quais espécies ou raças você e os seus pais pertencem, mas existem exceções."
+                isHidden={!isShown("ELinhagem")}
+                onCancel={() => showRow("ELinhagem")}
+            />
+
             <form method="post" onSubmit={handleSubmit}>
                 <div className="container" style={{ position: 'sticky', top: '139px', backgroundColor: 'black', borderBottom: '1px solid gold' }}>
                     <h3 style={{ margin: '2px' }}>Você pode ter 1 ou 2 Linhagens</h3>

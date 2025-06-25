@@ -7,6 +7,7 @@ import { TableData } from "~/components/character-sheet/table-data";
 import { TableHead } from "~/components/character-sheet/table-head";
 import { TableDropdown } from "~/components/character-sheet/table-dropdown";
 import { SpecialFooter } from "~/components/special-footer";
+import { ResetConfirm } from "~/components/character-sheet/reset-confirm";
 
 export const loader: LoaderFunction = async ({ params }) => {
     const characterId = params.id;
@@ -50,9 +51,28 @@ export default function LineagesRoute() {
         return forceUpdate(n => n + 1);
     }
 
+    const [selectReset, setReset] = useState<number>(0);
+
+    const showReset = () => {
+        setReset(() => {
+            return character.id;
+        });
+    };
+
+    const cancelReset = () => {
+        setReset(() => {
+            return 0
+        });
+    };
+
     return (
         <>
-            <h1 className="title-input" style={{ position: 'sticky', top: '64px', backgroundColor: 'black' }}>Resumo Final</h1>
+            <h1 className="title-container title-input" style={{ position: 'sticky', top: '64px', backgroundColor: 'black' }}>
+                Resumo Final
+                <button id="reset" type="button" onClick={showReset} className="question-button">R</button>
+            </h1>
+            <ResetConfirm name={character.name} isHidden={selectReset === 0} onCancel={cancelReset} id={String(character.id)} />
+
             <h2>Suas Escolhas</h2>
 
             <table>

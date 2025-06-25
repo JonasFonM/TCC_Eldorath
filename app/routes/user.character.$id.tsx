@@ -157,21 +157,41 @@ export default function CharacterRoute() {
     'Inventário'
   ]
 
+  const getLinks = () => {
+    const visibleLinks = links
+
+    if (isAuthor && character.public) visibleLinks.push(`/privatize/character/${characterId}/`);
+
+    if (isAuthor && !character.public) visibleLinks.push(`/publish/character/${characterId}/`);
+
+    if (character.campaignId) visibleLinks.push(`/user/campaign/${character.campaignId}/`);
+
+    return visibleLinks;
+  }
+
+  const getLinkNames = () => {
+    const visibleLinkNames = linkNames
+
+    if (isAuthor && character.public) visibleLinkNames.push(`Tornar Privado`);
+
+    if (isAuthor && !character.public) visibleLinkNames.push(`Tornar Público`);
+
+    if (character.campaignId) visibleLinkNames.push(`Campanha`);
+
+    return visibleLinkNames;
+  }
+
   return (
     <>
       <SideBars
         entity={character}
         title={character.name}
-        subtitle={subtitle}
+        subtitle={character.public ? 'Público' : 'Privado'}
         tableHeaders={[]}
         tableDatas={[]}
         tableExplain={[]}
-        links={character.campaignId
-          ? links.concat(`/user/campaign/${character.campaignId}/`)
-          : links}
-        linkNames={character.campaignId
-          ? linkNames.concat(`Campanha`)
-          : linkNames}
+        links={getLinks()}
+        linkNames={getLinkNames()}
         temp={
           isAuthor
             ? <React.Fragment>

@@ -306,6 +306,40 @@ export const addCharactersToCampaign = async (characterList: number[], campaignI
   return;
 };
 
+export async function privatizeCampaign(campaignId: number) {
+  const campaign = await prisma.campaign.findUnique({
+    where: {
+      id: campaignId
+    }
+  })
+
+  if (campaign === null) return;
+
+  return await prisma.campaign.update({
+    where: { id: campaignId },
+    data: {
+      public: false
+    }
+  })
+}
+
+export async function publishCampaign(campaignId: number) {
+  const campaign = await prisma.campaign.findUnique({
+    where: {
+      id: campaignId
+    }
+  })
+
+  if (campaign === null) return;
+
+  return await prisma.campaign.update({
+    where: { id: campaignId },
+    data: {
+      public: true
+    }
+  })
+}
+
 export const removeCharacterFromCampaign = async (characterId: number) => {
   return await prisma.character.update({
     where: { id: characterId },

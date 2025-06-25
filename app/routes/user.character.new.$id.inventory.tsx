@@ -111,7 +111,7 @@ export default function ItemSelection() {
                                     itemCost={item.baseCost}
                                     itemWeight={item.baseWeight}
                                     itemStat={item.type === 'slotWeapon'
-                                        ? `De ${item.baseDamageDieCount} a ${Number(item.baseDamageDieCount) * Number(item.baseDamageDie)}`
+                                        ? `${item.baseDamageDieCount}-${Number(item.baseDamageDieCount) * Number(item.baseDamageDie)}`
                                         : `${item.baseDefense}`
                                     }
                                     itemQuantity={selectedItems.filter(i => i === item.id).length}

@@ -2,7 +2,6 @@
 import type { CharacterForm } from './types.server'
 import { prisma } from './prisma.server'
 import { json } from '@remix-run/node'
-import { character } from '@prisma/client';
 
 //BASIC
 export const createCharacter = async (character: CharacterForm) => {
@@ -137,6 +136,40 @@ export async function characterResourceTotalRecovery(characterId: number) {
     currentVitality: updatedCharacter.currentVitality
   }
 
+}
+
+export async function privatizeCharacter(characterId: number) {
+  const character = await prisma.character.findUnique({
+    where: {
+      id: characterId
+    }
+  })
+
+  if (character === null) return;
+
+  return await prisma.character.update({
+    where: { id: characterId },
+    data: {
+      public: false
+    }
+  })
+}
+
+export async function publishCharacter(characterId: number) {
+  const character = await prisma.character.findUnique({
+    where: {
+      id: characterId
+    }
+  })
+
+  if (character === null) return;
+
+  return await prisma.character.update({
+    where: { id: characterId },
+    data: {
+      public: true
+    }
+  })
 }
 
 export async function submitCharacter(character: CharacterForm) {

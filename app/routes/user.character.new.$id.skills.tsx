@@ -8,6 +8,7 @@ import { TableDropdown } from "~/components/character-sheet/table-dropdown";
 import { useShowRow } from "~/components/context-providers/showRowContext";
 import { submitCharSkills, updateMagicPendencies, updateManeuverPendencies, updateSkillPendencies } from "~/utils/character.server";
 import { SpecialFooter } from "~/components/special-footer";
+import { GeneralExplain } from "~/components/explanations/general-explain";
 
 
 export const action: ActionFunction = async ({ request, params }) => {
@@ -139,7 +140,17 @@ export default function SkillSelectionRoute() {
 
   return (
     <>
-      <h1 className="title-input" style={{ position: 'sticky', top: '64px', backgroundColor: 'black' }}>Talentos</h1>
+      <h1 className="title-input title-container" style={{ position: 'sticky', top: '64px', backgroundColor: 'black' }}>
+        Talentos
+        <button className="question-button" onClick={() => showRow("ETalentos")}>?</button>
+      </h1>
+
+      <GeneralExplain
+        title={'Talentos'}
+        description="Talentos têm efeitos diferentes que mudam como você interage com o jogo, principalmente em Combate. Eles são divididos em Características, Técnicas e Magias."
+        isHidden={!isShown("ETalentos")}
+        onCancel={() => showRow("ETalentos")}
+      />
 
       <div className="container" style={{ position: 'sticky', top: '139px', backgroundColor: 'black', borderBottom: '1px solid gold' }}>
         <h3 className="col-12" style={{ margin: "2px" }}>Gerais: {maxSelectableSkills - selectedSkills.length} </h3>

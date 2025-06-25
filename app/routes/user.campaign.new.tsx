@@ -180,12 +180,15 @@ export default function NewCampaignRoute() {
         {errors.title && <p className="error">{errors.title}</p>}
       </div>
       <label>
-        <h1>
+        <h1 style={{color: 'white'}}>{title.current < 1 ? 'Descrição' : 'Calendário'}</h1>
+      </label>
+      <label>
+        <h2>
           <button
             onClick={() => title.current !== 1 ? handleTitleClick(1) : handleTitleClick(0)}
             className="lineBtn"
-            type="button">{title.current < 1 ? 'Descrição' : 'Calendário'}</button>
-        </h1>
+            type="button">{title.current < 1 ? 'Editar Calendário' : 'Editar Descrição'}</button>
+        </h2>
       </label>
 
       <div style={title.current < 1 ? { display: 'inherit' } : { display: 'none' }} className="container">

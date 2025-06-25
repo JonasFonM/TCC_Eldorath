@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from "react"
 import { getUserIdFromSession, requireUserId } from '~/utils/auth.server'
 import { submitCampaign } from "~/utils/campaign.server"
 import { weekDays, translateWeekDays } from "./user.campaign"
+import { NoSideBarFooter } from "~/components/no-sidebar-footer"
 
 export const loader: LoaderFunction = async ({ request }) => {
   const userId = await requireUserId(request)
@@ -166,7 +167,7 @@ export default function NewCampaignRoute() {
   };
 
   return (
-    <form method="post" onSubmit={handleSubmit}>
+    <form style={title.current < 1 ? { paddingBottom: '160px' } : {}} method="post" onSubmit={handleSubmit}>
       <input
         className="title-input"
         style={{ position: "sticky", top: '64px', zIndex: '1' }}
@@ -176,12 +177,15 @@ export default function NewCampaignRoute() {
         value={formData.title}
         onChange={handleChange}
       />
-      <div className="title-container" style={{ position: "sticky", top: '128px', zIndex: '1', backgroundColor: 'black' }}>
-        {errors.title && <p className="error">{errors.title}</p>}
+
+      <div className="container" style={{ position: 'sticky', top: '125px', zIndex: '2', backgroundColor: 'black', borderBottom: '1px solid gold' }}>
+        <label className="col-12">
+          {errors.title && <p className="error" style={{ textAlign: 'center', textIndent: '0' }}>{errors.title}</p>}
+
+          <h1 style={{ color: 'white', textAlign: 'center' }}>{title.current < 1 ? 'Descrição' : 'Calendário'}</h1>
+        </label>
       </div>
-      <label>
-        <h1 style={{color: 'white'}}>{title.current < 1 ? 'Descrição' : 'Calendário'}</h1>
-      </label>
+
       <label>
         <h2>
           <button
@@ -193,7 +197,7 @@ export default function NewCampaignRoute() {
 
       <div style={title.current < 1 ? { display: 'inherit' } : { display: 'none' }} className="container">
         <textarea
-          style={{ minHeight: '50vh' }}
+          style={{ minHeight: '38vh' }}
           className="calendar-box"
           name="description"
           placeholder="Descreva os pontos básicos da sua Campanha. Você pode alterar essa descrição mais tarde!"
@@ -281,7 +285,13 @@ export default function NewCampaignRoute() {
         </div>
       </div>
 
-      <button className="button" type="submit">Confirmar</button>
+      <NoSideBarFooter
+        backBtnName={'Cancelar'}
+        backLink={`/user/home/profile/`}
+        advBtnName={'Confirmar'}
+        advLink={null}
+        showAdv={true} />
     </form >
+
   );
 }

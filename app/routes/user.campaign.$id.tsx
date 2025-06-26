@@ -1,8 +1,8 @@
-import { campaign, character, partyMembers, scene, user } from "@prisma/client";
+import { campaign, character, message, partyMembers, scene, user } from "@prisma/client";
 import { LoaderFunction } from "@remix-run/node";
-import { NavLink, Outlet, useLoaderData, useLocation } from "@remix-run/react";
+import { NavLink, Outlet, useLoaderData, useLocation, useNavigation } from "@remix-run/react";
 import { prisma } from "~/utils/prisma.server";
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { SideBars } from "~/components/context-providers/side-bars";
 import { getUserIdFromSession } from "~/utils/auth.server";
 import { getAllCharactersFromUser } from "~/utils/character.server";
@@ -10,10 +10,14 @@ import { translateMonth, translateWeekDays } from "./user.campaign";
 import { GeneralExplain } from "~/components/explanations/general-explain";
 import { useShowRow } from "~/components/context-providers/showRowContext";
 import { UserPanel } from "~/components/user-panel";
+import type { ActionFunction } from "@remix-run/node";
+import { redirect } from "@remix-run/node";
+import MessageForm from "~/components/campaign/message-form";
+import { MessageList } from "~/components/campaign/message-list";
 
 export const loader: LoaderFunction = async ({ params, request }) => {
     const campaignId = Number(params.id);
-    const userId = await getUserIdFromSession(request)
+    const userId = Number(await getUserIdFromSession(request))
 
     const campaign = await prisma.campaign.findUnique({
         where: { id: campaignId },
@@ -26,7 +30,7 @@ export const loader: LoaderFunction = async ({ params, request }) => {
             { id: { in: campaign?.players.map(pl => pl.userId) } }
     })
 
-    const characters = await getAllCharactersFromUser(Number(userId))
+    const characters = await getAllCharactersFromUser(userId)
 
     const isMaster = Number(userId) === Number(campaign?.masterId)
 
@@ -34,8 +38,38 @@ export const loader: LoaderFunction = async ({ params, request }) => {
 
     const campaignCharacter = campaign?.characters.find(cc => cc.campaignId == campaign.id && cc.authorId == userId)
 
-    return ({ isMaster, isPlayer, campaignCharacter, characters, campaign, party, campaignId })
+    const messages = await prisma.message.findMany({
+        where: {
+            campaignId: campaignId
+        },
+        include: { user: true }
+    });
+
+    return ({ isMaster, isPlayer, campaignCharacter, characters, campaign, party, campaignId, userId, messages })
 }
+
+export const action: ActionFunction = async ({ request }) => {
+    const formData = await request.formData();
+    const campaignId = Number(formData.get("campaignId"));
+    const userId = Number(formData.get("userId"));
+    const content = String(formData.get("content"));
+
+    if (!content.trim() || isNaN(campaignId) || isNaN(userId)) {
+        return new Response("Invalid input", { status: 400 });
+    }
+
+    await prisma.message.create({
+        data: {
+            content,
+            campaignId,
+            userId,
+        },
+    });
+
+    return redirect(`/user/campaign/${campaignId}/`);
+};
+
+
 
 export default function CampaignRoute() {
     const { isMaster,
@@ -44,7 +78,10 @@ export default function CampaignRoute() {
         characters,
         campaign,
         party,
-        campaignId } =
+        campaignId,
+        userId,
+        messages
+    } =
         useLoaderData<{
             isMaster: boolean,
             isPlayer: boolean,
@@ -52,7 +89,9 @@ export default function CampaignRoute() {
             characters: character[],
             campaign: (campaign & { master: user, scenes: scene[], characters: character[], players: partyMembers[] }),
             party: user[],
-            campaignId: number
+            campaignId: number,
+            userId: number,
+            messages: (message & { user: user })[]
         }>()
     const location = useLocation()
     const { showRow, isShown } = useShowRow()
@@ -68,95 +107,23 @@ export default function CampaignRoute() {
     }
 
     const getCampaignAction = () => {
-        if (isMaster) return (null);
-        if (isPlayer) {
-            if (campaignCharacter) {
+        if (isMaster) return [''].concat(party.map(p => `/user/home/profile/${p.id}`));
+        if (isPlayer && campaignCharacter) return [`/user/home/profile/${campaign.master.id}`, `/user/character/${campaignCharacter.id}/stats`, `/user/campaign/${campaignId}/remove/${campaignCharacter.id}`];
+        return [`/user/home/profile/${campaign.master.id}`]
+    }
+    const getActionNames = () => {
+        if (isMaster) return ['Jogadores'].concat((party.map(p => `${p.username}`)));
+        if (isPlayer && campaignCharacter) return ['Mestre', `${campaignCharacter.name}`, `Remover Personagem`];
+        return [`Mestre`]
+    }
+    const bottomRef = useRef<HTMLDivElement>(null);
+    const transition = useNavigation();
 
-                return (
-                    <React.Fragment>
-                        <ul>
-                            <li key={"EChar"}><h3>Seu Personagem</h3></li>
-                            <li key={1}>
-                                <NavLink to={`/user/character/${campaignCharacter.id}/stats`}>
-                                    {campaignCharacter.name}
-                                </NavLink>
-                            </li>
-                            <table>
-                                <tbody>
-                                    <tr>
-                                        <th>NV</th>
-                                        <td>{campaignCharacter.level}</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                            <table>
-                                <tbody>
-                                    <tr>
-                                        <th>VIT</th>
-                                        <td>{campaignCharacter.currentVitality}/{campaignCharacter.vitality}</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                            <table>
-                                <tbody>
-                                    <tr>
-                                        <th>POD</th>
-                                        <td>{campaignCharacter.currentPower}/{campaignCharacter.power}</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                            <li key={2}>
-                                <NavLink className='logout' to={`/user/campaign/${campaignId}/remove/${campaignCharacter.id}`}>
-                                    Remover
-                                </NavLink>
-                            </li>
-                        </ul>
-
-
-                    </React.Fragment>
-                );
-            }
-
-            return (
-                <React.Fragment>
-                    <ul>
-                        <li key={-1}>
-                            <button onClick={() => showRow("VincP")}>Vincular Personagem</button>
-                        </li>
-                    </ul>
-
-                    <ul style={isShown("VincP") ? { display: 'none' } : {}}>
-                        {characters.map(cs =>
-                            <li key={cs.id}>
-                                <NavLink to={`/user/campaign/${campaignId}/bind/${cs.id}`}>
-                                    {cs.name}
-                                </NavLink>
-                            </li>
-
-                        )}
-                    </ul>
-
-                    <ul>
-                        <li key={-2}>
-                            <NavLink to={`/user/campaign/${campaignId}/quit`}>Sair da Campanha</NavLink>
-                        </li>
-                    </ul>
-
-
-                </React.Fragment>);
-
+    useEffect(() => {
+        if (transition.state === "idle" && bottomRef.current) {
+            bottomRef.current.scrollIntoView({ behavior: "smooth" });
         }
-        return (
-            <React.Fragment>
-                <ul>
-                    <li key={1}>
-                        <NavLink to={`/user/campaign/${campaignId}/join/`}>
-                            Juntar-se
-                        </NavLink>
-                    </li>
-                </ul>
-            </React.Fragment>);
-    };
+    }, [messages.length, transition.state]);
 
     return (
         <>
@@ -167,64 +134,19 @@ export default function CampaignRoute() {
                 tableDatas={[]}
                 tableExplain={[]}
                 footer={null}
-                links={isMaster ? [
-                    `/user/campaign/${campaignId}/rtn/timeOfDay`,
-                    `/user/campaign/${campaignId}/adv/timeOfDay`,
-                    `/user/campaign/${campaignId}/rtn/monthDay`,
-                    `/user/campaign/${campaignId}/adv/monthDay`,
-                    `/user/campaign/${campaignId}/rtn/month`,
-                    `/user/campaign/${campaignId}/adv/month`,
-                    `/user/campaign/${campaignId}/rtn/year`,
-                    `/user/campaign/${campaignId}/adv/year`,
-                    `/user/campaign/${campaignId}/rtn/era`,
-                    `/user/campaign/${campaignId}/adv/era`,
-                ] : []}
-                linkNames={isMaster ? [
-                    `Voltar Fase`,
-                    `Avançar Fase`,
-                    `Voltar Dia`,
-                    `Avançar Dia`,
-                    `Voltar Mês`,
-                    `Avançar Mês`,
-                    `Voltar Ano`,
-                    `Avançar Ano`,
-                    `Voltar Era`,
-                    `Avançar Era`
-                ] : []}
+                links={getCampaignAction()}
+                linkNames={getActionNames()}
                 temp={
                     <React.Fragment>
-
-                        {getCampaignAction()}
-
-                        <ul>
-
-                            <li key={-3}>
-                                <button onClick={() => showRow("LJ")}>Jogadores</button>
-                            </li>
-
-                        </ul>
-
-                        <ul style={!isShown("LJ") ? { display: 'none' } : { display: "inherit" }}>
-                            <UserPanel users={party}/>
-                        </ul>
-
-                        <ul>
-
-                            <li key={-3}>
-                                <button onClick={() => showRow("LP")}>Personagens</button>
-                            </li>
-
-                        </ul>
-
-                        <ul style={!isShown("LP") ? { display: 'none' } : { display: "inherit" }}>
-                            {campaign.characters.map(
-                                cc => <li key={cc.id}>
-                                    <NavLink to={`/user/character/${cc.id}/stats`}>
-                                        {cc.name}
-                                    </NavLink>
-                                </li>
-                            )}
-                        </ul>
+                        <h1 style={{ position: 'sticky', top: '0', zIndex: '1', margin: '0', paddingTop: '6px', paddingBottom: '6px', backgroundColor: '#111', borderBottom: '2px solid gold' }}>Mensagens</h1>
+                        {isMaster || isPlayer
+                            ? <>
+                                <MessageList messages={messages} masterId={campaign.masterId} />
+                                <MessageForm campaignId={campaignId} userId={userId} />
+                            </>
+                            : ''
+                        }
+                        <div ref={bottomRef} />
 
                     </React.Fragment>
 

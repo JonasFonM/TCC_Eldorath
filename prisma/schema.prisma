@@ -27,6 +27,7 @@ model campaign {
 
   scenes     scene[]
   characters character[]
+  message    message[]
 }
 
 model scene {
@@ -401,6 +402,7 @@ model user {
   sentRequests     friendship[]   @relation("FriendshipUser1")
   receivedRequests friendship[]   @relation("FriendshipUser2")
   playerParties    partyMembers[]
+  message          message[]
 }
 
 model friendship {
@@ -433,4 +435,16 @@ model partyMembers {
 
   campaign   campaign @relation(fields: [campaignId], references: [id])
   campaignId Int
+}
+
+model message {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+
+  user       user     @relation(fields: [userId], references: [id])
+  userId     Int
+  campaign   campaign @relation(fields: [campaignId], references: [id])
+  campaignId Int
+
+  content String
 }

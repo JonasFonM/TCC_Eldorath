@@ -14,6 +14,7 @@ import type { ActionFunction } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
 import MessageForm from "~/components/campaign/message-form";
 import { MessageList } from "~/components/campaign/message-list";
+import { useSidebar } from "~/components/context-providers/side-bar-context";
 
 export const loader: LoaderFunction = async ({ params, request }) => {
     const campaignId = Number(params.id);
@@ -101,6 +102,8 @@ export default function CampaignRoute() {
         "/Day.png",
         "/Dusk.png"
     ]
+    const { isAllOpen, isHeaderOpen, isTempOpen } = useSidebar();
+
 
     function displayTimeIcon(i: number) {
         return timeIcons[i - 1]
@@ -124,6 +127,19 @@ export default function CampaignRoute() {
             bottomRef.current.scrollIntoView({ behavior: "smooth" });
         }
     }, [messages.length, transition.state]);
+
+    const getStyle = () => {
+        if (isAllOpen) {
+            return { marginLeft: '200px', marginRight: '200px' }
+        }
+        if (isHeaderOpen) {
+            return { marginRight: '200px' }
+        }
+        if (isTempOpen) {
+            return { marginLeft: '200px' }
+        }
+
+    }
 
     return (
         <>
@@ -154,10 +170,12 @@ export default function CampaignRoute() {
 
             />
 
-            <div className="user" >
+            <div className="user" style={getStyle()}>
 
                 <h1 className="title-input" style={{ position: 'sticky', top: '64px' }}>{campaign.title}</h1>
 
+                <h2><button onClick={() => showRow("EDia")} className="lineBtn">{translateWeekDays(campaign.monthDay)}</button>,
+                    Dia {campaign.monthDay} de <button onClick={() => showRow("EMes")} className="lineBtn">{translateMonth(campaign.month)}</button> de {campaign.year} <button onClick={() => showRow("EEra")} className="lineBtn">E{campaign.era}</button></h2>
                 <div className="calendar-box container">
                     <div className="col-12">
                         <img alt={"Dia"}
@@ -170,11 +188,45 @@ export default function CampaignRoute() {
                             }}
                             src={displayTimeIcon(Number(campaign.timeOfDay))} />
                     </div>
-                    <h2 className="col-12"><button onClick={() => showRow("EDia")} className="lineBtn">{translateWeekDays(campaign.monthDay)}</button>,
-                        Dia {campaign.monthDay} de <button onClick={() => showRow("EMes")} className="lineBtn">{translateMonth(campaign.month)}</button> de {campaign.year} <button onClick={() => showRow("EEra")} className="lineBtn">E{campaign.era}</button></h2>
-
+                    {isMaster
+                        ? <><NavLink to={`/user/campaign/${campaignId}/rtn/timeOfDay`} className={'col-6 button'}>Retroceder Fase do Dia</NavLink>
+                            <NavLink to={`/user/campaign/${campaignId}/adv/timeOfDay`} className={'col-6 button'}>Avançar Fase do Dia</NavLink></>
+                        : ''
+                    }
                 </div>
 
+                {isMaster
+                    ? <>
+                        <h1 className="title-input">Controle do Dia</h1>
+
+                        <div className="calendar-box container">
+                            <NavLink to={`/user/campaign/${campaignId}/rtn/monthDay`} className={'col-6 button'}>Retroceder Dia</NavLink>
+                            <NavLink to={`/user/campaign/${campaignId}/adv/monthDay`} className={'col-6 button'}>Avançar Dia</NavLink>
+                        </div>
+
+                        <h1 className="title-input">Controle do Mês</h1>
+
+                        <div className="calendar-box container">
+                            <NavLink to={`/user/campaign/${campaignId}/rtn/month`} className={'col-6 button'}>Retroceder Mês</NavLink>
+                            <NavLink to={`/user/campaign/${campaignId}/adv/month`} className={'col-6 button'}>Avançar Mês</NavLink>
+                        </div>
+
+                        <h1 className="title-input">Controle do Ano</h1>
+
+                        <div className="calendar-box container">
+                            <NavLink to={`/user/campaign/${campaignId}/rtn/year`} className={'col-6 button'}>Retroceder Ano</NavLink>
+                            <NavLink to={`/user/campaign/${campaignId}/adv/year`} className={'col-6 button'}>Avançar Ano</NavLink>
+                        </div>
+                        
+                        <h1 className="title-input">Controle da Era</h1>
+
+                        <div className="calendar-box container">
+                            <NavLink to={`/user/campaign/${campaignId}/rtn/era`} className={'col-6 button'}>Retroceder Era</NavLink>
+                            <NavLink to={`/user/campaign/${campaignId}/adv/era`} className={'col-6 button'}>Avançar Era</NavLink>
+                        </div>
+                    </>
+                    : ''
+                }
                 <GeneralExplain
                     title="Eras"
                     isHidden={!isShown("EEra")}
@@ -201,7 +253,12 @@ export default function CampaignRoute() {
                 }
 
                 <div className="calendar-box container" style={{ justifyContent: 'center' }}>
-                    <p style={{ textAlign: 'justify', overflowX: 'hidden', overflowY: 'auto', display: location.pathname === `/user/campaign/${campaignId}` ? 'inherit' : 'none' }}>{campaign.description}</p>
+                    <p style={{
+                        textAlign: 'justify',
+                        wordBreak: 'break-word',
+                        overflowX: 'hidden',
+                        overflowY: 'auto',
+                    }}>{campaign.description}</p>
                 </div>
                 <Outlet context={{ isMaster, isPlayer, campaignCharacter, characters, campaign, party, campaignId }} />
 

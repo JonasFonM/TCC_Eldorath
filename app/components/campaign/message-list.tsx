@@ -22,7 +22,7 @@ export function MessageList({ messages, masterId }: Props) {
                         }}
                     >
                         <strong style={msg.userId === masterId ? { color: 'gold' } : {}}>{msg.userId} {msg.userId === masterId ? '(Mestre)' : ''}</strong>
-                        <p style={{ margin: "0.25rem 0", wordBreak: 'break-word' }}>{msg.content}</p>
+                        <p style={{ margin: "0.25rem 0", fontVariant: 'normal', wordBreak: 'break-word' }}>{msg.content}</p>
                         <small style={{ color: "#888" }}>
                             {new Date(msg.createdAt).toLocaleString("pt-BR")}
                         </small>

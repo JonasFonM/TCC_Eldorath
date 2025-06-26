@@ -197,28 +197,28 @@ export default function CampaignRoute() {
 
                 {isMaster
                     ? <>
-                        <h1 className="title-input">Controle do Dia</h1>
+                        <h1 className="title-input title-container">Controle do Dia <button className='question-button' onClick={() => showRow("EDia")}>?</button></h1>
 
                         <div className="calendar-box container">
                             <NavLink to={`/user/campaign/${campaignId}/rtn/monthDay`} className={'col-6 button'}>Retroceder Dia</NavLink>
                             <NavLink to={`/user/campaign/${campaignId}/adv/monthDay`} className={'col-6 button'}>Avançar Dia</NavLink>
                         </div>
 
-                        <h1 className="title-input">Controle do Mês</h1>
+                        <h1 className="title-input title-container">Controle do Mês <button className='question-button' onClick={() => showRow("EMes")}>?</button></h1>
 
                         <div className="calendar-box container">
                             <NavLink to={`/user/campaign/${campaignId}/rtn/month`} className={'col-6 button'}>Retroceder Mês</NavLink>
                             <NavLink to={`/user/campaign/${campaignId}/adv/month`} className={'col-6 button'}>Avançar Mês</NavLink>
                         </div>
 
-                        <h1 className="title-input">Controle do Ano</h1>
+                        <h1 className="title-input title-container">Controle do Ano <button className='question-button' onClick={() => showRow("EAno")}>?</button></h1>
 
                         <div className="calendar-box container">
                             <NavLink to={`/user/campaign/${campaignId}/rtn/year`} className={'col-6 button'}>Retroceder Ano</NavLink>
                             <NavLink to={`/user/campaign/${campaignId}/adv/year`} className={'col-6 button'}>Avançar Ano</NavLink>
                         </div>
-                        
-                        <h1 className="title-input">Controle da Era</h1>
+
+                        <h1 className="title-input title-container">Controle da Era <button className='question-button' onClick={() => showRow("EEra")}>?</button></h1>
 
                         <div className="calendar-box container">
                             <NavLink to={`/user/campaign/${campaignId}/rtn/era`} className={'col-6 button'}>Retroceder Era</NavLink>

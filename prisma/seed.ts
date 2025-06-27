@@ -16,20 +16,18 @@ async function main() {
 
     const allLineages = await prisma.lineage.findMany();
 
-    // 2. Talentos genéricos com pré-requisitos diversos
     const talentos = [
         { name: 'Reflexos Felinos', description: 'Aumenta esquiva e reação.', agi: 3 },
         { name: 'Força Bruta', description: 'Dobra capacidade de carga.', bdy: 3 },
         { name: 'Mente Afiada', description: 'Melhora análise e foco.', mnd: 3 },
         { name: 'Veterana de Guerra', description: 'Bônus por experiência.', lvl: 3 },
-        { name: 'Gigante Interior', description: 'Aumenta tamanho verdadeiro.', trSiz: 2 },
+        { name: 'Gigante Interior', description: 'Aumenta tamanho verdadeiro.', trSiz: 1 },
         { name: 'Presença Aumentada', description: 'Intimida mais facilmente.', efSiz: 2 },
     ];
     const skills = await Promise.all(
         talentos.map(t => prisma.skill.create({ data: { ...t } }))
     );
 
-    // Criar árvore com pré-requisito entre talentos
     const root = await prisma.skill.create({ data: { name: 'Dom Básico', description: 'Introdução geral ao combate.' } });
     const advanced = await prisma.skill.create({
         data: {
@@ -39,7 +37,6 @@ async function main() {
         },
     });
 
-    // 3. Talentos de Linhagem e Linhagem Única
     for (const lineage of allLineages) {
         const normalSkill = await prisma.skill.create({
             data: {
@@ -72,31 +69,64 @@ async function main() {
         });
     }
 
-    // 4. Caminhos e talentos associados
-    const caminho = await prisma.path.create({
+    await prisma.path.create({
         data: {
-            name: 'Sombra Silenciosa',
+            name: 'Ladino',
+            description: 'Furtivo e letal, um ladino usa todo tipo de trapaça para ganhar vantagens.',
+            pathTier: 1,
+            vitality: 10,
+            power: 10,
+
+        },
+    });
+
+    await prisma.path.create({
+        data: {
+            name: 'Soldado',
+            description: 'Geralmente um membro da Infantaria, soldados costumam lutar de perto.',
+            pathTier: 1,
+            vitality: 15,
+            power: 5,
+            addManeuvers: 2
+        },
+    });
+
+    await prisma.path.create({
+        data: {
+            name: 'Aprendiz',
+            description: 'Estudioso das Artes Arcanas, na sua jornada para se tornar um verdadeiro e poderoso Mago.',
+            pathTier: 1,
+            vitality: 5,
+            power: 15,
+            addMagics: 2
+        },
+    });
+
+    const ladino = await prisma.path.create({
+        data: {
+            name: 'Ladino',
             description: 'Caminho de combate furtivo e letal.',
             pathTier: 1,
             vitality: 10,
             power: 10,
+            addManeuvers: 1
         },
     });
 
-    const caminhoSkill = await prisma.skill.create({
+    const silencioso = await prisma.skill.create({
         data: {
             name: 'Golpe Silencioso',
-            description: 'Ataque que ignora armadura se em furtividade.',
-            agi: 2,
+            description: 'Ataque que ignora armadura se estiver em furtividade.',
         },
     });
 
     await prisma.path_skill.create({
         data: {
-            pathId: caminho.id,
-            skillId: caminhoSkill.id,
+            pathId: ladino.id,
+            skillId: silencioso.id,
         },
     });
+
     await prisma.item.create({
         data: {
             name: 'Espada Longa',
@@ -221,6 +251,7 @@ async function main() {
             baseWeight: 1,
             baseCost: 75,
             baseMagicDefense: 5,
+            baseDefense: 0,
             type: 'slotAccessory',
         },
     });
@@ -232,6 +263,7 @@ async function main() {
             baseWeight: 1,
             baseCost: 65,
             baseMagicDefense: 4,
+            baseDefense: 0,
             type: 'slotAccessory',
         },
     });

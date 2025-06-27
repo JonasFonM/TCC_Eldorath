@@ -13,7 +13,7 @@ export function SpecialFooter({ backBtnName, backLink, showAdv, advLink, advBtnN
     const { isAllOpen, isHeaderOpen } = useSidebar();
     const getStyle = () => {
         if (isAllOpen || isHeaderOpen) {
-            return { width: 'calc(100% - 25%)' }
+            return { width: '80%' }
         }
     }
 

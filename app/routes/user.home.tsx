@@ -112,8 +112,8 @@ export default function UserRoute() {
                 footer={null}
             />
 
-            <div className="user" style={isAllOpen ? { marginLeft: '200px', marginRight: '200px' } : isHeaderOpen ?
-                { marginRight: '200px' } : isTempOpen ? { marginLeft: '200px' } : {}}>
+            <div className="user" style={isAllOpen ? { marginLeft: '20VW', marginRight: '20VW' } : isHeaderOpen ?
+                { marginRight: '20VW' } : isTempOpen ? { marginLeft: '20VW' } : {}}>
 
                 <Outlet context={{ userId, user, friends }} />
             </div>

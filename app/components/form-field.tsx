@@ -20,7 +20,7 @@ export function FormField({ htmlFor, label, type = 'text', value, onChange = () 
   return (
     <React.Fragment>
       <input autoComplete="new-password"
-        className="block"
+        className="title-input"
         onChange={e => {
           onChange(e)
           setErrorText('')
@@ -29,7 +29,7 @@ export function FormField({ htmlFor, label, type = 'text', value, onChange = () 
         id={htmlFor}
         name={htmlFor}
         placeholder={label}
-        style={{ fontFamily: 'serif', fontSize: '2rem', color: "gold", textAlign: 'center' }}
+        style={{ fontFamily: 'serif', fontSize: '2rem', color: "gold", textAlign: 'center', width: '25%', border: '1px solid gold', boxShadow: '0 0 4px 0 gold' }}
         value={value} />
       <div className="container">
         <p className="error">{errorText || ''}</p>

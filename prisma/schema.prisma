@@ -25,113 +25,8 @@ model campaign {
   weekDay     Int    @default(1)
   timeOfDay   Int    @default(1)
 
-  scenes     scene[]
   characters character[]
   message    message[]
-}
-
-model scene {
-  id         Int      @id @default(autoincrement())
-  campaignId Int
-  campaign   campaign @relation(fields: [campaignId], references: [id])
-  createdAt  DateTime @default(now()) @db.Timestamp(0)
-  title      String   @db.Text
-
-  currentRound Int     @default(0)
-  playerTurn   Boolean @default(false)
-
-  era       Int @default(7)
-  month     Int @default(1)
-  monthDay  Int
-  weekDay   Int @default(1)
-  timeOfDay Int @default(1)
-
-  characters characterScene[]
-}
-
-model characterScene {
-  id          Int       @id @default(autoincrement())
-  characterId Int
-  character   character @relation(fields: [characterId], references: [id])
-
-  sceneId Int
-  scene   scene @relation(fields: [sceneId], references: [id])
-}
-
-model effect {
-  id          Int    @id @default(autoincrement())
-  name        String
-  description String
-
-  applications effectApplication[]
-  items        itemEffect[]
-}
-
-enum effectTarget {
-  character
-  item
-}
-
-enum operator {
-  Sum
-  Sub
-  Mult
-  Div
-}
-
-model effectApplication {
-  id       Int    @id @default(autoincrement())
-  effectId Int
-  effect   effect @relation(fields: [effectId], references: [id])
-
-  mainValue       Int
-  targetId        Int
-  targetCharacter character @relation(fields: [targetId], references: [id])
-  targetField     String
-  operator        operator
-}
-
-model action {
-  id                  Int     @id @default(autoincrement())
-  name                String
-  vigorCost           Int     @default(1)
-  powerCost           Int     @default(0)
-  useEquipedWeapon    Boolean @default(false)
-  useEquipedAccessory Boolean @default(false)
-  useConsumable       Boolean @default(false)
-
-  baseAttribute     attributeType @default(body)
-  minDieAmount      Int           @default(1)
-  minDieType        Int           @default(4)
-  baseTargetAmount  Int           @default(1)
-  targetType        targetType    @default(Inimigo)
-  targetedAttribute String        @default("currentVitality")
-  baseRange         Int           @default(1)
-
-  skillId Int?
-  skill   skill? @relation(fields: [skillId], references: [id], onDelete: SetNull)
-
-  actionUpgrade actionUpgrade[]
-}
-
-model actionUpgrade {
-  id              Int    @id @default(autoincrement())
-  actionId        Int
-  action          action @relation(fields: [actionId], references: [id])
-  vigorCost       Int?
-  powerCost       Int?
-  newTargetAmount Int?
-}
-
-enum targetType {
-  Aliado
-  Inimigo
-}
-
-enum attributeType {
-  agility
-  body
-  mind
 }
 
 model character {
@@ -188,12 +83,8 @@ model character {
   paths    character_path[]    @relation
   items    character_item[]    @relation
 
-  effects effectApplication[]
-
   campaign   campaign? @relation(fields: [campaignId], references: [id], onDelete: SetNull)
   campaignId Int?
-
-  scenes characterScene[] @relation()
 
   @@index([authorId], map: "authorId")
 }
@@ -279,7 +170,6 @@ model skill {
   characters            character_skill[]
   lineages              lineage_skill[]
   paths                 path_skill[]
-  actions               action[]
 }
 
 enum skillType {
@@ -287,7 +177,6 @@ enum skillType {
   Magia
   Manobra
 }
-
 model character_skill {
   id          Int @id @default(autoincrement())
   characterId Int
@@ -349,18 +238,8 @@ model character_item {
   damageDieCountAmp Int @default(0)
   critDmgMod        Int @default(0)
 
-  effects itemEffect[]
-
   character character @relation(fields: [characterId], references: [id])
   item      item      @relation(fields: [itemId], references: [id])
-}
-
-model itemEffect {
-  id               Int            @id @default(autoincrement())
-  effect           effect         @relation(fields: [effectId], references: [id])
-  effectId         Int
-  character_item   character_item @relation(fields: [character_itemId], references: [id])
-  character_itemId Int
 }
 
 enum itemType {

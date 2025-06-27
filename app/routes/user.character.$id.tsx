@@ -106,13 +106,13 @@ export default function CharacterRoute() {
 
   const getStyle = () => {
     if (isAllOpen) {
-      return { marginLeft: '200px', marginRight: '200px', marginBottom: isFooterOpen ? '155px' : '0' }
+      return { marginLeft: '20VW', marginRight: '20VW', marginBottom: isFooterOpen ? '155px' : '0' }
     }
     if (isHeaderOpen) {
-      return { marginRight: '200px', marginBottom: isFooterOpen ? '155px' : '0' }
+      return { marginRight: '20VW', marginBottom: isFooterOpen ? '155px' : '0' }
     }
     if (isTempOpen) {
-      return { marginLeft: '200px', marginBottom: isFooterOpen ? '155px' : '0' }
+      return { marginLeft: '20VW', marginBottom: isFooterOpen ? '155px' : '0' }
     }
 
   }

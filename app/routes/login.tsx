@@ -5,6 +5,7 @@ import { FormField } from '~/components/form-field'
 import { ActionFunction, json } from '@remix-run/node'
 import { validateEmail, validateName, validatePassword } from '~/utils/validators.server'
 import { login, register } from '~/utils/auth.server'
+import { NoSideBarFooter } from '~/components/no-sidebar-footer'
 
 export const action: ActionFunction = async ({ request }) => {
   const form = await request.formData()
@@ -112,58 +113,62 @@ export default function Login() {
         <h3>
           <button className='lineBtn'
             onClick={() => setAction(action == 'login' ? 'register' : 'login')}>
-            Alterar
+            {action == 'login' ? 'Ir para Cadastro' : 'Ir para Login'}
           </button>
         </h3>
 
-        <form method="POST" autoComplete="new-password" onSubmit={handleSubmit}>
+        <form method="POST"
+          autoComplete="new-password"
+          onSubmit={handleSubmit}>
 
           <p className='error'>{formError}</p>
           <div className='container'>
-            <div className=' calendar-box' style={{width: '80%'}}>
 
-              <div className='col-12'>
-                <FormField
-                  htmlFor="email"
-                  label="Email"
-                  value={formData.email}
-                  onChange={e => handleInputChange(e, 'email')}
-                  error={errors?.email}
-                />
-              </div>
-              <div className='col-12'>
-
-                <FormField
-                  htmlFor="password"
-                  type="password"
-                  label="Senha"
-                  value={formData.password}
-                  onChange={e => handleInputChange(e, 'password')}
-                  error={errors?.password}
-                />
-              </div>
-
-              {action === 'register' && (
-                <div className='col-12'>
-                  <FormField
-                    htmlFor="username"
-                    label="Nome de Usuário"
-                    onChange={e => handleInputChange(e, 'username')}
-                    value={formData.username}
-                    error={errors?.username}
-                  />
-                </div>
-              )}
-
+            <div className='col-12'>
+              <FormField
+                htmlFor="email"
+                label="Email"
+                value={formData.email}
+                onChange={e => handleInputChange(e, 'email')}
+                error={errors?.email}
+              />
             </div>
+            <div className='col-12'>
+
+              <FormField
+                htmlFor="password"
+                type="password"
+                label="Senha"
+                value={formData.password}
+                onChange={e => handleInputChange(e, 'password')}
+                error={errors?.password}
+              />
+            </div>
+
+            {action === 'register' && (
+              <div className='col-12'>
+                <FormField
+                  htmlFor="username"
+                  label="Nome de Usuário"
+                  onChange={e => handleInputChange(e, 'username')}
+                  value={formData.username}
+                  error={errors?.username}
+                />
+              </div>
+            )}
+
           </div>
 
-          <button type="submit" name="_action" value={action} className="button">
+          <button type="submit"
+            name="_action"
+            value={action}
+            className="button">
             {
               action === 'login' ? "Entrar" : "Cadastrar"
             }
           </button>
 
+          <NavLink to={`/home/`} className="button logout">Voltar</NavLink>
         </form>
       </div>
     </>

@@ -8,9 +8,9 @@ interface Props {
 
 export function MessageList({ messages, masterId }: Props) {
     return (
-        <div style={{ flex: 1, overflowY: "auto", padding: "1rem", marginBottom: '65%' }}>
-            {messages.length === 0 ? (
-                <p style={{ fontStyle: "italic", color: "#111" }}>Nenhuma mensagem ainda.</p>
+        <div style={{ flex: 1, overflowY: "auto", overflowX: 'hidden', padding: "1rem", maxHeight: '70vh' }}>
+            {messages.length === 0 || !messages ? (
+                <p style={{ fontStyle: "italic", color: "white" }}>Nenhuma mensagem ainda.</p>
             ) : (
                 messages.map((msg) => (
                     <div

@@ -38,7 +38,8 @@ export default function MessageForm({ campaignId, userId }: MessageFormProps) {
   }, []);
 
   return (
-    <Form method="post" ref={formRef}>
+    <Form method="post" ref={formRef}
+      style={{ position: 'absolute', bottom: '0', width: '100%' }}>
       <input type="hidden" name="campaignId" value={campaignId} />
       <input type="hidden" name="userId" value={userId} />
 
@@ -48,13 +49,13 @@ export default function MessageForm({ campaignId, userId }: MessageFormProps) {
         placeholder="Digite uma mensagem..."
         required
         maxLength={125}
-        style={{ paddingTop: '1%', overflowY: 'auto', wordBreak: 'break-word', resize: 'none', maxWidth: "180px", fontSize: '1.1rem', position: 'fixed', bottom: '8%' }}
+        style={{ paddingTop: '1%', overflowY: 'auto', wordBreak: 'break-word', resize: 'none', fontSize: '1.1rem', marginBottom: '0' }}
         disabled={isSubmitting}
       />
 
       <button type="submit" disabled={isSubmitting}
         className="button"
-        style={{ padding: '1%', width: "100%", fontSize: '1.4rem', maxHeight: '5%', position: 'fixed', left: '0', bottom: '0', margin: '0', maxWidth: '180px' }}
+        style={{ padding: '1%', width: "100%", fontSize: '1.4rem', maxHeight: '5%', marginTop: '0' }}
 
       >
         {isSubmitting ? "Enviando..." : "Enviar"}

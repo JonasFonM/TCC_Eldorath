@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import type { CampaignForm, SceneForm } from './types.server'
+import type { CampaignForm } from './types.server'
 import { prisma } from './prisma.server'
-import { json } from '@remix-run/node'
+import { json, redirect } from '@remix-run/node'
 
 //BASIC
 export const createCampaign = async (campaign: CampaignForm) => {
@@ -61,6 +61,20 @@ export const updateCampaign = async (campaign: CampaignForm, campaignId: number)
     weekDay: campaign.weekDay,
     description: campaign.description,
   }
+}
+
+export const updateCampaignDescription = async (description: string, campaignId: number) => {
+  await prisma.campaign.update({
+    where: {
+      id: campaignId
+    }
+    ,
+    data: {
+      description: description
+    }
+  });
+
+  return redirect(`/user/campaign/${campaignId}/`)
 }
 
 export async function togglePublicCampaign(campaignId: number, isPublic: boolean) {
@@ -176,47 +190,6 @@ export const rtnCampaignEra = async (campaignId: number) => {
     data: { era: { decrement: 1 } }
   })
 }
-
-
-//SCENES
-export const createScene = async (campaign: SceneForm, campaignId: number, title: string) => {
-  const characters = await prisma.character.findMany(
-    {
-      where: {
-        campaignId: campaignId
-      }
-    }
-  )
-
-
-
-  const newscene = await prisma.scene.create({
-    data: {
-      title: title,
-      campaignId: campaignId,
-      era: campaign.era,
-      month: campaign.month,
-      monthDay: campaign.monthDay,
-      weekDay: campaign.weekDay,
-    },
-  })
-
-  if (characters.length > 0) {
-    await addCharactersToScene(characters.map(c => c.id), newscene.id)
-  }
-
-  return {
-    id: newscene.id,
-    title: title,
-    campaignId: campaignId,
-    era: campaign.era,
-    month: campaign.month,
-    monthDay: campaign.monthDay,
-    weekDay: campaign.weekDay,
-    characters: characters || null
-
-  }
-};
 
 //PLAYERS
 export const addSinglePlayertoCampaign = async (playerId: number, campaignId: number) => {
@@ -351,43 +324,5 @@ export const removeAllCharactersFromCampaign = async (campaignId: number) => {
   return await prisma.character.updateMany({
     where: { campaignId: campaignId },
     data: { campaignId: null },
-  });
-};
-
-
-export const addCharactersToScene = async (characterList: number[], sceneId: number) => {
-  return characterList.map(cl => prisma.characterScene.create({
-    data: {
-      characterId: cl,
-      sceneId: sceneId,
-    },
-  }));
-
-};
-
-export const addSingleCharacterToScene = async (characterId: number, sceneId: number) => {
-  return await prisma.characterScene.create({
-    data: {
-      characterId: characterId,
-      sceneId: sceneId,
-    },
-  });
-
-};
-
-export const removeCharacterFromScene = async (characterId: number, sceneId: number) => {
-  return await prisma.characterScene.deleteMany({
-    where: {
-      characterId: characterId,
-      sceneId: sceneId
-    },
-  });
-};
-
-export const removeAllCharactersFromScene = async (sceneId: number) => {
-  return await prisma.characterScene.deleteMany({
-    where: {
-      sceneId: sceneId
-    },
   });
 };

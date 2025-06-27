@@ -11,7 +11,7 @@ export default function Lore() {
                     <h1>O que é um RPG?</h1>
 
                     <p>
-                        RPG é a sigla para Role-Playing Game, que em português significa "jogo de interpretação de papéis". É um tipo de jogo onde os participantes assumem o papel de personagens em uma história, como se fossem atores num teatro improvisado. Cada jogador cria um personagem com habilidades, personalidade e objetivos próprios.
+                        RPG é a sigla para Role-Playing Game, que em português significa "jogo de interpretação de papéis". É um tipo de jogo onde os participantes assumem o papel de personagens em uma história, como se fossem atores num teatro improvisado. Cada jogador cria um personagem com habilidades, personalidade e objetivos próprios, mas não só isso! Todos em uma mesa de RPG são convidados a exercer sua criatividade e expandir o universo fictício criado ou adaptado pelo grupo!
                     </p>
 
                     <h1>Como os RPGs costumam ser jogados?</h1>

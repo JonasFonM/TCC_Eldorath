@@ -1,6 +1,6 @@
-import { campaign, character, message, partyMembers, scene, user } from "@prisma/client";
+import { campaign, character, message, partyMembers,  user } from "@prisma/client";
 import { LoaderFunction } from "@remix-run/node";
-import { NavLink, Outlet, useLoaderData, useLocation, useNavigation } from "@remix-run/react";
+import { NavLink, Outlet, useLoaderData, useNavigation } from "@remix-run/react";
 import { prisma } from "~/utils/prisma.server";
 import React, { useEffect, useRef } from "react";
 import { SideBars } from "~/components/context-providers/side-bars";
@@ -9,12 +9,10 @@ import { getAllCharactersFromUser } from "~/utils/character.server";
 import { translateMonth, translateWeekDays } from "./user.campaign";
 import { GeneralExplain } from "~/components/explanations/general-explain";
 import { useShowRow } from "~/components/context-providers/showRowContext";
-import { UserPanel } from "~/components/user-panel";
-import type { ActionFunction } from "@remix-run/node";
-import { redirect } from "@remix-run/node";
 import MessageForm from "~/components/campaign/message-form";
 import { MessageList } from "~/components/campaign/message-list";
 import { useSidebar } from "~/components/context-providers/side-bar-context";
+import { checkFriendshipStatus } from "~/utils/user.server";
 
 export const loader: LoaderFunction = async ({ params, request }) => {
     const campaignId = Number(params.id);
@@ -22,7 +20,7 @@ export const loader: LoaderFunction = async ({ params, request }) => {
 
     const campaign = await prisma.campaign.findUnique({
         where: { id: campaignId },
-        include: { master: true, scenes: true, characters: true, players: true },
+        include: { master: true, characters: true, players: true },
     });
 
 
@@ -37,6 +35,11 @@ export const loader: LoaderFunction = async ({ params, request }) => {
 
     const isPlayer = campaign?.players.some(player => Number(player.userId) === Number(userId)) ?? false;
 
+
+    const friendStatus = await checkFriendshipStatus(Number(userId), Number(campaign?.masterId))
+
+    const isFriend = friendStatus === 'ACCEPTED'
+
     const campaignCharacter = campaign?.characters.find(cc => cc.campaignId == campaign.id && cc.authorId == userId)
 
     const messages = await prisma.message.findMany({
@@ -46,35 +49,14 @@ export const loader: LoaderFunction = async ({ params, request }) => {
         include: { user: true }
     });
 
-    return ({ isMaster, isPlayer, campaignCharacter, characters, campaign, party, campaignId, userId, messages })
+    return ({ isMaster, isPlayer, isFriend, campaignCharacter, characters, campaign, party, campaignId, userId, messages })
 }
-
-export const action: ActionFunction = async ({ request }) => {
-    const formData = await request.formData();
-    const campaignId = Number(formData.get("campaignId"));
-    const userId = Number(formData.get("userId"));
-    const content = String(formData.get("content"));
-
-    if (!content.trim() || isNaN(campaignId) || isNaN(userId)) {
-        return new Response("Invalid input", { status: 400 });
-    }
-
-    await prisma.message.create({
-        data: {
-            content,
-            campaignId,
-            userId,
-        },
-    });
-
-    return redirect(`/user/campaign/${campaignId}/`);
-};
-
 
 
 export default function CampaignRoute() {
     const { isMaster,
         isPlayer,
+        isFriend,
         campaignCharacter,
         characters,
         campaign,
@@ -86,15 +68,15 @@ export default function CampaignRoute() {
         useLoaderData<{
             isMaster: boolean,
             isPlayer: boolean,
+            isFriend: boolean,
             campaignCharacter: character,
             characters: character[],
-            campaign: (campaign & { master: user, scenes: scene[], characters: character[], players: partyMembers[] }),
+            campaign: (campaign & { master: user, characters: character[], players: partyMembers[] }),
             party: user[],
             campaignId: number,
             userId: number,
             messages: (message & { user: user })[]
         }>()
-    const location = useLocation()
     const { showRow, isShown } = useShowRow()
     const timeIcons = [
         "/Night.png",
@@ -104,19 +86,23 @@ export default function CampaignRoute() {
     ]
     const { isAllOpen, isHeaderOpen, isTempOpen } = useSidebar();
 
-
     function displayTimeIcon(i: number) {
         return timeIcons[i - 1]
     }
 
     const getCampaignAction = () => {
         if (isMaster) return [''].concat(party.map(p => `/user/home/profile/${p.id}`));
+        if (isFriend && !isPlayer) return [`/user/campaign/${campaign.id}/join`];
         if (isPlayer && campaignCharacter) return [`/user/home/profile/${campaign.master.id}`, `/user/character/${campaignCharacter.id}/stats`, `/user/campaign/${campaignId}/remove/${campaignCharacter.id}`];
+        if (isPlayer && !campaignCharacter) return [`/user/home/profile/${campaign.master.id}`, `/user/campaign/${campaignId}/quit/`];
         return [`/user/home/profile/${campaign.master.id}`]
     }
     const getActionNames = () => {
         if (isMaster) return ['Jogadores'].concat((party.map(p => `${p.username}`)));
+        if (isFriend && !isPlayer) return [`Entrar na Campanha`];
         if (isPlayer && campaignCharacter) return ['Mestre', `${campaignCharacter.name}`, `Remover Personagem`];
+        if (isPlayer && !campaignCharacter) return ['Mestre', `Sair da Campanha`];
+
         return [`Mestre`]
     }
     const bottomRef = useRef<HTMLDivElement>(null);
@@ -130,13 +116,13 @@ export default function CampaignRoute() {
 
     const getStyle = () => {
         if (isAllOpen) {
-            return { marginLeft: '200px', marginRight: '200px' }
+            return { marginLeft: '20VW', marginRight: '20VW' }
         }
         if (isHeaderOpen) {
-            return { marginRight: '200px' }
+            return { marginRight: '20VW' }
         }
         if (isTempOpen) {
-            return { marginLeft: '200px' }
+            return { marginLeft: '20VW' }
         }
 
     }
@@ -154,9 +140,11 @@ export default function CampaignRoute() {
                 linkNames={getActionNames()}
                 temp={
                     <React.Fragment>
-                        <h1 style={{ position: 'sticky', top: '0', zIndex: '1', margin: '0', paddingTop: '6px', paddingBottom: '6px', backgroundColor: '#111', borderBottom: '2px solid gold' }}>Mensagens</h1>
                         {isMaster || isPlayer
-                            ? <>
+                            ?
+                            <>
+                                <h1 style={{ position: 'sticky', top: '0', zIndex: '1', margin: '0', paddingTop: '6px', paddingBottom: '6px', backgroundColor: '#111', borderBottom: '2px solid gold' }}>Mensagens</h1>
+
                                 <MessageList messages={messages} masterId={campaign.masterId} />
                                 <MessageForm campaignId={campaignId} userId={userId} />
                             </>
@@ -171,62 +159,95 @@ export default function CampaignRoute() {
             />
 
             <div className="user" style={getStyle()}>
+                <h1 className="title-input" style={{ position: 'sticky', top: '64px' }}>{campaign.title}
+                    {isShown('Calendario')
+                        ? <h3 style={{ fontSize: '1.3rem' }}><button className="lineBtn" onClick={() => showRow('Calendario')}>Mostrar Descrição</button></h3>
+                        : <h3 style={{ fontSize: '1.3rem' }}><button className="lineBtn" onClick={() => showRow('Calendario')}>Mostrar Calendário</button></h3>
+                    }
+                </h1>
 
-                <h1 className="title-input" style={{ position: 'sticky', top: '64px' }}>{campaign.title}</h1>
 
-                <h2><button onClick={() => showRow("EDia")} className="lineBtn">{translateWeekDays(campaign.monthDay)}</button>,
-                    Dia {campaign.monthDay} de <button onClick={() => showRow("EMes")} className="lineBtn">{translateMonth(campaign.month)}</button> de {campaign.year} <button onClick={() => showRow("EEra")} className="lineBtn">E{campaign.era}</button></h2>
-                <div className="calendar-box container">
-                    <div className="col-12">
-                        <img alt={"Dia"}
-                            style={{
-                                animation: 'fadeIn 0.3s ease-in-out',
-                                boxShadow: '0 0 8px 5px gold',
-                                transition: "fadeIn 0.3s ease-in-out",
-                                width: '100%',
-                                maxWidth: '550px'
-                            }}
-                            src={displayTimeIcon(Number(campaign.timeOfDay))} />
+                <div style={isShown('Calendario') ? {} : { display: 'none' }}>
+                    <h2 className="title-input" style={{ color: "inherit" }}><button onClick={() => showRow("EDia")} className="lineBtn">{translateWeekDays(campaign.monthDay)}</button>,
+                        Dia {campaign.monthDay} de <button onClick={() => showRow("EMes")} className="lineBtn">{translateMonth(campaign.month)}</button> de <button onClick={() => showRow("EAno")} className="lineBtn">{campaign.year}</button> - <button onClick={() => showRow("EEra")} className="lineBtn">E{campaign.era}</button></h2>
+
+                    <div className="calendar-box container">
+
+
+                        <div className="col-12">
+                            <img alt={"Dia"}
+                                style={{
+                                    animation: 'fadeIn 0.3s ease-in-out',
+                                    boxShadow: '0 0 8px 5px gold',
+                                    transition: "fadeIn 0.3s ease-in-out",
+                                    width: '100%',
+                                    maxWidth: '550px'
+                                }}
+                                src={displayTimeIcon(Number(campaign.timeOfDay))} />
+                        </div>
+                        {isMaster
+                            ?
+                            <>
+                                <NavLink to={`/user/campaign/${campaignId}/rtn/timeOfDay`} className={'col-6 button'}>Voltar Fase do Dia</NavLink>
+                                <NavLink to={`/user/campaign/${campaignId}/adv/timeOfDay`} className={'col-6 button'}>Avançar Fase do Dia</NavLink>
+                            </>
+                            : ''
+                        }
                     </div>
+
                     {isMaster
-                        ? <><NavLink to={`/user/campaign/${campaignId}/rtn/timeOfDay`} className={'col-6 button'}>Retroceder Fase do Dia</NavLink>
-                            <NavLink to={`/user/campaign/${campaignId}/adv/timeOfDay`} className={'col-6 button'}>Avançar Fase do Dia</NavLink></>
+                        ? <>
+                            <h1 className="title-input title-container">Controle do Dia <button className='question-button' onClick={() => showRow("EDia")}>?</button></h1>
+
+                            <div className="calendar-box container">
+                                <NavLink to={`/user/campaign/${campaignId}/rtn/monthDay`} className={'col-6 button'}>Voltar Dia</NavLink>
+                                <NavLink to={`/user/campaign/${campaignId}/adv/monthDay`} className={'col-6 button'}>Avançar Dia</NavLink>
+                            </div>
+
+                            <h1 className="title-input title-container">Controle do Mês <button className='question-button' onClick={() => showRow("EMes")}>?</button></h1>
+
+                            <div className="calendar-box container">
+                                <NavLink to={`/user/campaign/${campaignId}/rtn/month`} className={'col-6 button'}>Voltar Mês</NavLink>
+                                <NavLink to={`/user/campaign/${campaignId}/adv/month`} className={'col-6 button'}>Avançar Mês</NavLink>
+                            </div>
+
+                            <h1 className="title-input title-container">Controle do Ano <button className='question-button' onClick={() => showRow("EAno")}>?</button></h1>
+
+                            <div className="calendar-box container">
+                                <NavLink to={`/user/campaign/${campaignId}/rtn/year`} className={'col-6 button'}>Voltar Ano</NavLink>
+                                <NavLink to={`/user/campaign/${campaignId}/adv/year`} className={'col-6 button'}>Avançar Ano</NavLink>
+                            </div>
+
+                            <h1 className="title-input title-container">Controle da Era <button className='question-button' onClick={() => showRow("EEra")}>?</button></h1>
+
+                            <div className="calendar-box container">
+                                <NavLink to={`/user/campaign/${campaignId}/rtn/era`} className={'col-6 button'}>Voltar Era</NavLink>
+                                <NavLink to={`/user/campaign/${campaignId}/adv/era`} className={'col-6 button'}>Avançar Era</NavLink>
+                            </div>
+                        </>
                         : ''
                     }
+
                 </div>
 
-                {isMaster
-                    ? <>
-                        <h1 className="title-input title-container">Controle do Dia <button className='question-button' onClick={() => showRow("EDia")}>?</button></h1>
-
-                        <div className="calendar-box container">
-                            <NavLink to={`/user/campaign/${campaignId}/rtn/monthDay`} className={'col-6 button'}>Retroceder Dia</NavLink>
-                            <NavLink to={`/user/campaign/${campaignId}/adv/monthDay`} className={'col-6 button'}>Avançar Dia</NavLink>
-                        </div>
-
-                        <h1 className="title-input title-container">Controle do Mês <button className='question-button' onClick={() => showRow("EMes")}>?</button></h1>
-
-                        <div className="calendar-box container">
-                            <NavLink to={`/user/campaign/${campaignId}/rtn/month`} className={'col-6 button'}>Retroceder Mês</NavLink>
-                            <NavLink to={`/user/campaign/${campaignId}/adv/month`} className={'col-6 button'}>Avançar Mês</NavLink>
-                        </div>
-
-                        <h1 className="title-input title-container">Controle do Ano <button className='question-button' onClick={() => showRow("EAno")}>?</button></h1>
-
-                        <div className="calendar-box container">
-                            <NavLink to={`/user/campaign/${campaignId}/rtn/year`} className={'col-6 button'}>Retroceder Ano</NavLink>
-                            <NavLink to={`/user/campaign/${campaignId}/adv/year`} className={'col-6 button'}>Avançar Ano</NavLink>
-                        </div>
-
-                        <h1 className="title-input title-container">Controle da Era <button className='question-button' onClick={() => showRow("EEra")}>?</button></h1>
-
-                        <div className="calendar-box container">
-                            <NavLink to={`/user/campaign/${campaignId}/rtn/era`} className={'col-6 button'}>Retroceder Era</NavLink>
-                            <NavLink to={`/user/campaign/${campaignId}/adv/era`} className={'col-6 button'}>Avançar Era</NavLink>
-                        </div>
-                    </>
+                <h2 style={isShown('Calendario') ? { display: 'none' } : { color: 'white' }} className="title-input title-container">A História até então...
+                    <button style={isMaster ? {} : { display: 'none' }} onClick={() => showRow('EDescricao')} className="question-button">?</button>
+                </h2>
+                {isMaster && !isShown('Calendario')
+                    ? <h2><NavLink className={'lineBtn'} to={`/user/campaign/${campaignId}/edit/`}>Editar Descrição</NavLink></h2>
                     : ''
                 }
+                <div className="calendar-box container" style={isShown('Calendario') ? { display: 'none' } : { justifyContent: 'center' }}>
+
+                    <p style={{
+                        textAlign: 'center',
+                        wordBreak: 'break-word',
+                        overflowX: 'hidden',
+                        overflowY: 'auto',
+                        fontSize: '1.1rem'
+                    }}>{campaign.description}</p>
+                </div>
+
                 <GeneralExplain
                     title="Eras"
                     isHidden={!isShown("EEra")}
@@ -234,9 +255,15 @@ export default function CampaignRoute() {
                     onCancel={() => showRow("EEra")}
                 />
                 <GeneralExplain
+                    title="Anos"
+                    isHidden={!isShown("EAno")}
+                    description="Os anos em Eldorath duram exatamente 360 dias, e eles são divididos em quatro estações, cada uma durando 90 dias. O ano inicia no Verão, passa pelo Outono, depois o Inverno e por fim a Primavera."
+                    onCancel={() => showRow("EAno")}
+                />
+                <GeneralExplain
                     title="Meses"
                     isHidden={!isShown("EMes")}
-                    description="Cada mês em Eldorath é carregado de simbologia, tradições e fenômenos que se repetem anualmente. Um ano em Eldorath dura 12 meses, e cada mês dura 5 semanas de 6 dias cada."
+                    description="Cada mês em Eldorath é carregado de simbologia, tradições e fenômenos que se repetem anualmente. Há 12 meses por ano, e cada mês dura 5 semanas com 6 dias cada."
                     onCancel={() => showRow("EMes")}
                 />
                 <GeneralExplain
@@ -246,20 +273,13 @@ export default function CampaignRoute() {
                     onCancel={() => showRow("EDia")}
                 />
 
+                <GeneralExplain
+                    title="Sua História"
+                    isHidden={!isShown("EDescricao")}
+                    description="Como Mestre, você tem a liberdade de criar lugares, pessoas, facções, monstros e muito mais. Aproveite o espaço da Descrição da sua Campanha para manter suas anotações sobre o seu jogo sempre em dia, ou use de outra forma se preferir."
+                    onCancel={() => showRow("EDescricao")}
+                />
 
-                {isMaster
-                    ? <h2><NavLink className={'lineBtn'} to={`/user/campaign/edit/${campaignId}/`}>Editar Descrição</NavLink></h2>
-                    : ''
-                }
-
-                <div className="calendar-box container" style={{ justifyContent: 'center' }}>
-                    <p style={{
-                        textAlign: 'justify',
-                        wordBreak: 'break-word',
-                        overflowX: 'hidden',
-                        overflowY: 'auto',
-                    }}>{campaign.description}</p>
-                </div>
                 <Outlet context={{ isMaster, isPlayer, campaignCharacter, characters, campaign, party, campaignId }} />
 
             </div >

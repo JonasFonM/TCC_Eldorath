@@ -17,7 +17,7 @@ export function DeleteConfirm({ name, isHidden, onShow, onCancel, entity, id }: 
 
   const getConfirm = () => {
     if (isConfirmed) {
-      return <NavLink className="col-12 button" to={`/delete/${entity}/${id}`}>Deletar</NavLink>
+      return <NavLink className="col-12 logout button" to={`/delete/${entity}/${id}`}>Deletar</NavLink>
 
     }
     if (!isConfirmed) {
@@ -28,7 +28,7 @@ export function DeleteConfirm({ name, isHidden, onShow, onCancel, entity, id }: 
 
   return (
     <React.Fragment key={id}>
-      <button style={{ color: 'red', border: 0 }} className="question-button" onClick={onShow}>X</button>
+      <button style={{ width: '100%', marginTop: '0', marginBottom: '10%', padding: '1%' }} className="button logout col-12" onClick={onShow}>Deletar</button>
       <div className="modal-overlay" style={{ display: isHidden ? 'none' : 'flex' }}>
         <div className="modal-content">
 

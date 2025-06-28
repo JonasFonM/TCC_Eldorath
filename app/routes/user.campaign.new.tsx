@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { ActionFunction, json, LoaderFunction, redirect } from "@remix-run/node"
-import { useActionData } from "@remix-run/react"
+import { NavLink, useActionData } from "@remix-run/react"
 import { useEffect, useRef, useState } from "react"
 import { getUserIdFromSession, requireUserId } from '~/utils/auth.server'
 import { submitCampaign } from "~/utils/campaign.server"
@@ -105,7 +105,18 @@ export default function NewCampaignRoute() {
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    if (name === 'year' && Number(value) > 3000) {
+      return setFormData((prev) => ({ ...prev, [name]: 3000 }));
+    }
+
+    if (name === 'era' && Number(value) > 50) {
+      return setFormData((prev) => ({ ...prev, [name]: 50 }));
+    }
+
+    if (Number(value) < 1 && name !== 'title') {
+      return setFormData((prev) => ({ ...prev, [name]: 1 }));
+    }
+    return setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleTextArea = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -131,10 +142,10 @@ export default function NewCampaignRoute() {
   const adjustEra = (adjustment: number) => {
     setFormData((prev) => {
       const newValue = Number(prev['era']) + adjustment;
-      if (newValue >= 0 && newValue <= 50) {
+      if (newValue >= 1 && newValue <= 50) {
         return { ...prev, ['era']: newValue };
       }
-      return newValue > 50 ? { ...prev, ['era']: 50 } : { ...prev, ['era']: 0 };
+      return newValue > 50 ? { ...prev, ['era']: 50 } : { ...prev, ['era']: 1 };
     });
 
   };
@@ -142,10 +153,10 @@ export default function NewCampaignRoute() {
   const adjustYear = (adjustment: number) => {
     setFormData((prev) => {
       const newValue = Number(prev['year']) + adjustment;
-      if (newValue >= 0 && newValue <= 3000) {
+      if (newValue >= 1 && newValue <= 3000) {
         return { ...prev, ['year']: newValue };
       }
-      return newValue > 3000 ? { ...prev, ['year']: 3000 } : { ...prev, ['year']: 0 };
+      return newValue > 3000 ? { ...prev, ['year']: 3000 } : { ...prev, ['year']: 1 };
     });
   };
 
@@ -167,7 +178,7 @@ export default function NewCampaignRoute() {
   };
 
   return (
-    <form style={title.current < 1 ? { paddingBottom: '160px' } : {}} method="post" onSubmit={handleSubmit}>
+    <form method="post" onSubmit={handleSubmit}>
       <input
         className="title-input"
         style={{ position: "sticky", top: '64px', zIndex: '1' }}
@@ -197,52 +208,24 @@ export default function NewCampaignRoute() {
 
       <div style={title.current < 1 ? { display: 'inherit' } : { display: 'none' }} className="container">
         <textarea
-          style={{ minHeight: '38vh' }}
+          style={{ minHeight: '38vh', fontFamily: 'serif', fontSize: '1.15rem', marginLeft: '10%', marginRight: '10%', width: '80%', marginBottom: '5%' }}
           className="calendar-box"
           name="description"
-          placeholder="Descreva os pontos básicos da sua Campanha. Você pode alterar essa descrição mais tarde!"
+          placeholder="Descreva a introdução da história para sua Campanha. Você pode alterar e expandir essa descrição mais tarde!"
           value={formData.description}
           onChange={handleTextArea}
         />
         {errors.description && <p className="error">{errors.description}</p>}
       </div>
 
-      <div style={title.current < 1 ? { display: 'none' } : { display: 'inherit' }} className="container">
-        <div className="calendar-box">
-          <div className="calendar-field">
+      <div style={title.current < 1 ? { display: 'none' } : { display: 'inherit' }}>
+        <div className="calendar-box" style={{ marginLeft: '10%', marginRight: '10%', width: '80%', marginBottom: '5%' }}>
 
-            <label>Era: {formData.era}</label>
-            <input style={{ accentColor: "gold" }} type="range" name="era" value={formData.era} min="0" max="50" onChange={handleChange}></input>
-            <div className="calendar-buttons">
-              <button type="button" onClick={() => adjustEra(-10)}>-10</button>
-              <button type="button" onClick={() => adjustEra(-5)}>-5</button>
-              <button type="button" onClick={() => adjustEra(-1)}>-</button>
-              <button type="button" onClick={() => adjustEra(1)}>+</button>
-              <button type="button" onClick={() => adjustEra(5)}>+5</button>
-              <button type="button" onClick={() => adjustEra(10)}>+10</button>
-            </div>
-          </div>
-
-          <div className="calendar-field">
-
-            <label>Ano: {formData.year}</label>
-            <input style={{ accentColor: "gold" }} type="range" name="year" value={formData.year} min="0" max="3000" onChange={handleChange}></input>
-            <div className="calendar-buttons">
-              <button type="button" onClick={() => adjustYear(-250)}>-250</button>
-              <button type="button" onClick={() => adjustYear(-50)}>-50</button>
-              <button type="button" onClick={() => adjustYear(-1)}>-</button>
-              <button type="button" onClick={() => adjustYear(1)}>+</button>
-              <button type="button" onClick={() => adjustYear(50)}>+50</button>
-              <button type="button" onClick={() => adjustYear(250)}>+250</button>
-            </div>
-          </div>
-
-          <div className="calendar-field">
-
-            <label>Dia</label>
+          <div className="calendar-field" style={{ marginBottom: '1%' }}>
+            <label><h1>Dia</h1></label>
             <select name="monthDay" value={formData.monthDay} onChange={handleMonthDayChange}>
               {[...Array(30)].map((_, i) => (
-                <option key={i + 1} value={i + 1}>
+                <option style={{ fontFamily: 'serif' }} key={i + 1} value={i + 1}>
                   {i + 1}  -  {translateWeekDays(i + 1)}
                 </option>
               ))}
@@ -256,9 +239,9 @@ export default function NewCampaignRoute() {
             </select>
           </div>
 
-          <div className="calendar-field">
+          <div className="calendar-field" style={{ marginBottom: '1%' }}>
 
-            <label>Mês</label>
+            <label><h1>Mês</h1></label>
             <select title="month" name="month" value={formData.month} onChange={handleSelect}>
               <optgroup label="Verão">
                 <option value="1">Solmáris</option>
@@ -282,15 +265,51 @@ export default function NewCampaignRoute() {
               </optgroup>
             </select>
           </div>
+
+          <div className="calendar-field" >
+            <label style={{ width: '100%' }}>
+              <h1>Ano</h1>
+              <h1><input
+                type='number'
+                name="year"
+                className="title-input"
+                onChange={handleChange}
+                value={formData.year}
+                style={{ border: '0', boxShadow: '0 0 4px 4px gold' }}
+              ></input></h1>
+            </label>
+            <input style={{ accentColor: "gold", width: '90%' }} type="range" name="year" value={formData.year} min="1" max="3000" onChange={handleChange}></input>
+            <div className="container" style={{ width: '100%' }}>
+              <button type="button" className="button col-6 calendar-button" onClick={() => adjustYear(-1)}>-</button>
+              <button type="button" className="button col-6 calendar-button" onClick={() => adjustYear(1)}>+</button>
+            </div>
+          </div>
+
+          <div className="calendar-field" >
+            <label style={{ width: '100%' }}>
+              <h1>Era</h1>
+              <h1><input type='number'
+                name="era"
+                className="title-input"
+                onChange={handleChange}
+                value={formData.era}
+                style={{ border: '0', boxShadow: '0 0 4px 4px gold', width: '100%' }}
+              ></input></h1>
+            </label>
+            <input style={{ accentColor: "gold", width: '90%' }} type="range" name="era" value={formData.era} min="1" max="50" onChange={handleChange}></input>
+            <div className="container" style={{ width: '100%' }}>
+              <button type="button" className="button col-6 calendar-button" onClick={() => adjustEra(-1)}>-</button>
+              <button type="button" className="button col-6 calendar-button" onClick={() => adjustEra(1)}>+</button>
+            </div>
+          </div>
+
+
         </div>
       </div>
-
-      <NoSideBarFooter
-        backBtnName={'Cancelar'}
-        backLink={`/user/home/profile/`}
-        advBtnName={'Confirmar'}
-        advLink={null}
-        showAdv={true} />
+      <div className="container" style={{ marginLeft: '10%', marginRight: '10%' }}>
+        <NavLink className={'button col-4 logout'} style={{ height: '15vh' }} to={`/user/home/profile/`}>Cancelar</NavLink>
+        <button type="submit" className="col-4 button" style={{ height: '15vh' }}>Confirmar</button>
+      </div>
     </form >
 
   );

@@ -17,9 +17,9 @@ export function CharacterCircle({ character, isAuthor }: props) {
     const [selectedDelete, setSelectedDelete] = useState<number>(0);
 
     return (
-        <div className='title-container'>
+        <div className='container'>
 
-            <NavLink style={{ textDecoration: 'none', color: 'white' }} to={`/user/character/${character.id}/stats`}><h1>{character.name}</h1></NavLink>
+            <NavLink className={'button col-12'} style={{width: '100%', marginBottom: '0'}} to={`/user/character/${character.id}/stats`}>{character.name}</NavLink>
             {isAuthor ?
                 <DeleteConfirm name={character.name} isHidden={selectedDelete != character.id} onShow={() => setSelectedDelete(character.id)} onCancel={() => setSelectedDelete(0)} entity={"character"} id={String(character.id)} />
                 : ''

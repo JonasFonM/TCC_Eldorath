@@ -17,9 +17,9 @@ export function CampaignCircle({ campaign, isAuthor }: props) {
     const [selectedDelete, setSelectedDelete] = useState<number>(0);
 
     return (
-        <div className='title-container'>
+        <div className='container'>
 
-            <NavLink style={{ textDecoration: 'none', color: 'white' }} to={`/user/campaign/${campaign.id}`}><h1>{campaign.title}</h1></NavLink>
+            <NavLink className={'button col-12'}  style={{ width: '100%', marginBottom: '0' }} to={`/user/campaign/${campaign.id}`}>{campaign.title}</NavLink>
             {isAuthor ?
                 <DeleteConfirm name={campaign.title} isHidden={selectedDelete != campaign.id} onShow={() => setSelectedDelete(campaign.id)} onCancel={() => setSelectedDelete(0)} entity={"campaign"} id={String(campaign.id)} />
                 : ''

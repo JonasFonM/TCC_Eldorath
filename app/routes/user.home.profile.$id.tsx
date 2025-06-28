@@ -61,49 +61,60 @@ export default function UserProfileRoute() {
                 </thead>
             </table>
 
-            <h1 id="Campanhas" className="title-input" style={isShown("Campanhas") ? { backgroundColor: 'black', boxShadow: '1px 1px 8px 1px gold' } : {}}>
-                <button className="lineBtn" onClick={() => showRow("Campanhas")} >
-                    {isOwnProfile ? 'Suas Campanhas' : `Campanhas de ${profileUser.username}`}
-                </button>
-            </h1>
+            <div className="calendar-box"
+                style={
+                    {
+                        padding: '0',
+                        margin: '0',
+                        borderRadius: '0',
+                        boxShadow: '0',
+                        height: '85vh'
+                    }
+                }>
+                <div className="col-6">
+                    <div id="Campanhas" className="container col-12">
+                        <button className="button" style={{ boxShadow: '1px 1px 8px 1px gold', width: '100%' }} onClick={() => showRow("Campanhas")} >
+                            <h3> {isOwnProfile ? 'Suas Campanhas' : `Campanhas de ${profileUser.username}`}</h3>
+                        </button>
 
-            <div className="container" style={isShown("Campanhas") ? { display: 'inherit' } : { display: 'none' }}>
-                <CampaignPanel isAuthor={isOwnProfile} campaigns={profileCampaigns} />
-                {isOwnProfile
-                    ? <div className="col-12">
-                        <div className='title-container' style={{ boxShadow: '1px 1px 8px 1px gold' }}>
-                            <NavLink className={'lineBtn'} to={`/user/campaign/new`}><h1>Criar Campanha</h1></NavLink>
+
+                        <div className="container col-12" style={isShown("Campanhas") ? { display: 'inherit', marginRight: '8px' } : { display: 'none' }}>
+                            <CampaignPanel isAuthor={isOwnProfile} campaigns={profileCampaigns} />
+                            <div className="col-12">
+                                {isOwnProfile
+                                    ? <NavLink className={'button'}
+                                        style={{ boxShadow: '1px 1px 8px 1px gold', width: '100%' }}
+                                        to={`/user/campaign/new`}><h3>Criar Campanha</h3></NavLink>
+                                    : ''
+                                }
+                            </div>
                         </div>
-                        <p></p> {/*Espaço */}
                     </div>
+                </div>
 
-                    : <div className="col-12"><p></p></div>
+                <div id="Personagens" className="col-6">
+                    <div className="container col-12">
 
-                }
-            </div>
+                        <button className="button" style={{ boxShadow: '1px 1px 8px 1px gold', width: '100%' }} onClick={() => showRow("Personagens")}>
+                            <h3>{isOwnProfile ? 'Seus Personagens' : `Personagens de ${profileUser.username}`}</h3>
+                        </button>
 
 
-            <h1 id="Personagens" className="title-input" style={isShown("Personagens") ? { backgroundColor: 'black', boxShadow: '1px 1px 8px 1px gold' } : {}}>
-                <button className="lineBtn" onClick={() => showRow("Personagens")}>
-                    {isOwnProfile ? 'Seus Personagens' : `Personagens de ${profileUser.username}`}
-                </button>
-            </h1>
-
-            <div className="container" style={isShown("Personagens") ? { display: 'inherit' } : { display: 'none' }}>
-                <CharacterPanel isAuthor={isOwnProfile} characters={profileCharacters} />
-                {isOwnProfile
-                    ? <div className="col-12">
-                        <div className='title-container' style={{ boxShadow: '1px 1px 8px 1px gold' }}>
-                            <NavLink className={'lineBtn'} to={`/user/character/new/basic`}><h1>Criar Personagem</h1></NavLink>
+                        <div className="container col-12" style={isShown("Personagens") ? { display: 'inherit' } : { display: 'none' }}>
+                            <CharacterPanel isAuthor={isOwnProfile} characters={profileCharacters} />
+                            <div className="col-12">
+                                {isOwnProfile
+                                    ? <NavLink className={'button'}
+                                        style={{ boxShadow: '1px 1px 8px 1px gold', width: '100%' }}
+                                        to={`/user/character/new/basic`}><h3>Criar Personagem</h3></NavLink>
+                                    : ''
+                                }
+                            </div>
                         </div>
-                        <p></p> {/*Espaço*/}
                     </div>
+                </div>
 
-                    : ''
-
-                }
             </div>
-
         </React.Fragment >
     );
 }

@@ -31,7 +31,6 @@ export default function ItemSelection() {
     const { items, character } = useOutletContext<{ items: item[]; character: character }>();
     const [selectedItems, setSelectedItems] = useState<number[]>([]);
     const [selectedCost, setSelectedCost] = useState<number>(0);
-    const [error, setError] = useState<string | null>(null);
     const maxCost = character.gold;
     const { showRow, isShown } = useShowRow();
 
@@ -48,7 +47,6 @@ export default function ItemSelection() {
             let newCost = selectedCost;
 
             if (newCost + cost > maxCost) {
-                setError("Você não pode pagar este item.");
                 return prevItems;
 
             }

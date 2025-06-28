@@ -241,6 +241,14 @@ export const removeAllPlayersFromCampaign = async (campaignId: number) => {
   })
 };
 
+export const removeAllMessagesFromCampaign = async (campaignId: number) => {
+  return await prisma.message.deleteMany({
+    where: {
+      campaignId: campaignId
+    }
+  })
+};
+
 
 //CHARACTERS
 export const addSingleCharacterToCampaign = async (characterId: number, campaignId: number) => {

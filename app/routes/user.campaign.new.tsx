@@ -208,7 +208,7 @@ export default function NewCampaignRoute() {
 
       <div style={title.current < 1 ? { display: 'inherit' } : { display: 'none' }} className="container">
         <textarea
-          style={{ minHeight: '38vh', fontFamily: 'serif', fontSize: '1.15rem', marginLeft: '10%', marginRight: '10%', width: '80%', marginBottom: '5%' }}
+          style={{ minHeight: '38vh', fontFamily: 'serif', fontSize: '1.15rem', marginLeft: '10%', marginRight: '10%', width: '80%' }}
           className="calendar-box"
           name="description"
           placeholder="Descreva a introdução da história para sua Campanha. Você pode alterar e expandir essa descrição mais tarde!"
@@ -219,7 +219,7 @@ export default function NewCampaignRoute() {
       </div>
 
       <div style={title.current < 1 ? { display: 'none' } : { display: 'inherit' }}>
-        <div className="calendar-box" style={{ marginLeft: '10%', marginRight: '10%', width: '80%', marginBottom: '5%' }}>
+        <div className="calendar-box" style={{ marginLeft: '10%', marginRight: '10%', width: '80%' }}>
 
           <div className="calendar-field" style={{ marginBottom: '1%' }}>
             <label><h1>Dia</h1></label>

@@ -19,22 +19,22 @@ export function ItemHandler({ title, itemName, itemQuantity, itemCost, itemWeigh
             style={
                 open
                     ? {
+                        backgroundColor: 'black',
                         animation: 'descend 0.2s ease-in-out',
-                        background: 'rgb(9, 8, 9)',
                         border: '16px solid transparent',
-                        padding: '16px',
-                        borderImage: 'url(/SuperBorder.png) 11% round'
+                        padding: '12px',
+                        borderImage: 'url(/TopBorder.png) 7% round'
                     }
                     : { display: 'none' }
             }>
             <div className='container' style={{ borderRadius: '2%' }}>
                 <div className="col-3">
-                    <button style={{ fontSize: '2rem', marginRight: '1%' }} type="button" className="button" onClick={() => onMinus(itemName, -1)}>-</button>
+                    <button style={{ fontSize: '2rem', marginLeft: '50%', maxHeight: '5vh', width: '50%' }} type="button" className="button" onClick={() => onMinus(itemName, -1)}>-</button>
                 </div>
                 <div className="col-6">
                     <div className="col-12">
                         <label style={{ fontVariant: 'small-caps', fontFamily: 'serif', fontSize: '1.9rem' }}>
-                            {title} ({itemQuantity})
+                            {title} <span style={{color: 'gold', font: 'inherit'}}>({itemQuantity})</span>
                         </label>
                     </div>
 
@@ -79,7 +79,7 @@ export function ItemHandler({ title, itemName, itemQuantity, itemCost, itemWeigh
                 </div>
 
                 <div className="col-3">
-                    <button style={{ fontSize: '2rem', marginLeft: '1%' }} type="button" className="button" onClick={() => onPlus(itemName, 1)}>+</button>
+                    <button style={{ fontSize: '2rem', marginRight: '50%', maxHeight: '5vh', width: '50%' }} type="button" className="button" onClick={() => onPlus(itemName, 1)}>+</button>
                 </div>
 
             </div >

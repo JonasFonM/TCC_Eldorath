@@ -1,5 +1,5 @@
-import { campaign, character, message, partyMembers,  user } from "@prisma/client";
-import { LoaderFunction } from "@remix-run/node";
+import { campaign, character, message, partyMembers, user } from "@prisma/client";
+import { ActionFunction, LoaderFunction, redirect } from "@remix-run/node";
 import { NavLink, Outlet, useLoaderData, useNavigation } from "@remix-run/react";
 import { prisma } from "~/utils/prisma.server";
 import React, { useEffect, useRef } from "react";
@@ -13,6 +13,27 @@ import MessageForm from "~/components/campaign/message-form";
 import { MessageList } from "~/components/campaign/message-list";
 import { useSidebar } from "~/components/context-providers/side-bar-context";
 import { checkFriendshipStatus } from "~/utils/user.server";
+
+export const action: ActionFunction = async ({ request }) => {
+    const formData = await request.formData();
+    const campaignId = Number(formData.get("campaignId"));
+    const userId = Number(formData.get("userId"));
+    const content = String(formData.get("content"));
+
+    if (!content.trim() || isNaN(campaignId) || isNaN(userId)) {
+        return new Response("Invalid input", { status: 400 });
+    }
+
+    await prisma.message.create({
+        data: {
+            content,
+            campaignId,
+            userId,
+        },
+    });
+
+    return redirect(`/user/campaign/${campaignId}/`);
+};
 
 export const loader: LoaderFunction = async ({ params, request }) => {
     const campaignId = Number(params.id);

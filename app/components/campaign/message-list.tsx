@@ -21,7 +21,7 @@ export function MessageList({ messages, masterId }: Props) {
                             padding: "0.75rem",
                         }}
                     >
-                        <strong style={msg.userId === masterId ? { color: 'gold' } : {}}>{msg.userId} {msg.userId === masterId ? '(Mestre)' : ''}</strong>
+                        <strong style={msg.userId === masterId ? { color: 'gold' } : {}}>{msg.user.username} {msg.userId === masterId ? '(Mestre)' : ''}</strong>
                         <p style={{ margin: "0.25rem 0", fontVariant: 'normal', wordBreak: 'break-word' }}>{msg.content}</p>
                         <small style={{ color: "#888" }}>
                             {new Date(msg.createdAt).toLocaleString("pt-BR")}

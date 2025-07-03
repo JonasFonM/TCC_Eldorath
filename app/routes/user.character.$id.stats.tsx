@@ -44,31 +44,29 @@ export default function StatsRoute() {
                 </h1>
             </div>
 
-            <GeneralExplain title={'Básicos'} description="Atributos Básicos são os valores principais para determinar as suas aptidões. Agilidade é usada para Acertar Ataques Físicos, além de ser a base principal da sua Defesa. Corpo é somado no Dano dos seus Ataques Físicos, além de ser uma base da sua Vitalidade, Vigor, Peso, Capacidade de Carga e Capacidade de Levantamento. Mente é usada para Acertar Ataques Mágicos, além de ser uma base do seu Vigor e do seu Poder" isHidden={showAtr != 2} onCancel={() => setShowAtr(0)} />
+            <GeneralExplain title={'Básicos'} description="Atributos Básicos são os valores principais para determinar as suas aptidões. O Mestre pode pedir um Teste de Atributo quando você tomar uma ação com certa dificuldade ou resistência." isHidden={showAtr != 2} onCancel={() => setShowAtr(0)} />
+            <GeneralExplain title={'Agilidade'} description="Agilidade é usada para Acertar Ataques Físicos, além de ser a base principal da sua Defesa. Testes de Agilidade podem envolver: executar uma acrobacia perigosa, andar em uma corda sem perder o equilíbrio, se esconder nas sombras, entre outros." isHidden={showAtr != 3} onCancel={() => setShowAtr(0)} />
+            <GeneralExplain title={'Corpo'} description="Corpo é somado no Dano dos seus Ataques Físicos, além de ser uma base da sua Vitalidade, Vigor, Peso, Capacidade de Carga e Capacidade de Levantamento. Testes de Corpo podem envolver: empurrar algo ou alguém muito pesado, resistir a um empurrão, manter o fôlego durante uma longa corrida, entre outros." isHidden={showAtr != 4} onCancel={() => setShowAtr(0)} />
+            <GeneralExplain title={'Mente'} description="Mente é usada para Acertar Ataques Mágicos, além de ser uma base do seu Vigor e do seu Poder. Testes de Mente podem envolver: procurar por pistas ou rastros, identificar um item mágico, lembrar de alguma informação importante, entre outros." isHidden={showAtr != 5} onCancel={() => setShowAtr(0)} />
 
             <div className="calendar-box">
-                <button onClick={
-                    isAuthor
-                        ? () => handleRollDice(1, 6, 'Agilidade', character.agility)
-                        : () => null
-                } className="block">
+                <button onClick={() => setShowAtr(3)} className="block">
                     <h1>{character.agility}</h1>
                     <p className="Atr">AGI</p>
                 </button>
 
-                <button onClick={isAuthor
-                    ? () => handleRollDice(1, 6, 'Corpo', character.body)
-                    : () => null} className="block">
+                <button onClick={() => setShowAtr(4)} className="block">
                     <h1>{character.body}</h1>
                     <p className="Atr">COR</p>
                 </button>
 
-                <button onClick={isAuthor
-                    ? () => handleRollDice(1, 6, 'Mente', character.mind)
-                    : () => null} className="block">
+                <button onClick={() => setShowAtr(4)} className="block">
                     <h1>{character.mind}</h1>
                     <p className="Atr">MEN</p>
                 </button>
+                {/*isAuthor
+                    ? () => handleRollDice(1, 6, 'Mente', character.mind)
+                    : () => null*/}
 
             </div>
 

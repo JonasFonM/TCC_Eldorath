@@ -78,8 +78,13 @@ export default function UserProfileRoute() {
                         </button>
 
 
-                        <div className="container col-12" style={isShown("Campanhas") ? { display: 'inherit', marginRight: '8px' } : { display: 'none' }}>
-                            <CampaignPanel isAuthor={isOwnProfile} campaigns={profileCampaigns} />
+                        <div className="container col-12" style={isShown("Campanhas") ? { display: 'inherit', marginRight: '8px', animation: 'descend 0.3s ease-in-out', } : { display: 'none' }}>
+                            {profileCampaigns.length < 1
+                                ? <div className="col-12" style={{ height: '40vh', alignContent: 'center' }} >
+                                    <p style={{ fontStyle: 'italic', textAlign: 'center' }}> Nenhuma Campanha por enquanto...</p>
+                                </div>
+                                : <CampaignPanel isAuthor={isOwnProfile} campaigns={profileCampaigns} />
+                            }
                             <div className="col-12">
                                 {isOwnProfile
                                     ? <NavLink className={'button'}
@@ -100,8 +105,14 @@ export default function UserProfileRoute() {
                         </button>
 
 
-                        <div className="container col-12" style={isShown("Personagens") ? { display: 'inherit' } : { display: 'none' }}>
-                            <CharacterPanel isAuthor={isOwnProfile} characters={profileCharacters} />
+
+                        <div className="container col-12" style={isShown("Personagens") ? { display: 'inherit', animation: 'descend 0.3s ease-in-out', } : { display: 'none' }}>
+                            {profileCharacters.length < 1
+                                ? <div className="col-12" style={{ height: '40vh', alignContent: 'center' }} >
+                                    <p style={{ fontStyle: 'italic', textAlign: 'center' }}> Nenhum Personagem por enquanto...</p>
+                                </div>
+                                : <CharacterPanel isAuthor={isOwnProfile} characters={profileCharacters} />
+                            }
                             <div className="col-12">
                                 {isOwnProfile
                                     ? <NavLink className={'button'}

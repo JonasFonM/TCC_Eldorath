@@ -34,7 +34,7 @@ export const loader: LoaderFunction = async ({ request, params }) => {
 
 export default function InventoryRoute() {
     const { items, availableItems } = useLoaderData<{ items: (character_item & { item: item })[]; equippedItems: (character_item & { item: item })[]; availableItems: (character_item & { item: item })[] }>();
-    const { character } = useOutletContext<{ character: character, isAuthor: boolean }>();
+    const { character, handleRollDice } = useOutletContext<{ character: character, isAuthor: boolean, handleRollDice: (amount: number, diceType: number, attributeName: string, attributeMod: number) => void }>();
     const { showRow, isShown } = useShowRow();
 
     return (
@@ -148,6 +148,9 @@ export default function InventoryRoute() {
                                 subtitleIndexes={[0]}
                                 items={[String(it.item.description)]}
                             />
+                            <tbody style={{ display: isShown(`Item-${it.id}`) ? '' : 'none', width: '100%' }} className="table-extension">
+                                <tr className="button col-12" style={{ padding: '2px', cursor: 'pointer', color: 'white' }} onClick={() => handleRollDice(Number(it.item.baseDamageDieCount) + it.damageDieCountAmp | 0, Number(it.item.baseDamageDie) + it.damageDieAmp | 0, `Dano com seu(sua) ${String(it.item.name)} de ${String(it.material)}`, character.body)}><th style={{ cursor: 'pointer', color: 'white !important' }}>Rolar Dano</th></tr>
+                            </tbody>
                         </React.Fragment>
                         : null
                 ))}

@@ -100,19 +100,19 @@ export default function CharacterRoute() {
       nonPureLineageSkills: (lineage_skill & { skill: skill, lineage: lineage })[],
       lineages: lineage[], isPure: boolean, items: (character_item & { item: item })[], paths: path[]
     }>()
-  const { isAllOpen, isHeaderOpen, isTempOpen, isFooterOpen } = useSidebar();
+  const { isAllOpen, isHeaderOpen, isTempOpen } = useSidebar();
 
   const subtitle = paths.length > 0 ? String(paths.map(p => p.name)) : "Sem Caminho"
 
   const getStyle = () => {
     if (isAllOpen) {
-      return { marginLeft: '20VW', marginRight: '20VW', marginBottom: isFooterOpen ? '155px' : '0' }
+      return { marginLeft: '20VW', marginRight: '20VW' }
     }
     if (isHeaderOpen) {
-      return { marginRight: '20VW', marginBottom: isFooterOpen ? '155px' : '0' }
+      return { marginRight: '20VW' }
     }
     if (isTempOpen) {
-      return { marginLeft: '20VW', marginBottom: isFooterOpen ? '155px' : '0' }
+      return { marginLeft: '20VW' }
     }
 
   }
@@ -221,28 +221,7 @@ export default function CharacterRoute() {
               <UserPanel users={[author]} />
             </>
         }
-        footer={
-          <div style={{ margin: '2px' }}>
-            <ResourceBar
-              color="darkred"
-              halvedColor="red"
-              currentValue={character.currentVitality}
-              maxValue={character.vitality}
-            />
-            <ResourceBar
-              color="darkgreen"
-              halvedColor="green"
-              currentValue={character.currentVigor}
-              maxValue={character.vigor}
-            />
-            <ResourceBar
-              color="darkcyan"
-              halvedColor="cyan"
-              currentValue={character.currentPower}
-              maxValue={character.power}
-            />
-          </div>
-        }
+        footer={null}
 
       />
 

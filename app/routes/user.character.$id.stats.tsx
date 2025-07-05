@@ -64,10 +64,18 @@ export default function StatsRoute() {
                     <h1>{character.mind}</h1>
                     <p className="Atr">MEN</p>
                 </button>
-                {/*isAuthor
-                    ? () => handleRollDice(1, 6, 'Mente', character.mind)
-                    : () => null*/}
 
+                <button style={isAuthor ? {} : { display: 'none' }} onClick={() => handleRollDice(1, 6, 'Agilidade', character.agility)} className="block">
+                    <p className="Atr">Fazer Teste</p>
+                </button>
+
+                <button style={isAuthor ? {} : { display: 'none' }} onClick={() => handleRollDice(1, 6, 'Corpo', character.body)} className="block">
+                    <p className="Atr">Fazer Teste</p>
+                </button>
+
+                <button style={isAuthor ? {} : { display: 'none' }} onClick={() => handleRollDice(1, 6, 'Mente', character.mind)} className="block">
+                    <p className="Atr">Fazer Teste</p>
+                </button>
             </div>
 
 
